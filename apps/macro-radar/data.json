@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-10-29T22:55:41Z",
-  "asOf": "2026-10-29",
-  "asOfSh": "2026-10-30 06:55",
+  "updatedAt": "2026-11-03T23:11:50Z",
+  "asOf": "2026-11-03",
+  "asOfSh": "2026-11-04 07:11",
   "live": true,
   "source": "FRED · EIA · Yahoo Finance · 交易所行情",
   "regime": {
-    "score": 37,
-    "labelZh": "中性偏紧",
-    "labelEn": "NEUTRAL-TIGHT",
-    "desc": "实际利率、信用利差走弱压制风险偏好；增长动能、期限溢价相对稳健，已进入压力区。"
+    "score": 34,
+    "labelZh": "收紧 · 风险",
+    "labelEn": "RISK-OFF",
+    "desc": "信用利差、波动率走弱压制风险偏好；增长动能、市场广度相对稳健，已进入压力区。"
   },
   "signals": [
     {
@@ -18,7 +18,7 @@
       "score": 28,
       "status": "stress",
       "statusZh": "承压",
-      "desc": "净流动性 5.75T，近 13 周 -79B（收缩）；SOFR−IORB +4bp（趋紧）",
+      "desc": "净流动性 5.75T，近 13 周 -79B（收缩）；SOFR−IORB +5bp（趋紧）",
       "spark": [
         5948.518,
         5972.303,
@@ -66,12 +66,11 @@
       "key": "volatility",
       "en": "VOLATILITY",
       "zh": "波动率",
-      "score": 47,
-      "status": "neutral",
-      "statusZh": "中性",
-      "desc": "VIX 回落，期限结构正向 (contango)",
+      "score": 17,
+      "status": "stress",
+      "statusZh": "承压",
+      "desc": "VIX 抬升，期限结构正向 (contango)",
       "spark": [
-        17.87,
         17.82,
         16.76,
         17.01,
@@ -110,19 +109,19 @@
         16.87,
         18.44,
         19.03,
-        17.52
+        17.52,
+        19.42
       ]
     },
     {
       "key": "term",
       "en": "TERM PREMIUM",
       "zh": "期限溢价",
-      "score": 51,
+      "score": 49,
       "status": "neutral",
       "statusZh": "中性",
-      "desc": "10Y−3M +80bp，期限溢价 0.94%（熊陡偏紧）",
+      "desc": "10Y−3M +74bp，期限溢价 0.91%（熊陡偏紧）",
       "spark": [
-        0.69,
         0.77,
         0.93,
         0.89,
@@ -161,19 +160,19 @@
         0.91,
         0.88,
         0.74,
-        0.77
+        0.77,
+        0.78
       ]
     },
     {
       "key": "realrate",
       "en": "REAL RATE",
       "zh": "实际利率",
-      "score": 17,
+      "score": 21,
       "status": "stress",
       "statusZh": "承压",
-      "desc": "5Y 实际利率 2.36%，近 13 周 +23bp（增长驱动）",
+      "desc": "5Y 实际利率 2.31%，近 13 周 +14bp（增长驱动）",
       "spark": [
-        1.43,
         1.43,
         1.56,
         1.63,
@@ -212,19 +211,19 @@
         2.67,
         2.52,
         2.55,
-        2.37
+        2.37,
+        2.31
       ]
     },
     {
       "key": "credit",
       "en": "CREDIT",
       "zh": "信用利差",
-      "score": 20,
+      "score": 6,
       "status": "stress",
       "statusZh": "承压",
-      "desc": "高收益债 OAS 314bp，利差走阔",
+      "desc": "高收益债 OAS 343bp，利差走阔",
       "spark": [
-        2.8,
         2.8,
         2.74,
         2.72,
@@ -263,19 +262,19 @@
         3.16,
         3.31,
         3.27,
-        3.3
+        3.3,
+        3.26
       ]
     },
     {
       "key": "growth",
       "en": "GROWTH",
       "zh": "增长动能",
-      "score": 65,
+      "score": 63,
       "status": "support",
       "statusZh": "支持",
       "desc": "增长动能综合：铜金比 · 半导体/大盘(SOX) · 周期/防御(XLY/XLP)",
       "spark": [
-        16.3412,
         16.1378,
         15.4083,
         16.3652,
@@ -314,19 +313,19 @@
         15.1824,
         14.764,
         14.0478,
-        14.9189
+        14.9189,
+        14.1439
       ]
     },
     {
       "key": "usd",
       "en": "USD / FX",
       "zh": "美元汇率",
-      "score": 25,
+      "score": 24,
       "status": "stress",
       "statusZh": "承压",
       "desc": "美元指数 101.9（走强偏紧）",
       "spark": [
-        97.94,
         98.88,
         99.3,
         99.32,
@@ -365,19 +364,19 @@
         102.55,
         101.98,
         101.61,
-        102.32
+        102.32,
+        101.88
       ]
     },
     {
       "key": "breadth",
       "en": "BREADTH",
       "zh": "市场广度",
-      "score": 49,
-      "status": "neutral",
-      "statusZh": "中性",
-      "desc": "等权/市值加权广度：存量近两年 37% 分位，近 13 周更集中",
+      "score": 63,
+      "status": "support",
+      "statusZh": "支持",
+      "desc": "等权/市值加权广度：存量近两年 51% 分位，近 13 周走扩",
       "spark": [
-        0.2759,
         0.2722,
         0.2748,
         0.2771,
@@ -416,28 +415,13 @@
         0.2756,
         0.2784,
         0.2856,
-        0.2826
+        0.2826,
+        0.2889
       ]
     }
   ],
-  "mutations": [
-    {
-      "sig": "实际利率",
-      "status": "green",
-      "text": "5Y 实际利率周环比 -19bp（贴现压力缓解）"
-    },
-    {
-      "sig": "市场广度",
-      "status": "red",
-      "text": "广度代理处于近两年 37% 分位，涨势集中"
-    },
-    {
-      "sig": "信用利差",
-      "status": "green",
-      "text": "高收益/投资级比价周环比 +0.7%，风险偏好回升"
-    }
-  ],
-  "mutSummary": "今日 3 条市场异动，风险偏好占优、结构偏支持；与机制读数 37（中性偏紧）方向一致。",
+  "mutations": [],
+  "mutSummary": "今日无显著市场异动，跨资产结构平稳。",
   "macro": [
     {
       "zh": "利率走廊",
@@ -448,15 +432,15 @@
           "val": "3.88%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-10-28",
+          "asOf": "2026-11-02",
           "name": "联邦基金有效利率",
           "id": "DFF"
         },
         {
-          "val": "3.94%",
-          "chg": "-1bp",
-          "tone": "down",
-          "asOf": "2026-10-28",
+          "val": "3.95%",
+          "chg": "+0bp",
+          "tone": "flat",
+          "asOf": "2026-11-02",
           "name": "SOFR 担保隔夜融资利率",
           "id": "SOFR"
         },
@@ -464,7 +448,7 @@
           "val": "3.90%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-10-30",
+          "asOf": "2026-11-04",
           "name": "准备金利率 (IORB)",
           "id": "IORB"
         },
@@ -472,7 +456,7 @@
           "val": "4.00%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-10-29",
+          "asOf": "2026-11-03",
           "name": "联邦基金目标上限",
           "id": "DFEDTARU"
         },
@@ -480,7 +464,7 @@
           "val": "3.75%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-10-29",
+          "asOf": "2026-11-03",
           "name": "联邦基金目标下限",
           "id": "DFEDTARL"
         },
@@ -488,7 +472,7 @@
           "val": "4.00%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-10-28",
+          "asOf": "2026-11-02",
           "name": "贴现窗口一级信贷利率",
           "id": "DPCREDIT"
         }
@@ -525,9 +509,9 @@
         },
         {
           "val": "0B",
-          "chg": "+0.2B",
-          "tone": "up",
-          "asOf": "2026-10-29",
+          "chg": "-4.7B",
+          "tone": "down",
+          "asOf": "2026-11-03",
           "name": "隔夜逆回购用量 (RRP)",
           "id": "RRPONTSYD"
         }
@@ -543,34 +527,22 @@
           "name": "10 年期美债收益率",
           "frequency": "daily",
           "status": "ok",
-          "val": "5.05%",
-          "chg": "+6bp",
-          "tone": "up",
-          "price": 5.05,
-          "previousPrice": 4.99,
-          "changeBps": 6,
-          "asOf": "2026-10-28",
-          "previousAsOf": "2026-10-27",
-          "updatedAt": "2026-10-29T22:55:41Z",
-          "lastAttemptAt": "2026-10-29T22:55:41Z",
+          "val": "4.91%",
+          "chg": "-3bp",
+          "tone": "down",
+          "price": 4.91,
+          "previousPrice": 4.94,
+          "changeBps": -3,
+          "asOf": "2026-11-02",
+          "previousAsOf": "2026-10-30",
+          "updatedAt": "2026-11-03T23:11:50Z",
+          "lastAttemptAt": "2026-11-03T23:11:50Z",
           "source": {
             "name": "FRED / Federal Reserve H.15",
             "url": "https://fred.stlouisfed.org/series/DGS10",
             "seriesId": "DGS10"
           },
           "observations": [
-            {
-              "asOf": "2026-10-19",
-              "value": 5.15
-            },
-            {
-              "asOf": "2026-10-20",
-              "value": 5.12
-            },
-            {
-              "asOf": "2026-10-21",
-              "value": 5.13
-            },
             {
               "asOf": "2026-10-22",
               "value": 4.96
@@ -590,47 +562,59 @@
             {
               "asOf": "2026-10-28",
               "value": 5.05
+            },
+            {
+              "asOf": "2026-10-29",
+              "value": 4.98
+            },
+            {
+              "asOf": "2026-10-30",
+              "value": 4.94
+            },
+            {
+              "asOf": "2026-11-02",
+              "value": 4.91
             }
           ],
           "note": "FRED官方日频数据；变化为相对上一观测值的基点数。"
         },
         {
-          "val": "2.36%",
-          "chg": "-1bp",
-          "tone": "down",
-          "asOf": "2026-10-28",
+          "val": "2.31%",
+          "chg": "+6bp",
+          "tone": "up",
+          "asOf": "2026-11-02",
           "name": "5 年期 TIPS 实际收益率",
           "id": "DFII5"
         },
         {
-          "val": "2.67%",
-          "chg": "+3bp",
+          "val": "2.62%",
+          "chg": "+2bp",
           "tone": "up",
-          "asOf": "2026-10-28",
+          "asOf": "2026-11-02",
           "name": "10 年期 TIPS 实际收益率",
           "id": "DFII10"
         },
         {
-          "val": "2.35%",
-          "chg": "-3bp",
-          "tone": "down",
-          "asOf": "2026-10-29",
+          "val": "2.30%",
+          "chg": "+1bp",
+          "tone": "up",
+          "asOf": "2026-11-03",
           "name": "10 年盈亏平衡通胀预期",
           "id": "T10YIE"
         },
         {
-          "val": "2.47%",
-          "chg": "-2bp",
-          "tone": "down",
-          "asOf": "2026-10-29",
+          "val": "2.39%",
+          "chg": "+0bp",
+          "tone": "flat",
+          "asOf": "2026-11-03",
           "name": "5 年盈亏平衡通胀预期",
           "id": "T5YIE"
         },
         {
-          "val": "2.23%",
-          "chg": "-4bp",
-          "tone": "down",
-          "asOf": "2026-10-29",
+          "val": "2.21%",
+          "chg": "+2bp",
+          "tone": "up",
+          "asOf": "2026-11-03",
           "name": "5 年 5 年远期通胀预期",
           "id": "T5YIFR"
         }
@@ -642,42 +626,42 @@
       "src": "FRED",
       "rows": [
         {
-          "val": "4.67%",
-          "chg": "-3bp",
-          "tone": "down",
-          "asOf": "2026-10-28",
+          "val": "4.59%",
+          "chg": "+3bp",
+          "tone": "up",
+          "asOf": "2026-11-02",
           "name": "2 年期美债收益率",
           "id": "DGS2"
         },
         {
-          "val": "5.37%",
-          "chg": "+7bp",
-          "tone": "up",
-          "asOf": "2026-10-28",
+          "val": "5.28%",
+          "chg": "-3bp",
+          "tone": "down",
+          "asOf": "2026-11-02",
           "name": "30 年期美债收益率",
           "id": "DGS30"
         },
         {
-          "val": "0.37%",
-          "chg": "-1bp",
-          "tone": "down",
-          "asOf": "2026-10-29",
+          "val": "0.34%",
+          "chg": "+2bp",
+          "tone": "up",
+          "asOf": "2026-11-03",
           "name": "10Y−2Y 期限利差",
           "id": "T10Y2Y"
         },
         {
-          "val": "0.80%",
-          "chg": "-7bp",
-          "tone": "down",
-          "asOf": "2026-10-29",
+          "val": "0.74%",
+          "chg": "+4bp",
+          "tone": "up",
+          "asOf": "2026-11-03",
           "name": "10Y−3M 期限利差",
           "id": "T10Y3M"
         },
         {
-          "val": "0.94%",
-          "chg": "+0bp",
-          "tone": "up",
-          "asOf": "2026-10-23",
+          "val": "0.91%",
+          "chg": "-2bp",
+          "tone": "down",
+          "asOf": "2026-10-30",
           "name": "10Y 期限溢价 (ACM/KW)",
           "id": "THREEFYTP10"
         }
@@ -720,34 +704,34 @@
       "src": "FRED",
       "rows": [
         {
-          "val": "3.14%",
-          "chg": "-4bp",
+          "val": "3.43%",
+          "chg": "-1bp",
           "tone": "down",
-          "asOf": "2026-10-28",
+          "asOf": "2026-11-02",
           "name": "高收益债 OAS",
           "id": "BAMLH0A0HYM2"
         },
         {
-          "val": "1.07%",
-          "chg": "-2bp",
-          "tone": "down",
-          "asOf": "2026-10-28",
+          "val": "1.17%",
+          "chg": "+1bp",
+          "tone": "up",
+          "asOf": "2026-11-02",
           "name": "BBB 级公司债 OAS",
           "id": "BAMLC0A4CBBB"
         },
         {
-          "val": "0.86%",
-          "chg": "-2bp",
-          "tone": "down",
-          "asOf": "2026-10-28",
+          "val": "0.94%",
+          "chg": "+0bp",
+          "tone": "flat",
+          "asOf": "2026-11-02",
           "name": "投资级债 OAS",
           "id": "BAMLC0A0CM"
         },
         {
-          "val": "1.43%",
-          "chg": "-2bp",
-          "tone": "down",
-          "asOf": "2026-10-28",
+          "val": "1.53%",
+          "chg": "+0bp",
+          "tone": "flat",
+          "asOf": "2026-11-02",
           "name": "Baa 公司债–10Y 利差",
           "id": "BAA10Y"
         }
@@ -762,32 +746,32 @@
           "name": "铜/金 ×1000 (工业 vs 避险)",
           "id": "",
           "val": "1.63",
-          "chg": "-0.5%",
-          "asOf": "2026-10-29",
+          "chg": "-1.3%",
+          "asOf": "2026-11-03",
           "tone": "down"
         },
         {
           "name": "金/银",
           "id": "",
-          "val": "77.5",
-          "chg": "+2.2%",
-          "asOf": "2026-10-29",
+          "val": "79.1",
+          "chg": "+1.1%",
+          "asOf": "2026-11-03",
           "tone": "up"
         },
         {
           "name": "油/铜",
           "id": "",
-          "val": "15.64",
-          "chg": "+1.1%",
-          "asOf": "2026-10-29",
+          "val": "15.08",
+          "chg": "+2.3%",
+          "asOf": "2026-11-03",
           "tone": "up"
         },
         {
           "name": "油/金 ×100",
           "id": "",
-          "val": "2.55",
-          "chg": "+0.6%",
-          "asOf": "2026-10-29",
+          "val": "2.45",
+          "chg": "+1.0%",
+          "asOf": "2026-11-03",
           "tone": "up"
         }
       ]
@@ -800,9 +784,9 @@
         {
           "name": "SOFR − IORB",
           "id": "SOFR−IORB",
-          "val": "+4bp",
-          "chg": "-1bp",
-          "asOf": "2026-10-28",
+          "val": "+5bp",
+          "chg": "+0bp",
+          "asOf": "2026-11-02",
           "tone": "up"
         },
         {
@@ -810,7 +794,7 @@
           "id": "DFF−IORB",
           "val": "-2bp",
           "chg": "+0bp",
-          "asOf": "2026-10-28",
+          "asOf": "2026-11-02",
           "tone": "down"
         }
       ]
@@ -823,63 +807,63 @@
         {
           "name": "MOVE 债券波动率",
           "id": "MOVE",
-          "val": "93.54",
-          "chg": "-1.1%",
-          "asOf": "2026-10-29",
+          "val": "99.97",
+          "chg": "-0.4%",
+          "asOf": "2026-11-03",
           "tone": "down"
         },
         {
           "name": "VIX 9 日",
           "id": "VIX9D",
-          "val": "15.87",
-          "chg": "+1.7%",
-          "asOf": "2026-10-29",
-          "tone": "up"
+          "val": "21.96",
+          "chg": "-2.2%",
+          "asOf": "2026-11-03",
+          "tone": "down"
         },
         {
           "name": "VIX",
           "id": "VIX",
-          "val": "17.20",
-          "chg": "+1.7%",
-          "asOf": "2026-10-29",
-          "tone": "up"
+          "val": "20.83",
+          "chg": "-1.5%",
+          "asOf": "2026-11-03",
+          "tone": "down"
         },
         {
           "name": "VIX 3 月",
           "id": "VIX3M",
-          "val": "19.37",
-          "chg": "+0.8%",
-          "asOf": "2026-10-29",
-          "tone": "up"
+          "val": "21.27",
+          "chg": "-1.5%",
+          "asOf": "2026-11-03",
+          "tone": "down"
         },
         {
           "name": "VIX 6 月",
           "id": "VIX6M",
-          "val": "21.24",
-          "chg": "+0.0%",
-          "asOf": "2026-10-29",
-          "tone": "flat"
+          "val": "22.31",
+          "chg": "-1.6%",
+          "asOf": "2026-11-03",
+          "tone": "down"
         },
         {
           "name": "SKEW 偏度",
           "id": "SKEW",
-          "val": "151.03",
-          "chg": "+1.5%",
-          "asOf": "2026-10-29",
-          "tone": "up"
+          "val": "150.01",
+          "chg": "-1.8%",
+          "asOf": "2026-11-03",
+          "tone": "down"
         },
         {
           "name": "VVIX 波动之波动",
           "id": "VVIX",
-          "val": "98.01",
-          "chg": "+1.4%",
-          "asOf": "2026-10-29",
-          "tone": "up"
+          "val": "107.40",
+          "chg": "-2.8%",
+          "asOf": "2026-11-03",
+          "tone": "down"
         },
         {
           "name": "VIX/VIX3M 期限结构",
           "id": "",
-          "val": "0.89",
+          "val": "0.98",
           "chg": "正向",
           "asOf": "",
           "tone": "up"
@@ -895,39 +879,19 @@
       "frequency": "daily",
       "demo": false,
       "status": "ok",
-      "price": 121.3202,
-      "previousPrice": 121.3531,
-      "changePct": -0.027110967910992656,
-      "asOf": "2026-10-23",
-      "previousAsOf": "2026-10-22",
-      "updatedAt": "2026-10-29T22:55:41Z",
-      "lastAttemptAt": "2026-10-29T22:55:41Z",
+      "price": 121.6656,
+      "previousPrice": 121.7361,
+      "changePct": -0.05791215588473175,
+      "asOf": "2026-10-30",
+      "previousAsOf": "2026-10-29",
+      "updatedAt": "2026-11-03T23:11:50Z",
+      "lastAttemptAt": "2026-11-03T23:11:50Z",
       "source": {
         "name": "FRED / Federal Reserve H.10",
         "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
         "seriesId": "DTWEXBGS"
       },
       "observations": [
-        {
-          "asOf": "2026-10-14",
-          "value": 122.0037
-        },
-        {
-          "asOf": "2026-10-15",
-          "value": 121.5693
-        },
-        {
-          "asOf": "2026-10-16",
-          "value": 121.4048
-        },
-        {
-          "asOf": "2026-10-19",
-          "value": 121.3248
-        },
-        {
-          "asOf": "2026-10-20",
-          "value": 121.116
-        },
         {
           "asOf": "2026-10-21",
           "value": 121.3422
@@ -939,6 +903,26 @@
         {
           "asOf": "2026-10-23",
           "value": 121.3202
+        },
+        {
+          "asOf": "2026-10-26",
+          "value": 121.6042
+        },
+        {
+          "asOf": "2026-10-27",
+          "value": 121.6622
+        },
+        {
+          "asOf": "2026-10-28",
+          "value": 121.8491
+        },
+        {
+          "asOf": "2026-10-29",
+          "value": 121.7361
+        },
+        {
+          "asOf": "2026-10-30",
+          "value": 121.6656
         }
       ],
       "note": "FRED官方日频数据；由宏观雷达任务自动更新。"
@@ -955,8 +939,8 @@
       "changePct": -1.7862232779097376,
       "asOf": "2026-10-27",
       "previousAsOf": "2026-10-26",
-      "updatedAt": "2026-10-29T22:55:41Z",
-      "lastAttemptAt": "2026-10-29T22:55:41Z",
+      "updatedAt": "2026-11-03T23:11:50Z",
+      "lastAttemptAt": "2026-11-03T23:11:50Z",
       "source": {
         "name": "U.S. EIA / Cushing WTI Spot",
         "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",

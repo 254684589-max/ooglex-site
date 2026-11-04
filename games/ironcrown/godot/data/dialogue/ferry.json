@@ -7,6 +7,7 @@
       {"if": [{"flag": "offer_parley"}], "node": "why"}
     ],
     "nodes": {
+      "convinced_ferry": {"text": "（他眯起眼睛看了你半天，身后一个瘦子小声说了句什么）……老船头的儿子。他那条破船，冬天渡过我们不收钱。（他摘下灰手套，又戴上）弟兄们，收家伙，走。这个人情，算还了。", "do": [{"set": "offer_left"}, {"rep": "outlaws", "delta": 5}], "options": [{"text": "（看着他们走进雾里）", "end": true}]},
       "greet": {
         "text": "（一个灰白头发的高个子转过身来，左手戴着一只磨亮了的灰皮手套）又来一个。誓剑，渡口今晚不开张，回你的镇上去。",
         "do": [{"set": "offer_parley"}],
@@ -30,6 +31,7 @@
             "check": {"id": "offer_speech", "skill": "speech", "dc": 16, "pass": "convinced", "fail": "laugh"}},
           {"text": "滚。不然今晚渡口多几具尸体。",
             "check": {"id": "offer_intimidate", "skill": "intimidate", "dc": 15, "pass": "scared", "fail": "laugh"}},
+          {"text": "灰鲸河上的人不卖河上的人。我爹在这渡口撑了二十年船——你手下那几个，有谁没坐过他的船？", "if": [{"flag": "origin", "eq": "ferry"}], "check": {"id": "offer_ferry_speech", "skill": "speech", "dc": 9, "pass": "convinced_ferry", "fail": "laugh"}},
           {"text": "（掂了掂钱袋）30 枚银币，够你们的人过冬。", "if": [{"silver": 30}], "do": [{"pay": 30}, {"set": "offer_paid"}], "next": "paid"},
           {"text": "那就动手吧。", "do": [{"fight": "ferry_offer", "win": "offer_defeated"}], "end": true},
           {"text": "我再想想。", "end": true}

@@ -71,6 +71,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	Beacon18.build(p_parent, Settings.reduced_motion)  # 熄掉的第十八烽、塔脚三个长眠的守塔人（5.5a）
 	Beacon18.people(p_parent)
 	HighlandVillage.stone_words(p_parent)             # 石圈上的刻字（5.5a）
+	HighlandVillage.convoy(p_parent, Settings.reduced_motion)   # 第二天：洛蒙德家的粮车停在驿站门口（5.6）
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent

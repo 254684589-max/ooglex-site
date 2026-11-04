@@ -26,6 +26,7 @@ var player: FpController
 var state := NONE
 var fuel := 0.0
 var lighting_left := 0.0
+var dropped_lit := false          # 上一次被推倒时手里的火把是点着的（ConvoyAmbush 看：摔在粮车边上车会着）
 var windy := false                # 高地的户外（main 设）
 var rng := RandomNumberGenerator.new()
 var fp_visual: Node3D
@@ -130,6 +131,7 @@ func blow_out(text := "风把火把吹灭了。") -> void:
 
 
 func on_knocked() -> void:
+	dropped_lit = state == LIT                      # 5.7a：举着点着的火把被推倒在粮车边，车会着
 	blow_out("火把摔进雪里，灭了。")
 
 

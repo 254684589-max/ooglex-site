@@ -796,6 +796,162 @@ godot/
 - **石圈**（`HighlandVillage.stone_words / read_stones`）：倒下的那块（`ring_stones()[6]`）上一个 `Examine`「看刻字」：`ch2_stones` = copied（线索 `stones_seal`）；有 `old_book` → matched。
 - 视角 20；调试 `?day2=1 / lit`。**测试**：`day2` 组 23 项。
 
+### 4.56 支线：妮尔的父亲、第十年（路线图 5.5b，2026-10-30）
+
+- **潮水里的脸**（`FirstTide`）：原来只有一张（`ch1_sleeper`）的改成一张表 `faces`（`_make_face(样子, 第几个人, 提示, 旗标)`、`_seen_tick` 每帧跟着那个人走、走近 9 米提示一次并记旗标）。`ch2_nell` = asked 时第 `FATHER_INDEX` 22 个人换成「妮尔的父亲」（looks.json），认出来记 `ch2_nell_father_seen`。`main._on_tide_ended`：支线 `ch2_nell` 还开着 → 推进到 `decide`。
+- **妮尔**（`highland.json` nell，整份是两格缩进的展开格式，按原格式写回）：`start_if` 先看 `ch2_nell` = stopped / seen → `stays`；`ch2_first_tide` + asked → `day2`（`told` 要 `ch2_nell_father_seen`；口才检定 12 → `stopped_talk` / `not_moved`；`stopped_pull`；`left`）。`left` 时 `HighlandVillage.people` 不放她。
+- **卡斯滕**（`beacon19.json` carsten）：第一夜过后 `HighlandBeacon.people` 把劈柴的老兵换成「卡斯滕」、对话 `carsten`（looks.json 同一身打扮）；`fled` 时不放。马蒂亚斯：`ch2_carsten_ask` 时多一个口才检定 14 的选项（`carsten_yes` → freed / `carsten_no` → `ch2_carsten_refused`，只能说一次）。声望：fled −10、stayed +5（`beacon_oath`）。
+- 新支线 `ch2_carsten`；`ch2_nell` 加阶段 `decide`；新旗标 `ch2_nell_father_seen`、`ch2_carsten`、`ch2_carsten_ask`、`ch2_carsten_refused`、`carsten_met`。调试 `?day2=1&nell=1`。
+- **测试**：`sidequests2` 组 21 项。
+
+### 4.57 抉择：粮车到村（路线图 5.6，2026-10-30）
+
+- **主线阶段**：`convoy_day` →（马蒂亚斯）`rob_ready`（劫，`ch2_ambush` head / tail）或 `talk_anselm` →（安塞尔姆）`escort_ready`（`ch2_aid` granted）或 `aid_refused` →（马蒂亚斯）`rob_ready` 或 `empty_handed`。`beacon_grain`：rob / lawful。
+- **粮车**（`HighlandVillage.convoy`，`highland.gd` 进场时同步搭）：主线在 `CONVOY_STAGES` 里时，驿站北边村路东侧五辆 `Decor.cart(…, "sacks")`（一份 Decor、有碰撞），安塞尔姆（`highland.json` anselm）、四个押车兵、两个车夫（`LINES`）。
+- **对话**：马蒂亚斯 `grain / go_talk / rob_plan / ambush_head / ambush_tail / after_refused / empty`（`beacon19.json`）；罗薇娜 `convoy_time / requisition`（`waystation.json`，`norbert_day2` 以后，空白征粮令 `requisition` 只给一次）；安塞尔姆 `ask` 六条路（征粮令三车 / 五车（口才 15）、`fur_ledger`、`valen_heir` = ivette（口才 10）、长眠的人（口才 16）、`silver` 30）→ `escort` / `refused`。`waystation.json`、`highland.json` 是两格缩进的展开格式：读进来、改、按原格式写回（先核对写回跟原文件一字不差）。
+- **对话条件**：`{"flag", "eq"}` 旗标值和要比的值类型不同就算不相等（原来 `false != "granted"` 会报脚本错误）。
+- 调试 `?day2=convoy`。**测试**：`convoy` 组 22 项。
+
+### 4.58 第二夜 · 劫粮（路线图 5.7a，2026-10-30）
+
+- **`world/convoy_ambush.gd`（ConvoyAmbush）**：`due()`（主线 `rob_ready`、还没有 `ch2_convoy`）时 main 在高地搭好以后调 `setup(world)`：两方 `beacon_oath`（灰布带）/ `lomond`（赭红布带），烽誓团 `SQUAD_KINDS` 十人（`ch2_carsten` = stayed 多一个「卡斯滕」）进小队、跟着你；押车队长、`GUARD_KINDS` 十四人、安塞尔姆（levy，meta `anselm`）。位置全用 `leg_point(t, off)`（伏击段 `HighlandLayout.AMBUSH_LEG` 上第 t 米、往下坡一侧偏 off 米）；车 `CART_T`、锯倒的枯松 `TREE_T`（有碰撞）、伏击点 `POST_T`、出生点 `SPAWN_T`（`HighlandLayout.spawn_points` 的 `ambush`）。
+- **流程**：`main._ambush_tick`：到期且没有战斗 → 夜里旅行到 `ambush` 出生点（带到达提示）；走到伏击点 `START_R` 以内 → `start_battle()`（先自动存档）。`_physics_process`：开打先发一次车夫逃跑的提示；`TIDE_AT` 秒后 `_start_tide`（`SleeperCrowd`，路线垂直穿过路面第 `TIDE_T` 米，`TIDE_COUNT` / 第十八烽点着了 `TIDE_COUNT_LIT18`），`crowd.victims = battle.roster`。
+- **踩踏**：`SleeperCrowd._hit_soldiers` 对 `victims` 里的兵调 `Soldier.trampled(dmg, fear)`（失衡、掉 `SOLDIER_TRAMPLE_DMG` 血但最少留 1、士气掉 `SOLDIER_FEAR`）。
+- **烧车**：`_check_carts`——亮着的插地火把离车 `CART_BURN_R` 以内，或者主角被推倒时手里的火把（`TorchHand.dropped_lit`）在车边 → `burn_cart(i)`（`CausewayBattle._flame` + 一盏 FireLight）。
+- **结束**：`result(winner)` → `finish(res)`：`ch2_convoy` taken / burned / repelled，`lomond` −20，不是 repelled 时 `beacon_oath` +10，主线 `dawn_after`；main 自动存档、`DAWN_DELAY` 后 `set_daypart("dawn")`。主角倒下：读开打前的自动存档。
+- **性能**：`SleeperCrowd.near_cap`（实例上限，默认 `NEAR_MAX`），伏击里 `NEAR_CAP` = 2：中档开打 + 潮水 423 → 304 次绘制调用。
+- **主线**：`HighlandVillage.CONVOY_STAGES` 去掉 `rob_ready`（天黑以后车队已经出村）。调试 `?rob=head|tail`（设好旗标、主线「设伏」、夜里），`&at=米数[,偏移]` 站到伏击段某处朝车队，`&cwskip=秒` 开打并快进。**测试**：`ambush` 组 12 项。
+
+### 4.59 第二夜 · 护粮（路线图 5.7b，2026-10-30）
+
+- **`world/convoy_escort.gd`（ConvoyEscort）**：`due()`（主线 `escort_ready`、还没有 `ch2_convoy`）时 main 在高地搭好以后调 `setup(world)`。三辆车（每辆一个 Node3D：`Decor.cart` 一份、一个 `Examine`、车夫、`GUARDS` 个押车兵都是它的子节点，跟着车走），位置用 `ConvoyAmbush.leg_point(t, off)`，按前后高度差抬车头。举火把的兵各是一个 Node3D（亮着时进 `light_source` 组、`radius` 元数据 = `TorchHand.RADIUS`，长眠者绕开），`TorchHand.make_visual(1)` 举过头顶、在外侧（走路的动作手是垂着的，挂在手上看不见火），能对着按 E。
+- **流程**：`main._escort_tick`：到期且没有 ConvoyEscort → 夜里旅行到 `escort` 出生点（`HighlandLayout.spawn_points`）；到了 `START_DELAY` 秒 → 自动存档、`begin()`。`_tick`：风（`BLOW`、`RELIGHT_SELF`）→ 每辆车：车头前 `BLOCK_AHEAD` 米有长眠者就停、跟前面还在路上的车隔 `GAP_MIN` → 走 `SPEED` → 车夫慌不慌（`_panic`：`PANIC_R` 内有长眠者、`SAFE_R` 内没有亮着的火（`SleeperCrowd.fires`，你手里的也算）→ 涨，`PANIC_TIME` 秒涨满 → `_abandon`：车歪到路肩 `LOST_OFF`、两个兵撤走、车夫往山下跑）→ 过了 `END_T` 算送上山（`_gone`：你离开 `GONE_DIST` 或 `GONE_SEC` 秒以后不画了）。头车到 `TIDE_START_T` 起潮水（路线垂直穿过路面第 `ConvoyAmbush.TIDE_T` 米，从岩坎上头 `TIDE_FROM` 米下来），每步把三辆车写进 `crowd.obstacles`。一盏实时光源跟着离你最近、火还亮着的那辆车（`PlantedTorch.max_lights` 为 0 的低画质不开）。
+- **交互**：对着车：车夫慌了一半以上 → 「稳住车夫」（panic 清零）；否则「续火把」（`TorchHand.take_from_ground(FUEL)`：手里没有就拿一支点着的）。对着兵：你手里的火把亮着 → 点着他的。
+- **结束**：车都过去了或丢了（或 `TIME_MAX`）→ `finish_run` → `ended(result)`；main `_on_escort_ended` → `finish(res, 过去几车)`：`ch2_convoy` delivered / partial / lost，声望（delivered / partial：`lomond` +5、`beacon_oath` +10，delivered 且用了征粮令 `eld` +5；lost：`lomond` −5、用了征粮令 `eld` −5），主线 `dawn_after`；自动存档、`DAWN_DELAY` 后天亮。
+- **性能**：潮水里近处真人模型最多 `NEAR_CAP` = 2。中档实测：潮水横穿时 272–364 次绘制调用；天亮以后（车过去了不画）331；**夜转清晨那一下测到 427–479**（场景本身的时段过渡，同劫粮那一夜的结尾，记为待查）。
+- 调试 `?escort=1`（设好旗标、主线「护车」、夜里），`&at=米数[,偏移]` 站到伏击段某处朝潮水横穿的地方，`&cwskip=秒` 动身并快进；`?perf=1&probewait=秒` 等到那一刻再测（非战斗区域）。**测试**：`escort` 组 19 项。
+
+### 4.60 天亮 · 火还在不在（路线图 5.8a，2026-10-30）
+
+- **`quest/chapter2.gd`（Chapter2）**：`dawn()`——`ch2_fire` = lit（`ch2_convoy` 在 `FED`：taken / burned / delivered / partial）或 out，主线 `dawn_after`；`ConvoyAmbush.finish`、`ConvoyEscort.finish`、两手空空那一夜都调它。`at_dawn()`（主线 `dawn_after` / `to_well`）、`fire_out()`。
+- **塔顶的火**（`HighlandBeacon._fire`）：火盆的石台和铁篮一份；炭和烧着的柴（`BeaconEmbers`）、火苗、`BeaconFire` 火光（`light_source` 组）、光晕、远处的暖光、火星、烟都放在 `BeaconFlames` 下；冷灰和几截黑柴头在 `BeaconAsh` 下。`apply_fire(root)` 按 `Chapter2.fire_out()` 切换（搭好时、天亮那一刻 main 调）。灭了的火不在 `SleeperCrowd.fires` 里（节点藏起来了）。
+- **诺伯特**：`HighlandBeacon.dawn_norbert(parent)`——`at_dawn()` 时在塔顶火盆边（火灭了节点名 `Npc_norbert_cold`，`looks.json` 的 `@norbert_cold` 蹲着）；`people()` 搭的时候、天亮那一刻（`main._ch2_dawn_world`）都调，已经在了不再放；`BeaconTower` 的小屋那个在 `at_dawn()` 时不放。
+- **对话**（`beacon19.json`）：诺伯特 `dawn_lit`（`beacon_grain` 劫 / 护两种开场）、`dawn_out`（被打退 / 一车也没上来 / 两手空空）→ `dawn_rest` / `dawn_rest_short` → `dawn_well`（`ch2_stones` 时先接「封于冬井」；设 `norbert_dawn`、主线 `to_well`）→ `well_wait`；马蒂亚斯 `dawn`（按 `ch2_convoy` 七种）。
+- **main**：劫粮 / 护粮打完 `DAWN_DELAY` 后 `_ch2_dawn_world()`：天亮、`apply_fire`、`dawn_norbert`、提示一句、自动存档（打完那一刻的自动存档还是夜里，读档回来要是天亮以后）。`_empty_night_tick`：主线 `empty_handed`、对话关了 → 天黑、`EMPTY_NIGHT_SEC` 秒后 `Chapter2.dawn()` + `_ch2_dawn_world()`。调试 `?dawn=lit|out`。**测试**：`dawn2` 组 26 项。
+
+### 4.61 白寂边缘 · 冬井 · 第二章章末（路线图 5.8b，2026-10-30）
+
+- **`world/winter_well.gd`（WinterWell）**：main 在高地搭好以后 `setup(world)`，井一直在（`_build_well`：两层石块的井栏、黑井口、裂开的石盖、冻住的铁链、一块碰撞）。`due()`（主线 `to_well` / `ch2_end`）时 `_build_ring()`：圈上 `RING_N` 个位置（`slot(k)`，离井 `RING_R` 米）每个都是 `CharacterModel`（生人用 `Looks.spec_of` 几种村民打扮 + `SleeperCrowd.LINEN_TINT`；认得的脸 `_face_specs()`：`ch1_sleeper`、`ch2_nell` 有值时妮尔的父亲、`left` 时妮尔（不换麻衣）、`ch2_beacon18` = lit 时三个守塔人），`hold("idle", …)` 定住、不投影、远处不画。原来用 SleeperCrowd 那种简化的人（一份多实例），白天像一排白石膏 → 全换真人模型，中档 188 → 328 次绘制调用。
+- **诺伯特**：`ensure_norbert()` 在 `RIDGE_WAIT` 放一个 `Npc_norbert_well`（`ch2_end` 时直接在井边）；你走到 `FOLLOW_R` 以内他往 `stop_point()` 走（`WALK_SPEED`，贴地），到了面朝井站住。`Chapter2.norbert_on_roof()`（只在 `dawn_after`）管塔顶那个：`main._well_tick` 在主线 `to_well`、对话关了以后拿掉塔顶的诺伯特（提示一句）、摆圈、放山脊上的诺伯特。
+- **信号**：`revealed`（`REVEAL_R` 以内，提示一次）、`recognized(text)`（认得的脸 `FACE_R` 以内各一次）、`reached`（他到了、你也在 `END_R` 以内）→ main `_on_well_reached`：他说一句，`WELL_END_AFTER` 秒后 `ch2_done`、主线 `ch2_end`、自动存档、`show_ending("ch2")`。
+- **章末画面**：`EndingPanel.open_chapter2`（「第二章「熄灭的烽燧」完 / 第三章 · 粮与铁 / 开发中」，「在雪原上再站一会儿」，没有「继续」）；回顾 `Chapter2.recap()`、钩子 `Chapter2.hook()`。`Chapters.LIST[2]` 去掉 `wip` / `wip_note`。
+- 调试 `?well=1`（劫下了粮、火亮着、主线「冬井」）/ `=all`（圈里认得的脸都有）、`?ending=ch2`（只在高地）、机位 21。**测试**：`well` 组 16 项；`chapters` / `sleeper` 两处改成第二章不再标「制作中」。
+
+### 4.62 第二章全流程测试与性能复测（路线图 5.9，2026-10-31）
+
+- **`ch2flow` 组**（`tests/test_runner.gd` `_ch2_run`）：新游戏、设第一章的结局（`valen_heir`、`ch1_causeway`、`ch1_sleeper`）→ `show_ending("ch1")` → 点「继续」→ `reload_main` 到羊脊村 → 罗薇娜（伊薇特那条先交信）→ 走到第十九烽（天擦黑）→ 马蒂亚斯 → 诺伯特（失守那条先扛柴）→ 火把、插满木桩、潮水（`FirstTide.finish` 收尾）→ 第二天诺伯特 → 抉择：劫（换区域到伏击段、走到伏击点开打、`_on_battle_ended` 判赢）/ 求援（罗薇娜的征粮令、安塞尔姆、换区域、车直接推到头）/ 谈不成两手空空 → `_ch2_dawn_world` → 诺伯特说完 → 冬井（`main.well_end_after` 调短）→ 章末画面、回顾。九条加一项新局检查共 180 项，约 40 秒。只把最慢的几截快进（潮水收尾、仗判赢、车推到头、天亮的计时），对话、换区域、自动存档都是真的。
+- **`tools/bench_areas.js`**：区域表加上 `highland`（22 个机位）、`waystation`、`beacon_tower`；章节包里的区域（余火高地）包没到时先铺平地、下载完重新载入，只认 `IC_HIGHLAND … tex=true` 以后的那次 `IC_PERF`（原来测的是平地：49 次）。
+- **章节包缓存**：7.3 MB 写进 `user://` 以后浏览器还要十几秒才存进 IndexedDB；这期间刷新页面会再下载一次（本机：下载完 40 秒后刷新 `from=cache` 3 毫秒）。记为已知问题。
+
+### 4.63 出身三选一（路线图 O.1，2026-10-31）
+
+- **数据** `data/origins.json`：`order`（选的时候的顺序）、`origins.<编号>`：`name`、`short`（按钮上一句）、`desc`（下面一行来历）、开局加成 `skills` / `attrs` / `rep`。
+- **`core/origins.gd`（Origins）**：`current()`（旗标 `origin`，没选是 ""）、`apply(id)`（设旗标、加技能（不超过上限）/ 属性 / 声望；选过了返回 false，不加第二次）、`bonus_text(id)`。出身只存旗标（跟着存档走，对话直接用旗标条件）。
+- **`ui/origin_panel.gd`（OriginPanel）**：三个大按钮竖排（宽度按窗口收，手机放得下）、焦点 / 悬停时下面一行写来历、数字键 1–3；`open(prompt)`：新游戏 / 旧存档补问两种标题；打开后打出 `IC_ORIGIN_SCREEN`（第一个按钮的窗口坐标，冒烟用）。
+- **开场**：`Opening.start` 时没出身 → 标题卡的字先收起来、开出身面板，`_input` 在面板开着时不开始；选了 → `Origins.apply`、标题卡的字露出来、`begin()`（这一下是用户操作，钟声能响）。直接调 `begin()`（测试）会收起面板、出身留空。
+- **旧存档**：`main` 读档进来（`loaded_from` 不空）且没出身 → `ask_origin()`：暂停、补问、加上、提示一句。网址带截图参数、换区域进来、自动化测试（`ic_skip_opening`）都不问。
+- 角色面板标题前写出身。**测试**：`origin` 组 13 项（含出身画面的字都在字体子集里）；`opening` 组先设好出身（测的是标题卡上第一下操作）。冒烟（`tools/smoke_web.js`）开场前先点 `IC_ORIGIN_SCREEN`。
+
+### 4.64 对话随出身变（路线图 O.2，2026-10-31）
+
+- 都是数据改动：选项的条件 `{"flag": "origin", "eq": 编号}`，开场白用节点的 `text_if`（第一个满足的换掉台词）。节点本来就有 `text_if` 的（马蒂亚斯的开场按继承人换）不加出身那一条，改成多一个选项，免得盖掉原来的变化。
+- **渡工之子**：`ferry.json` offer/why 多一条检定（口才 9 → `convinced_ferry`）；`reedwharf.json` boatman 开场白、`envoy_ask` 多一条直接到 `envoy`。**落魄骑士之后**：`blackheron.json` herman `greet_gate` 开场白、`ledger_key` 多一条检定（口才 11 → `key_given` / `key_no`）；`hall.json` alric 开场白、「我家也有过封地」→ `knight`（`alric_knight_said`，瓦伦家 +3）；`highland.json` anselm/ask 报旧姓（威吓 12）。**烽誓团逃兵**：`beacon19.json` matthias 开场多一条 → `deserter`（`matthias_knows_deserter`）、carsten/rule → `deserter`（`carsten_deserter_said`）；anselm/ask「车夫是第一个被踩倒的」（口才 10）。
+- **测试**：`origin2` 组 20 项；顺带一项「所有对话文件里的字都在字体子集里」（查出新台词里一个「崽」不在子集里 → 改成「儿子」，不重做字体）。
+
+### 4.65 支线「名册上的名字」（路线图 O.3，2026-10-31）
+
+- `beacon19.json` matthias/again 多一条「那本名册……」（条件：出身 `deserter`、有 `ch2_first_tide`、还没有 `ch2_roll`）→ `roll`（接支线 `ch2_roll`）→ `roll_served`（`ch2_roll` = served、烽誓团 +10）/ 检定（口才 14）`roll_struck` 或 `roll_no`（`ch2_roll_refused`，只剩认或者否认）/ `roll_denied`（烽誓团 −5）；都 `quest_done`。
+- `ConvoyAmbush.setup`：served 时小队多 `ROLL_EXTRA` 两个人（「烽誓团 · 老守燧人」）；小队里有名字的人改用一张「第几个 → 名字」表（原来按下标认卡斯滕，多了人就认错）。`Chapter2.recap` 多一句。**测试**：`origin3` 组 13 项。
+
+### 4.66 金穗平原地图底座（路线图 6.1a，2026-10-31）
+
+- **布局** `world/plain_layout.gd`（`PlainLayout`）：`BOUNDS` 300 × 260 米、1 米一个点（301 × 261）。`RIVER` 折线（`RIVER_HALF` 7.5 米、泥岸 `RIVER_BANK` 10 米、深 2.2、水面 `WATER_Y` −1.9）；地方：麦渡村、渡口、磨坊、粮仓、庄园（缓坡高 5.5）、坠星院（矮丘高 7、半径 72，不压平）、塞弗林营地、木桥位置；`ROADS` 七条路。`height()` = 自然起伏 + 庄园坡 + 坠星院丘 + 河槽 + 压平的地方（`pads()`）；`masks()` → (路, 田, 遮蔽) 存成地面颜色图。
+- **高度场** 和高地一样预先算好存进章节包（`chapters/ch3/plain_field.res` / `plain_paint.res`，`tests/gen_plain_field.gd` 重新生成；读文件约 7–20 毫秒）；测试比对文件和布局。
+- **地形** `world/plain.gd`（`Plain`）：25 块（64 米），每块近处 1 米网格、远处 2 米网格（`LO_STEP` 2，4 时坡上接不上），80 米切换；远处网格四边有裙边，裙边顶点颜色 a = 0，着色器里只给平均的雪色（贴图竖着拉长远看是一排梳齿）。碰撞用高度图。地图外远景 `FarTerrain`：东北方向砧山一道山脊（`far_height`）。
+- **地面着色器** `shaders/plain_ground.gdshader`：雪田（snow_field_aerial，航拍照片颗粒粗，往白压 55%、两种尺度混）、麦茬土（snow_04）、泥雪路（snow_03，颜色和法线都只留三成细节、其余取模糊的 mip——黄昏太阳低时原图的法线照出一大片黑点）、泥岸（brown_mud_02，按坡度、三向投影）。田按 40 × 34 米分块，每块垄的方向不一样，垄沟露土、垄背积雪，用法线做出起伏，45 米外淡掉；大尺度噪声决定哪里雪薄露出整片麦茬地。
+- **河面** `shaders/plain_water.gdshader`：沿折线磨圆后铺一条带子，两边顶点色做岸边薄冰；深石板色、粗糙度 0.22、菲涅尔往天色混。
+- **天空** 复用 `highland_sky.gdshader`，照片 `misty_sky.jpg`（色调映射过的 HDRI 上半球）；`Plain.apply_sky` 按时段染色、转向，曝光 0.7。`Daypart.AREA_PRESETS.plain` 四个时段（黄昏压暗、偏暖的程度比高地轻）。`Cold.COLD_AREAS.plain` = 0.3。
+- **登记**：`Areas`（「金穗平原」、章节包第 3 章、出生点、机位）、`AreaMap`、`main.gd` 搭建分支、`Chapters.LIST[3]`（ch3、探针天空照片、起点渡口、标着制作中；`PLAYABLE` 还是 2）、`export_presets.cfg` 预设 Chapter3、`build_web.sh` 导出 ch3 包。新贴图导入照第二章：`compress/mode=4`、生成 mipmap（不生成远处满是噪点、包还更大）。
+- **性能**（容器里软件渲染，只看相对值）：7 个机位 55–72 次绘制、38k–82k 图元；同样条件下余火高地 267–415 次、183k–219k。`tools/bench_areas.js` 加了 plain（等 `IC_PLAIN … tex=true` 再测）。
+- **测试**：`plain` 组 12 项（登记、贴图、高度场 / 颜色图和布局一致、平原起伏、河床低于水面且两岸高于水面、出生点在岸上、碰撞、渡口出生、25 块搭完、河面 / 远景 / 远处网格、7 个机位、天空 / 时段 / 寒冷）。
+
+### 4.67 金穗平原的树、麦垛、篱笆、远景（路线图 6.1b，2026-10-31）
+
+- **`world/plain_flora.gd`（`PlainFlora`）**：全部代码搭，摆放按固定种子撒再按布局筛（`_free`：不上路、不下河、不进村子 / 磨坊 / 庄园 / 营地 / 粮仓 / 坠星院那几块地）。
+  - 截头柳 `willows()`：沿 `RIVER` 两岸、离中线 `RIVER_HALF` + 3.5–8 米（岸坡上半截），6.5–11 米一棵、两成的地方空一段；避开木桥、渡口、路。网格（米）：粗短树干 + 树头一个疙瘩（管子）+ 四片交叉的柳条片。
+  - 篱笆 `hedges()`：沿地面着色器里田的分块边（40 × 34 米、偏移 (7, −3)，和 `plain_ground.gdshader` 一致），一半的边长篱笆，1.35 米一丛（三片交叉的细枝片），每条边留一个约 5 米的豁口；地面颜色图里「田」< 0.6 的地方不长。`hedge_runs()` = 连着的一段段（碰撞用薄盒子）。
+  - 落叶树 `trees()`：篱笆上大约每 22 米以上、9% 的地方一棵老橡树，路边 4.8–6.5 米偶尔一棵；三种样子：树干 + 4–5 根主枝 + 二级枝（锥形管子、树皮贴图）+ 枝梢交叉的细枝片；70 米外换成两片交叉的整棵树剪影（`TreesFar`），320 米外不画。
+  - 麦垛 `ricks()`：`RICK_YARDS` 六处——洛蒙德家的四处大垛（12 个，大小 0.86–1.15）、佃农村边上两处小垛（3 个，0.55–0.66，网格一侧往里凹：被扯掉一角）。车床旋出来的网格、法线按轮廓切线算。
+  - 木栅 `fences()`：洛蒙德家三个以上大垛的两处麦垛场四面围着（朝路那面中间留门）、磨坊到庄园那条路南边能摆的一段；一跨 2.5 米（柱子 + 两根横木），按两端地面高度斜着放。
+  - 地平线上的树 `far_trees()`：地图外 900 片交叉剪影，按噪声一丛一丛、一排一排，砧山那一侧少；一个多实例（`FarTrees`）。
+- **贴图** `chapters/ch3/trees/plain_twigs.png`：`tests/gen_plain_twigs.gd` 代码画（1536 × 512，三格：细枝、柳条、整棵树剪影），透明处的颜色填成该格平均色（mipmap 不渗黑边）；导入同第二章（`compress/mode=4`、mipmap）。
+- **着色器** `shaders/plain_flora.gdshader`（`mode` 0 树皮 / 1 枝条片 / 2 麦秆）：枝条片透明剪掉，阈值 0.5 → 远处 0.32（0.14 时远处的细枝在小 mipmap 里整片填实，像黑蘑菇、实心扇子）；远处往灰紫退（`aerial`，22–172 米、最多 70%）；风摆（顶点色 r，`wind` 跟「减少动态效果」）；麦垛竖纹（噪声拉长）、贴地一圈暗、只有顶上积雪；树干法线往上偏（阴天背光那面也吃天光）。实例数据 r 深浅、g 雪、b 风的相位。
+- **接入** `Plain.build` 先 `PlainFlora.warm()`（材质、网格、摆放，约 100 毫秒），碰撞体 `PlainFlora`（树干、柳树干、麦垛圆柱，篱笆、木栅薄盒子，共 270 个），每块多一件活 `_job_flora`，`_far` 后面 `PlainFlora.far_ring()`；`Plain.clear_cache()` 一起清。
+- **性能**（容器里软件渲染，只看相对值）：7 个机位 69–122 次绘制、43k–95k 图元（6.1a 是 55–72 次）；余火高地同样条件 267–415 次。分块搭建最慢一块 6.5–10 毫秒。
+- **测试**：`plainflora` 组 11 项（贴图在包里；柳树都在岸坡上；篱笆和树不上路、不下河、不进村子和庄园、段间有豁口；大垛 ≥ 10、村里小垛 1–3 个且明显小；木栅每跨约 2.5 米、不压路；地平线上的树都在地图外；分块搭完的实例数；碰撞数；走向麦垛被挡住；风摆和「减少动态效果」）。`plain` 组的碰撞比对排除了 `PlainFlora`。
+
+### 4.68 麦渡村（路线图 6.2a，2026-10-31）
+
+- **`world/plain_village.gd`（`PlainVillage`）**：同 `HighlandVillage` 的分法——`solids()` 碰撞（Plain._collision 里建 `MaiduSolids`）、`interactables()` 门和路牌（同步）、`jobs_for(rect)` 画面按块分帧搭。
+  - 长屋 `LONGHOUSES`（6 栋：位置是屋子中心、朝向是正面朝哪、长、进深、冒烟、塌了前坡第几段、空屋）：`_walls`（土坯墙一个盒子 + 石头墙脚 + 四角木柱；空屋四面墙分开、正面留门洞，屋里的地是暗的）、`_roof`（四坡茅草顶：前后两个梯形坡按约 2 米分段 + 两头三角坡，厚 0.34、檐口一道厚边；雪只盖上半截——茅草顶陡；塌了的那段不铺草，三根椽子 + 底下黑 + 一层雪）、小窗（`House._window`，三成亮）、门；冒烟的那两栋 `Atmos.smoke`。碰撞：有人住的一个盒子，空屋四面墙（走得进去）。门 `Door.make` 都闩着，四句不同的话。
+  - 谷仓 `BARN`：木板墙（`timber`）、正面 4.2 米的门洞、两扇门往外敞着、打谷的木地板、三根柱子、同样的四坡茅草顶；碰撞四面墙留门洞。
+  - 水井、木桥（`BRIDGE` 两头之间桥面拱 0.9 米：横铺木板跟着拱、两根纵梁、栏杆、每 3 米一排木桩站进河里；碰撞桥面 12 段斜盒子 + 两边栏杆）、渡口（`DOCK_FROM` → `DOCK_TO` 栈桥伸到水上、木桩、平底渡船浮在 `WATER_Y` 上、撑篙、缆绳）、零碎（`Decor`：各家山墙边矮柴垛、空车、木桶、谷仓里三袋）、村口路牌（`RoadSign`，旅行地图出发点）。
+  - 材质：土坯 `clay_plaster`、茅草 `thatch_roof_angled`（第三章章节包，`_photo` 按米平铺；包里没有时退回纯色），其余用主包的 `Look`。
+- **旅行地图「南部」**：`Travel.REGIONS.south`、`region_of_chapter(≥3) = "south"`；`travel.json` 五个地点（麦渡做好了；磨坊与粮仓、洛蒙德庄园、坠星院、塞弗林营地 `area` 空、写着哪一步做）和来回十条路线；`ICONS` 加 abbey / mill / camp；`TravelMap._draw_south`（麦茬地斜线、麦河、东北角砧山、南边矮丘）。`Plain.map_spec` 的麦渡一块加 `place: maidu`、画上长屋和谷仓、木桥。
+- **平原的光**：截图里背阳的墙、车、屋顶几乎全黑（日光 1.35、环境光 0.55、曝光 0.7）。改成阴天：日光 0.95 / 0.85 / 0.8、环境光 1.25 / 1.1 / 1.0（白天 / 清晨 / 黄昏），夜里不变；土坯、茅草的颜色不压。
+- **测试**：`maidu` 组 11 项（布局不压路不下河、冒烟和塌顶的数目；木桥两头在岸上、中间高过水面；栈桥伸到水上；「南部」一页的地点和能不能去；分块搭完；5 扇门闩着；走过木桥不掉河；走进谷仓；村口路牌是出发点、在麦渡；地图「南部」；本地地图画了房子）。
+
+### 4.69 坠星院与抄经室（路线图 6.2b，2026-11-01）
+
+- **地形**：`PlainLayout.pads()` 加坠星院 `[ABBEY_SITE (47, 92), 25, 24]`（6.1a 时去掉过——过渡 12 米压出一圈陡坎；这回半径盖住围墙角、过渡拖到 24 米）；`height()` 里压平的地方路不再往回抹起伏（`on_pad`：去坠星院的路一直通到院子里），重新生成 `plain_field.res`。
+- **`world/plain_abbey.gd`（`PlainAbbey`）**：坐标就是平原的世界坐标；`base_y()` = 压平那块的高度。`solids()` / `interactables()` / `jobs_for()` 同麦渡。
+  - 围墙 `WALL_RECT` 42 × 30 米，按 6 米一段跟着地面、墙脚埋进土里 0.8 米、墙头压顶石和雪；北墙在门房处断开。
+  - 门房：两块石屋夹 3.4 米的门洞、两扇门往里敞着、两坡石板瓦顶（`_gable`）；东边朝外一个施粥窗口（窗板撑开、窗台当柜台、三只空碗）；墙外披棚下三脚铁锅、炭火、热气（`Atmos.smoke` 缩小）、长凳。
+  - 教堂（12.6 × 8 米、墙高 6.2、52° 石板瓦顶、扶壁、高窄的尖窗、东头大窗）和钟楼（4.4 × 4.4、15 米、四角加厚、四面钟窗、青铜钟和横梁、四角攒尖顶、尖上铁杆和一颗星）。
+  - 回廊：14 × 14 米，四面 2.4 米宽的走道（内侧一排木柱、单坡石板瓦顶、积雪），中间雪地、小井、一棵光秃的小果树。
+  - 宿舍（House：两层石楼）、抄经室（House：门锁着，`SCRIPTORIUM_DOOR_TEXT`）；菜园八畦，一半冻死（土垄上一丛丛枯黄的茎秆）、一半盖雪，四周编篱、东边留口。门房外路牌（旅行地图出发点）。
+  - 出生点：`abbey` 挪到门房外 (40, 72)；新 `scriptorium_door`（抄经室门外的回廊上）。`PlainFlora._free` 不往围墙里外 4 米摆东西。
+- **`world/scriptorium.gd`（`Scriptorium`，新室内区域）**：9 × 4.8 × 3.4 米；北墙一扇高窄的窗（偏蓝的聚光灯朝屋里打）、四张斜面抄经桌（抄了一半的书、墨水壶、羽毛笔）和高凳、西墙书架（`Decor.books`）、东头伊格纳兹的草铺、毯子、空碗，东墙刻满五道一捆的划痕、中间几行字；光：窗、桌上一支蜡烛、地上一截蜡烛、一盏偏冷的散光。出口回平原的 `scriptorium_door`。登记：`Areas`（名字、室内、第三章、出生点、机位）、`AreaMap`、`main.gd`、`regions.json`（新一带「金穗平原一带」）。
+- **旅行地图**：坠星院 `area = plain`、出生点 `abbey`、出发点「门房外的路牌」。平原固定机位加到 9 个（4 改成门房里面、7 坡下望门房和钟楼、8 回廊院子里）；`bench_areas.js` 加抄经室。
+- **测试**：`abbey` 组 11 项（丘顶压平、房子都在围墙里、出生点在门洞前；旅行和区域登记；分块搭完；两扇门锁着；穿过门洞走进院子；抄经室门外站得住走得动；抄经室里面：出口、窗光、本地地图、机位）。
+
+### 4.70 第三章主线前两步（路线图 6.2c，2026-11-01）
+
+- **进第三章**：`main.show_ending("ch2")` 把 `playable_chapter >= 3` 时的下一章 3 传给 `EndingPanel.open_chapter2`（「继续：第三章 · 粮与铁（制作中）」）；`start_chapter(3)` 同第二章：章节包、`ch3_started`、白天、去 `plain` 的 `dock`。`Chapters.PLAYABLE` 仍是 2，玩家只能用 `?preview=3`。`main._story_progress`：第三章到了 `plain` / `scriptorium` 就接主线 `ch3_main`，说一句 `wip_note`（改成「能到麦渡、坠星院，主线做到第二步」）。
+- **主线 `ch3_main`「粮与铁」**（`quests.json`）：`to_abbey` → `ask_porter`（院长）→ `to_manor`（门房；6.3 接庄园）。
+- **对话 `data/dialogue/plain.json`**：`gregor`（门洞里；只在 `to_abbey` 时那句「守灵夜那个侍从」推进主线，别的时候走 `squire_off` 不改主线；`gregor_met`；听过门房以后换成 `after`）、`porter`（没见院长时只说粥稀；`ask_porter` 时 `secret` → `how`：`ch3_heard_monk`、主线 `to_manor`；以后 `again`）。6.4 再加前两章和出身的话。
+- **门口的人** `PlainAbbey.people()`（同步放，`Plain.build` 里）：院长 `GREGOR`（门洞里、面朝外）、门房的修士 `PORTER`（锅东边、面朝西——锅和围墙之间只有 0.6 米，站不下）、排队的 `QUEUE` 八个人（从锅前往西北排开、各自面朝前一个人、第五个是孩子缩到 0.72；`QUEUE_LINES` 各一句；夜里不放）。`looks.json` 按名字 / `@queue编号` 配打扮（修士、穷佃农：抱着胳膊、蹲着的老人、孩子）。
+- **机位**：平原第 10 个机位「门房外的粥锅」；`bench_areas.js` 平原 10 个机位。
+- **测试**：`ch3open` 组 11 项（第二章章末有没有「继续」、点了去哪；上岸接主线；门口的人数和对话设置；都站在地上没卡住；院长 / 门房的对话推进主线和旗标、说过以后换话；夜里队散了）。
+
+### 4.71 洛蒙德庄园与大厅（路线图 6.3a，2026-11-01）
+
+- **`world/plain_manor.gd`（`PlainManor`）**：在 `PlainLayout.MANOR` 压平的那块上（半径 24，原来就有）。`WALL_RECT` 36 × 30 米：围墙 3.2 米、墙头一排垛口、积雪；西墙门楼（`GATE`：两座方塔夹 3.6 米拱门洞、塔顶垛口、两扇门往里敞、门边两个火盆 + `FireLight`（`night_light` 组）、两面 `wheat` 旗朝外）；北墙后门（`BACK_GATE`，往塞弗林营地的路从这里出去）。主楼 `HALL`（House：两层石楼、亮窗 0.95、门 `to_area = manor_hall`）、东边仓房 `BARN`（House：门锁着 `BARN_DOOR_TEXT`）、水井（带小顶棚）、院子里的东西 `props_decor(rect, part)`（两辆装满麻袋的车、桶、箱子、仓房门口一堆麻袋；沿南墙三垛比人高的柴——一垛一件活：三垛合一件要 100 多毫秒）。门楼外路牌（旅行地图出发点）。
+- 出生点：`manor` 挪到门楼外 (54, −41.5)、面朝东；新 `manor_door`（主楼门外）。`PlainFlora._free` 不往庄园围墙里外 4 米摆东西。
+- **`Decor.banner` 新图案 `wheat`**（洛蒙德家的金麦束：七根麦秆从一道捆绳往上扇开、顶上麦穗）。
+- **`world/manor_hall.gd`（`ManorHall`，新室内区域）**：14 × 9 × 5 米；北墙大壁炉（炉膛 2.6 米、七根柴、六条自发光火舌、`FireLight` 4.8、光晕）、炉罩上的 `wheat` 旗；长桌（桌布、整只烤的、三摞面包、两碗苹果、奶酪、六只杯子两只酒壶）和两条长凳；东头木台上的高桌和高背椅（桌上一张没写完的信）；西墙挂毯（金色麦田的色块）、东墙一面旗、长毯、桌上蜡烛、四支墙上的火把、两座烛台、箱子、木桶；光：壁炉、长桌上方两盏、高桌一盏。出口回平原的 `manor_door`。登记：`Areas`、`AreaMap`、`main.gd`、`regions.json`。
+- **旅行地图**：庄园 `area = plain`、出生点 `manor`、出发点「门楼外的路牌」（从麦渡去要先到磨坊——路线没变）。平原机位 11 个（3 改成门楼外、新 10 院子里）；`bench_areas.js` 加大厅。主线 `to_manor` 的目标写成「进主楼的大厅（庄园里的人还没来）」。
+- **测试**：`manor` 组 9 项（布局、出生点、旅行；大厅登记；分块搭完；门；穿过门楼走进院子；出了大厅站得住走得动；大厅里面：出口、壁炉、旗、本地地图、机位）。`plain` 组的碰撞比对再排除 `MaiduSolids`（房子和围墙）。
+
+### 4.72 水磨坊与粮仓（路线图 6.3b，2026-11-01）
+
+- **`world/plain_mill.gd`（`PlainMill`）**：院子 `RECT` (12..44, −38..−2)，西边是麦河岸（不砌墙）。院墙 1.9 米、按 1.7 米一段（高矮、朝向稍微错开）、墙头积雪；`wall_segments()` 六段：南墙在 `SOUTH_GATE`（大车道从木桥东头上来）断开、东墙在 `EAST_GATE`（往庄园）断开、北墙在 `BREACH` 断开（塌了一段：两头塌半截、九块石头散在缺口里外——6.7 第二波从这儿进）；两个门各一对石门柱。磨坊 `MILL`（House：石砌底层 + 木板墙上层，门 `to_area = mill_inside`，在 `PlainLayout.MILL` 压平的地上）；三座粮仓 `GRANARIES`（House：两层石楼、山墙、门锁着；不在压平的地上，取四角最低点、墙脚埋下去）；院子里的东西（装满的车、空车、桶、箱子、粮仓门口码着的麻袋）；南门外路牌。
+  - 水轮 `wheel()`：轮坑（石沿 + 暗底）、伸进西墙的轴；`MillWheel`（内嵌类，绕本地 X 慢慢转，「减少动态效果」时不转）挂着轮子：两圈轮缘、八根辐条、十六块叶板、隔一块挂一根冰溜子；木槽从上游 `FLUME_FROM` 沿岸边引到轮顶（一排木架、槽底槽帮、槽里一层冰、十八根冰溜子）。
+  - 出生点：`mill` 挪到南门外 (13.6, 2.2)；新 `mill_door`（磨坊门外）。`PlainFlora` 不往院子里外 4 米摆树和篱笆、柳树离院子 2 米、木栅不进院子。
+- **`world/mill_inside.gd`（`MillInside`，新室内区域）**：9.4 × 7.4 × 4.2 米；两副磨盘（石墩、下扇、上扇、撒了一圈面粉、木斗、立轴）、西墙边立着的大木齿轮（同一个 `MillWheel` 转）、三处码到梁下的面粉袋和麦子袋、东北角账房小间（齐胸高的木板隔墙、斜面桌上摊开的账、一摞账本、墨水壶、墙上钉着写满名字和数字的单子）、只做样子的木梯；光：账房的油灯、一盏挂灯、一盏冷的散光。出口回平原的 `mill_door`。登记：`Areas`、`AreaMap`、`main.gd`、`regions.json`。
+- `Plain.build` 载入时先读 `Look.mat("roof" / "plaster" / "castle")`：第一栋 House 在分帧的活里才读石板瓦和灰泥贴图，那一块 77 毫秒。平原机位 13 个（11 磨坊院子里、12 北墙外）；`bench_areas.js` 加磨坊里面。旅行地图：磨坊 `area = plain`、出生点 `mill`、「南门外的路牌」。
+- **测试**：`mill` 组 11 项（布局；旅行和登记；分块搭完、最慢一块 < 60 毫秒；水轮在转；门；穿过南门；北墙缺口走得过去；出了磨坊走得动；磨坊里面：出口、齿轮、油灯、本地地图、机位）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

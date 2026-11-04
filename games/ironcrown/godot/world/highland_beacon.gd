@@ -205,7 +205,13 @@ static func people(parent: Node3D) -> void:
 	for p in list:
 		if str(p[0]) == "sacks" and str(GameState.get_flag("ch2_first_tide", "")) == "lost_one":
 			continue                                                  # 第一夜潮水漫进了营地（5.4c）：天亮以后数麻袋的兵不见了
+		if str(p[0]) == "chopper" and str(GameState.get_flag("ch2_carsten", "")) == "fled":
+			continue                                                  # 支线「第十年」（5.5b）：你帮卡斯滕夜里溜走了
+		if str(p[0]) == "chopper" and GameState.has_flag("ch2_first_tide"):
+			p = ["chopper", "卡斯滕", p[2], p[3], p[4], "carsten"]    # 第二天：劈柴的老兵报了名字，有话说（5.5b）
 		if str(p[0]) == "norbert" and GameState.has_flag("ch2_first_tide"):
+			if Chapter2.norbert_on_roof():
+				dawn_norbert(parent)                                  # 第二夜过去（5.8）：他又上了塔顶，在火盆边
 			continue                                                  # 第二天（5.5a）：诺伯特下了塔顶，在自己的小屋里（BeaconTower）
 		var at: Vector3 = p[2]
 		var n := Npc.make(str(p[1]), LINES.get(str(p[0]), []), Color(str(p[4])))
@@ -223,6 +229,22 @@ static func people(parent: Node3D) -> void:
 		var at := wood * Vector3(-1.0, 0, -float(HighlandLayout.WOODSHED[3]) * 0.5 + 1.0)
 		fw.position = Vector3(at.x, Highland.height_at(at.x, at.z) + 0.2, at.z)
 		parent.add_child(fw)
+
+
+## 第二夜过去以后（5.8，Chapter2.at_dawn）诺伯特在塔顶火盆边：火亮着站着添柴；火灭了蹲在冷灰边（@norbert_cold）。已经在了就不再放
+static func dawn_norbert(parent: Node3D) -> void:
+	if not Chapter2.norbert_on_roof() or not parent.find_children("Npc_norbert*", "", true, false).is_empty():
+		return
+	var tp := tower_place()
+	var at := tp * Vector3(-1.25, HighlandLayout.TOWER_H, -0.5)
+	var n := Npc.make("诺伯特", [], Color("5a5650"))
+	n.name = "Npc_norbert_cold" if Chapter2.fire_out() else "Npc_norbert"
+	n.dialogue_area = "beacon19"
+	n.dialogue_id = "norbert"
+	n.position = at
+	n.rotation.y = deg_to_rad(float(HighlandLayout.TOWER[1])) - PI * 0.5
+	n.far_end = DETAIL_FAR
+	parent.add_child(n)
 
 
 ## 塔门、塔顶的天窗、营房的门
@@ -399,24 +421,43 @@ static func _fire(root: Node3D, reduced_motion: bool) -> void:
 			var a0 := TAU * k / 16.0
 			var a1 := TAU * (k + 1) / 16.0
 			kit.cylinder("iron", c + Vector3(cos(a0) * r, y, sin(a0) * r), c + Vector3(cos(a1) * r, y, sin(a1) * r), 0.03, 0.03, 4)
-	kit.box("ember", c + Vector3(0, 0.62, 0), Vector3(1.0, 0.14, 1.0))                                     # 炭
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 5323
-	for k in 7:                                                                                            # 烧着的柴
-		var a := rng.randf() * TAU
-		kit.cylinder("char", c + Vector3(cos(a) * 0.45, 0.65, sin(a) * 0.45), c + Vector3(-cos(a) * 0.3, 1.0, -sin(a) * 0.3), 0.07, 0.06, 5)
-	var ember := StandardMaterial3D.new()
-	ember.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	ember.albedo_color = Color("ff5a1e")
-	var char_m := StandardMaterial3D.new()
-	char_m.albedo_color = Color("1a1412")
-	char_m.roughness = 0.9
-	var mi := kit.build({"stone": Look.mat("stone"), "iron": Inn._iron_mat(), "ember": ember, "char": char_m})
+	var mi := kit.build({"stone": Look.mat("stone"), "iron": Inn._iron_mat()})
 	mi.name = "BeaconBrazier"
 	mi.visibility_range_end = FIRE_FAR
 	mi.transform = tp
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	root.add_child(mi)
+	var lit_root := Node3D.new()                                                                           # 火（5.8：天亮时粮没上山，火熄了——整组藏起来，换上冷灰 BeaconAsh）
+	lit_root.name = "BeaconFlames"
+	root.add_child(lit_root)
+	var ash_root := Node3D.new()
+	ash_root.name = "BeaconAsh"
+	root.add_child(ash_root)
+	for cold in [false, true]:
+		var ek := MeshKit.new()
+		ek.box("ember", c + Vector3(0, 0.62, 0), Vector3(1.0, 0.14 if not cold else 0.1, 1.0))           # 炭 / 冷灰
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 5323
+		for k in (7 if not cold else 4):                                                                   # 烧着的柴 / 烧剩的几截黑柴头
+			var a := rng.randf() * TAU
+			ek.cylinder("char", c + Vector3(cos(a) * 0.45, 0.65, sin(a) * 0.45), c + Vector3(-cos(a) * 0.3, 1.0 if not cold else 0.75, -sin(a) * 0.3), 0.07, 0.06, 5)
+		var ember := StandardMaterial3D.new()
+		if cold:
+			ember.albedo_color = Color("6e6a66")                                                           # 灰白的冷灰（压暗一点：天光下不发白）
+			ember.roughness = 1.0
+		else:
+			ember.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			ember.albedo_color = Color("ff5a1e")
+		var char_m := StandardMaterial3D.new()
+		char_m.albedo_color = Color("1a1412")
+		char_m.roughness = 0.9
+		var em := ek.build({"ember": ember, "char": char_m})
+		em.name = "BeaconCinders" if cold else "BeaconEmbers"
+		em.visibility_range_end = FIRE_FAR
+		em.transform = tp
+		em.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		(ash_root if cold else lit_root).add_child(em)
+	root = lit_root
 	var flame_sh := load("res://shaders/flame.gdshader") as Shader                                         # 火苗：几片绕 Y 轴对着镜头、按噪声往上卷的火（shaders/flame.gdshader）
 	for k in 4:
 		var q0 := QuadMesh.new()
@@ -484,6 +525,16 @@ static func _fire(root: Node3D, reduced_motion: bool) -> void:
 	if not reduced_motion:
 		root.add_child(_sparks(at))
 		Atmos.smoke(root, at + Vector3(0, 1.0, 0))
+	apply_fire(root.get_parent())
+
+
+## 第十九烽的火亮不亮（5.8：天亮时 Chapter2.fire_out() 就熄了；搭好以后、天亮那一刻 main 都调一次）
+static func apply_fire(root: Node) -> void:
+	var out := Chapter2.fire_out()
+	for n in root.find_children("BeaconFlames", "Node3D", true, false):
+		(n as Node3D).visible = not out
+	for n in root.find_children("BeaconAsh", "Node3D", true, false):
+		(n as Node3D).visible = out
 
 
 ## 火星：一小撮往上飘、被风吹歪的亮点

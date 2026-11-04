@@ -36,7 +36,7 @@ func close() -> void:
 
 func header_text() -> String:
 	var left := GameState.LEVEL_EVERY - GameState.skill_ups % GameState.LEVEL_EVERY
-	var t := "等级 %d · 再提升 %d 次技能升级" % [GameState.level, left]
+	var t := ("%s · " % Origins.name_of(Origins.current()) if Origins.current() != "" else "") + "等级 %d · 再提升 %d 次技能升级" % [GameState.level, left]
 	if GameState.attr_points > 0:
 		t += " · 可分配属性点 %d" % GameState.attr_points
 	return t

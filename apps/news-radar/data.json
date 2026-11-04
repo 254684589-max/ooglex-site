@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-10-30",
-  "asOf": "2026-10-30",
+  "updatedAt": "2026-11-04",
+  "asOf": "2026-11-04",
   "asOfZone": "CST",
   "source": "环球新闻情报中心／全球投资情报雷达",
   "sourceEn": "Global Investment Radar",
   "status": "ok",
   "demo": false,
   "frequency": "daily",
-  "edition": "Day-11",
+  "edition": "Day-13",
   "version": "screening-v2.1",
   "runKind": "跨日试运行",
-  "lead": "Day-11（2026-10-30 CST，跨日试运行，screening-v2.1）为合格空报：正式入选 0 条；二级存档 4 条（BEA Q3 GDP+3.4%／9月PCE 3.6%核心3.1%／Amazon Q3 AWS+39.3%／ECB维持2.5%+Lagarde卸任预告）；数据发布与财报公布默认不升三级；本轮不升三级。",
+  "lead": "Day-13（2026-11-04 CST，跨日试运行，screening-v2.1）为合格空报：正式入选 0 条；二级存档 4 条（ISM 10月PMI 55.5／Apple FY26Q4／JOLTS 9月空缺752.3万／欧区制造业PMI终值52.7）；数据发布与财报默认不升三级；本轮不升三级。",
   "emptyReason": "本轮无三级/四级入选（路径 A／B／C 均未达标；仅数据发布／财报公布≠自动升三级；禁止凑条；本轮明示不升三级）。",
   "note": "人工编辑，页面不自动刷新，不得视为实时行情。内部研究用、非正式自动外发。与 /apps/whats-latest/ 自动管道分立。S2 待用户确认。二级存档只作索引。站立授权：雷达 N=0→空报 C。",
   "counts": {
@@ -21,10 +21,10 @@
     "tier2": 4
   },
   "funnel": {
-    "scans": 65,
+    "scans": 75,
     "independent": 16,
-    "duplicates": 20,
-    "notPublished": 5,
+    "duplicates": 24,
+    "notPublished": 6,
     "tier1": 12,
     "tier2": 4,
     "tier3": 0,
@@ -33,29 +33,29 @@
   "items": [],
   "archive": [
     {
-      "id": "D11-T2-01",
-      "title": "BEA 2026Q3 GDP 初值：实际 GDP +3.4%（Q2 +2.2%）",
+      "id": "D13-T2-01",
+      "title": "ISM 2026-10 制造业 PMI 55.5（+1.0）；生产 59.0；价格 75.2",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     },
     {
-      "id": "D11-T2-02",
-      "title": "BEA 2026-09 PCE：YoY 3.6%／核心 3.1%（MoM +0.5%／+0.3%）",
+      "id": "D13-T2-02",
+      "title": "Apple FY26Q4：净销售 1144.77 亿／稀释 EPS 2.10；服务 315.73 亿",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     },
     {
-      "id": "D11-T2-03",
-      "title": "Amazon 2026Q3：营收 $201.9B／AWS +39.3%／TTM FCF −$42.4B",
+      "id": "D13-T2-03",
+      "title": "BLS JOLTS 2026-09：职位空缺 7,523 千（率 4.5%；较修订后 8 月 +333）",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     },
     {
-      "id": "D11-T2-04",
-      "title": "ECB 2026-10-29：维持存款便利 2.5%；Lagarde 2027-02-07 卸任",
+      "id": "D13-T2-04",
+      "title": "欧元区 10 月制造业 PMI 终值 52.7（初值 52.4；9 月 52.9）",
       "tier": "二级",
       "role": "存档索引／非正式入选"
     }
   ],
-  "sha256FinalRadar": "f2b091de1e4e76b5c5303f0105c14c59ee1200e444d32ece914c0953c5aaf6e1"
+  "sha256FinalRadar": "2e72a2bec9d4419f4155e3b7a63812ce201fc27bf91ad8ab5fe1c007db71ac61"
 }

@@ -111,6 +111,12 @@ func open_chapter1(reduced_motion := false, next := 0) -> void:
 	_show("第一章「黑鹭堡」完", "第二章 · 熄灭的烽燧", "在晨雾里再走走", Chapter1.recap(), Chapter1.hook(), reduced_motion, next)
 
 
+## 第二章完（5.8b）：「第二章「熄灭的烽燧」完 / 第三章 · 粮与铁 / 开发中」，回顾和钩子由 Chapter2 按旗标写；第三章还没有，不出「继续」
+func open_chapter2(reduced_motion := false, next := 0) -> void:
+	choice = "ch2"
+	_show("第二章「熄灭的烽燧」完", "第三章 · 粮与铁", "在雪原上再站一会儿", Chapter2.recap(), Chapter2.hook(), reduced_motion, next)
+
+
 func _show(head: String, title_text: String, back_text: String, recap_text: String, seal_text: String, reduced_motion: bool, next: int) -> void:
 	header.text = head
 	title.text = title_text

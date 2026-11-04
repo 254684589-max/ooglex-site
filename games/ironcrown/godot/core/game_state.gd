@@ -92,6 +92,7 @@ func new_game(seed_override := -1) -> void:
 	cold = 0.0
 	frostbite = false
 	held_torch = {}
+	pending_daypart = ""          # 上一局对话里没换完的时段不带进新的一局（5.9 全流程测试查出来：前面的测试留下「夜」，新一局第一次关对话就天黑了）
 	checks.clear()
 	quests.clear()
 	clues.clear()
