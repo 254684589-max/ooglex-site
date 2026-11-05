@@ -43,6 +43,8 @@ static func build(parent: Node3D) -> void:
 		["boatman", "渡口的船夫", BOATMAN[0], float(BOATMAN[1]), "4a4a44", "boatman", []],
 		["camp_smith", "跟车的铁匠", PlainCamp.at(PlainCamp.FORGE[0], PlainCamp.FORGE[1] + 2.2), PlainCamp.YAW_ALONG + 90.0, "3a2e24", "", SMITH_LINES],
 	]
+	if str(GameState.get_flag("ch3_apprentice", "")) == "":                                  # 支线「熔炉车上的学徒」（6.5）：放走了、交出去了就不在了
+		list.append(["apprentice", "熔炉车上的学徒", PlainCamp.at(PlainCamp.FORGE[0] + 2.6, PlainCamp.FORGE[1] - 1.5), PlainCamp.YAW_ALONG - 90.0, "3a3430", "apprentice", []])
 	if GameState.daypart == "night":
 		list.append(["ida", "伊达", IDA_NIGHT[0], float(IDA_NIGHT[1]), "5e5248", "ida", []])
 	for it: Array in list:
@@ -54,6 +56,8 @@ static func build(parent: Node3D) -> void:
 			n.dialogue_id = str(it[5])
 		n.position = Vector3(at.x, ground(at), at.y)
 		n.rotation.y = deg_to_rad(float(it[3]))
+		if str(it[0]) == "apprentice":
+			n.scale = Vector3.ONE * 0.88                    # 十四五岁
 		parent.add_child(n)
 	_grave(parent)
 	_listen_door(parent)

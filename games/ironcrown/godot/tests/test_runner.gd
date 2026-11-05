@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9077,6 +9077,82 @@ func test_ch3people() -> void:
 	await free_main(main)
 	GameState.chapter = 0
 	GameState.daypart = "day"
+	GameState.pending_load = {}
+
+
+func test_ch3side() -> void:
+	# 第三章三条支线（6.5）
+	var fresh := func(flags: Dictionary) -> void:
+		GameState.new_game(650)
+		GameState.chapter = 3
+		GameState.daypart = "day"
+		GameState.start_quest("ch3_main")
+		GameState.set_stage("ch3_main", "sides")
+		GameState.set_flag("ch3_isabella_deal")
+		GameState.set_flag("ch3_heard_monk")
+		for k in flags:
+			GameState.set_flag(k, flags[k])
+	# 账本上的名字：伊达 → 塞缪尔的钥匙 → 账箱 → 回去告诉伊达
+	fresh.call({"ch3_bain_grave": true})
+	check(say_runner("ida", ["庄园的账上还记着他欠租。", "我去替你看。"], "plain") == "go" and GameState.quest_stage("ch3_ida") == "find" and say_runner("ida", [], "plain") == "waiting",
+		"伊达：想知道账上写了什么 → 支线「账本上的名字」")
+	var r := MillInside.open_ledger()
+	var picked := GameState.has_flag("ch3_ledger_open")
+	check(picked == GameState.check("ch3_ledger_pick", "stealth", 13) and (picked or str(r.toast).contains("钥匙在塞缪尔那儿")), "没钥匙就撬锁（潜行 13，一次定：%s）" % ("撬开了" if picked else "没撬开"))
+	GameState.set_flag("ch3_ledger_open", false)
+	GameState.set_flag("ch3_ledger_read", false)
+	GameState.set_stage("ch3_ida", "find")
+	GameState.set_flag("ch3_samuel_ledger")
+	check(say_runner("samuel", ["伊达想知道账上她男人的名字。账箱的钥匙在你这儿。", "黑鹭堡那几笔皮子，也是你记的。"], "plain") == "key_pressed" and GameState.has_flag("ch3_ledger_key"),
+		"拿皮毛税账册那几笔压塞缪尔，他把钥匙放在桌上")
+	r = MillInside.open_ledger()
+	check(str(r.toast).contains("鲁本") and GameState.has_flag("ch3_ledger_read") and GameState.quest_stage("ch3_ida") == "tell" and GameState.clues_for("ch3_ida").size() == 1,
+		"有钥匙开账箱：翻到鲁本那一行，支线到「回去告诉伊达」")
+	check(say_runner("ida", ["院长要是问起来，你肯说吗？"], "plain") == "witness" and str(GameState.get_flag("ch3_ida", "")) == "witness" and GameState.quest_done("ch3_ida") and say_runner("ida", [], "plain") == "after",
+		"念给伊达听：她答应站出来作证（ch3_ida = witness）")
+	fresh.call({})
+	GameState.start_quest("ch3_ida")
+	var ok_key := GameState.check("samuel_key_speech", "speech", 13)
+	check(say_runner("samuel", ["伊达想知道账上她男人的名字。账箱的钥匙在你这儿。", "账上记着的人，是饿死的。她只想看一眼名字。"], "plain") == ("key_given" if ok_key else "key_refused") and GameState.has_flag("ch3_ledger_key") == ok_key,
+		"说动塞缪尔要钥匙（口才 13：%s）" % ("给了" if ok_key else "没给"))
+	# 修道院的粥
+	fresh.call({})
+	check(say_runner("porter", ["锅底都见了。庄园那边，我替你去要。"], "plain") == "soup_ask" and GameState.quest_stage("ch3_soup") == "ask_manor", "门房：粥锅见底 → 支线「修道院的粥」")
+	GameState.silver = 20
+	check(say_runner("isabella", ["坠星院的粥锅见底了。", "我出钱，买两袋。（十五个银币）"], "plain") == "soup_bought" and GameState.silver == 5 and GameState.quest_stage("ch3_soup") == "tell_porter", "出 15 银币向伊莎贝拉买两袋")
+	check(say_runner("porter", [], "plain") == "soup_done" and str(GameState.get_flag("ch3_soup", "")) == "done" and GameState.quest_done("ch3_soup"), "回去告诉门房：明早两袋（ch3_soup = done）")
+	fresh.call({})
+	GameState.start_quest("ch3_soup")
+	var ok_soup := GameState.check("isabella_soup_speech", "speech", 13)
+	check(say_runner("isabella", ["坠星院的粥锅见底了。", "开春的一成救不了今天的锅。两袋麦子，你仓里一千多袋。"], "plain") == ("soup_yes" if ok_soup else "soup_no"), "说动伊莎贝拉（口才 13：%s）" % ("答应了" if ok_soup else "没答应"))
+	# 熔炉车上的学徒
+	fresh.call({})
+	var sev := GameState.get_rep("severin")
+	check(say_runner("apprentice", ["你躲什么？", "沿麦河往下游走。渡口有船。"], "plain") == "free" and str(GameState.get_flag("ch3_apprentice", "")) == "freed" and GameState.has_flag("ch3_letter_place")
+		and GameState.get_rep("severin") == sev - 5 and GameState.quest_done("ch3_apprentice"), "帮学徒溜走：塞弗林家 −5，他说出奥迪隆的信锁在床边箱子里")
+	fresh.call({})
+	check(say_runner("apprentice", ["你躲什么？", "跟我去见征粮官。"], "plain") == "hand" and str(GameState.get_flag("ch3_apprentice", "")) == "handed" and not GameState.has_flag("ch3_letter_place"), "交给奥迪隆：没有信的事")
+	# 人和东西摆在哪
+	fresh.call({})
+	GameState.pending_load = {"scene": "plain", "spawn": "camp", "player": {}}
+	var main := await make_area("plain")
+	await frames(3)
+	var ap := main.world.find_child("Npc_apprentice", true, false) as Npc
+	check(ap != null and await stands_clear(ap), "学徒缩在熔炉车后头，没卡住")
+	await free_main(main)
+	GameState.set_flag("ch3_apprentice", "freed")
+	GameState.pending_load = {"scene": "plain", "spawn": "camp", "player": {}}
+	main = await make_area("plain")
+	await frames(3)
+	check(main.world.find_child("Npc_apprentice", true, false) == null, "放走以后营地里没有他了")
+	await free_main(main)
+	GameState.pending_load = {"scene": "mill_inside", "spawn": "front", "player": {}}
+	main = await make_area("mill_inside")
+	await frames(3)
+	var ch: Node = main.world.find_child("LedgerChestOpen", true, false)
+	check(ch != null and main.world.find_child("LedgerChest", true, false) != null and MillInside.OFFICE.has_point(Vector2(MillInside.LEDGER_CHEST.x, MillInside.LEDGER_CHEST.z)), "磨坊账房东南角有那口铁皮账箱")
+	await free_main(main)
+	GameState.chapter = 0
 	GameState.pending_load = {}
 
 

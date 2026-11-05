@@ -151,5 +151,13 @@
   "ch3_odilon_envoy": {"desc": "在芦栈村听说过塞弗林家的信使（heard_envoy）：第一次见奥迪隆就认出他（6.4）", "set_in": "plain.json odilon/envoy", "read_in": "plain.json odilon"},
   "ch3_ida_met": {"desc": "在坠星院门口排队的人里见到了伊达（6.4）", "set_in": "plain.json ida", "read_in": "plain.json ida；6.5「账本上的名字」"},
   "ch3_night_boats": {"desc": "渡工之子：渡口的船夫说磨坊的船隔三夜不点灯往下游运一回粮、账上没有，今夜就有一趟（6.4；罪证的另一条来路）", "set_in": "plain.json boatman/guild", "read_in": "plain.json boatman；6.8 罪证"},
-  "ch3_ignaz_heard": {"desc": "贴着抄经室的门缝听了一回伊格纳兹念的话（6.4；按 ch2_fire / ch2_roll / 出身不一样）", "set_in": "world/plain_people.gd listen_door", "read_in": "6.8 守灵夜"}
+  "ch3_ignaz_heard": {"desc": "贴着抄经室的门缝听了一回伊格纳兹念的话（6.4；按 ch2_fire / ch2_roll / 出身不一样）", "set_in": "world/plain_people.gd listen_door", "read_in": "6.8 守灵夜"},
+  "ch3_ida": {"desc": "支线「账本上的名字」（6.5）：witness = 告诉了她账上写的，她答应站出来作证（6.8 罪证交给佃农那条更有分量）；alone = 没找到，她一个人去了修道院（6.8 定）", "set_in": "plain.json ida/told", "read_in": "6.8 罪证、章末回顾"},
+  "ch3_ledger_key": {"desc": "塞缪尔把磨坊账箱的钥匙给了你（说动他：口才 13，或者拿皮毛税账册那几笔压他）（6.5）", "set_in": "plain.json samuel/key_*", "read_in": "world/mill_inside.gd open_ledger"},
+  "ch3_ledger_open": {"desc": "磨坊账房的铁皮箱开了（钥匙或者撬开）（6.5）", "set_in": "world/mill_inside.gd open_ledger", "read_in": "world/mill_inside.gd"},
+  "ch3_ledger_picked": {"desc": "账箱是撬开的（潜行 13）——塞缪尔迟早会发现（6.5）", "set_in": "world/mill_inside.gd open_ledger", "read_in": "6.8"},
+  "ch3_ledger_read": {"desc": "翻过磨坊账箱里往年的账：鲁本的名字、仓存一千四百一十袋（6.5）", "set_in": "world/mill_inside.gd open_ledger", "read_in": "plain.json ida；6.8 罪证"},
+  "ch3_soup": {"desc": "支线「修道院的粥」（6.5）：talked = 说动伊莎贝拉送两袋麦子，bought = 你出钱买的；done = 告诉了门房（院长放人少一个条件，6.8）", "set_in": "plain.json isabella/soup_*、porter/soup_done", "read_in": "plain.json porter；6.8 院长放人"},
+  "ch3_apprentice": {"desc": "支线「熔炉车上的学徒」（6.5）：freed = 帮他溜走（塞弗林家 −5，他说了奥迪隆的信锁在床边箱子里），handed = 交给了奥迪隆（塞弗林家 +3）", "set_in": "plain.json apprentice", "read_in": "world/plain_people.gd（人还在不在）；6.8 摄政的信"},
+  "ch3_letter_place": {"desc": "学徒告诉你：奥迪隆每夜把一封盖着摄政戒指印的信锁进指挥帐床边那口箱子（6.5）", "set_in": "plain.json apprentice/free", "read_in": "6.8 摄政的信"}
 }

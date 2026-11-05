@@ -22,6 +22,8 @@ const STONES := [Vector3(-3.0, 0, -1.6), Vector3(-3.0, 0, 1.4)]
 const GEAR := Vector3(-4.2, 2.0, 0.0)
 const OFFICE := Rect2(2.2, -3.7, 2.5, 2.6)               # 东北角的账房小间
 const LEDGER_DESK := Vector3(3.5, 0, -3.0)
+const LEDGER_CHEST := Vector3(4.25, 0, -1.75)             # 账房里东南角那口铁皮箱（6.5）：往年的账锁在里头——谁交了、谁欠着、谁死了
+const LEDGER_TEXT := "（往年的账，一年一本，最上头那本是去年的。翻到腊月——）\n「腊月十九，麦渡东头，老科尔，欠租一袋。殁。」\n「腊月廿三，麦渡西头，鲁本，欠租两袋半。殁。账转其妻伊达，开春补。」\n「正月初四，麦渡西头，孩子一个（未记名），殁。」\n最后一页：「仓存，上等麦一千四百一十袋。」——字迹是同一个人的，一笔不乱。"
 const SPAWNS := {
 	"front": [Vector3(DOOR_X, 0, 2.9), 0.0],
 }
@@ -48,6 +50,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_decor(parent, reduced_motion)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
+	_ledger_chest(parent)
 	var exit := Door.make(EXIT_NAME, DOOR_W, 2.2, false)
 	exit.verb = "离开"
 	exit.to_area = "plain"
@@ -137,6 +140,42 @@ static func _sacks(kit: MeshKit) -> void:
 					kit.box(key, Vector3(x + rng.randf_range(-0.05, 0.05), 0.17 + ly * 0.32, z), Vector3(0.55, 0.32, 0.4), Basis(Vector3.UP, rng.randf_range(-0.2, 0.2)), 1.0, 0.7)
 					z += 0.45
 				x += 0.6
+
+
+## 账箱（支线「账本上的名字」，6.5）：钥匙在塞缪尔那儿（说动他，ch3_ledger_key），没钥匙就撬（潜行 13，一次定）；
+## 打开了翻到鲁本那一行（ch3_ledger_read、线索 ledger_reuben），支线到「回去告诉伊达」
+static func _ledger_chest(parent: Node3D) -> void:
+	var kit := MeshKit.new()
+	var c := LEDGER_CHEST
+	kit.box("timber", c + Vector3(0, 0.28, 0), Vector3(0.8, 0.56, 0.5), Basis(Vector3.UP, 0.1), 0.95, 0.6)
+	for y in [0.08, 0.5]:
+		kit.box("iron", c + Vector3(0, y, 0), Vector3(0.82, 0.05, 0.52), Basis(Vector3.UP, 0.1))
+	kit.box("iron", c + Vector3(-0.02, 0.42, 0.26), Vector3(0.1, 0.12, 0.03), Basis(Vector3.UP, 0.1))     # 锁
+	var mi := kit.build({"timber": Look.mat("timber"), "iron": Inn._iron_mat()})
+	mi.name = "LedgerChest"
+	parent.add_child(mi)
+	Inn._solid(parent, c + Vector3(0, 0.28, 0), Vector3(0.8, 0.56, 0.5))
+	var e := Examine.make("铁皮账箱", "打开", func(_who: FpController) -> Dictionary: return open_ledger(), Vector3(0.9, 0.8, 0.7))
+	e.name = "LedgerChestOpen"
+	e.position = c
+	e.verb_fn = func() -> String: return "翻账" if GameState.has_flag("ch3_ledger_open") else ("开锁" if GameState.has_flag("ch3_ledger_key") else "撬锁")
+	parent.add_child(e)
+
+
+static func open_ledger() -> Dictionary:
+	if not GameState.has_flag("ch3_ledger_open"):
+		if GameState.has_flag("ch3_ledger_key"):
+			GameState.set_flag("ch3_ledger_open")
+		elif GameState.check("ch3_ledger_pick", "stealth", 13):
+			GameState.set_flag("ch3_ledger_open")
+			GameState.set_flag("ch3_ledger_picked")
+		else:
+			return {"toast": "锁簧咬得死死的，撬了几下纹丝不动。（潜行 13 没过）钥匙在塞缪尔那儿。"}
+	GameState.set_flag("ch3_ledger_read")
+	if GameState.quest_stage("ch3_ida") == "find":
+		GameState.add_clue("ledger_reuben")
+		GameState.set_stage("ch3_ida", "tell")
+	return {"toast": LEDGER_TEXT}
 
 
 ## 东北角的账房小间：木板隔墙、斜面桌上摊着账本、一摞账本、墨水壶；墙上钉着一张单子

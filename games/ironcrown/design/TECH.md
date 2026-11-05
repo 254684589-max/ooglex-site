@@ -992,6 +992,15 @@ godot/
 - 字体子集补「愣、咧」（4597 个字形）。
 - **测试**：`ch3people` 组 18 项（扣人三条路、被打散的不扣、护粮的、征粮令、老礼、皮毛、别的出身没有这两句；账册；奥迪隆三种开场和认出信使；门房；老贝恩；伊达；船夫两种出身；门缝四种话；白天伊达在队里、夜里在坟边只有一个；船夫站在渡口；伊格纳兹跪在抄经室）；`ch3open` 的「8 个人排队」把伊达算进去。
 
+### 4.76 第三章支线（路线图 6.5，2026-11-05）
+
+- **任务**（`quests.json`）：`ch3_ida`（`find` → `tell`）、`ch3_soup`（`ask_manor` → `tell_porter`）、`ch3_apprentice`（`decide`）；线索 `ledger_reuben`。旗标八个（`ch3_ida`、`ch3_ledger_key` / `_open` / `_picked` / `_read`、`ch3_soup`、`ch3_apprentice`、`ch3_letter_place`）。
+- **对话**（`plain.json`）：`ida`（`ledger` → 「我去替你看」开支线 → `go`；`waiting`；`tell` 阶段 `told` → `witness`：`ch3_ida` = witness、支线完成；`after`）；`samuel/key`（`find` 阶段在三个开场都有；口才 13 `key_given` / `key_refused`，有 `ch3_samuel_ledger` 的 `key_pressed`）；`isabella/soup`（`ask_manor` 阶段：口才 13 `soup_yes` / `soup_no`、15 银币 `soup_bought`）；`porter`（`again` 开支线 `soup_ask`；`tell_porter` 阶段 `soup_done`）；新 `apprentice`（`why` 开支线；`free`：塞弗林家 −5、`ch3_letter_place` / `hand`：+3）。
+- **`MillInside.LEDGER_CHEST`**：账房东南角的铁皮箱（木箱两道铁箍一把锁、碰撞盒、`Examine`：动作字「撬锁 / 开锁 / 翻账」）；`open_ledger()`：有钥匙直接开、没钥匙 `GameState.check("ch3_ledger_pick", "stealth", 13)`（一次定），开了给 `LEDGER_TEXT`、`find` 阶段加线索并到 `tell`。
+- **`PlainPeople`**：学徒缩在熔炉车车辕边（`ch3_apprentice` 没定的时候才摆；缩小到 0.88）。
+- 字体子集补「廿、殁」（4599 个字形）。
+- **测试**：`ch3side` 组 14 项（伊达开支线；撬锁一次定；压塞缪尔拿钥匙；开账箱翻到鲁本；念给伊达听；口才要钥匙；粥：门房开、买两袋、告诉门房、口才说动；学徒放走 / 交出去；学徒站着没卡住、放走以后不在；账箱在账房里）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

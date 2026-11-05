@@ -1,5 +1,5 @@
 {
-  "_说明": "金穗平原的人（路线图 6.2c；STORY.md 6.5 第 2 步）。坠星院院长格雷戈尔挡在门洞里：「修道院里没有你要找的人。」（主线 ch3_main：to_abbey → ask_porter）；门房外熬粥的修士偷偷告诉你东边抄经室里关着一个灰袍修士，要见他得院长点头，或者洛蒙德家点头（ask_porter → to_manor，ch3_heard_monk）。6.4 再加前两章和出身留下的话。 6.3d 主线第 3–4 步：庄园大厅里的女家主伊莎贝拉开条件——今晚替她守住磨坊、守到天亮，她就写信给院长放人（to_manor → sides，ch3_isabella_deal）；管家塞缪尔送你出门时欲言又止（磨坊账房的钥匙在他那儿，ch3_samuel_hint，6.5「账本上的名字」接）；麦渡的佃农头老贝恩想趁今晚乱带人去扛粮，带你看伊达丈夫的坟（ch3_bain_grave）；塞弗林营地的征粮官奥迪隆请你喝酒、要你站到塞弗林家一边，给你看摄政的征粮令（ch3_odilon_order）；两边都见过 → choose（main._ch3_sides_heard）。6.4 再加前两章和出身留下的开场白。 6.4 前两章和出身留下的话（STORY.md 6.4）：伊莎贝拉——劫过粮车的先扣下（口才 14 / 赔 20 银币 / 直接谈守磨坊，ch3_released），护过粮的客气请进（征粮令问一句厄尔德家），落魄骑士之后行老礼（洛蒙德家 +3），伊薇特当家的问北境皮毛；塞缪尔认得皮毛税账册上洛蒙德家那几笔（ch1_ledger = kept → ch3_samuel_ledger）；奥迪隆——阿尔里克当家的当自己人、伊薇特当家的提防，在芦栈村听过信使的当面认出他（ch3_odilon_envoy）；谈不成两手空空的，门房说「北边又来一个讨粮的」；劫过粮的，老贝恩高看一眼。新人：伊达（坠星院门口排队领粥、夜里在麦渡坟边；6.5 支线接）、渡口的船夫（渡工之子问出磨坊的船夜里不点灯往下游运粮，ch3_night_boats——罪证的另一条来路）。",
+  "_说明": "金穗平原的人（路线图 6.2c；STORY.md 6.5 第 2 步）。坠星院院长格雷戈尔挡在门洞里：「修道院里没有你要找的人。」（主线 ch3_main：to_abbey → ask_porter）；门房外熬粥的修士偷偷告诉你东边抄经室里关着一个灰袍修士，要见他得院长点头，或者洛蒙德家点头（ask_porter → to_manor，ch3_heard_monk）。6.4 再加前两章和出身留下的话。 6.3d 主线第 3–4 步：庄园大厅里的女家主伊莎贝拉开条件——今晚替她守住磨坊、守到天亮，她就写信给院长放人（to_manor → sides，ch3_isabella_deal）；管家塞缪尔送你出门时欲言又止（磨坊账房的钥匙在他那儿，ch3_samuel_hint，6.5「账本上的名字」接）；麦渡的佃农头老贝恩想趁今晚乱带人去扛粮，带你看伊达丈夫的坟（ch3_bain_grave）；塞弗林营地的征粮官奥迪隆请你喝酒、要你站到塞弗林家一边，给你看摄政的征粮令（ch3_odilon_order）；两边都见过 → choose（main._ch3_sides_heard）。6.4 再加前两章和出身留下的开场白。 6.4 前两章和出身留下的话（STORY.md 6.4）：伊莎贝拉——劫过粮车的先扣下（口才 14 / 赔 20 银币 / 直接谈守磨坊，ch3_released），护过粮的客气请进（征粮令问一句厄尔德家），落魄骑士之后行老礼（洛蒙德家 +3），伊薇特当家的问北境皮毛；塞缪尔认得皮毛税账册上洛蒙德家那几笔（ch1_ledger = kept → ch3_samuel_ledger）；奥迪隆——阿尔里克当家的当自己人、伊薇特当家的提防，在芦栈村听过信使的当面认出他（ch3_odilon_envoy）；谈不成两手空空的，门房说「北边又来一个讨粮的」；劫过粮的，老贝恩高看一眼。新人：伊达（坠星院门口排队领粥、夜里在麦渡坟边；6.5 支线接）、渡口的船夫（渡工之子问出磨坊的船夜里不点灯往下游运粮，ch3_night_boats——罪证的另一条来路）。 6.5 支线：账本上的名字（ida → 磨坊账房铁皮箱：塞缪尔的钥匙 samuel/key_* 或撬锁 → 回去念给伊达听，ch3_ida = witness）；修道院的粥（porter/again 接 → isabella/soup：口才 13 或 15 银币 → porter/soup_done，ch3_soup）；熔炉车上的学徒（apprentice：帮他溜走 → 说出奥迪隆的信锁在床边箱子里，塞弗林家 −5 / 交给奥迪隆，塞弗林家 +3）。",
   "gregor": {"speaker": "格雷戈尔院长", "start": "greet",
     "start_if": [{"if": [{"flag": "ch3_heard_monk"}], "node": "after"}, {"if": [{"flag": "gregor_met"}], "node": "again"}],
     "nodes": {
@@ -13,7 +13,7 @@
       "lomond": {"text": "（他没回答，转身往院子里走了两步，又站住）……天黑以前出去。门房夜里要上闩。", "options": [{"text": "告辞。", "end": true}]}
     }},
   "porter": {"speaker": "门房的修士", "start": "greet",
-    "start_if": [{"if": [{"flag": "ch3_heard_monk"}], "node": "again"}, {"if": [{"quest_stage": "ch3_main", "eq": "ask_porter"}], "node": "secret"}, {"if": [{"flag": "ch2_aid", "eq": "refused"}], "node": "greet_north"}],
+    "start_if": [{"if": [{"quest_stage": "ch3_soup", "eq": "tell_porter"}], "node": "soup_done"}, {"if": [{"flag": "ch3_heard_monk"}], "node": "again"}, {"if": [{"quest_stage": "ch3_main", "eq": "ask_porter"}], "node": "secret"}, {"if": [{"flag": "ch2_aid", "eq": "refused"}], "node": "greet_north"}],
     "nodes": {
       "greet": {"text": "（他用长柄勺搅着锅，锅里的粥稀得照得见天）一人一勺。排队。孩子先。", "options": [{"text": "粥一直这么稀？", "next": "thin"}, {"text": "告辞。", "end": true}]},
       "thin": {"text": "入冬时还能立住勺子。庄园送来的麦子一回比一回少，排队的人一天比一天多。（他又往锅里添了一瓢水）院长说，主会看顾。", "options": [{"text": "告辞。", "end": true}]},
@@ -21,39 +21,49 @@
       "what": {"text": "听不清。门锁着，送饭的从门缝里塞进去。有一夜我听见他喊了一声「冠」，然后就是哭。（他把勺子在锅沿上磕了磕）……你别说是我告诉你的。", "options": [{"text": "怎么才能见他？", "next": "how"}]},
       "how": {"text": "院长点头。或者——（他朝东岸坡上那座石砌的庄园努了努嘴）洛蒙德家点头。修道院吃的是他们的粮，院长听他们的。", "do": [{"quest": "ch3_main", "stage": "to_manor"}], "options": [{"text": "我去庄园。", "end": true}, {"text": "这锅粥，够排到天黑吗？", "next": "dusk"}]},
       "dusk": {"text": "（他看了一眼队尾）不够。从来不够。", "options": [{"text": "告辞。", "end": true}]},
-      "again": {"text": "（他没抬头，往你碗里多舀了半勺）去庄园。天黑以前回来，门房夜里上闩。", "options": [{"text": "告辞。", "end": true}]},
-      "greet_north": {"text": "（他用长柄勺搅着锅，抬头看了你一眼）北边又来一个讨粮的。（他往锅里添了一瓢水）一人一勺。排队。孩子先。", "options": [{"text": "粥一直这么稀？", "next": "thin"}, {"text": "告辞。", "end": true}]}
+      "again": {"text": "（他没抬头，往你碗里多舀了半勺）去庄园。天黑以前回来，门房夜里上闩。", "options": [{"text": "锅底都见了。庄园那边，我替你去要。", "if": [{"not_quest": "ch3_soup"}], "do": [{"quest": "ch3_soup"}], "next": "soup_ask"}, {"text": "告辞。", "end": true}]},
+      "greet_north": {"text": "（他用长柄勺搅着锅，抬头看了你一眼）北边又来一个讨粮的。（他往锅里添了一瓢水）一人一勺。排队。孩子先。", "options": [{"text": "粥一直这么稀？", "next": "thin"}, {"text": "告辞。", "end": true}]},
+      "soup_ask": {"text": "（他的勺子停在锅沿上）……你替我们去要？（他压低声音）院长不肯开这个口。修道院吃人家的粮，就不好伸手要更多。两袋，够熬到正月。", "options": [{"text": "告辞。", "end": true}]},
+      "soup_done": {"text": "（他听完，长柄勺停在半空）……两袋。明早。（他往你碗里舀了满满一勺，第一回立住了勺子）院长那边——我替你说话。", "do": [{"set": "ch3_soup", "value": "done"}, {"quest_done": "ch3_soup"}], "options": [{"text": "告辞。", "end": true}]}
     }},
   "isabella": {"speaker": "伊莎贝拉·洛蒙德", "start": "busy",
     "start_if": [{"if": [{"flag": "ch3_isabella_deal"}], "node": "after"}, {"if": [{"quest_stage": "ch3_main", "eq": "to_manor"}, {"flag": "ch2_convoy", "eq": "taken"}, {"not_flag": "ch3_released"}], "node": "held"}, {"if": [{"quest_stage": "ch3_main", "eq": "to_manor"}, {"flag": "ch2_convoy", "eq": "burned"}, {"not_flag": "ch3_released"}], "node": "held"}, {"if": [{"quest_stage": "ch3_main", "eq": "to_manor"}, {"flag": "ch2_aid", "eq": "granted"}], "node": "greet_lawful"}, {"if": [{"quest_stage": "ch3_main", "eq": "to_manor"}], "node": "greet"}],
     "nodes": {
       "busy": {"text": "（她站在高桌后头写信，头也没抬）庄园今天不见北边来的客人。塞缪尔会送你出去。", "options": [{"text": "告辞。", "end": true}]},
-      "greet": {"text": "（她站在高桌后头，俯身在一张没写完的信上，笔尖还湿着）北边来的。门房那个修士嘴不严——你想见抄经室里关着的那个人。", "options": [{"text": "我想见他。院长说只有他能点头。", "next": "nod"}, {"text": "您怎么知道我想见谁？", "next": "know"}, {"text": "（按老规矩，右手按胸，行了半礼）", "if": [{"flag": "origin", "eq": "knight"}, {"not_flag": "ch3_isabella_courtesy"}], "next": "courtesy"}, {"text": "瓦伦家现在是伊薇特当家。", "if": [{"flag": "valen_heir", "eq": "ivette"}, {"not_flag": "ch3_isabella_furs"}], "next": "furs"}]},
+      "greet": {"text": "（她站在高桌后头，俯身在一张没写完的信上，笔尖还湿着）北边来的。门房那个修士嘴不严——你想见抄经室里关着的那个人。", "options": [{"text": "我想见他。院长说只有他能点头。", "next": "nod"}, {"text": "您怎么知道我想见谁？", "next": "know"}, {"text": "（按老规矩，右手按胸，行了半礼）", "if": [{"flag": "origin", "eq": "knight"}, {"not_flag": "ch3_isabella_courtesy"}], "next": "courtesy"}, {"text": "瓦伦家现在是伊薇特当家。", "if": [{"flag": "valen_heir", "eq": "ivette"}, {"not_flag": "ch3_isabella_furs"}], "next": "furs"}, {"text": "坠星院的粥锅见底了。", "if": [{"quest_stage": "ch3_soup", "eq": "ask_manor"}], "next": "soup"}]},
       "know": {"text": "坠星院吃我的粮，院长每七天来这儿报一回账。（她把笔搁下）你在门房外头站了多久、问了什么，天黑以前我都会知道。", "options": [{"text": "那您也知道我为什么来。", "next": "nod"}]},
       "nod": {"text": "院长点不点头，看我。我点不点头，看你。（她朝东北边的窗户偏了偏头）塞弗林家的兵在砧山路口扎了营，说是替摄政征粮。今晚他们要来磨坊「征」——我的磨坊，我的粮。", "options": [{"text": "您要我做什么？", "next": "deal"}, {"text": "仓里的粮够全平原吃一冬，佃农却在修道院门口喝水。", "next": "tenants"}]},
       "tenants": {"text": "（她笑了一下，笑意没到眼睛里）粮价一天一个样。今天开了仓，开春谁来交租？谁来种地？……你替我守住磨坊，坠星院这个冬天的麦子，我加一成。", "options": [{"text": "说条件。", "next": "deal"}]},
       "deal": {"text": "替我守住磨坊，守到天亮。守住了，我写一封信给院长——你要见谁，就见谁。（她把那张没写完的信翻过去，压在手底下）我的卫兵会听你的。天黑以前到磨坊。", "do": [{"set": "ch3_isabella_deal"}, {"quest": "ch3_main", "stage": "sides"}], "options": [{"text": "塞弗林家来多少人？", "next": "how_many"}, {"text": "我会去看看。", "end": true}]},
       "how_many": {"text": "二十，也许四十。领头的是摄政的征粮官，姓奥迪隆——前些天还派人来请我去营地喝酒。（她重新拿起笔）我没去。你要是去了，替我看看他的酒是不是真那么烈。", "options": [{"text": "告辞。", "end": true}]},
-      "after": {"text": "（她没抬头，笔在纸上走）天黑以前到磨坊。别让我的卫兵等你。", "options": [{"text": "仓里的粮……", "next": "after_grain"}, {"text": "告辞。", "end": true}]},
+      "after": {"text": "（她没抬头，笔在纸上走）天黑以前到磨坊。别让我的卫兵等你。", "options": [{"text": "仓里的粮……", "next": "after_grain"}, {"text": "坠星院的粥锅见底了。", "if": [{"quest_stage": "ch3_soup", "eq": "ask_manor"}], "next": "soup"}, {"text": "告辞。", "end": true}]},
       "after_grain": {"text": "仓里的粮是洛蒙德家的。守住它，是你答应过的事；分给谁，是我的事。", "options": [{"text": "告辞。", "end": true}]},
       "held": {"text": "（你身后，两个卫兵把门带上了）北边那三车粮——洛蒙德家的粮，安塞尔姆押上去的。押车的回来说，半道上劫车的那个人背着一把剑，跟你背的这把一个样。（她没抬头，笔还在纸上走）你说，我该把你交给谁？", "options": [{"text": "那一夜山上的人在挨饿。粮上了烽燧，比烂在仓里强。", "check": {"id": "isabella_held_speech", "skill": "speech", "dc": 14, "pass": "held_talked", "fail": "held_firm"}}, {"text": "我赔。（把钱袋放在桌上）", "if": [{"silver": 20}], "do": [{"pay": 20}], "next": "held_paid"}, {"text": "不如说说，你要我做什么。", "next": "held_deal"}]},
       "held_talked": {"text": "（她终于抬起头，看了你很久）……烂在仓里。你倒是会说话。（她朝卫兵摆了摆手，门开了一条缝）那三车的账，我先记着。", "do": [{"set": "ch3_released"}], "options": [{"text": "我从北边来，是为了抄经室里那个人。", "next": "nod"}]},
       "held_firm": {"text": "（她把笔搁下）饿肚子的人我见得多了，坡下就有一村子。说这些的人，都想白拿。", "options": [{"text": "我赔。（把钱袋放在桌上）", "if": [{"silver": 20}], "do": [{"pay": 20}], "next": "held_paid"}, {"text": "那说说，你要我做什么。", "next": "held_deal"}]},
       "held_paid": {"text": "（她连数都没数，把钱袋推到桌角）二十个银币买不回三车粮。不过——（她朝卫兵摆了摆手）够买你站在这儿把话说完。", "do": [{"set": "ch3_released"}], "options": [{"text": "我是为了抄经室里那个人来的。", "next": "nod"}]},
       "held_deal": {"text": "（她笑了，第一次）这才像北边来的人。会劫车的，就会守车。", "do": [{"set": "ch3_released"}], "options": [{"text": "守什么？", "next": "nod"}]},
-      "greet_lawful": {"text": "（她放下笔，站了起来）北边那位。安塞尔姆回来说，有个人护着三车粮过了潮水，一车没丢。（她朝长桌那边抬了抬手）吃点东西。这屋里热，斗篷脱了吧。", "options": [{"text": "我是为了抄经室里那个人来的。", "next": "nod"}, {"text": "罗薇娜那张征粮令，安塞尔姆收下了？", "if": [{"flag": "ch2_requisition"}], "next": "eld"}, {"text": "（按老规矩，右手按胸，行了半礼）", "if": [{"flag": "origin", "eq": "knight"}, {"not_flag": "ch3_isabella_courtesy"}], "next": "courtesy"}, {"text": "瓦伦家现在是伊薇特当家。", "if": [{"flag": "valen_heir", "eq": "ivette"}, {"not_flag": "ch3_isabella_furs"}], "next": "furs"}]},
+      "greet_lawful": {"text": "（她放下笔，站了起来）北边那位。安塞尔姆回来说，有个人护着三车粮过了潮水，一车没丢。（她朝长桌那边抬了抬手）吃点东西。这屋里热，斗篷脱了吧。", "options": [{"text": "我是为了抄经室里那个人来的。", "next": "nod"}, {"text": "罗薇娜那张征粮令，安塞尔姆收下了？", "if": [{"flag": "ch2_requisition"}], "next": "eld"}, {"text": "（按老规矩，右手按胸，行了半礼）", "if": [{"flag": "origin", "eq": "knight"}, {"not_flag": "ch3_isabella_courtesy"}], "next": "courtesy"}, {"text": "瓦伦家现在是伊薇特当家。", "if": [{"flag": "valen_heir", "eq": "ivette"}, {"not_flag": "ch3_isabella_furs"}], "next": "furs"}, {"text": "坠星院的粥锅见底了。", "if": [{"quest_stage": "ch3_soup", "eq": "ask_manor"}], "next": "soup"}]},
       "eld": {"text": "收下了。厄尔德家的印，安塞尔姆拿回来给我看过。（她把笔在指间转了一圈）北边的事，我记着——厄尔德家欠洛蒙德家一个人情，迟早要还。", "options": [{"text": "我是为了抄经室里那个人来的。", "next": "nod"}]},
       "courtesy": {"text": "（她愣了一下，然后——慢慢地——回了半礼）这一礼，三十年没人在这屋里行过了。你家里有过封地。（她重新坐回去，语气软了一点）说吧，北边来的骑士家的人。", "do": [{"set": "ch3_isabella_courtesy"}, {"rep": "lomond", "delta": 3}], "options": [{"text": "我是为了抄经室里那个人来的。", "next": "nod"}]},
-      "furs": {"text": "（她的笔停了）伊薇特·瓦伦。厄尔德家的朋友，把摄政的信使轰出了堡门……（她想了想）北境的皮毛，往年都过王都的手，王都抽三成。要是有人肯替我捎一句话到黑鹭堡——", "do": [{"set": "ch3_isabella_furs"}], "options": [{"text": "先说抄经室里那个人。", "next": "nod"}]}
+      "furs": {"text": "（她的笔停了）伊薇特·瓦伦。厄尔德家的朋友，把摄政的信使轰出了堡门……（她想了想）北境的皮毛，往年都过王都的手，王都抽三成。要是有人肯替我捎一句话到黑鹭堡——", "do": [{"set": "ch3_isabella_furs"}], "options": [{"text": "先说抄经室里那个人。", "next": "nod"}]},
+      "soup": {"text": "（她的笔停了）我说过，加一成——开春。", "options": [{"text": "开春的一成救不了今天的锅。两袋麦子，你仓里一千多袋。", "check": {"id": "isabella_soup_speech", "skill": "speech", "dc": 13, "pass": "soup_yes", "fail": "soup_no"}}, {"text": "我出钱，买两袋。（十五个银币）", "if": [{"silver": 15}], "do": [{"pay": 15}, {"set": "ch3_soup", "value": "bought"}, {"quest": "ch3_soup", "stage": "tell_porter"}], "next": "soup_bought"}, {"text": "算了。", "end": true}]},
+      "soup_yes": {"text": "（她看了你一眼，像在算一笔账）……修道院的人念经的时候，记得念洛蒙德家。（她扬声）塞缪尔，明早送两袋到坠星院。", "do": [{"set": "ch3_soup", "value": "talked"}, {"quest": "ch3_soup", "stage": "tell_porter"}], "options": [{"text": "告辞。", "end": true}]},
+      "soup_no": {"text": "（她低下头接着写）开春。", "options": [{"text": "我出钱，买两袋。（十五个银币）", "if": [{"silver": 15}], "do": [{"pay": 15}, {"set": "ch3_soup", "value": "bought"}, {"quest": "ch3_soup", "stage": "tell_porter"}], "next": "soup_bought"}, {"text": "告辞。", "end": true}]},
+      "soup_bought": {"text": "（她连眼皮都没抬，把钱拨到桌角）塞缪尔，明早送两袋到坠星院。——记在北边那位的账上。", "options": [{"text": "告辞。", "end": true}]}
     }},
   "samuel": {"speaker": "管家塞缪尔", "start": "greet",
     "start_if": [{"if": [{"flag": "ch3_samuel_hint"}], "node": "again"}, {"if": [{"flag": "ch3_isabella_deal"}], "node": "out"}],
     "nodes": {
-      "greet": {"text": "（他两手捧着一本厚账，站在门边）女家主在东头的高桌那儿。说话小声些——她在写信。", "options": [{"text": "告辞。", "end": true}]},
-      "out": {"text": "（他替你拉开门，手在门闩上停了一下）……磨坊东北角那间账房。门上那把锁，钥匙在我这儿。（他朝高桌那边看了一眼，声音压得更低）没什么。天冷，路滑，慢走。", "do": [{"set": "ch3_samuel_hint"}], "options": [{"text": "账房里有什么？", "next": "what"}, {"text": "我身上有一本黑鹭堡的皮毛税账册。", "if": [{"flag": "ch1_ledger", "eq": "kept"}], "next": "ledger"}, {"text": "告辞。", "end": true}]},
+      "greet": {"text": "（他两手捧着一本厚账，站在门边）女家主在东头的高桌那儿。说话小声些——她在写信。", "options": [{"text": "伊达想知道账上她男人的名字。账箱的钥匙在你这儿。", "if": [{"quest_stage": "ch3_ida", "eq": "find"}, {"not_flag": "ch3_ledger_key"}], "next": "key"}, {"text": "告辞。", "end": true}]},
+      "out": {"text": "（他替你拉开门，手在门闩上停了一下）……磨坊东北角那间账房。门上那把锁，钥匙在我这儿。（他朝高桌那边看了一眼，声音压得更低）没什么。天冷，路滑，慢走。", "do": [{"set": "ch3_samuel_hint"}], "options": [{"text": "伊达想知道账上她男人的名字。账箱的钥匙在你这儿。", "if": [{"quest_stage": "ch3_ida", "eq": "find"}, {"not_flag": "ch3_ledger_key"}], "next": "key"}, {"text": "账房里有什么？", "next": "what"}, {"text": "我身上有一本黑鹭堡的皮毛税账册。", "if": [{"flag": "ch1_ledger", "eq": "kept"}], "next": "ledger"}, {"text": "告辞。", "end": true}]},
       "what": {"text": "账。（他把怀里那本抱紧了一点）账就是账，一笔一笔，谁交了、谁欠着、谁……（他没说下去）今晚要是乱起来，别让人烧了那间屋子。", "options": [{"text": "告辞。", "end": true}]},
-      "again": {"text": "（他点点头，没说话，眼睛往坡下磨坊那边瞟了一下）", "options": [{"text": "告辞。", "end": true}]},
-      "ledger": {"text": "（他捧账的手抖了一下，声音一下子压到最低）……那上头，有洛蒙德家的几笔。北边的皮子往南运，过了麦渡就换了名字。（他看了一眼高桌）那几笔，是我记的。别在这屋里拿出来。", "do": [{"set": "ch3_samuel_ledger"}], "options": [{"text": "告辞。", "end": true}]}
+      "again": {"text": "（他点点头，没说话，眼睛往坡下磨坊那边瞟了一下）", "options": [{"text": "伊达想知道账上她男人的名字。账箱的钥匙在你这儿。", "if": [{"quest_stage": "ch3_ida", "eq": "find"}, {"not_flag": "ch3_ledger_key"}], "next": "key"}, {"text": "告辞。", "end": true}]},
+      "ledger": {"text": "（他捧账的手抖了一下，声音一下子压到最低）……那上头，有洛蒙德家的几笔。北边的皮子往南运，过了麦渡就换了名字。（他看了一眼高桌）那几笔，是我记的。别在这屋里拿出来。", "do": [{"set": "ch3_samuel_ledger"}], "options": [{"text": "告辞。", "end": true}]},
+      "key": {"text": "（他抱着账退了半步）账是庄园的账。女家主要是知道我把钥匙给了外人——", "options": [{"text": "账上记着的人，是饿死的。她只想看一眼名字。", "check": {"id": "samuel_key_speech", "skill": "speech", "dc": 13, "pass": "key_given", "fail": "key_refused"}}, {"text": "黑鹭堡那几笔皮子，也是你记的。", "if": [{"flag": "ch3_samuel_ledger"}], "next": "key_pressed"}, {"text": "算了。", "end": true}]},
+      "key_given": {"text": "（他低头看着自己的手，很久）……去年腊月，我记了四个名字。四个。（他从腰上解下一把小铁钥匙，塞进你手里，手是凉的）看完锁上。别让她知道是我。", "do": [{"set": "ch3_ledger_key"}], "options": [{"text": "告辞。", "end": true}]},
+      "key_refused": {"text": "（他摇头，把账抱得更紧）我只是记账的。……请回吧。", "options": [{"text": "告辞。", "end": true}]},
+      "key_pressed": {"text": "（他的脸白了）……你拿那几笔压我。（他从腰上解下钥匙，没递，是放在门边的桌上）看完锁上。我们两清。", "do": [{"set": "ch3_ledger_key"}], "options": [{"text": "告辞。", "end": true}]}
     }},
   "bain": {"speaker": "老贝恩", "start": "early",
     "start_if": [{"if": [{"flag": "ch3_bain_grave"}], "node": "again"}, {"if": [{"flag": "beacon_grain", "eq": "rob"}, {"quest_stage": "ch3_main", "eq": "sides"}], "node": "greet_rob"}, {"if": [{"flag": "beacon_grain", "eq": "rob"}, {"quest_stage": "ch3_main", "eq": "choose"}], "node": "greet_rob"}, {"if": [{"quest_stage": "ch3_main", "eq": "sides"}], "node": "greet"}, {"if": [{"quest_stage": "ch3_main", "eq": "choose"}], "node": "greet"}],
@@ -84,13 +94,18 @@
       "greet_ivette": {"text": "（他没倒酒，一只手按在桌上的地图上）伊薇特·瓦伦的人。厄尔德家的朋友。（他笑了一下，笑得很慢）北边那位新家主，把摄政的信使轰出了堡门——轰的就是我。你来做什么？", "options": [{"text": "来喝你一杯酒。", "next": "drink"}, {"text": "来听你要说什么。", "next": "offer"}, {"text": "三天前，你进过黑鹭堡。马鞍上搭着红布。", "if": [{"flag": "heard_envoy"}, {"not_flag": "ch3_odilon_envoy"}], "next": "envoy"}]}
     }},
   "ida": {"speaker": "伊达", "start": "greet",
-    "start_if": [{"if": [{"flag": "ch3_ida_met"}], "node": "again"}, {"if": [{"flag": "ch3_bain_grave"}], "node": "knows"}],
+    "start_if": [{"if": [{"quest_done": "ch3_ida"}], "node": "after"}, {"if": [{"quest_stage": "ch3_ida", "eq": "tell"}], "node": "told"}, {"if": [{"quest_active": "ch3_ida"}], "node": "waiting"}, {"if": [{"flag": "ch3_ida_met"}], "node": "again"}, {"if": [{"flag": "ch3_bain_grave"}], "node": "knows"}],
     "nodes": {
       "greet": {"text": "（她攥着一只空碗，眼睛一直看着门房那边，没看你）排到我的时候，锅底就剩水了。天天这样。", "options": [{"text": "你是麦渡的人？", "next": "who"}, {"text": "告辞。", "end": true}]},
       "who": {"text": "伊达。（她把碗攥得更紧）村西头，冒烟的那两户不是我家。", "do": [{"set": "ch3_ida_met"}], "options": [{"text": "告辞。", "end": true}]},
       "knows": {"text": "（她转过头来，看了你一眼——看见了你靴子上麦渡的泥）老贝恩带你去看过了。（她低头看着碗）他叫鲁本。去年腊月。租子交到最后一袋，他自己一口没吃。", "do": [{"set": "ch3_ida_met"}], "options": [{"text": "庄园的账上还记着他欠租。", "next": "ledger"}, {"text": "告辞。", "end": true}]},
-      "ledger": {"text": "（碗在她手里转了半圈）我知道。我不识字，可我知道。（她终于抬起眼睛）我就想看一眼——他们是不是把他的名字写下来了。写成什么。", "options": [{"text": "告辞。", "end": true}]},
-      "again": {"text": "（她朝门房那边看了一眼，锅里冒着热气）排到了。", "options": [{"text": "告辞。", "end": true}]}
+      "ledger": {"text": "（碗在她手里转了半圈）我知道。我不识字，可我知道。（她终于抬起眼睛）我就想看一眼——他们是不是把他的名字写下来了。写成什么。", "options": [{"text": "我去替你看。", "do": [{"quest": "ch3_ida"}], "next": "go"}, {"text": "告辞。", "end": true}]},
+      "again": {"text": "（她朝门房那边看了一眼，锅里冒着热气）排到了。", "options": [{"text": "你想知道账上写了什么？", "if": [{"not_quest": "ch3_ida"}], "next": "ledger"}, {"text": "告辞。", "end": true}]},
+      "go": {"text": "（她看了你很久，像不信）……账在磨坊。塞缪尔管着。（她把碗翻过来，倒掉碗底一点水）你看见了，回来念给我听。一个字都别改。", "options": [{"text": "告辞。", "end": true}]},
+      "waiting": {"text": "（她没回头）看见了吗？", "options": [{"text": "还没有。", "end": true}]},
+      "told": {"text": "（你念给她听：「腊月廿三，麦渡西头，鲁本，欠租两袋半。殁。账转其妻伊达，开春补。」）\n（她把碗放在雪地上，站了起来）……「殁」。他们写他「殁」。人饿死了，叫「殁」；欠的两袋半，转给我。", "options": [{"text": "院长要是问起来，你肯说吗？", "do": [{"set": "ch3_ida", "value": "witness"}, {"quest_done": "ch3_ida"}], "next": "witness"}]},
+      "witness": {"text": "说。谁问我都说。（她拍掉膝盖上的雪）我不识字，可我记得住——腊月廿三，两袋半，殁。", "options": [{"text": "告辞。", "end": true}]},
+      "after": {"text": "（她排在队里，碗攥在手里，背挺得比别人直）腊月廿三。两袋半。我记着呢。", "options": [{"text": "告辞。", "end": true}]}
     }},
   "boatman": {"speaker": "渡口的船夫", "start": "greet",
     "start_if": [{"if": [{"flag": "ch3_night_boats"}], "node": "again"}],
@@ -100,5 +115,14 @@
       "guild": {"text": "（他看了你的手一眼，又看了你的脸）……行会的人。灰鲸河上下来的？（他把棍子扔进船里，声音低了）那我告诉你：磨坊的船，每隔三夜走一回，不点灯，从水轮底下那道槽口出来，往下游走。装的是麦子，回来的时候空着。账上——（他朝坡上努了努嘴）账上是没有的。", "do": [{"set": "ch3_night_boats"}, {"rep": "ferrymen", "delta": 3}], "options": [{"text": "下一回是哪夜？", "next": "when"}]},
       "when": {"text": "（他数了数手指）就是今夜。（他站起来，拍了拍膝盖上的雪）河上的人不卖河上的人。这话我只说一遍。", "options": [{"text": "告辞。", "end": true}]},
       "again": {"text": "（他又敲起了船边的冰）今夜。不点灯。", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "apprentice": {"speaker": "熔炉车上的学徒", "start": "greet",
+    "start_if": [{"if": [{"quest_active": "ch3_apprentice"}], "node": "decide"}],
+    "nodes": {
+      "greet": {"text": "（他缩在熔炉车后头的车辕边上，十四五岁，手上全是烫出来的疤。一看见你，他往车轮后面躲了躲）……你不是营里的人。", "options": [{"text": "你躲什么？", "next": "why"}, {"text": "告辞。", "end": true}]},
+      "why": {"text": "砧山的矿。我爹死在里头，我是从矿口爬出来的。师傅说跟车下山打铁，就不用回去。（他攥着车轮的辐条）可征完粮，车要回砧山——征粮官说，人手不够，学徒先下矿。", "do": [{"quest": "ch3_apprentice"}], "options": [{"text": "沿麦河往下游走。渡口有船。", "next": "free"}, {"text": "跟我去见征粮官。", "next": "hand"}, {"text": "我什么都没看见。", "end": true}]},
+      "decide": {"text": "（他还缩在车辕边上，听见脚步声就抬头）……你想好了？", "options": [{"text": "沿麦河往下游走。渡口有船。", "next": "free"}, {"text": "跟我去见征粮官。", "next": "hand"}, {"text": "再等等。", "end": true}]},
+      "free": {"text": "（他的眼睛一下亮了，又马上暗下去，四下看了看）……你帮我，我也告诉你一件事。征粮官床边那口箱子——他每夜从怀里掏出一封信锁进去。红蜡封，印跟征粮令上的不一样，是摄政自己的戒指。（他站起来，把手上的疤往袖子里藏）我走了。", "do": [{"set": "ch3_apprentice", "value": "freed"}, {"set": "ch3_letter_place"}, {"rep": "severin", "delta": -5}, {"quest_done": "ch3_apprentice"}], "options": [{"text": "（看着他沿着田埂往河边跑）", "end": true}]},
+      "hand": {"text": "（他没跑。他只是看着你，像看着砧山的矿口）……好。（他自己站起来，拍掉膝盖上的煤灰，走在你前头）", "do": [{"set": "ch3_apprentice", "value": "handed"}, {"rep": "severin", "delta": 3}, {"quest_done": "ch3_apprentice"}], "options": [{"text": "（跟在他后头往指挥帐走）", "end": true}]}
     }}
 }
