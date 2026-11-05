@@ -139,6 +139,7 @@ static func people(parent: Node3D) -> void:
 		n.dialogue_id = str(p[5])
 		n.position = Vector3(pos.x, ground(pos), pos.y)
 		n.rotation.y = float(p[3])
+		n.far_end = Plain.NPC_FAR
 		parent.add_child(n)
 	if GameState.daypart == "night":
 		return
@@ -154,6 +155,7 @@ static func people(parent: Node3D) -> void:
 			n.dialogue_id = "ida"
 		n.position = Vector3(q.x, ground(q), q.y)
 		n.rotation.y = atan2(-(ahead.x - q.x), -(ahead.y - q.y))
+		n.far_end = Plain.NPC_FAR
 		if child:
 			n.scale = Vector3.ONE * 0.72
 		parent.add_child(n)

@@ -32,6 +32,9 @@ static var _mat: ShaderMaterial
 static var _water_mat: ShaderMaterial
 static var _sky_mat: ShaderMaterial
 static var field_ms := 0.0
+const NPC_FAR := 90.0                             # 平原上的人：多远以外整个人都不画（6.7a：从营地往西南看，麦渡、坠星院门口的人几十次绘制，看过去只是几个点）
+const HOUSE_FAR := 120.0                         # 房子、围墙这些几种材质的大网格：多远以外换成一份单色网格（FarLod，6.7a）
+const DETAIL_FAR := 80.0                          # 门、路牌：多远以外不画（门洞后面本来就黑；6.7a）
 
 var parent: Node3D
 var reduced_motion := false
@@ -67,6 +70,9 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	PlainMill.interactables(p_parent)                # 水磨坊与粮仓（6.3b）：磨坊、粮仓的门、南门外的路牌
 	PlainCamp.interactables(p_parent)                # 塞弗林营地（6.3c）：营地口的路牌
 	PlainPeople.build(p_parent)                      # 主线第 3–4 步（6.3d）：麦渡的老贝恩和伊达男人的坟、营地里的奥迪隆、哨兵、跟车的铁匠
+	for n in p_parent.get_children():                # 门、路牌远了不画（6.7a）
+		if n is Door or n is RoadSign:
+			_cut_far(n, DETAIL_FAR)
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent
@@ -75,6 +81,13 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	pl._jobs(st)
 	print("IC_PLAIN sync ms=%.0f field_ms=%.0f chunks=%d tex=%s" % [float(Time.get_ticks_usec() - t0) / 1000.0, field_ms, st.chunks.size(), textures_ready()])
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
+
+
+static func _cut_far(node: Node, dist: float) -> void:
+	if node is GeometryInstance3D and (node as GeometryInstance3D).visibility_range_end == 0.0:
+		(node as GeometryInstance3D).visibility_range_end = dist
+	for ch in node.get_children():
+		_cut_far(ch, dist)
 
 
 static func spawn_points() -> Dictionary:
@@ -388,11 +401,23 @@ func _jobs(st: ChunkStreamer) -> void:
 			jobs.append_array(PlainManor.jobs_for(r, reduced_motion))             # 洛蒙德庄园：围墙和门楼、主楼、仓房、水井、院子里的东西（6.3a）
 			jobs.append_array(PlainMill.jobs_for(r, reduced_motion))              # 水磨坊与粮仓：院墙、磨坊、水轮和木槽、三座粮仓、院子里的东西（6.3b）
 			jobs.append_array(PlainCamp.jobs_for(r, reduced_motion))              # 塞弗林营地：指挥帐、帐篷、熔炉车、营火、空粮车、马、木桩、旗（6.3c）
+			for k in range(2, jobs.size()):               # 地形、树以外的活：搭完以后大网格远处换单色那份（FarLod），门板远了不画（6.7a）
+				jobs[k] = _with_lod.bind(jobs[k])
 			st.add_chunk("%d_%d" % [cx, cz], r, jobs)
 			z += cs
 			cz += 1
 		x += cs
 		cx += 1
+
+
+static func _with_lod(root: Node3D, job: Callable) -> void:
+	var before := root.get_child_count()
+	job.call(root)
+	for i in range(before, root.get_child_count()):
+		var ch := root.get_child(i)
+		FarLod.apply(ch, HOUSE_FAR)
+		for b: Node in ch.find_children("*", "StaticBody3D", true, false):    # House 里的门板（不进可交互层的那种）
+			_cut_far(b, DETAIL_FAR)
 
 
 ## 一块里的树、柳、篱笆、麦垛、木栅（6.1b，PlainFlora）

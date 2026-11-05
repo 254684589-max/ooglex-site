@@ -68,6 +68,10 @@ func _dress(body: Node3D) -> void:
 		m.queue_free()
 		return
 	Looks.finish(m)
+	var merged := SkinMerge.merge(m.skeleton)          # 衣服、头、头发、胡子合成一块蒙皮网格（同士兵 B.6b；6.7a：金穗平原坠星院门口十来个人 113 次绘制）
+	if merged != null:
+		merged.visibility_range_end = Looks.LOD_FAR
+		merged.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	pose = Looks.pose(display_name, name)
 	m.hold_prop(Props.make(Looks.prop(display_name, name)), Looks.prop(display_name, name) in Props.LEFT_HAND)
 	if lying:

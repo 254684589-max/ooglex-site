@@ -76,6 +76,7 @@ static func canvas(red := false) -> StandardMaterial3D:
 	m.vertex_color_use_as_albedo = true
 	m.roughness = 0.95
 	m.cull_mode = BaseMaterial3D.CULL_DISABLED            # 帐篷里头看得见帆布的反面
+	m.set_meta("avg", Color("8a2a22") if red else Color("c9b590"))     # FarLod（6.7a）
 	var a: Texture2D = load(CANVAS_TEX % "diff") as Texture2D if ResourceLoader.exists(CANVAS_TEX % "diff") else null
 	var n: Texture2D = load(CANVAS_TEX % "nor_gl") as Texture2D if ResourceLoader.exists(CANVAS_TEX % "nor_gl") else null
 	if a != null:

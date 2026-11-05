@@ -63,6 +63,7 @@ static func build(parent: Node3D) -> void:
 			n.dialogue_id = str(it[5])
 		n.position = Vector3(at.x, ground(at), at.y)
 		n.rotation.y = deg_to_rad(float(it[3]))
+		n.far_end = Plain.NPC_FAR
 		if str(it[0]) == "apprentice":
 			n.scale = Vector3.ONE * 0.88                    # 十四五岁
 		parent.add_child(n)
