@@ -66,6 +66,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	PlainManor.interactables(p_parent)               # 洛蒙德庄园（6.3a）：大厅、仓房的门、门楼外的路牌
 	PlainMill.interactables(p_parent)                # 水磨坊与粮仓（6.3b）：磨坊、粮仓的门、南门外的路牌
 	PlainCamp.interactables(p_parent)                # 塞弗林营地（6.3c）：营地口的路牌
+	PlainPeople.build(p_parent)                      # 主线第 3–4 步（6.3d）：麦渡的老贝恩和伊达男人的坟、营地里的奥迪隆、哨兵、跟车的铁匠
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent

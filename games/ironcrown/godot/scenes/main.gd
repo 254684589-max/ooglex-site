@@ -1158,6 +1158,11 @@ func _heirs_heard() -> void:
 		GameState.set_flag("heirs_heard")
 
 
+## 第三章主线第 4 步（6.3d）：老贝恩给你看了伊达丈夫的坟、奥迪隆给你看了摄政的征粮令——两边都见过了，主线到「天黑以前决定站哪边」（顺序随意）
+func _ch3_sides_heard() -> void:
+	PlainPeople.sides_heard()
+
+
 ## 区域名；连片地图上加你在的那一块：「鹭沼 · 芦栈村」（4.4）
 func area_title() -> String:
 	var z := AreaMap.zone_at(area, player_xz())
@@ -1469,6 +1474,7 @@ func _on_dialogue_closed() -> void:
 	if not touch_mode:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED    # 最后一次是点选项或按键，浏览器允许重新锁定
 	_heirs_heard()
+	_ch3_sides_heard()
 	if area == "sickroom":
 		Sickroom.wake(world)                                # 黄昏家主醒了（4.8a）
 	var heir := str(GameState.get_flag("valen_heir", ""))

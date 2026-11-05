@@ -139,5 +139,9 @@
   "ch2_convoy": {"desc": "第二夜的结果（5.7）：劫粮 taken = 押车兵散了、车没烧，burned = 赢了可车烧了，repelled = 你们被打散了；护粮 delivered = 至少两车过了潮水、partial = 一车、lost = 一车也没上来（5.7b）", "set_in": "world/convoy_ambush.gd finish（main._on_battle_ended）、world/convoy_escort.gd finish（main._on_escort_ended）", "read_in": "5.8 天亮、章末回顾"},
   "ch3_started": {"desc": "第三章开始了（main.start_chapter(3)：第二章章末「继续」，6.2c）", "set_in": "scenes/main.gd start_chapter", "read_in": "6.4 开场白"},
   "gregor_met": {"desc": "在坠星院门洞里见过院长格雷戈尔（6.2c）", "set_in": "plain.json gregor", "read_in": "plain.json gregor"},
-  "ch3_heard_monk": {"desc": "门房的修士告诉你抄经室里关着一个灰袍修士（6.2c，主线第 2 步）", "set_in": "plain.json porter", "read_in": "plain.json porter、6.3 洛蒙德庄园"}
+  "ch3_heard_monk": {"desc": "门房的修士告诉你抄经室里关着一个灰袍修士（6.2c，主线第 2 步）", "set_in": "plain.json porter", "read_in": "plain.json porter、6.3 洛蒙德庄园"},
+  "ch3_isabella_deal": {"desc": "伊莎贝拉开了条件：今晚替她守住磨坊、守到天亮，她就写信给院长放人（6.3d，主线第 3 步：to_manor → sides）", "set_in": "plain.json isabella/deal", "read_in": "plain.json isabella、samuel；6.6 抉择（守磨坊）"},
+  "ch3_samuel_hint": {"desc": "管家塞缪尔送你出门时欲言又止：磨坊账房那把锁的钥匙在他那儿（6.3d）", "set_in": "plain.json samuel/out", "read_in": "plain.json samuel；6.5「账本上的名字」"},
+  "ch3_bain_grave": {"desc": "老贝恩说今晚要带佃农去扛粮，带你看了伊达丈夫的坟（6.3d，主线第 4 步）", "set_in": "plain.json bain/grave", "read_in": "plain.json bain、main._ch3_sides_heard；6.5 伊达、6.6 开仓"},
+  "ch3_odilon_order": {"desc": "奥迪隆请你喝酒、要你站到塞弗林家一边，给你看了摄政的征粮令（6.3d，主线第 4 步）", "set_in": "plain.json odilon/order", "read_in": "plain.json odilon、main._ch3_sides_heard；6.6 抉择（站塞弗林家）"}
 }

@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8937,6 +8937,64 @@ func test_camp() -> void:
 	Input.action_release("move_forward")
 	din = Vector2(p.global_position.x, p.global_position.z).distance_to(pc)
 	check(din > float(PlainCamp.PAVILION[2]) - 0.2, "帐子背后是墙，走不进去（离帐中心 %.1f 米）" % din)
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch3sides() -> void:
+	# 主线第 3–4 步（6.3d）：伊莎贝拉开条件 → 两边（老贝恩、奥迪隆，顺序随意）都见过 → 天黑以前决定
+	GameState.new_game(634)
+	GameState.chapter = 3
+	GameState.daypart = "day"
+	GameState.start_quest("ch3_main")
+	check(say_runner("isabella", [], "plain") == "busy" and say_runner("bain", [], "plain") == "early" and say_runner("odilon", [], "plain") == "early",
+		"没去过门房以前：女家主不见客，老贝恩、奥迪隆都不搭理")
+	GameState.set_stage("ch3_main", "to_manor")
+	check(say_runner("samuel", [], "plain") == "greet", "没谈以前，管家只说女家主在高桌那儿")
+	check(say_runner("isabella", ["您怎么知道我想见谁？", "那您也知道我为什么来。", "仓里的粮够全平原吃一冬，佃农却在修道院门口喝水。", "说条件。"], "plain") == "deal"
+		and GameState.quest_stage("ch3_main") == "sides" and GameState.has_flag("ch3_isabella_deal"),
+		"伊莎贝拉：替她守住磨坊到天亮，她就写信给院长放人（主线：去麦渡和塞弗林营地）")
+	check(say_runner("isabella", [], "plain") == "after" and say_runner("samuel", ["账房里有什么？"], "plain") == "what" and GameState.has_flag("ch3_samuel_hint") and say_runner("samuel", [], "plain") == "again",
+		"谈过以后：女家主换了话；管家送你出门时欲言又止（磨坊账房的钥匙在他那儿）")
+	check(say_runner("odilon", ["（端起杯子）喝一杯。", "所以呢？", "凭什么？"], "plain") == "order" and GameState.has_flag("ch3_odilon_order") and not PlainPeople.sides_heard() and GameState.quest_stage("ch3_main") == "sides",
+		"先去营地：奥迪隆请你喝酒、给你看摄政的征粮令；只见了一边，主线还在「两边」")
+	check(say_runner("bain", ["你是村里管事的？", "庄园要我今晚守磨坊。", "进谁的嘴？", "看什么？"], "plain") == "grave" and GameState.has_flag("ch3_bain_grave") and PlainPeople.sides_heard() and GameState.quest_stage("ch3_main") == "choose",
+		"再去麦渡：老贝恩带你看伊达男人的坟；两边都见过 → 天黑以前决定站哪边")
+	check(say_runner("bain", [], "plain") == "again" and say_runner("odilon", [], "plain") == "again", "说过以后：老贝恩、奥迪隆换了话")
+	# 另一个顺序：先麦渡后营地
+	GameState.new_game(635)
+	GameState.chapter = 3
+	GameState.start_quest("ch3_main")
+	GameState.set_stage("ch3_main", "sides")
+	say_runner("bain", ["她要我今晚替她守磨坊。", "进谁的嘴？", "看什么？"], "plain")
+	var mid := PlainPeople.sides_heard()
+	say_runner("odilon", ["你是谁？", "（端起杯子）", "所以呢？", "凭什么？"], "plain")
+	check(not mid and PlainPeople.sides_heard() and GameState.quest_stage("ch3_main") == "choose", "顺序反过来也一样")
+	# 人摆在哪：麦渡的老贝恩和坟、营地里的奥迪隆（在指挥帐里）、哨兵、铁匠都站在地上没卡住
+	GameState.pending_load = {"scene": "plain", "spawn": "camp", "player": {}}
+	var main := await make_area("plain")
+	await frames(3)
+	var names := ["Npc_bain", "Npc_odilon", "Npc_sentry1", "Npc_sentry2", "Npc_camp_smith"]
+	var stuck := []
+	for nm in names:
+		var n := main.world.find_child(nm, true, false) as Npc
+		if n == null or not await stands_clear(n):
+			stuck.append(nm)
+	var od := main.world.find_child("Npc_odilon", true, false) as Npc
+	var pc := PlainCamp.at(PlainCamp.PAVILION[0], PlainCamp.PAVILION[1])
+	check(stuck.is_empty() and od != null and Vector2(od.global_position.x, od.global_position.z).distance_to(pc) < float(PlainCamp.PAVILION[2]) - 0.5 and od.dialogue_id == "odilon"
+		and main.world.find_child("IdaGraveLook", true, false) != null and main.world.find_child("IdaGrave", true, false) != null,
+		"老贝恩、奥迪隆（在指挥帐里）、两个哨兵、跟车的铁匠都站在地上没卡住（卡住的：%s）；伊达男人的坟能看" % str(stuck))
+	await free_main(main)
+	GameState.pending_load = {"scene": "manor_hall", "spawn": "front", "player": {}}
+	main = await make_area("manor_hall")
+	await frames(3)
+	var isa := main.world.find_child("Npc_isabella", true, false) as Npc
+	var sam := main.world.find_child("Npc_samuel", true, false) as Npc
+	check(isa != null and sam != null and isa.dialogue_id == "isabella" and ManorHall.DAIS.has_point(Vector2(isa.position.x, isa.position.z)) and await stands_clear(sam)
+		and Vector2(isa.position.x, isa.position.z).distance_to(Vector2(ManorHall.DAIS.position.x - 0.3, isa.position.z)) < 2.4,
+		"大厅：伊莎贝拉站在东头木台上（站在木台前伸手够得着说话），塞缪尔站在门边")
 	await free_main(main)
 	GameState.chapter = 0
 	GameState.pending_load = {}

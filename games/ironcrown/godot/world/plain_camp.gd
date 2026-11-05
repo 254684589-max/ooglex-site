@@ -137,7 +137,7 @@ static func solids() -> Array:
 	for t: Array in TENTS:
 		out.append([Transform3D(_tent_basis(t), at3(t[0], t[1], TENT_H * 0.4)), Vector3(TENT_W + 0.2, TENT_H * 0.8, TENT_L + 0.2)])
 	out.append([Transform3D(rb, at3(FORGE[0], FORGE[1], 1.0)), Vector3(1.9, 2.0, 3.6)])
-	out.append([Transform3D(rb, at3(FORGE[0] - 0.4, FORGE[1] + 2.0, 0.4)), Vector3(0.6, 0.8, 0.6)])     # 铁砧和树墩
+	out.append([Transform3D(rb, at3(FORGE[0] - 0.4, FORGE[1] + 1.6, 0.4)), Vector3(0.6, 0.8, 0.6)])     # 铁砧和树墩（同 forge() 里 an 的位置）
 	out.append([Transform3D(rb, at3(FIRE[0], FIRE[1], 0.5)), Vector3(1.4, 1.0, 1.4)])
 	for w: Array in WAGONS:
 		out.append([Transform3D(rb, at3(w[0], w[1], 0.8)), Vector3(1.9, 1.6, 3.6)])
@@ -349,7 +349,7 @@ static func pavilion(root: Node3D, reduced_motion := false) -> void:
 	for k in 2:
 		kit.cylinder("iron", tp + tb * Vector3(0.25 - k * 0.2, 0.39, 0.25), tp + tb * Vector3(0.25 - k * 0.2, 0.5, 0.25), 0.04, 0.045, 7)   # 两只杯子
 	for s in [-1.0, 1.0]:                                                                                                    # 两张折凳
-		var sp := tp + tb * Vector3(s * 0.4, 0, 0.0) + Vector3(SIDE.x, 0, SIDE.y) * -signf(float(PAVILION[1])) * 0.8
+		var sp: Vector3 = tp + Vector3(ALONG.x, 0, ALONG.y) * s * 0.8                                                  # 桌子两头各一张（奥迪隆站在桌子朝门那边）
 		kit.box("leather", sp + Vector3(0, 0.45, 0), Vector3(0.42, 0.04, 0.36), tb, 0.9, 0.8)
 		kit.cylinder("timber", sp + tb * Vector3(-0.18, 0, -0.15), sp + tb * Vector3(0.18, 0.44, 0.15), 0.02, 0.02, 4)
 		kit.cylinder("timber", sp + tb * Vector3(0.18, 0, -0.15), sp + tb * Vector3(-0.18, 0.44, 0.15), 0.02, 0.02, 4)
