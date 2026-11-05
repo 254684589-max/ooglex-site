@@ -107,7 +107,7 @@ static func interactables(parent: Node3D) -> void:
 
 
 ## 院子里的东西（满）：两辆装满麻袋的车、比人高的柴垛、木桶、箱子、堆在仓房门口的麻袋
-## part：""（全部，碰撞用）、"items"（车、桶、箱子、麻袋）、"wood0".."wood2"（一垛柴：几百根小圆柱，一垛一件活——三垛合一件要 100 多毫秒，6.3a 实测）
+## part：""（全部，碰撞用）、"items"（车、桶、箱子、麻袋）、"wood0".."wood5"（半垛柴：几百根小圆柱，半垛一件活——三垛合一件要 100 多毫秒，6.3a；一垛一件全量测试里 78–145 毫秒，6.3c）
 static func props_decor(rect := Rect2(), part := "") -> Decor:
 	var d := Decor.new()
 	var inside := func(p: Vector2) -> bool: return rect.size == Vector2.ZERO or rect.has_point(p)
@@ -132,10 +132,10 @@ static func props_decor(rect := Rect2(), part := "") -> Decor:
 				d.crate(pos, float(it[2]))
 			"sack":
 				d.sack(pos, float(it[2]))
-	for k in 3:                                              # 柴垛：沿南墙码得比人高
-		var p := Vector2(66.0 + k * 3.2, WALL_RECT.end.y - 1.4)
+	for k in 6:                                              # 柴垛：沿南墙码得比人高（三垛，每垛按半垛一件活：一垛一件 40–70 毫秒、全量测试里抢 CPU 时 78–145，6.3c 实测）
+		var p := Vector2(66.0 + (k / 2) * 3.2 + (k % 2 - 0.5) * 1.5, WALL_RECT.end.y - 1.4)
 		if inside.call(p) and part in ["", "wood%d" % k]:
-			d.woodpile(Vector3(p.x, y, p.y), Vector3(1, 0, 0), 3.0, 1.9)
+			d.woodpile(Vector3(p.x, y, p.y), Vector3(1, 0, 0), 1.5, 1.9)
 	return d
 
 
@@ -148,7 +148,7 @@ static func jobs_for(rect: Rect2, reduced_motion: bool) -> Array:
 		out.append(func(root: Node3D): House.build(root, house_pos(HALL), float(HALL[1]), hall_spec()))
 		out.append(func(root: Node3D): House.build(root, house_pos(BARN), float(BARN[1]), barn_spec()))
 		out.append(func(root: Node3D): well(root))
-		for part in ["items", "wood0", "wood1", "wood2"]:
+		for part in ["items", "wood0", "wood1", "wood2", "wood3", "wood4", "wood5"]:
 			out.append(func(root: Node3D): _props(root, part))
 	return out
 
