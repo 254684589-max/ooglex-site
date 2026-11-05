@@ -143,5 +143,13 @@
   "ch3_isabella_deal": {"desc": "伊莎贝拉开了条件：今晚替她守住磨坊、守到天亮，她就写信给院长放人（6.3d，主线第 3 步：to_manor → sides）", "set_in": "plain.json isabella/deal", "read_in": "plain.json isabella、samuel；6.6 抉择（守磨坊）"},
   "ch3_samuel_hint": {"desc": "管家塞缪尔送你出门时欲言又止：磨坊账房那把锁的钥匙在他那儿（6.3d）", "set_in": "plain.json samuel/out", "read_in": "plain.json samuel；6.5「账本上的名字」"},
   "ch3_bain_grave": {"desc": "老贝恩说今晚要带佃农去扛粮，带你看了伊达丈夫的坟（6.3d，主线第 4 步）", "set_in": "plain.json bain/grave", "read_in": "plain.json bain、main._ch3_sides_heard；6.5 伊达、6.6 开仓"},
-  "ch3_odilon_order": {"desc": "奥迪隆请你喝酒、要你站到塞弗林家一边，给你看了摄政的征粮令（6.3d，主线第 4 步）", "set_in": "plain.json odilon/order", "read_in": "plain.json odilon、main._ch3_sides_heard；6.6 抉择（站塞弗林家）"}
+  "ch3_odilon_order": {"desc": "奥迪隆请你喝酒、要你站到塞弗林家一边，给你看了摄政的征粮令（6.3d，主线第 4 步）", "set_in": "plain.json odilon/order", "read_in": "plain.json odilon、main._ch3_sides_heard；6.6 抉择（站塞弗林家）"},
+  "ch3_released": {"desc": "第二章劫了洛蒙德家粮车的（ch2_convoy taken / burned）：伊莎贝拉先扣下你，说动她（口才 14）、赔 20 银币或者直接谈守磨坊才放人（6.4）", "set_in": "plain.json isabella/held_*", "read_in": "plain.json isabella"},
+  "ch3_isabella_courtesy": {"desc": "落魄骑士之后：给伊莎贝拉行了老礼（洛蒙德家 +3，6.4）", "set_in": "plain.json isabella/courtesy", "read_in": "plain.json isabella"},
+  "ch3_isabella_furs": {"desc": "伊薇特当家：伊莎贝拉想通过你搭上北境的皮毛生意（6.4；第四章接）", "set_in": "plain.json isabella/furs", "read_in": "plain.json isabella；第四章"},
+  "ch3_samuel_ledger": {"desc": "皮毛税账册还在你手里（ch1_ledger = kept）：塞缪尔认得账上洛蒙德家那几笔、是他记的（6.4）", "set_in": "plain.json samuel/ledger", "read_in": "6.5「账本上的名字」、6.8 罪证"},
+  "ch3_odilon_envoy": {"desc": "在芦栈村听说过塞弗林家的信使（heard_envoy）：第一次见奥迪隆就认出他（6.4）", "set_in": "plain.json odilon/envoy", "read_in": "plain.json odilon"},
+  "ch3_ida_met": {"desc": "在坠星院门口排队的人里见到了伊达（6.4）", "set_in": "plain.json ida", "read_in": "plain.json ida；6.5「账本上的名字」"},
+  "ch3_night_boats": {"desc": "渡工之子：渡口的船夫说磨坊的船隔三夜不点灯往下游运一回粮、账上没有，今夜就有一趟（6.4；罪证的另一条来路）", "set_in": "plain.json boatman/guild", "read_in": "plain.json boatman；6.8 罪证"},
+  "ch3_ignaz_heard": {"desc": "贴着抄经室的门缝听了一回伊格纳兹念的话（6.4；按 ch2_fire / ch2_roll / 出身不一样）", "set_in": "world/plain_people.gd listen_door", "read_in": "6.8 守灵夜"}
 }

@@ -979,6 +979,19 @@ godot/
 - 小修：指挥帐里两张折凳排成一列（改成桌子两头各一张）、铁砧的碰撞盒和画面差 0.4 米（对齐）。
 - **测试**：`ch3sides` 组 9 项（没去过门房以前三个人都不搭理；伊莎贝拉的条件 → `sides`；管家欲言又止；先营地后麦渡、先麦渡后营地都到 `choose`；说过以后换话；平原上五个人站在地上没卡住、奥迪隆在指挥帐里、坟能看；大厅里伊莎贝拉在木台上、塞缪尔在门边）。
 
+### 4.75 第三章的人物与对话（路线图 6.4，2026-11-05）
+
+- **对话**（`plain.json`，`start_if` 按顺序第一个对上的）：
+  - `isabella`：`held`（主线 `to_manor` 且 `ch2_convoy` = taken / burned、还没 `ch3_released`；口才 14 `held_talked` / 失败 `held_firm`、赔 20 银币 `held_paid`、`held_deal`——都设 `ch3_released`）→ `greet_lawful`（`ch2_aid` = granted；有 `ch2_requisition` 多一句 `eld`）→ `greet`；`greet` 和 `greet_lawful` 都有落魄骑士之后的 `courtesy`（洛蒙德家 +3）、伊薇特当家的 `furs`。
+  - `samuel/out` 多一条 `ledger`（`ch1_ledger` = kept → `ch3_samuel_ledger`）。
+  - `odilon`：`greet_alric` / `greet_ivette`（要先谈过伊莎贝拉）、所有开场都有 `envoy`（`heard_envoy` → `ch3_odilon_envoy`）。
+  - `porter/greet_north`（`ch2_aid` = refused）；`bain/greet_rob`（`beacon_grain` = rob）。
+  - 新人 `ida`（`greet` / `who`；看过坟以后 `knows` → `ledger`；`ch3_ida_met`）、`boatman`（渡工之子 `guild` → `when`：`ch3_night_boats`、渡工行会 +3；别的出身只有 `manor`「不归我管」）。
+  - 旗标八个登记进 `flags.json`。
+- **人**：`PlainAbbey.people` 排队第四个（`IDA_IN_QUEUE`）换成伊达（白天）；`PlainPeople`：夜里伊达在坟边（`IDA_NIGHT`）、渡口的船夫（`BOATMAN`，跪着敲船边的冰）、抄经室门旁的 `Examine`「抄经室的门缝」（`listen_text()`：`ch2_roll` = served / `ch2_fire` = lit / 出身 deserter / 都不是，四种；设 `ch3_ignaz_heard`）；`Scriptorium.IGNAZ` 灰袍修士跪在东墙下（只说一句，6.8 加对话）。
+- 字体子集补「愣、咧」（4597 个字形）。
+- **测试**：`ch3people` 组 18 项（扣人三条路、被打散的不扣、护粮的、征粮令、老礼、皮毛、别的出身没有这两句；账册；奥迪隆三种开场和认出信使；门房；老贝恩；伊达；船夫两种出身；门缝四种话；白天伊达在队里、夜里在坟边只有一个；船夫站在渡口；伊格纳兹跪在抄经室）；`ch3open` 的「8 个人排队」把伊达算进去。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

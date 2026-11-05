@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8693,7 +8693,7 @@ func test_ch3open() -> void:
 	main = await make_area("plain")
 	await frames(3)
 	check(GameState.quest_active("ch3_main") and GameState.quest_stage("ch3_main") == "to_abbey", "上了岸：主线「粮与铁」，第一步去坠星院（%s）" % GameState.quest_stage("ch3_main"))
-	var queue: Array = main.world.find_children("Npc_queue*", "Npc", true, false)
+	var queue: Array = main.world.find_children("Npc_queue*", "Npc", true, false) + main.world.find_children("Npc_ida", "Npc", true, false)   # 队里第四个是伊达（6.4）
 	var gregor := main.world.find_child("Npc_gregor", true, false) as Npc
 	var porter := main.world.find_child("Npc_porter", true, false) as Npc
 	check(gregor != null and porter != null and gregor.dialogue_area == "plain" and queue.size() == PlainAbbey.QUEUE.size(),
@@ -8997,6 +8997,86 @@ func test_ch3sides() -> void:
 		"大厅：伊莎贝拉站在东头木台上（站在木台前伸手够得着说话），塞缪尔站在门边")
 	await free_main(main)
 	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch3people() -> void:
+	# 前两章和出身留下的话（6.4，STORY.md 6.4）
+	var fresh := func(stage: String, flags: Dictionary) -> void:
+		GameState.new_game(640)
+		GameState.chapter = 3
+		GameState.daypart = "day"
+		GameState.start_quest("ch3_main")
+		GameState.set_stage("ch3_main", stage)
+		for k in flags:
+			GameState.set_flag(k, flags[k])
+	fresh.call("to_manor", {"beacon_grain": "rob", "ch2_convoy": "taken"})
+	check(say_runner("isabella", [], "plain") == "held" and say_runner("isabella", ["不如说说，你要我做什么。"], "plain") == "held_deal" and GameState.has_flag("ch3_released")
+		and say_runner("isabella", [], "plain") == "greet", "劫了洛蒙德家粮车的：伊莎贝拉先把你扣下；直接谈守磨坊她才放人，之后照常说话")
+	fresh.call("to_manor", {"beacon_grain": "rob", "ch2_convoy": "burned"})
+	GameState.silver = 25
+	check(say_runner("isabella", ["我赔。（把钱袋放在桌上）"], "plain") == "held_paid" and GameState.silver == 5 and GameState.has_flag("ch3_released"), "劫车烧了车的也扣下；赔 20 银币放人")
+	fresh.call("to_manor", {"beacon_grain": "rob", "ch2_convoy": "repelled"})
+	check(say_runner("isabella", [], "plain") == "greet", "劫粮被打散了（粮没劫到）的不扣")
+	fresh.call("to_manor", {"beacon_grain": "lawful", "ch2_aid": "granted", "ch2_requisition": "three"})
+	check(say_runner("isabella", ["罗薇娜那张征粮令，安塞尔姆收下了？"], "plain") == "eld", "护过粮的：伊莎贝拉客气地请你吃东西；用过征粮令的，她顺口问一句厄尔德家")
+	fresh.call("to_manor", {"origin": "knight", "valen_heir": "ivette"})
+	var lom := GameState.get_rep("lomond")
+	check(say_runner("isabella", ["（按老规矩，右手按胸，行了半礼）"], "plain") == "courtesy" and GameState.get_rep("lomond") == lom + 3
+		and say_runner("isabella", ["瓦伦家现在是伊薇特当家。"], "plain") == "furs" and GameState.has_flag("ch3_isabella_furs"),
+		"落魄骑士之后行老礼（洛蒙德家 +3）；伊薇特当家，伊莎贝拉想搭北境的皮毛生意")
+	fresh.call("to_manor", {})
+	check(say_runner("isabella", ["（按老规矩，右手按胸，行了半礼）"], "plain").begins_with("（") and say_runner("isabella", ["瓦伦家现在是伊薇特当家。"], "plain").begins_with("（"),
+		"别的出身、别的继承人没有这两句")
+	fresh.call("sides", {"ch3_isabella_deal": true, "ch1_ledger": "kept"})
+	check(say_runner("samuel", ["我身上有一本黑鹭堡的皮毛税账册。"], "plain") == "ledger" and GameState.has_flag("ch3_samuel_ledger"), "皮毛税账册还在你手里：塞缪尔认得洛蒙德家那几笔")
+	fresh.call("sides", {"ch3_isabella_deal": true, "valen_heir": "alric", "heard_envoy": true})
+	check(say_runner("odilon", [], "plain") == "greet_alric" and say_runner("odilon", ["三天前，你进过黑鹭堡。马鞍上搭着红布。"], "plain") == "envoy" and GameState.has_flag("ch3_odilon_envoy")
+		and say_runner("odilon", ["「一起」做什么？", "凭什么？"], "plain") == "order",
+		"阿尔里克当家：奥迪隆把你当自己人；在芦栈村听说过信使的当面认出他；征粮令照样给你看")
+	fresh.call("sides", {"ch3_isabella_deal": true, "valen_heir": "ivette"})
+	check(say_runner("odilon", [], "plain") == "greet_ivette" and say_runner("odilon", ["来听你要说什么。", "凭什么？"], "plain") == "order", "伊薇特当家：奥迪隆提防你")
+	fresh.call("to_abbey", {"beacon_grain": "lawful", "ch2_aid": "refused"})
+	check(say_runner("porter", [], "plain") == "greet_north", "谈不成两手空空：门房说「北边又来一个讨粮的」")
+	fresh.call("sides", {"beacon_grain": "rob", "ch2_convoy": "taken"})
+	check(say_runner("bain", [], "plain") == "greet_rob" and say_runner("bain", ["她要我今晚替她守磨坊。", "进谁的嘴？", "看什么？"], "plain") == "grave", "劫过粮的：老贝恩高看你一眼")
+	check(say_runner("ida", ["庄园的账上还记着他欠租。"], "plain") == "ledger" and GameState.has_flag("ch3_ida_met") and say_runner("ida", [], "plain") == "again", "看过坟以后，伊达说起她男人、想知道账上写了什么")
+	fresh.call("sides", {"origin": "ferry"})
+	check(say_runner("boatman", ["（伸出手，给他看虎口上撑篙磨出来的那道老茧）", "下一回是哪夜？"], "plain") == "when" and GameState.has_flag("ch3_night_boats"), "渡工之子：船夫说磨坊的船今夜不点灯往下游运粮")
+	fresh.call("sides", {"origin": "knight"})
+	check(say_runner("boatman", ["（伸出手，给他看虎口上撑篙磨出来的那道老茧）"], "plain").begins_with("（") and say_runner("boatman", ["庄园的事？"], "plain") == "manor", "别的出身：船夫什么都不说")
+	# 抄经室门缝
+	var texts := {}
+	for f in [{"ch2_roll": "served"}, {"ch2_fire": "lit"}, {"origin": "deserter"}, {}]:
+		fresh.call("sides", f)
+		texts[PlainPeople.listen_text()] = true
+	check(texts.size() == 4 and PlainPeople.listen_text().contains("冠"), "抄经室门缝里听见的话四种（名册补守 / 北边的火 / 烽誓团逃兵 / 都不是）")
+	# 人摆在哪
+	fresh.call("sides", {})
+	GameState.pending_load = {"scene": "plain", "spawn": "dock", "player": {}}
+	var main := await make_area("plain")
+	await frames(3)
+	var ida := main.world.find_child("Npc_ida", true, false) as Npc
+	var boat := main.world.find_child("Npc_boatman", true, false) as Npc
+	check(ida != null and Vector2(ida.position.x, ida.position.z).distance_to(PlainAbbey.QUEUE[PlainAbbey.IDA_IN_QUEUE]) < 0.5 and boat != null and await stands_clear(boat)
+		and main.world.find_child("ScriptoriumListen", true, false) != null, "白天伊达在坠星院门口排队；船夫站在渡口；抄经室门边能贴着门听")
+	await free_main(main)
+	GameState.daypart = "night"
+	GameState.pending_load = {"scene": "plain", "spawn": "dock", "player": {}}
+	main = await make_area("plain")
+	await frames(3)
+	ida = main.world.find_child("Npc_ida", true, false) as Npc
+	check(ida != null and Vector2(ida.position.x, ida.position.z).distance_to(PlainPeople.GRAVE) < 3.0 and await stands_clear(ida) and main.world.find_children("Npc_ida", "", true, false).size() == 1,
+		"夜里伊达在麦渡那座小坟边（只有一个）")
+	await free_main(main)
+	GameState.pending_load = {"scene": "scriptorium", "spawn": "front", "player": {}}
+	main = await make_area("scriptorium")
+	await frames(3)
+	var ig := main.world.find_child("Npc_ignaz", true, false) as Npc
+	check(ig != null and await stands_clear(ig), "抄经室里，灰袍修士跪在东墙下")
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.daypart = "day"
 	GameState.pending_load = {}
 
 
