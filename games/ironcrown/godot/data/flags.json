@@ -159,5 +159,9 @@
   "ch3_ledger_read": {"desc": "翻过磨坊账箱里往年的账：鲁本的名字、仓存一千四百一十袋（6.5）", "set_in": "world/mill_inside.gd open_ledger", "read_in": "plain.json ida；6.8 罪证"},
   "ch3_soup": {"desc": "支线「修道院的粥」（6.5）：talked = 说动伊莎贝拉送两袋麦子，bought = 你出钱买的；done = 告诉了门房（院长放人少一个条件，6.8）", "set_in": "plain.json isabella/soup_*、porter/soup_done", "read_in": "plain.json porter；6.8 院长放人"},
   "ch3_apprentice": {"desc": "支线「熔炉车上的学徒」（6.5）：freed = 帮他溜走（塞弗林家 −5，他说了奥迪隆的信锁在床边箱子里），handed = 交给了奥迪隆（塞弗林家 +3）", "set_in": "plain.json apprentice", "read_in": "world/plain_people.gd（人还在不在）；6.8 摄政的信"},
-  "ch3_letter_place": {"desc": "学徒告诉你：奥迪隆每夜把一封盖着摄政戒指印的信锁进指挥帐床边那口箱子（6.5）", "set_in": "plain.json apprentice/free", "read_in": "6.8 摄政的信"}
+  "ch3_letter_place": {"desc": "学徒告诉你：奥迪隆每夜把一封盖着摄政戒指印的信锁进指挥帐床边那口箱子（6.5）", "set_in": "plain.json apprentice/free", "read_in": "6.8 摄政的信"},
+  "ch3_side": {"desc": "今夜站哪边（6.6，抉择）：lomond = 替伊莎贝拉守磨坊，severin = 跟奥迪隆的兵下去「征粮」，tenants = 跟老贝恩先开仓分粮、再守磨坊", "set_in": "plain.json isabella/stand、captain/stand、odilon/join、bain/open", "read_in": "6.7 磨坊之战、6.8 章末"},
+  "ch3_granary_opened": {"desc": "粮仓撬开了，佃农扛走了一车（6.6；洛蒙德家 −20，伊莎贝拉记恨）", "set_in": "world/plain_people.gd pry_granary", "read_in": "plain.json isabella/grudge、bain；6.7 佃农变友军"},
+  "ch3_captain_aside": {"desc": "开仓以前说动了护院头目让开（口才 14）：洛蒙德家的护院今夜还跟你守磨坊（6.6）", "set_in": "plain.json captain/aside", "read_in": "world/plain_people.gd pry_granary；6.7"},
+  "ch3_guards_left": {"desc": "没说动护院头目就撬了仓：洛蒙德家的护院撤回庄园，今夜只有佃农跟你守（6.6）", "set_in": "world/plain_people.gd pry_granary", "read_in": "6.7 磨坊之战"}
 }

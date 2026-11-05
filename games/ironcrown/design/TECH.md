@@ -1001,6 +1001,13 @@ godot/
 - 字体子集补「廿、殁」（4599 个字形）。
 - **测试**：`ch3side` 组 14 项（伊达开支线；撬锁一次定；压塞缪尔拿钥匙；开账箱翻到鲁本；念给伊达听；口才要钥匙；粥：门房开、买两袋、告诉门房、口才说动；学徒放走 / 交出去；学徒站着没卡住、放走以后不在；账箱在账房里）。
 
+### 4.77 第三章的抉择（路线图 6.6，2026-11-05）
+
+- **对话**（`plain.json`，选项都要主线在 `choose`）：`isabella/after` →「今晚我守磨坊」`stand`（`ch3_side` = lomond、`to_mill_lomond`）；`captain/greet` 同一条（要 `ch3_isabella_deal`）；`odilon/again`、`belly` →「今晚我跟你们走」`join`（severin、`to_mill_severin`），之后 `joined`；`bain/again` →「先开仓」`open`（tenants、`open_granary`），之后 `go_open` / `opened`，别的路 `chosen`；新 `captain`（`block`：口才 14 `aside`（`ch3_captain_aside`）/ `refuse`；`ready` / `enemy` / `aside_again` / `after_open`）；伊莎贝拉开过仓以后 `grudge`。
+- **`PlainPeople`**：护院头目（`CAPTAIN`，南门里）、两个护院（`MILL_GUARDS`，北墙缺口）、第一座粮仓门边 `Examine`（`PRY_AT`；`pry_granary()`：主线在 `open_granary` 才撬得开——`ch3_granary_opened`、`change_rep("lomond", -20)`、没 `ch3_captain_aside` 就 `ch3_guards_left`、主线到 `to_mill_tenants`；别的时候只是 `PlainMill.GRANARY_DOOR_TEXT`）。
+- 战前自动存档：主线推进（`quest_event` advanced）本来就自动存档，选定那一下存的就是战前档。
+- **测试**：`ch3choice` 组 7 项（守磨坊两种说法、跟塞弗林家、先开仓硬撬、口才说动护院头目、没选开仓时仓门锁着、护院头目和两个护院没卡住）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

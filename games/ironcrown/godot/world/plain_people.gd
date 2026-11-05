@@ -11,6 +11,10 @@ const BAIN := [Vector2(-81.9, 17.3), -119.0]  # 坟边，面朝村子
 const BOATMAN := [Vector2(-19.6, 49.2), 37.0]  # 渡口栈桥岸上那头，面朝上岸的地方（出生点 dock）
 const IDA_NIGHT := [Vector2(-82.6, 18.0), 150.0]  # 夜里伊达不在坠星院门口排队：在麦渡那座小坟边
 const LISTEN_AT := Vector2(61.15, 96.2)        # 抄经室门（PlainAbbey.SCRIPTORIUM 正面朝西）旁边的门缝
+const CAPTAIN := [Vector2(16.8, -4.4), 180.0]    # 磨坊南门里、门洞东边，面朝南门（6.6）
+const MILL_GUARDS := [[Vector2(25.8, -35.4), 0.0], [Vector2(29.2, -35.2), 10.0]]   # 北墙缺口里两个护院，面朝缺口
+const MILL_GUARD_LINES := ["北墙这道口子，去年冬天就塌了。没人修，说是开春再说。", "女家主说塞弗林家的兵今晚要来。（他往手心哈了口气）来就来吧。"]
+const PRY_AT := Vector2(33.0, -12.7)           # 第一座粮仓（PlainMill.GRANARIES[0]，门朝北）门边：开仓那一下（6.6）
 const SENTRY_LINES := ["征粮官不见闲人。要见，自己往里走——手别往剑上放。", "砧山的冬天比这儿冷十倍。（他跺了跺脚）这儿的人还嫌冷。", "仓满着，人饿着。南边的规矩真怪。"]
 const SMITH_LINES := ["枪头，马掌，钉子。征粮的营地，打的全是这些。", "（他把铁条塞回炭里）学徒跑哪儿去了……炉子一离人就凉。"]
 
@@ -40,6 +44,9 @@ static func build(parent: Node3D) -> void:
 		["odilon", "奥迪隆", odilon_at()[0], float(odilon_at()[1]), "8a3a34", "odilon", []],
 		["sentry1", "塞弗林家的哨兵", PlainCamp.at(PlainCamp.STAKES_U + 1.5, -3.2), PlainCamp.YAW_ALONG + 180.0, "6a2a26", "", SENTRY_LINES],
 		["sentry2", "塞弗林家的哨兵", PlainCamp.at(PlainCamp.STAKES_U + 1.5, 3.2), PlainCamp.YAW_ALONG + 180.0 + 12.0, "6a2a26", "", SENTRY_LINES.slice(1)],
+		["captain", "护院头目", CAPTAIN[0], float(CAPTAIN[1]), "2e4a32", "captain", []],
+		["mill_guard1", "磨坊的护院", (MILL_GUARDS[0] as Array)[0], float((MILL_GUARDS[0] as Array)[1]), "2e4a32", "", MILL_GUARD_LINES],
+		["mill_guard2", "磨坊的护院", (MILL_GUARDS[1] as Array)[0], float((MILL_GUARDS[1] as Array)[1]), "2e4a32", "", MILL_GUARD_LINES.slice(1)],
 		["boatman", "渡口的船夫", BOATMAN[0], float(BOATMAN[1]), "4a4a44", "boatman", []],
 		["camp_smith", "跟车的铁匠", PlainCamp.at(PlainCamp.FORGE[0], PlainCamp.FORGE[1] + 2.2), PlainCamp.YAW_ALONG + 90.0, "3a2e24", "", SMITH_LINES],
 	]
@@ -61,6 +68,29 @@ static func build(parent: Node3D) -> void:
 		parent.add_child(n)
 	_grave(parent)
 	_listen_door(parent)
+	_pry(parent)
+
+
+## 开仓（6.6，先开仓那条路）：主线在 open_granary 时，佃农的撬棍插进第一座粮仓的门缝——洛蒙德家 −20；
+## 没说动护院头目（ch3_captain_aside）就撬的，护院撤回庄园（ch3_guards_left）。别的时候只是一扇锁着的仓门
+static func pry_granary() -> Dictionary:
+	if GameState.quest_stage("ch3_main") != "open_granary" or GameState.has_flag("ch3_granary_opened"):
+		return {"toast": PlainMill.GRANARY_DOOR_TEXT}
+	GameState.set_flag("ch3_granary_opened")
+	GameState.change_rep("lomond", -20)
+	var left := not GameState.has_flag("ch3_captain_aside")
+	if left:
+		GameState.set_flag("ch3_guards_left")
+	GameState.set_stage("ch3_main", "to_mill_tenants")
+	return {"toast": "老贝恩的撬棍插进门缝，三个人一起往下压——锁鼻子崩开了，麦子从门缝里淌出来，淌了一地。佃农们跪下去用手捧。" + ("\n护院头目看了一眼，带着他的人往庄园那边走了。今夜磨坊只有你们。" if left else "")}
+
+
+static func _pry(parent: Node3D) -> void:
+	var e := Examine.make("粮仓的门", "看看", func(_who: FpController) -> Dictionary: return pry_granary(), Vector3(1.2, 2.0, 0.8))
+	e.name = "GranaryPry"
+	e.position = Vector3(PRY_AT.x, ground(PRY_AT), PRY_AT.y)
+	e.verb_fn = func() -> String: return "撬开粮仓" if GameState.quest_stage("ch3_main") == "open_granary" else "看看"
+	parent.add_child(e)
 
 
 ## 抄经室锁着的门旁边：贴着门缝听（6.4）——里头那个人念的话按北边留下的事不一样：

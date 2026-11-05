@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9151,6 +9151,57 @@ func test_ch3side() -> void:
 	await frames(3)
 	var ch: Node = main.world.find_child("LedgerChestOpen", true, false)
 	check(ch != null and main.world.find_child("LedgerChest", true, false) != null and MillInside.OFFICE.has_point(Vector2(MillInside.LEDGER_CHEST.x, MillInside.LEDGER_CHEST.z)), "磨坊账房东南角有那口铁皮账箱")
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch3choice() -> void:
+	# 抉择（6.6）：三条路，选了就定、主线推进（推进时自动存档）
+	var fresh := func() -> void:
+		GameState.new_game(660)
+		GameState.chapter = 3
+		GameState.daypart = "day"
+		GameState.start_quest("ch3_main")
+		GameState.set_stage("ch3_main", "choose")
+		for f in ["ch3_isabella_deal", "ch3_heard_monk", "ch3_bain_grave", "ch3_odilon_order"]:
+			GameState.set_flag(f)
+	fresh.call()
+	check(say_runner("isabella", ["今晚我守磨坊。"], "plain") == "stand" and str(GameState.get_flag("ch3_side", "")) == "lomond" and GameState.quest_stage("ch3_main") == "to_mill_lomond"
+		and say_runner("captain", [], "plain") == "ready" and say_runner("odilon", ["今晚我跟你们走。"], "plain").begins_with("（") and say_runner("bain", [], "plain") == "chosen",
+		"守磨坊（跟伊莎贝拉说）：主线到「天黑以前到磨坊」；护院头目在分火把；别的两条路没了")
+	fresh.call()
+	check(say_runner("captain", ["女家主派我来守磨坊。今晚我守。"], "plain") == "stand" and str(GameState.get_flag("ch3_side", "")) == "lomond", "守磨坊也可以直接跟护院头目说")
+	fresh.call()
+	check(say_runner("odilon", ["今晚我跟你们走。"], "plain") == "join" and str(GameState.get_flag("ch3_side", "")) == "severin" and GameState.quest_stage("ch3_main") == "to_mill_severin"
+		and say_runner("odilon", [], "plain") == "joined" and say_runner("captain", [], "plain") == "enemy" and say_runner("isabella", ["今晚我守磨坊。"], "plain").begins_with("（"),
+		"跟塞弗林家走：主线到「天黑以后营地口」；护院头目挡在门洞里；伊莎贝拉那边选不了了")
+	fresh.call()
+	var lom := GameState.get_rep("lomond")
+	check(say_runner("bain", ["天黑以前，先开仓。粮分了，人跟我守磨坊。"], "plain") == "open" and str(GameState.get_flag("ch3_side", "")) == "tenants" and GameState.quest_stage("ch3_main") == "open_granary"
+		and str(PlainPeople.pry_granary().toast) != PlainMill.GRANARY_DOOR_TEXT, "先开仓：老贝恩叫人带撬棍；主线到「去磨坊撬开粮仓」")
+	check(GameState.has_flag("ch3_granary_opened") and GameState.has_flag("ch3_guards_left") and GameState.get_rep("lomond") == lom - 20 and GameState.quest_stage("ch3_main") == "to_mill_tenants"
+		and say_runner("isabella", [], "plain") == "grudge" and say_runner("bain", [], "plain") == "opened",
+		"没说动护院头目就撬：仓开了、洛蒙德家 −20、护院撤回庄园；伊莎贝拉记恨")
+	fresh.call()
+	say_runner("bain", ["天黑以前，先开仓。粮分了，人跟我守磨坊。"], "plain")
+	var ok := GameState.check("captain_aside_speech", "speech", 14)
+	var node := say_runner("captain", ["开了仓，佃农跟你们一起守；不开，今晚他们就站到塞弗林家那边去。"], "plain")
+	PlainPeople.pry_granary()
+	check(node == ("aside" if ok else "refuse") and GameState.has_flag("ch3_captain_aside") == ok and GameState.has_flag("ch3_guards_left") == not ok,
+		"开仓以前跟护院头目说（口才 14：%s）：说动了护院留下，没说动撤走" % ("说动了" if ok else "没说动"))
+	fresh.call()
+	check(str(PlainPeople.pry_granary().toast) == PlainMill.GRANARY_DOOR_TEXT and not GameState.has_flag("ch3_granary_opened"), "没选开仓的时候，粮仓门只是锁着")
+	# 人摆在哪
+	GameState.pending_load = {"scene": "plain", "spawn": "mill", "player": {}}
+	var main := await make_area("plain")
+	await frames(3)
+	var stuck := []
+	for nm in ["Npc_captain", "Npc_mill_guard1", "Npc_mill_guard2"]:
+		var n := main.world.find_child(nm, true, false) as Npc
+		if n == null or not await stands_clear(n):
+			stuck.append(nm)
+	check(stuck.is_empty() and main.world.find_child("GranaryPry", true, false) != null, "护院头目在南门里、两个护院在北墙缺口，都没卡住；粮仓门边能撬（卡住的：%s）" % str(stuck))
 	await free_main(main)
 	GameState.chapter = 0
 	GameState.pending_load = {}

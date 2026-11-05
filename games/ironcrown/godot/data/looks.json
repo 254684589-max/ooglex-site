@@ -106,6 +106,8 @@
     "渡口的船夫": {"preset": "commoner_dark", "hair": ["Hair_Buzzed", "Hair_Beard"], "hair_color": "#5a5046", "pose": "kneel_fix"},
     "灰袍修士": {"preset": "monk", "hair": ["Hair_Buzzed", "Hair_Beard"], "hair_color": "#c8c4bc", "pose": "kneel_fix"},
     "熔炉车上的学徒": {"preset": "commoner_dark", "tint": {"MI_Peasant": "#4a4440"}, "hair": ["Hair_Buzzed"], "hair_color": "#2a2018", "pose": "crouch_idle"},
+    "护院头目": {"preset": "guard", "tint": {"MI_Ranger": "#3e5a40"}, "hair": ["Hair_Buzzed", "Hair_Beard"], "hair_color": "#4a3a2a", "pose": "idle_armed"},
+    "磨坊的护院": {"preset": "guard", "tint": {"MI_Ranger": "#3e5a40"}, "hair": ["Hair_Buzzed"], "hair_color": "#3a2a1a", "pose": "idle_armed"},
     "跟车的铁匠": {"preset": "commoner_dark", "hair": ["Hair_Buzzed", "Hair_Beard"], "hair_color": "#3a2a1a", "pose": "idle"}
   }
 }
