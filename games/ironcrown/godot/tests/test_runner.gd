@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -8532,8 +8532,8 @@ func test_maidu() -> void:
 	check(PlainLayout.river_d(a) > PlainLayout.RIVER_HALF + 2.0 and PlainLayout.river_d(b) > PlainLayout.RIVER_HALF + 2.0 and mid_y > PlainLayout.WATER_Y + 1.5 and absf(PlainVillage.bridge_y(0.0) - PlainLayout.height(a.x, a.y)) < 0.3,
 		"木桥两头在岸上、桥面中间比水面高 %.1f 米" % (mid_y - PlainLayout.WATER_Y))
 	check(PlainLayout.river_d(PlainVillage.DOCK_TO) < PlainLayout.RIVER_HALF + 0.5 and PlainVillage.dock_y() > PlainLayout.WATER_Y + 0.8, "栈桥伸到水上（头上离河中线 %.1f 米）" % PlainLayout.river_d(PlainVillage.DOCK_TO))
-	check(Travel.validate().is_empty() and Travel.region_title(3) == "南部" and Travel.places(3) == ["maidu", "mill", "manor", "abbey", "camp"] and Travel.built("maidu") and not Travel.built("camp") and Travel.region_of_chapter(2) == "north",
-		"旅行地图第三章是「南部」一页：麦渡、坠星院（6.2b）做好了，磨坊、庄园、营地还没做好；第二章还是北境北部 %s" % str(Travel.validate()))
+	check(Travel.validate().is_empty() and Travel.region_title(3) == "南部" and Travel.places(3) == ["maidu", "mill", "manor", "abbey", "camp"] and Travel.built("maidu") and Travel.built("camp") and Travel.region_of_chapter(2) == "north",
+		"旅行地图第三章是「南部」一页：麦渡、磨坊、庄园、坠星院、营地都做好了（6.3c）；第二章还是北境北部 %s" % str(Travel.validate()))
 	GameState.new_game(620)
 	GameState.chapter = 3
 	GameState.daypart = "day"
@@ -8856,6 +8856,87 @@ func test_mill() -> void:
 	check(exit != null and exit.to_spawn == "mill_door" and p.is_on_floor() and main.world.find_child("Gear", true, false) != null and main.world.find_child("LedgerLamp", true, false) != null,
 		"磨坊里面：站在门里、出口回到院子；木齿轮、账房桌上的油灯")
 	check(AreaMap.spec("mill_inside").shapes.size() >= 4 and Areas.views("mill_inside").size() == MillInside.VIEW_NAMES.size(), "磨坊里面的本地地图（账房、磨盘、粮袋）和固定机位")
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_camp() -> void:
+	# 布局：营地的东西都在压平的那块上、不压路；指挥帐门朝路；木桩两排中间留出车道；出生点在木桩外头的路上
+	var c := PlainLayout.CAMP
+	var worst := 0.0
+	var on_road := []
+	var spots := [[PlainCamp.PAVILION[0], PlainCamp.PAVILION[1], "指挥帐"], [PlainCamp.FORGE[0], PlainCamp.FORGE[1], "熔炉车"], [PlainCamp.FIRE[0], PlainCamp.FIRE[1], "营火"], [PlainCamp.HITCH[0], PlainCamp.HITCH[1], "拴马桩"]]
+	for t: Array in PlainCamp.TENTS:
+		spots.append([t[0], t[1], "帐篷"])
+	for w: Array in PlainCamp.WAGONS:
+		spots.append([w[0], w[1], "粮车"])
+	for sp: Array in spots:
+		var p := PlainCamp.at(float(sp[0]), float(sp[1]))
+		worst = maxf(worst, p.distance_to(c))
+		if PlainLayout.road_d(p) < PlainLayout.ROAD_HALF + 2.0:
+			on_road.append(sp[2])
+	var flat := absf(PlainLayout.height(c.x - 14.0, c.y) - PlainLayout.height(c.x + 14.0, c.y)) + absf(PlainLayout.height(c.x, c.y - 14.0) - PlainLayout.height(c.x, c.y + 14.0))
+	var door_dir := Vector2.from_angle(TAU * (PlainCamp._pav_door() + 0.5) / 8.0)
+	var sp0: Array = PlainLayout.SPAWN_XZ.camp
+	var s0: Vector2 = sp0[0]
+	check(worst < PlainLayout.CAMP_R and on_road.is_empty() and flat < 0.5 and door_dir.dot(PlainCamp.SIDE) > 0.9 and PlainLayout.road_d(s0) < 1.0 and (s0 - c).dot(PlainCamp.ALONG) < PlainCamp.STAKES_U - 2.0,
+		"营地的东西都在压平的地上（最远 %.1f 米）、不压路（压路的：%s）；地是平的（差 %.2f 米）；指挥帐门朝路；出生点在木桩外的路上" % [worst, str(on_road), flat])
+	check(Travel.built("camp") and Travel.check(3, "manor", "camp", true).ok and not Travel.check(3, "maidu", "camp", true).ok and AreaMap.place_at("plain", s0) == "camp"
+		and AreaMap.place_at("plain", PlainMill.SIGN_AT) == "mill" and AreaMap.place_at("plain", PlainCamp.at(PlainCamp.SIGN[0], PlainCamp.SIGN[1])) == "camp",
+		"旅行地图上营地做好了：从庄园能去、从麦渡要先到庄园；营地口、磨坊南门的路牌都在各自的地点里（6.3b 漏了磨坊这一块）")
+	GameState.new_game(633)
+	GameState.chapter = 3
+	GameState.daypart = "day"
+	GameState.pending_load = {"scene": "plain", "spawn": "camp", "player": {}}
+	var main := await make_area("plain")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	await frames(2)
+	var names := ["CampPavilion", "CampTents", "CampForge", "CampFire", "CampWagons", "CampHorses", "CampStakes", "CampBanners", "CampProps", "PavilionLamp", "ForgeFire", "CampFireLight"]
+	var missing := []
+	for n in names:
+		if main.world.find_child(n, true, false) == null:
+			missing.append(n)
+	check(missing.is_empty() and float(st.stats.max_job_ms) < 60.0, "分块搭完：指挥帐、帐篷、熔炉车、营火、空粮车、马、木桩、红旗（缺：%s）；最慢一块 %.1f 毫秒" % [str(missing), st.stats.max_job_ms])
+	var sign := main.world.find_child("CampSign", true, false) as RoadSign
+	check(sign != null and sign.text == PlainCamp.SIGN_TEXT and PlainCamp.CANVAS_TEX != "" and ResourceLoader.exists(PlainCamp.CANVAS_TEX % "diff") and PlainCamp.canvas().albedo_texture != null,
+		"营地口的路牌；帐篷用粗麻布照片（chapters/ch3/tex/hessian_380）")
+	await physics(8)
+	var p: FpController = main.player
+	check(p.is_on_floor() and Vector2(p.global_position.x, p.global_position.z).distance_to(s0) < 0.5, "新开在营地口（%s）" % p.global_position)
+	p.rotation.y = deg_to_rad(float(sp0[1]))
+	p.velocity = Vector3.ZERO
+	Input.action_press("move_forward")
+	await seconds(4.0)
+	Input.action_release("move_forward")
+	var u := (Vector2(p.global_position.x, p.global_position.z) - c).dot(PlainCamp.ALONG)
+	check(u > PlainCamp.STAKES_U + 3.0, "顺着路穿过两排木桩中间、走进营地（走到 u = %.1f）" % u)
+	# 走得进指挥帐（门朝路）
+	var pc := PlainCamp.at(PlainCamp.PAVILION[0], PlainCamp.PAVILION[1])
+	var outside := pc + door_dir * (float(PlainCamp.PAVILION[2]) + 1.6)
+	p.global_position = Vector3(outside.x, PlainLayout.height(outside.x, outside.y) + 0.3, outside.y)
+	var to_in := pc - outside
+	p.rotation.y = atan2(-to_in.x, -to_in.y)
+	p.velocity = Vector3.ZERO
+	await physics(6)
+	Input.action_press("move_forward")
+	await seconds(1.6)
+	Input.action_release("move_forward")
+	var din := Vector2(p.global_position.x, p.global_position.z).distance_to(pc)
+	check(din < float(PlainCamp.PAVILION[2]) - 0.6, "从门帘那儿走得进指挥帐（离帐中心 %.1f 米）" % din)
+	# 从帐篷背后走不进指挥帐（墙挡着）
+	var back := pc - door_dir * (float(PlainCamp.PAVILION[2]) + 1.6)
+	p.global_position = Vector3(back.x, PlainLayout.height(back.x, back.y) + 0.3, back.y)
+	to_in = pc - back
+	p.rotation.y = atan2(-to_in.x, -to_in.y)
+	p.velocity = Vector3.ZERO
+	await physics(6)
+	Input.action_press("move_forward")
+	await seconds(1.6)
+	Input.action_release("move_forward")
+	din = Vector2(p.global_position.x, p.global_position.z).distance_to(pc)
+	check(din > float(PlainCamp.PAVILION[2]) - 0.2, "帐子背后是墙，走不进去（离帐中心 %.1f 米）" % din)
 	await free_main(main)
 	GameState.chapter = 0
 	GameState.pending_load = {}

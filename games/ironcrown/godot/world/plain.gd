@@ -52,6 +52,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	PlainManor.base_y()
 	for k in ["roof", "plaster", "castle"]:
 		Look.mat(k)                                    # 石板瓦、灰泥：第一栋 House 在分帧的活里才读这几张贴图，那一块要 70–80 毫秒（6.3b）
+	PlainCamp.mats()                                   # 塞弗林营地的帆布（6.3c）：粗麻布贴图同上，先读
 	PlainVillage.mats()                                # 麦渡的材质先备好（6.2a：土坯、茅草贴图在分帧的活里第一次读，那一块要 70–80 毫秒）
 	pl._collision()
 	ground_material()
@@ -64,6 +65,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	PlainAbbey.people(p_parent)                      # 坠星院门口的人（6.2c）：院长、门房的修士、排队领粥的佃农
 	PlainManor.interactables(p_parent)               # 洛蒙德庄园（6.3a）：大厅、仓房的门、门楼外的路牌
 	PlainMill.interactables(p_parent)                # 水磨坊与粮仓（6.3b）：磨坊、粮仓的门、南门外的路牌
+	PlainCamp.interactables(p_parent)                # 塞弗林营地（6.3c）：营地口的路牌
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent
@@ -204,7 +206,7 @@ func _collision() -> void:
 	village.collision_layer = 1
 	village.collision_mask = 0
 	parent.add_child(village)
-	for so: Array in PlainVillage.solids() + PlainAbbey.solids() + PlainManor.solids() + PlainMill.solids():
+	for so: Array in PlainVillage.solids() + PlainAbbey.solids() + PlainManor.solids() + PlainMill.solids() + PlainCamp.solids():
 		var vs := CollisionShape3D.new()
 		var vb := BoxShape3D.new()
 		vb.size = so[1]
@@ -262,6 +264,7 @@ static func clear_cache() -> void:
 	PlainVillage.clear_cache()
 	PlainAbbey.clear_cache()
 	PlainManor.clear_cache()
+	PlainCamp.clear_cache()
 	_mat = null
 	_water_mat = null
 	_sky_mat = null
@@ -383,6 +386,7 @@ func _jobs(st: ChunkStreamer) -> void:
 			jobs.append_array(PlainAbbey.jobs_for(r, reduced_motion))             # 坠星院：围墙、门房、教堂和钟楼、回廊、菜园、宿舍、抄经室（6.2b）
 			jobs.append_array(PlainManor.jobs_for(r, reduced_motion))             # 洛蒙德庄园：围墙和门楼、主楼、仓房、水井、院子里的东西（6.3a）
 			jobs.append_array(PlainMill.jobs_for(r, reduced_motion))              # 水磨坊与粮仓：院墙、磨坊、水轮和木槽、三座粮仓、院子里的东西（6.3b）
+			jobs.append_array(PlainCamp.jobs_for(r, reduced_motion))              # 塞弗林营地：指挥帐、帐篷、熔炉车、营火、空粮车、马、木桩、旗（6.3c）
 			st.add_chunk("%d_%d" % [cx, cz], r, jobs)
 			z += cs
 			cz += 1
@@ -608,11 +612,14 @@ static func map_spec() -> Dictionary:
 	shapes.append_array(PlainAbbey.map_shapes())
 	shapes.append_array(PlainManor.map_shapes())
 	shapes.append_array(PlainMill.map_shapes())
+	shapes.append_array(PlainCamp.map_shapes())
 	shapes.append({"k": "road", "pts": _strip(PlainLayout.BRIDGE[0], PlainLayout.BRIDGE[1], PlainVillage.BRIDGE_W * 0.5), "label": "木桥"})
 	return {"bounds": PlainLayout.BOUNDS, "shapes": shapes, "exits": [], "zones": [
 		{"name": "麦渡", "place": "maidu", "pts": _circle(PlainLayout.VILLAGE, PlainLayout.VILLAGE_R + 10.0)},
 		{"name": "坠星院", "place": "abbey", "pts": _circle(PlainLayout.ABBEY_SITE, 34.0)},
 		{"name": "洛蒙德庄园", "place": "manor", "pts": _circle(PlainLayout.MANOR, PlainLayout.MANOR_R + 14.0)},
+		{"name": "水磨坊与粮仓", "place": "mill", "pts": _rect(PlainMill.RECT.grow(8.0))},     # 6.3c 补：6.3b 漏了这一块，站在磨坊南门的路牌前出发不了
+		{"name": "塞弗林营地", "place": "camp", "pts": _circle(PlainLayout.CAMP, PlainLayout.CAMP_R + 6.0)},
 		{"name": "金穗平原", "pts": PackedVector2Array([Vector2(-150, -130), Vector2(150, -130), Vector2(150, 130), Vector2(-150, 130)])},
 	]}
 
@@ -620,6 +627,10 @@ static func map_spec() -> Dictionary:
 static func _strip(a: Vector2, b: Vector2, half: float) -> PackedVector2Array:
 	var side := (b - a).normalized().orthogonal() * half
 	return PackedVector2Array([a + side, b + side, b - side, a - side])
+
+
+static func _rect(r: Rect2) -> PackedVector2Array:
+	return PackedVector2Array([r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)])
 
 
 static func _circle(c: Vector2, r: float) -> PackedVector2Array:

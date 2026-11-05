@@ -19,8 +19,8 @@
       "blurb": "东岸缓坡上的石砌庄园，门楼挂着绿底金麦束的旗。院子里停着装满麻袋的车，每个烟囱都冒烟。", "depart_at": "门楼外的路牌"},
     "abbey": {"name": "坠星院", "area": "plain", "spawn": "abbey", "chapter": 3, "region": "south", "pos": [0.6, 0.8], "icon": "abbey",
       "blurb": "南边矮丘顶上星铁教会的修道院：钟楼、回廊、施粥的门房。修道院吃的是洛蒙德家的粮。", "depart_at": "门房外的路牌"},
-    "camp": {"name": "塞弗林营地", "area": "", "chapter": 3, "region": "south", "pos": [0.86, 0.14], "icon": "camp",
-      "blurb": "平原东北角、砧山下来的路口：帐篷、熔炉车、红底铁砧托冠的旗。", "pending": "塞弗林营地还没做好（路线图 6.3）。"}
+    "camp": {"name": "塞弗林营地", "area": "plain", "spawn": "camp", "chapter": 3, "region": "south", "pos": [0.86, 0.14], "icon": "camp",
+      "blurb": "平原东北角、砧山下来的路口：帐篷、熔炉车、红底铁砧托冠的旗。四辆大车空着排在路边，等着装粮。", "depart_at": "营地口的路牌"}
   },
   "routes": [
     {"from": "frostford", "to": "reedwharf", "text": "出镇往西，沿着沼地边上的路走大半天", "daypart": "day"},

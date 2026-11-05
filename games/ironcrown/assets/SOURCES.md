@@ -70,6 +70,14 @@
 | 麦渡长屋、谷仓的茅草顶 | thatch_roof_angled | https://polyhaven.com/a/thatch_roof_angled | Rob Tuytel、Dimitrios Savva | 2026-10-31 |
 | 长屋的土坯墙 | clay_plaster | https://polyhaven.com/a/clay_plaster | Amal Kumar | 2026-10-31 |
 
+6.3c 塞弗林营地的帐篷帆布（Poly Haven，CC0 1.0，第三章章节包 `godot/chapters/ch3/tex/`，颜色 diff + OpenGL 法线 nor_gl 两张 1K JPG）。路线图 6.M 原定新场景顺手用 ambientCG，2026-11-05 本环境连不上 ambientCG 的下载服务器（`acg-download.struffelproductions.com` 被网络策略拦截；搜索接口 `ambientcg.com/api` 还能用），这一套先用 Poly Haven：
+
+| 用途 | Poly Haven 资源 | 链接 | 作者 | 下载日期 |
+|---|---|---|---|---|
+| 塞弗林营地的帐篷、指挥帐（本色帆布提亮、红的压成暗红；3.5 米铺一次） | hessian_380 | https://polyhaven.com/a/hessian_380 | colormass（拍摄）、Rico Cilliers（处理） | 2026-11-05 |
+
+营地里的马（四匹，披着红马衣）、帐篷、熔炉车、大车、木桩、铁砧托冠的旗都是代码搭的（`godot/world/plain_camp.gd`、`godot/world/decor.gd`），不用外部模型。
+
 看过没用的：rock_face、rock_face_03（偏棕、偏暖，不像北方的灰岩）、lichen_rock（太暗）、snow_field / passendorf_snow 等带地面的 HDRI（照片里有树林、房子、远处的地平线，和我们的地形对不上，只取天空的「pure sky」那一版）。
 
 ## 人物与动作（Quaternius，CC0；D4 = B，阶段 A.1）
