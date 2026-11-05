@@ -32,8 +32,10 @@ static var _mat: ShaderMaterial
 static var _water_mat: ShaderMaterial
 static var _sky_mat: ShaderMaterial
 static var field_ms := 0.0
-const NPC_FAR := 90.0                             # 平原上的人：多远以外整个人都不画（6.7a：从营地往西南看，麦渡、坠星院门口的人几十次绘制，看过去只是几个点）
-const HOUSE_FAR := 120.0                         # 房子、围墙这些几种材质的大网格：多远以外换成一份单色网格（FarLod，6.7a）
+const NPC_FAR := 70.0                             # 平原上的人：多远以外整个人都不画（6.7a：从营地往西南看，麦渡、坠星院门口的人几十次绘制，看过去只是几个点）
+const LABEL_FAR := 16.0                           # 平原上的人：名字多远以外不画（远了也看不清；6.7a）
+const HOUSE_FAR := 80.0                          # 房子、围墙这些几种材质的大网格：多远以外换成一份单色网格（FarLod，6.7a）
+const SMALL_FAR := 120.0                          # 几种材质的小东西（水井、旗、坟）多远以外不画（6.7a）
 const DETAIL_FAR := 80.0                          # 门、路牌：多远以外不画（门洞后面本来就黑；6.7a）
 
 var parent: Node3D
@@ -70,9 +72,11 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	PlainMill.interactables(p_parent)                # 水磨坊与粮仓（6.3b）：磨坊、粮仓的门、南门外的路牌
 	PlainCamp.interactables(p_parent)                # 塞弗林营地（6.3c）：营地口的路牌
 	PlainPeople.build(p_parent)                      # 主线第 3–4 步（6.3d）：麦渡的老贝恩和伊达男人的坟、营地里的奥迪隆、哨兵、跟车的铁匠
-	for n in p_parent.get_children():                # 门、路牌远了不画（6.7a）
+	for n in p_parent.get_children():                # 门、路牌、伊达男人的坟远了不画（6.7a；远处的山、河、地平线上的树是直接挂在区域上的，不能动）
 		if n is Door or n is RoadSign:
 			_cut_far(n, DETAIL_FAR)
+		elif n is MeshInstance3D and str(n.name) == "IdaGrave":
+			n.visibility_range_end = SMALL_FAR
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent
@@ -415,7 +419,7 @@ static func _with_lod(root: Node3D, job: Callable) -> void:
 	job.call(root)
 	for i in range(before, root.get_child_count()):
 		var ch := root.get_child(i)
-		FarLod.apply(ch, HOUSE_FAR)
+		FarLod.apply(ch, HOUSE_FAR, SMALL_FAR)
 		for b: Node in ch.find_children("*", "StaticBody3D", true, false):    # House 里的门板（不进可交互层的那种）
 			_cut_far(b, DETAIL_FAR)
 

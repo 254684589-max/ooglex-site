@@ -11,12 +11,19 @@ const MIN_SIZE := 3.0
 static var _flat: StandardMaterial3D
 
 
-static func apply(root: Node, dist: float) -> int:
+static func apply(root: Node, dist: float, small_far := 0.0) -> int:
 	var n := 0
-	for mi: MeshInstance3D in root.find_children("*", "MeshInstance3D", true, false):
-		if mi.has_meta("far_lod") or mi.skin != null or mi.mesh == null or mi.mesh.get_surface_count() < MIN_SURFACES or mi.visibility_range_end > 0.0 or mi.visibility_range_begin > 0.0:
+	var list: Array = root.find_children("*", "MeshInstance3D", true, false)
+	if root is MeshInstance3D:
+		list.push_front(root)                      # 直接挂在块上的网格（营地、院子里的零碎）：find_children 不含自己（6.7a 第一版漏了）
+	for mi: MeshInstance3D in list:
+		if mi.has_meta("far_lod") or mi.skin != null or mi.mesh == null or mi.visibility_range_end > 0.0 or mi.visibility_range_begin > 0.0:
 			continue
 		if mi.get_aabb().size.length() < MIN_SIZE:
+			if small_far > 0.0 and mi.mesh.get_surface_count() >= 2:
+				mi.visibility_range_end = small_far      # 小东西（水井、旗、坟、桶）：远了干脆不画
+			continue
+		if mi.mesh.get_surface_count() < MIN_SURFACES:
 			continue
 		var twin := far_copy(mi)
 		if twin == null:

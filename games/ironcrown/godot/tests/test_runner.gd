@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9202,6 +9202,77 @@ func test_ch3choice() -> void:
 		if n == null or not await stands_clear(n):
 			stuck.append(nm)
 	check(stuck.is_empty() and main.world.find_child("GranaryPry", true, false) != null, "护院头目在南门里、两个护院在北墙缺口，都没卡住；粮仓门边能撬（卡住的：%s）" % str(stuck))
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+## 平原上一个机位里画几样东西（6.7a）：镜头看得见、在可见距离以内的网格 × 表面（不含阴影、天空、粒子以外的东西；网页上量到的绘制调用比这个多一百上下）
+func plain_surfaces(main: Node, v: int) -> int:
+	var vs: Array = PlainLayout.views()[v]
+	var cam := Camera3D.new()
+	cam.fov = 75.0
+	main.world.add_child(cam)
+	cam.global_position = vs[0]
+	cam.rotation_degrees = Vector3(float(vs[2]), float(vs[1]), 0)
+	var total := 0
+	for g: GeometryInstance3D in main.world.find_children("*", "GeometryInstance3D", true, false):
+		if not g.is_visible_in_tree():
+			continue
+		var aabb := g.global_transform * g.get_aabb()
+		var d := cam.global_position.distance_to(aabb.get_center())
+		if (g.visibility_range_end > 0.0 and d > g.visibility_range_end) or (g.visibility_range_begin > 0.0 and d < g.visibility_range_begin):
+			continue
+		var inside := aabb.has_point(cam.global_position)
+		for k in 8:
+			if cam.is_position_in_frustum(aabb.get_endpoint(k)):
+				inside = true
+		if not inside:
+			continue
+		if g is MeshInstance3D and (g as MeshInstance3D).mesh != null:
+			total += (g as MeshInstance3D).mesh.get_surface_count()
+		elif g is MultiMeshInstance3D and (g as MultiMeshInstance3D).multimesh != null and (g as MultiMeshInstance3D).multimesh.mesh != null:
+			total += (g as MultiMeshInstance3D).multimesh.mesh.get_surface_count()
+		else:
+			total += 1
+	cam.queue_free()
+	return total
+
+
+func test_plainperf() -> void:
+	# 平原的绘制调用（6.7a）：远处的房子换单色那份、远处的人和门不画、人合成一块蒙皮网格；两个最重的机位守住
+	GameState.new_game(670)
+	GameState.chapter = 3
+	GameState.daypart = "day"
+	GameState.pending_load = {"scene": "plain", "spawn": "dock", "player": {}}
+	var main := await make_area("plain")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	await frames(2)
+	var twins: Array = main.world.find_children("*Far", "MeshInstance3D", true, false).filter(func(m): return m.has_meta("far_lod"))
+	var bad := []
+	for t: MeshInstance3D in twins:
+		if t.mesh.get_surface_count() > 4 or t.visibility_range_begin != Plain.HOUSE_FAR or t.cast_shadow != GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:
+			bad.append(t.name)
+	check(twins.size() >= 30 and bad.is_empty() and float(st.stats.max_job_ms) < 60.0, "远处换单色的网格 %d 份（都 ≤ 4 个表面、%d 米以外才画、不投影；不对的：%s）；搭的时候最慢一块 %.1f 毫秒" % [twins.size(), int(Plain.HOUSE_FAR), str(bad), st.stats.max_job_ms])
+	var npcs: Array = main.world.find_children("Npc_*", "Npc", true, false)
+	var merged := 0
+	var far_ok := true
+	for n: Npc in npcs:
+		if n.far_end != Plain.NPC_FAR:
+			far_ok = false
+		if n.look_model != null and n.look_model.skeleton.find_children("*", "MeshInstance3D", true, false).any(func(m): return m.has_meta("parts")):
+			merged += 1
+	var doors_far := true
+	for d in main.world.get_children():
+		if d is Door:
+			for g: GeometryInstance3D in d.find_children("*", "GeometryInstance3D", true, false):
+				if g.visibility_range_end <= 0.0:
+					doors_far = false
+	check(far_ok and merged >= npcs.size() / 2 and doors_far, "平原上的人 %d 个（%d 个合成了一块蒙皮网格），都是 %d 米以外不画；门远了不画" % [npcs.size(), merged, int(Plain.NPC_FAR)])
+	var s8 := plain_surfaces(main, 8)
+	var s14 := plain_surfaces(main, 14)
+	check(s8 < 300 and s14 < 300, "最重的两个机位画的东西：坠星院回廊 %d、营地东北头往回看 %d 个表面（优化以前 530 / 513；网页中画质量到 339 / 379 次绘制，预算 400）" % [s8, s14])
 	await free_main(main)
 	GameState.chapter = 0
 	GameState.pending_load = {}
