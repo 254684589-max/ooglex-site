@@ -165,5 +165,6 @@
   "ch3_captain_aside": {"desc": "开仓以前说动了护院头目让开（口才 14）：洛蒙德家的护院今夜还跟你守磨坊（6.6）", "set_in": "plain.json captain/aside", "read_in": "world/plain_people.gd pry_granary；6.7"},
   "ch3_guards_left": {"desc": "没说动护院头目就撬了仓：洛蒙德家的护院撤回庄园，今夜只有佃农跟你守（6.6）", "set_in": "world/plain_people.gd pry_granary", "read_in": "6.7 磨坊之战"},
   "ch3_mill": {"desc": "磨坊之战（6.7b）：守的一方 held = 守住 / lost = 失守（粮被抢上砧山）；跟塞弗林家 seized = 抢到了 / repelled = 打不进去", "set_in": "world/mill_battle.gd finish", "read_in": "6.8 罪证、章末回顾"},
-  "ch3_odilon_down": {"desc": "磨坊之战里打倒了奥迪隆（6.7b；6.8 他身上那封摄政的信）", "set_in": "world/mill_battle.gd setup（captain_down）", "read_in": "6.8 罪证"}
+  "ch3_odilon_down": {"desc": "磨坊之战里打倒了奥迪隆（6.7b；6.8 他身上那封摄政的信）", "set_in": "world/mill_battle.gd setup（captain_down）", "read_in": "6.8 罪证"},
+  "ch3_flanked": {"desc": "磨坊之战里小队顺着水渠绕到北墙缺口外，打在第二拨背后（6.7c）", "set_in": "world/mill_battle.gd _process", "read_in": "6.8 章末回顾"}
 }

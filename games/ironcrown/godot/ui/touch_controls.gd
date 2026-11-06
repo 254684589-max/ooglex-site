@@ -19,8 +19,8 @@ var knob := Vector2.ZERO
 var look_index := -1
 signal camera_pressed
 signal order_pressed(order: String)
-const ORDER_BTNS := ["follow", "hold", "charge"]
-const ORDER_LABELS := {"order": "令", "order_follow": "跟随", "order_hold": "坚守", "order_charge": "冲锋"}
+const ORDER_BTNS := ["follow", "hold", "charge", "goto"]
+const ORDER_LABELS := {"order": "令", "order_follow": "跟随", "order_hold": "坚守", "order_charge": "冲锋", "order_goto": "去那儿"}
 var order_enabled := false        # 有小队可以指挥（main 设）
 var order_open := false           # 三个命令按钮展开着
 var attack_index := -1

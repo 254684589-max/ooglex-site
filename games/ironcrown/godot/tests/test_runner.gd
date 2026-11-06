@@ -4311,7 +4311,7 @@ func test_squad() -> void:
 	check(white.filter(func(s): return not s.in_squad).all(func(s): return s.marker == null), "小队以外的白带头顶没有 ◆")
 	check(BattleArena.squad_size(10) == 6 and BattleArena.squad_size(30) == 12 and BattleArena.squad_size(1) == 1, "小队人数：每边人数的六成，1–12 人")
 	check(b.squad_order == "charge" and squad.all(func(s): return s.order == "charge") and b.leash(squad[0]).is_empty() and b.post_of(squad[0]) == null, "默认冲锋：不拴绳、没有固定位置（和 B.1 一样）")
-	check(main.hud.squad_label.visible and main.hud.squad_label.text == "◆ 小队 6 人：冲锋 · 1 跟随 2 坚守 3 冲锋", "右上角写小队人数与命令（%s）" % main.hud.squad_label.text)
+	check(main.hud.squad_label.visible and main.hud.squad_label.text == "◆ 小队 6 人：冲锋 · 1 跟随 2 坚守 3 冲锋 4 去那儿", "右上角写小队人数与命令（%s）" % main.hud.squad_label.text)
 	var hr: Rect2 = main.hud.squad_label.get_global_rect()
 	check(hr.end.x <= main.hud.size.x and hr.position.y >= main.hud.menu_btn.get_global_rect().end.y, "小队一行在右上角按钮下面、不出屏幕")
 	# —— 跟随（开打前）：站到玩家身后的队形里，玩家走开就跟上
@@ -4399,11 +4399,11 @@ func test_squad() -> void:
 	tap.call(t.button_centers().order)
 	check(t.order_open and t.button_centers().has("order_follow") and t.button_centers().has("order_charge"), "点「令」：往左展开「跟随」「坚守」「冲锋」")
 	var cs: Dictionary = t.button_centers()
-	check(cs.order_charge.x < cs.order_hold.x and cs.order_hold.x < cs.order_follow.x and cs.order_follow.x < cs.order.x and cs.order_charge.x > 0.0, "三个命令按钮在「令」左边一字排开、不出屏幕")
+	check(cs.order_goto.x < cs.order_charge.x and cs.order_charge.x < cs.order_hold.x and cs.order_hold.x < cs.order_follow.x and cs.order_follow.x < cs.order.x and cs.order_goto.x > 0.0, "四个命令按钮在「令」左边一字排开、不出屏幕（6.7c 加了「去那儿」）")
 	check(not t.buttons_rect().has_point(cs.order_charge), "展开的命令按钮不算进右下角按钮列（底部提示不跟着挪）")
 	tap.call(cs.order_hold)
 	await frames(2)
-	check(b.squad_order == "hold" and not t.order_open and main.hud.squad_label.text == "◆ 小队 6 人：原地坚守 · 1 跟随 2 坚守 3 冲锋", "点「坚守」：下了命令，按钮收起")
+	check(b.squad_order == "hold" and not t.order_open and main.hud.squad_label.text == "◆ 小队 6 人：原地坚守 · 1 跟随 2 坚守 3 冲锋 4 去那儿", "点「坚守」：下了命令，按钮收起")
 	await free_main(main)
 	# —— 别的区域没有小队：数字键不下命令、没有「令」
 	main = await make_main(false)
@@ -9370,6 +9370,43 @@ func test_millbattle() -> void:
 	check(MillBattle.finish(MillBattle.DEF).contains("守住了") and str(GameState.get_flag("ch3_mill", "")) == "held" and GameState.get_rep("severin") == sev - 10, "守住了：ch3_mill = held，塞弗林家 −10")
 	mill_state("severin")
 	check(MillBattle.finish(MillBattle.DEF).contains("打不进去") and str(GameState.get_flag("ch3_mill", "")) == "repelled", "跟塞弗林家打不进去：ch3_mill = repelled")
+	# —— 6.7c：「去那儿」、水渠绕后、远处的背景大军
+	mill_state("lomond")
+	main = await make_mill("mill_night")
+	b = main.battle
+	var mb := main.world.find_child("MillBattle", true, false) as MillBattle
+	var host := main.world.find_child("FarHost", true, false) as MultiMeshInstance3D
+	var fire := main.world.find_child("FarTorches", true, false) as MultiMeshInstance3D
+	var near_far := INF
+	for e: Array in mb.far_base:                       # 无头模式下多实例的位置读不回来（渲染器是空的），看它摆的底
+		var hp: Vector3 = e[0]
+		near_far = minf(near_far, Vector2(hp.x, hp.z).distance_to(PlainMill.RECT.get_center()) - MillBattle.FAR_ADVANCE)
+	check(host.multimesh.instance_count == 240 and mb.far_base.size() == 240 and fire.multimesh.instance_count == 120 and near_far > 60.0 and main.world.find_child("FarBanners", true, false) != null,
+		"远处的背景大军：北边麦茬地上 240 个兵、120 支火把、几面红旗（压到最近也离磨坊 %.0f 米；只是背景，不进军阵）" % near_far)
+	check(not b.order("goto") and b.order("goto", MillBattle.p3(MillBattle.FLANK)) and b.squad.all(func(x): return x.order == "goto" and x.anchor.distance_to(MillBattle.p3(MillBattle.FLANK)) < 4.0),
+		"「去那儿」：没指地方下不了；指了地方，小队的站位都在那一点附近")
+	await seconds(MillBattle.START_AFTER + 0.5)
+	main.player.rotation.y = deg_to_rad(0.0)
+	main.player.global_position = MillBattle.p3(Vector2(16.0, -30.0)) + Vector3(0, 0.3, 0)
+	await physics(4)
+	var op: Vector3 = main.order_point()
+	check(op.is_finite() and op.distance_to(main.player.global_position) > 2.0 and op.distance_to(main.player.global_position) <= 41.0, "准星指的地方（往北 %.1f 米）" % op.distance_to(main.player.global_position))
+	b.order("goto", MillBattle.p3(MillBattle.FLANK))
+	var path3 := NavigationServer3D.map_get_path(main.world.get_world_3d().navigation_map, MillBattle.p3(Vector2(26, -24)), MillBattle.p3(MillBattle.FLANK), true)
+	check(path3.size() > 1 and path3[path3.size() - 1].distance_to(MillBattle.p3(MillBattle.FLANK)) < 1.5 and NavBuilder.path_length(path3) < 50.0,
+		"从院子里顺着西边水渠绕到北墙缺口外西北角走得通（%.1f 米）" % NavBuilder.path_length(path3))
+	for x in b.squad:
+		x.global_position = MillBattle.p3(MillBattle.FLANK) + Vector3(randf_range(-2, 2), 0.3, randf_range(-2, 2))
+	b.elapsed = MillBattle.WAVE2_AT + 0.5
+	await frames(3)
+	var w2: Array = soldiers_of(main, MillBattle.ATK).filter(func(x): return str(x.enemy_id).begins_with("wave2") or x.enemy_id == "odilon")
+	var m0: float = w2.map(func(x): return x.morale).reduce(func(a2, c2): return a2 + c2, 0.0) / maxf(w2.size(), 1)
+	check(mb.hinted and mb.flank_done and GameState.has_flag("ch3_flanked") and w2.size() >= 10 and m0 < 70.0 - MillBattle.FLANK_HIT + 5.0,
+		"第二拨到了、小队在缺口外西北角：从背后打进去，第二拨士气 −%d（平均 %.0f）、记 ch3_flanked；之前有提示" % [int(MillBattle.FLANK_HIT), m0])
+	var t0 := mb.far_t
+	await seconds(1.0)
+	check(mb.far_t > t0 + 0.5, "背景大军开打以后慢慢往前压（按开打后的秒数摆，%d 秒压 %d 米）" % [int(MillBattle.FAR_ADVANCE_T), int(MillBattle.FAR_ADVANCE)])
+	await free_main(main)
 	GameState.chapter = 0
 	GameState.pending_load = {}
 

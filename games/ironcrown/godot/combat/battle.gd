@@ -28,7 +28,7 @@ const MAX_ACTIVE := 60            # 同时活着、在打的兵（双方合计�
 const CHECK_STEP := 0.25          # 多久检查一次名额与胜负（秒）
 const SPREAD := 3.0               # 挑对手时：目标每多一个别人盯着，就当它远 3 米
 const STICK := 1.0                # 现在的对手比新找到的最多只「远」这么多米，就不换（免得来回换）
-const ORDERS := {"follow": "跟随我", "hold": "原地坚守", "charge": "冲锋"}      # 小队命令（B.2）
+const ORDERS := {"follow": "跟随我", "hold": "原地坚守", "charge": "冲锋", "goto": "去那儿"}      # 小队命令（B.2；「去那儿」6.7c：跑到你指的地方排开坚守，磨坊之战顺着水渠绕后）
 const FOLLOW_LEASH := 7.0         # 跟随时只打离玩家这么近的敌人
 const HOLD_LEASH := 5.0           # 坚守时只打离坚守点这么近的敌人
 const RANK := 3                   # 跟随队形每排几个人
@@ -58,6 +58,7 @@ var player: FpController
 var squad: Array = []             # 归玩家指挥的兵（B.2）
 var squad_order := "charge"
 var hold_dir := Vector3.FORWARD   # 坚守时面朝哪边（玩家下令时的朝向）
+var goto_point := Vector3.INF     # 「去那儿」指的那一点（6.7c）；别的命令时 INF
 var morale_on := true             # 士气规则开着（测试里测别的东西时可以关掉）
 var fallen := {}                  # 阵营 → 倒下、求饶、逃跑了几个（B.3）
 var routed := ""                  # 全体溃逃的那一方
@@ -260,10 +261,11 @@ func squad_alive() -> int:
 
 
 ## 下命令：follow / hold / charge；没有小队或命令不认识时返回 false
-func order(o: String) -> bool:
-	if not ORDERS.has(o) or squad.is_empty():
+func order(o: String, at := Vector3.INF) -> bool:
+	if not ORDERS.has(o) or squad.is_empty() or (o == "goto" and not at.is_finite()):
 		return false
 	squad_order = o
+	goto_point = at if o == "goto" else Vector3.INF
 	var p := _player()
 	if p:
 		hold_dir = -p.global_transform.basis.z
@@ -277,6 +279,8 @@ func order(o: String) -> bool:
 		s.order = o
 		if o == "hold" and p:
 			s.anchor = _hold_slot(s.slot, p)
+		elif o == "goto":
+			s.anchor = _goto_slot(s.slot, at)
 		s.retarget_t = 0.0                # 马上按新命令重挑对手
 		s.nav_target = Vector3.INF
 	print("IC_ORDER order=%s squad=%d" % [o, squad_alive()])
@@ -289,7 +293,7 @@ func leash(s: Soldier) -> Array:
 		return [s.guard_post, s.guard_r] if s.guard_post != Vector3.INF else []
 	if s.order == "follow" and _player() != null:
 		return [player.global_position, FOLLOW_LEASH]
-	if s.order == "hold" and s.anchor != Vector3.INF:
+	if s.order in ["hold", "goto"] and s.anchor != Vector3.INF:
 		return [s.anchor, HOLD_LEASH]
 	return []
 
@@ -300,7 +304,7 @@ func post_of(s: Soldier) -> Variant:
 		return s.guard_post if s.guard_post != Vector3.INF else null
 	if s.order == "follow" and _player() != null:
 		return _follow_slot(s.slot, player)
-	if s.order == "hold" and s.anchor != Vector3.INF:
+	if s.order in ["hold", "goto"] and s.anchor != Vector3.INF:
 		return s.anchor
 	return null
 
@@ -331,6 +335,14 @@ func _hold_slot(i: int, p: Node3D) -> Vector3:
 	var local := Vector3((col - (line_cols - 1) * 0.5) * 1.5, 0.0, -2.0 - row * 1.5)     # 本地 -Z 是前面
 	var yaw := p.global_rotation.y if hold_facing == Vector3.ZERO else atan2(-hold_facing.x, -hold_facing.z)
 	return p.global_position + Basis(Vector3.UP, yaw) * local
+
+
+## 「去那儿」队形（6.7c）：指的那一点为中心横着排，每排 line_cols 人，面朝下令时你看的方向
+func _goto_slot(i: int, at: Vector3) -> Vector3:
+	var col := i % line_cols
+	var row := i / line_cols
+	var yaw := atan2(-hold_dir.x, -hold_dir.z)
+	return at + Basis(Vector3.UP, yaw) * Vector3((col - (line_cols - 1) * 0.5) * 1.5, 0.0, row * 1.5)
 
 
 ## 记下兵 s 现在盯着谁（t = null：不盯了）；可以重复调用

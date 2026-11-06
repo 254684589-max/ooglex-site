@@ -238,12 +238,12 @@ func _process(delta: float) -> void:
 			_layout()                 # 竖屏触屏时提示排在字幕下面：字幕没了，提示往上挪
 
 
-## 小队一行（B.2）：「◆ 小队 6 人：冲锋 · 1 跟随 2 坚守 3 冲锋」（触屏写「点「令」下命令」），右对齐在右上角按钮下面
+## 小队一行（B.2）：「◆ 小队 6 人：冲锋 · 1 跟随 2 坚守 3 冲锋 4 去那儿」（6.7c 加 4）（触屏写「点「令」下命令」），右对齐在右上角按钮下面
 func squad_text() -> String:
 	if battle == null or not is_instance_valid(battle) or battle.squad.is_empty():
 		return ""
 	return "◆ 小队 %d 人：%s · %s" % [battle.squad_alive(), Battle.ORDERS.get(battle.squad_order, ""),
-		"1 跟随 2 坚守 3 冲锋" if key_hint != "" else "点「令」下命令"]
+		"1 跟随 2 坚守 3 冲锋 4 去那儿" if key_hint != "" else "点「令」下命令"]
 
 
 func refresh_squad() -> void:

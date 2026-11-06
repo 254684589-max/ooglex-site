@@ -962,7 +962,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		open_map()
 		get_viewport().set_input_as_handled()
 		return
-	for o in Battle.ORDERS:              # 小队命令（B.2）：1 跟随我 · 2 原地坚守 · 3 冲锋
+	for o in Battle.ORDERS:              # 小队命令（B.2）：1 跟随我 · 2 原地坚守 · 3 冲锋 · 4 去那儿（6.7c）
 		if event.is_action_pressed("order_" + o):
 			if give_order(o):
 				get_viewport().set_input_as_handled()
@@ -1911,11 +1911,31 @@ func start_battle() -> void:
 
 ## 给小队下命令（B.2）；没有小队时什么都不做，返回 false
 func give_order(o: String) -> bool:
-	if battle == null or not is_instance_valid(battle) or not battle.order(o):
+	var at := order_point() if o == "goto" else Vector3.INF
+	if battle == null or not is_instance_valid(battle) or not battle.order(o, at):
 		return false
-	hud.toast("◆ 小队：%s" % Battle.ORDERS[o], 2.0)
+	hud.toast("◆ 小队：%s" % Battle.ORDERS[o] + ("（%.0f 米外）" % player.global_position.distance_to(at) if o == "goto" else ""), 2.0)
 	hud.refresh_squad()
 	return true
+
+
+## 「去那儿」指的地方（6.7c）：准星往前 ORDER_RANGE 米以内碰到的地面 / 墙脚；什么都没碰到就是前面 ORDER_RANGE 米那一点落到地上
+const ORDER_RANGE := 40.0
+
+
+func order_point() -> Vector3:
+	if player == null:
+		return Vector3.INF
+	var cam := get_viewport().get_camera_3d()
+	var from := cam.global_position if cam else player.global_position + Vector3(0, 1.6, 0)
+	var dir := -(cam.global_transform.basis.z if cam else player.global_transform.basis.z)
+	var space := player.get_world_3d().direct_space_state
+	var q := PhysicsRayQueryParameters3D.create(from, from + dir * ORDER_RANGE, 1)
+	q.exclude = [player.get_rid()]
+	var hit := space.intersect_ray(q)
+	var p: Vector3 = hit.position - dir * 0.8 if not hit.is_empty() else from + dir * ORDER_RANGE
+	var down := space.intersect_ray(PhysicsRayQueryParameters3D.create(p + Vector3(0, 3, 0), p + Vector3(0, -30, 0), 1))
+	return down.position if not down.is_empty() else Vector3(p.x, player.global_position.y, p.z)
 
 
 ## 军阵试验场打完了（B.1）：只有一方还站着
@@ -2095,7 +2115,7 @@ func _mill_tick() -> void:
 		player.rotation.y = deg_to_rad(float(sp[1]))
 	if mb and mb.ready_to_start():
 		start_battle()
-		hud.toast("◆ 他们来了！按 1 让小队跟着你、2 原地坚守、3 冲锋（触屏「令」）。%s" % ("别让六个人冲进粮仓那片。" if not MillBattle.raiding() else "冲进粮仓那片院子！"), 5.0)
+		hud.toast("◆ 他们来了！按 1 让小队跟着你、2 原地坚守、3 冲锋、4 去准星指的地方（触屏「令」）。%s" % ("别让六个人冲进粮仓那片。" if not MillBattle.raiding() else "冲进粮仓那片院子！"), 5.0)
 		if _query("cwskip").is_valid_float():         # 截图用（同堤道夜战）：快进到开打后第 N 秒
 			Engine.time_scale = 8.0
 			Engine.max_physics_steps_per_frame = 64
