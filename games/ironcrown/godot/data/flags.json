@@ -195,5 +195,16 @@
   "ch4_envoy_severin": {"desc": "塞弗林家的奥迪隆开过价（7.4）：砧山北坑十年的铁，冠戴在摄政的孙子头上", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
   "ch4_odilon_letter": {"desc": "告诉奥迪隆摄政的信在你手里（7.4）：他要你冬议以前别让它见光", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
   "ch4_envoy_north": {"desc": "北境的人开过价（7.4）：阿尔里克当家的是军士赫尔曼，伊薇特当家的是厄尔德家的罗薇娜", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
-  "ch4_edric_met": {"desc": "在渡工行会会馆见了埃德里克（7.4，只有序章放走他的）：借据在他身上，冬至那天他要念出来", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"}
+  "ch4_edric_met": {"desc": "在渡工行会会馆见了埃德里克（7.4，只有序章放走他的）：借据在他身上，冬至那天他要念出来", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
+  "ch4_crown_way": {"desc": "冠怎么弄出来的（7.5）：bought 替一家赎了（科尔温冬至带上冠城，ch4_buyer）/ traded 拿摄政的信或粮仓账本换的 / stolen 金库之夜自己拿的", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"},
+  "ch4_buyer": {"desc": "替谁赎的冠（7.5，ch4_crown_way = bought）：severin / lomond / north", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"},
+  "ch4_traded": {"desc": "拿什么换的冠（7.5）：letter 摄政的信 / ledger 粮仓账本", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"},
+  "ch4_vault": {"desc": "金库之夜怎么拿到的冠（7.5）：unseen 莫德睡着了 / talked 跟她说伊格纳兹还活着、她自己开了铁笼 / caught 被看见了、和雇佣兵打了一架", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"},
+  "ch4_vault_entered": {"desc": "金库之夜：从北潮沟摸到钥楼的水门、进了金库（7.5）", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"},
+  "ch4_vault_sneaky": {"desc": "金库之夜：进去时没惊动人（潜行 14），莫德睡着了（7.5）", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"},
+  "ch4_maud_keys": {"desc": "拿到了莫德那串钥匙（7.5：她睡着时顺手拿的，或者打完以后她扔在你脚下）", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"},
+  "ch4_gate_open": {"desc": "钥楼背后那道铁栅水门开了（7.5：埃德里克的钥匙或撬锁）", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"},
+  "ch4_redline": {"desc": "科妮莉亚说了河道图上那条红线：退潮时北潮沟哪段能落脚（7.5）", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"},
+  "ch4_edric_key": {"desc": "埃德里克从行会的柜子里拿了水门的备用钥匙给你（7.5）", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"},
+  "ch4_thugs": {"desc": "序章勒索过塞拉斯的：码头上他的三个人怎么了结的（7.5）：paid 付了六十枚 / talked 说走了 / beaten 打了一架", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"}
 }

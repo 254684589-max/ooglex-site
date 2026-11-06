@@ -158,6 +158,17 @@ func _ready() -> void:
 				GameState.set_flag("ch3_guards_left" if ms == "tenants_left" else "ch3_captain_aside")
 			GameState.set_stage("ch3_main", {"lomond": "to_mill_lomond", "severin": "to_mill_severin"}.get(ms, "to_mill_tenants"))
 			GameState.daypart = "night"
+		if _query("vault") in ["1", "sneak"] and not Engine.has_meta("ic_vault_param_done"):
+			Engine.set_meta("ic_vault_param_done", true)      # 截图用（7.5）：?area=key_vault&spawn=gate&vault=1|sneak 直接到金库之夜（莫德醒着 / 睡着了）
+			GameState.chapter = 4
+			if not GameState.quest_active("ch4_main"):
+				GameState.start_quest("ch4_main")
+			for f in ["ch4_colwin_met", "ch4_envoy_severin", "ch4_envoy_lomond", "ch4_envoy_north", "ch4_vault_entered"]:
+				GameState.set_flag(f)
+			if _query("vault") == "sneak":
+				GameState.set_flag("ch4_vault_sneaky")
+			GameState.set_stage("ch4_main", "way")
+			GameState.daypart = "night"
 		if _query("dawn") in ["lit", "out"] and not Engine.has_meta("ic_dawn_param_done"):
 			Engine.set_meta("ic_dawn_param_done", true)       # 截图用（5.8）：?dawn=lit|out 直接到第二夜过去的早上（劫下了粮 / 被打退了）
 			for f in ["matthias_met", "norbert_met", "norbert_day2"]:

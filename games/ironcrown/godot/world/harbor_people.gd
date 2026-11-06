@@ -82,8 +82,30 @@ static func _floor_y(at: Vector2) -> float:
 	return ground(at)
 
 
+## 序章勒索过塞拉斯的：见过科尔温以后，塞拉斯的三个人在码头街上堵你（7.5；付钱、说走、或者打——组 encounter:silas_men）
+static func silas_men_due() -> bool:
+	return str(GameState.get_flag("prologue_edric", "")) == "extort" and GameState.quest_stage("ch4_main") in ["envoys", "way"] and not GameState.has_flag("ch4_thugs")
+
+
+const SILAS_MEN := [[Vector2(13.4, -44.0), 0.0], [Vector2(14.8, -45.6), -20.0], [Vector2(12.0, -45.8), 20.0]]
+
+
 ## 双钥港（室外）：城里的人（同步放：块没搭好时也说得上话；远了不画）
 static func build(parent: Node3D) -> void:
+	if silas_men_due():
+		for k in SILAS_MEN.size():
+			var at: Vector2 = (SILAS_MEN[k] as Array)[0]
+			var t := Npc.make("收债的打手", [] if k == 0 else ["（他掂着短棍，看着领头的）"], Color("2a2420"))
+			t.name = "Npc_silas_man%d" % k
+			if k == 0:
+				t.dialogue_area = "harbor"
+				t.dialogue_id = "silas_man"
+			t.position = Vector3(at.x, ground(at), at.y)
+			t.rotation.y = deg_to_rad(float((SILAS_MEN[k] as Array)[1]))
+			t.add_to_group(Encounter.group_name("silas_men"))
+			t.set_meta("enemy_kind", "clubber")
+			t.set_meta("enemy_id", "silas_man%d" % k)
+			parent.add_child(t)
 	for it: Array in crowd():
 		var at: Vector2 = it[2]
 		var n := Npc.make(str(it[1]), it[4], Color("5a5248"))
@@ -120,6 +142,14 @@ static func room_people(area: String) -> Array:
 				["drinker1", "喝酒的船工", Vector3(-2.4, 0, 1.55), 0.0, "", DRINKER_LINES],
 				["drinker2", "喝酒的船工", Vector3(0.4, 0, 0.05), 180.0, "", DRINKER_LINES.slice(1) + DRINKER_LINES.slice(0, 1)],
 				["keeper", "酒馆的老板娘", Vector3(-3.7, 0, -1.6), -120.0, "", KEEPER_LINES]]
+		"key_vault":
+			if not HarborRooms.vault_night() or GameState.has_item("iron_crown"):
+				return []
+			var guard_lines := ["（他靠着石阶睡着了，头一点一点）"] if GameState.has_flag("ch4_vault_sneaky") else ["（他按着剑柄，盯着水门那边）"]
+			return [["maud_vault", "金库管事莫德", Vector3(1.5, 0, -1.6), 160.0, "maud_vault", []],
+				["vault_guard0", "卡斯韦尔家的雇佣兵", Vector3(-3.4, 0, -1.9), 160.0, "", guard_lines],
+				["vault_guard1", "卡斯韦尔家的雇佣兵", Vector3(-2.3, 0, -2.0), 190.0, "", guard_lines],
+				["vault_guard2", "卡斯韦尔家的雇佣兵", Vector3(-4.4, 0, 2.6), 120.0, "", guard_lines]]
 		"debt_prison":
 			return [["jailer", "看门的", Vector3(3.6, 0, 2.45), 0.0, "", JAILER_LINES],
 				["jost", "约斯特", Vector3(0.6, 0, -2.6), 180.0, "", JOST_LINES]]
@@ -135,4 +165,8 @@ static func build_room(area: String, parent: Node3D) -> void:
 			n.dialogue_id = str(it[4])
 		n.position = it[2]
 		n.rotation.y = deg_to_rad(float(it[3]))
+		if str(it[0]).begins_with("vault_guard"):                       # 金库之夜：莫德醒着、你拔了剑，这三个人就动手（组 encounter:vault_guards）
+			n.add_to_group(Encounter.group_name("vault_guards"))
+			n.set_meta("enemy_kind", "swordsman")
+			n.set_meta("enemy_id", str(it[0]))
 		parent.add_child(n)

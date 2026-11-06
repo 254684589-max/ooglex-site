@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9922,6 +9922,105 @@ func test_ch4people() -> void:
 	ch4_state({"ch3_vigil": true}, "envoys")
 	check(not has_night and say_runner("maud", ["三年前送冠进来的那一夜，你在吗？"], "harbor") == "night" and GameState.has_flag("ch4_maud_night"), "听过守灵夜的才问得出：莫德说出三年前送冠进金库的那一夜")
 	check(Chapters.wip_note_of(4).contains("三家的使者"), "第四章进场的提示：做到见科尔温和三家的使者")
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch4crown() -> void:
+	# 把冠弄出来（7.5）：赎 / 换 / 偷、金库之夜、码头上塞拉斯的人
+	var way_flags := {"ch4_colwin_met": true, "ch4_envoy_severin": true, "ch4_envoy_lomond": true, "ch4_envoy_north": true}
+	ch4_state(way_flags, "way")
+	check(say_runner("colwin", [], "harbor") == "deal", "三家都开过价以后找科尔温：问你替谁开口")
+	check(say_runner("colwin", ["替塞弗林家把账赎了：砧山北坑十年的铁。"], "harbor") == "buy_severin" and str(GameState.get_flag("ch4_crown_way", "")) == "bought"
+		and str(GameState.get_flag("ch4_buyer", "")) == "severin" and GameState.quest_stage("ch4_main") == "to_city" and not GameState.has_item("iron_crown"),
+		"赎：替塞弗林家把账赎了（砧山的铁）——冠由科尔温冬至那天带上冠城；主线到「上冠城」")
+	ch4_state(way_flags, "way")
+	var rr := DialogueRunner.new()
+	rr.start("harbor", "colwin")
+	var north_dc := -1
+	for o in rr.options():
+		if str(o.text).begins_with("替北境开口") and o.has("check"):
+			north_dc = int(o.check.dc)
+	GameState.set_flag("ch4_note_shown")
+	var rr2 := DialogueRunner.new()
+	rr2.start("harbor", "colwin")
+	var north_dc2 := -1
+	for o in rr2.options():
+		if str(o.text).begins_with("替北境开口") and o.has("check"):
+			north_dc2 = int(o.check.dc)
+	check(north_dc == 15 and north_dc2 == 11, "替北境开口：口才 15；给科尔温看过借据的 11（老王押冠押的是北境的柴和粮）")
+	ch4_state(way_flags, "way")
+	GameState.add_item("regent_letter")
+	GameState.add_item("debt_note")
+	check(say_runner("colwin", ["（拿出借据）这张借据，换那顶冠。"], "harbor") == "trade_note" and GameState.has_item("debt_note") and GameState.quest_stage("ch4_main") == "way", "一张借据换不来一顶冠（只值霜渡镇一个渡口）")
+	check(say_runner("colwin", ["（拿出摄政的信）这封信，换那顶冠。", "（接过铁冠）"], "harbor") == "crown_in_hand" and GameState.has_item("iron_crown") and not GameState.has_item("regent_letter")
+		and str(GameState.get_flag("ch4_crown_way", "")) == "traded" and str(GameState.get_flag("ch4_traded", "")) == "letter" and GameState.quest_stage("ch4_main") == "to_city",
+		"换：拿摄政的信换——冠交到你手里（「从现在起，城里每一双眼睛都在找你」）")
+	check(say_runner("colwin", [], "harbor") == "settled", "换完了再找他：两清了，议事厅见")
+	# 偷：红线、钥匙、退潮
+	ch4_state(way_flags.merged({"prologue_edric": "release", "ch4_edric_met": true}), "way")
+	check(say_runner("edric", ["你能弄到钥楼那道水门的钥匙吗？"], "harbor") == "key" and GameState.has_item("sluice_key"), "放走的埃德里克：从行会的柜子里拿出水门的备用钥匙")
+	check(say_runner("cornelia", ["河道图上那条红线是什么？"], "harbor") == "redline" and GameState.has_flag("ch4_redline"), "科妮莉亚：河道图上那条红线是退潮能落脚的地方")
+	ch4_state(way_flags, "way")
+	Daypart.current = "day"
+	check(str(HarborTown.canal_descend().toast).contains("涨着潮"), "白天涨潮：水门淹在水底下")
+	Daypart.current = "night"
+	check(str(HarborTown.canal_descend().toast).contains("陷住"), "夜里退潮，可不知道沟底哪段能落脚：陷进泥里")
+	GameState.set_flag("ch4_redline")
+	GameState.add_item("sluice_key")
+	var res := HarborTown.canal_descend()
+	check(str(res.get("kind", "")) == "travel" and str(res.area) == "key_vault" and str(res.spawn) == "gate" and GameState.has_flag("ch4_vault_entered") and HarborRooms.vault_night(),
+		"退潮、知道红线、有钥匙：从桥头翻下北潮沟，开了水门进金库")
+	Daypart.current = "day"
+	ch4_state(way_flags, "envoys")
+	check(not str(HarborTown.canal_descend().toast).is_empty() and not GameState.has_flag("ch4_vault_entered"), "还没到这一步：桥下只是看看")
+	# 金库之夜：莫德、三个雇佣兵
+	ch4_state(way_flags.merged({"ch4_vault_entered": true, "ch3_vigil": true}), "way")
+	GameState.daypart = "night"
+	GameState.pending_load = {"scene": "key_vault", "spawn": "gate", "player": {}}
+	var main := await make_area("key_vault")
+	await physics(6)
+	var guards: Array = main.get_tree().get_nodes_in_group(Encounter.group_name("vault_guards"))
+	var gate := main.world.find_child("WaterGate", true, false) as Door
+	check(main.world.find_child("Npc_maud_vault", true, false) != null and guards.size() == 3 and gate != null and not gate.locked and gate.to_area == "harbor" and main.player.is_on_floor(),
+		"金库之夜：从水门进来站在地上；莫德在石台边，三个雇佣兵；水门从里面出去（回西边那座桥）")
+	check(str(HarborRooms.crown_box().toast).contains("钥匙在莫德腰上"), "铁笼锁着，钥匙在莫德腰上")
+	check(say_runner("maud_vault", ["伊格纳兹还活着。在坠星院的抄经室里，他三十五年没开口——直到前几天。"], "harbor") == "talked" and GameState.has_item("iron_crown")
+		and str(GameState.get_flag("ch4_vault", "")) == "talked" and str(GameState.get_flag("ch4_crown_way", "")) == "stolen" and GameState.quest_stage("ch4_main") == "to_city",
+		"听过守灵夜的：跟莫德说伊格纳兹还活着——她自己打开铁笼，把铁匣放在你手里（ch4_vault = talked）")
+	check(str(HarborRooms.crown_box().toast).contains("空了"), "拿走以后：石台上空了")
+	await free_main(main)
+	ch4_state(way_flags.merged({"ch4_vault_entered": true}), "way")
+	GameState.daypart = "night"
+	GameState.pending_load = {"scene": "key_vault", "spawn": "gate", "player": {}}
+	main = await make_area("key_vault")
+	await physics(4)
+	var mr := DialogueRunner.new()
+	mr.start("harbor", "maud_vault")
+	check(mr.node_id == "awake" and not mr.options().any(func(o): return str(o.text).contains("伊格纳兹")), "没听过守灵夜的：莫德醒着，没话可说——只剩拔剑")
+	say_runner("maud_vault", ["（拔剑）"], "harbor")
+	main._on_dialogue_closed()
+	await frames(2)
+	check(main.encounter_active() and main.encounter.enemies.size() == 3, "拔剑：三个雇佣兵动手（%d 个）" % (main.encounter.enemies.size() if main.encounter else 0))
+	await free_main(main)
+	ch4_state(way_flags.merged({"ch4_vault_entered": true, "ch4_vault": "caught"}), "way")
+	check(say_runner("maud_vault", [], "harbor") == "after_fight" and GameState.has_flag("ch4_maud_keys") and str(HarborRooms.crown_box().toast).contains("得到：铁冠")
+		and str(GameState.get_flag("ch4_vault", "")) == "caught", "打完了：莫德把钥匙扔在你脚下，打开铁笼拿走（ch4_vault = caught）")
+	ch4_state(way_flags.merged({"ch4_vault_entered": true, "ch4_vault_sneaky": true}), "way")
+	check(say_runner("maud_vault", ["（轻轻把钥匙串从她膝盖上拿起来）"], "harbor") == "" and GameState.has_flag("ch4_maud_keys") and str(HarborRooms.crown_box().toast).contains("得到：铁冠")
+		and str(GameState.get_flag("ch4_vault", "")) == "unseen", "进来时没惊动人：莫德睡着了，拿走钥匙打开铁笼（ch4_vault = unseen）")
+	# 码头上塞拉斯的人
+	for pe: String in ["extort", "deliver"]:
+		ch4_state({"prologue_edric": pe, "ch4_colwin_met": true}, "envoys")
+		GameState.daypart = "day"
+		check(HarborPeople.silas_men_due() == (pe == "extort"), "塞拉斯的人只堵序章勒索过的（%s：%s）" % [pe, "堵" if pe == "extort" else "不堵"])
+	ch4_state({"prologue_edric": "extort", "ch4_colwin_met": true}, "envoys")
+	GameState.add_silver(80)
+	var sv := GameState.silver
+	check(say_runner("silas_man", ["（数出六十枚银币）这些，够塞拉斯先生买一副新手套。"], "harbor") == "paid" and GameState.silver == sv - 60 and str(GameState.get_flag("ch4_thugs", "")) == "paid" and not HarborPeople.silas_men_due(),
+		"付六十枚：他们走了")
+	GameState.daypart = "day"
+	Daypart.current = "day"
 	GameState.chapter = 0
 	GameState.pending_load = {}
 

@@ -380,6 +380,50 @@ static func kerbs() -> Array:
 	return out
 
 
+## 西边那座跨北潮沟的桥（离钥楼最近的那座）：[中心, 沿街方向]
+static func canal_bridge() -> Array:
+	var best: Array = []
+	var bd := INF
+	for br: Array in bridges():
+		var c: Vector2 = br[0]
+		var d := c.distance_to(HarborLayout.KEY_HOUSE)
+		if HarborLayout.canal_d(c) < 1.0 and absf(c.y - HarborLayout.canal_z_at(c.x, 0)) < 1.0 and d < bd:
+			bd = d
+			best = br
+	return best
+
+
+static func _gs() -> Node:
+	return (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameState")    # 不直接写 GameState：生成高度场的场景里也要编得过（同告示）
+
+
+static func _stage_now() -> String:
+	var gs := _gs()
+	return str(gs.quest_stage("ch4_main")) if gs else ""
+
+
+## 金库之夜（7.5；STORY.md 7.5 第 5 步）：退潮以后、知道沟底哪段能落脚（科妮莉亚的红线或渡工之子），从桥头翻下北潮沟摸到钥楼背后的水门；
+## 有埃德里克给的钥匙就开锁，没有就撬（潜行 13，一次定）。进去以前再定一回：潜行 14 过了，莫德在金库里睡着了（ch4_vault_sneaky）
+static func canal_descend() -> Dictionary:
+	var gs := _gs()
+	if gs == null:
+		return {}
+	if _stage_now() != "way" or str(gs.get_flag("ch4_crown_way", "")) != "":
+		return {"toast": "桥下是北潮沟。往东看，钥楼的背墙直接立在沟边上，墙脚一道铁栅水门。"}
+	if not Harbor.low_tide():
+		return {"toast": "涨着潮。沟里的水齐腰深，钥楼那道铁栅水门淹在水底下。（夜里才退潮）"}
+	if not gs.has_flag("ch4_redline") and not gs.has_flag("ch4_guild_kin"):
+		return {"toast": "退潮了，沟底露出一片黑泥。你试着踩下去——半条腿一下子陷住了，好不容易才拔出来。得知道沟底哪段能落脚。（渡工行会会馆的河道图上有一条红线）"}
+	if not gs.has_item("sluice_key") and not gs.has_flag("ch4_gate_open"):
+		if not gs.check("ch4_gate_pick", "stealth", 13):
+			return {"toast": "你顺着红线摸到钥楼的水门底下。铁栅上那把大锁结满了盐霜，撬了半天纹丝不动。（潜行 13 没过）渡工行会管闸——也许有人能弄到钥匙。"}
+	gs.set_flag("ch4_gate_open")
+	gs.set_flag("ch4_vault_entered")
+	if gs.check("ch4_vault_sneak", "stealth", 14):
+		gs.set_flag("ch4_vault_sneaky")
+	return {"kind": "travel", "area": "key_vault", "spawn": "gate", "name": "钥楼的水门", "toast": "你顺着红线踩着沟底的硬泥往东摸，开了铁栅水门，钻进钥楼底下。"}
+
+
 ## 门、路牌、告示（同步）
 static func interactables(parent: Node3D) -> void:
 	var k := 0
@@ -414,6 +458,12 @@ static func interactables(parent: Node3D) -> void:
 		rs.position = Vector3((s[0] as Vector2).x, ground(s[0]), (s[0] as Vector2).y)
 		rs.rotation_degrees.y = float(s[2])
 		parent.add_child(rs)
+	var cb := canal_bridge()                                           # 金库之夜（7.5）：西边那座跨北潮沟的桥上，从这儿翻下潮沟
+	var dn := Examine.make("桥下的北潮沟", "看看", func(_who: FpController) -> Dictionary: return canal_descend(), Vector3(1.2, 1.4, 1.2))
+	dn.name = "CanalDescend"
+	dn.position = Vector3((cb[0] as Vector2).x, ground(cb[0] - (cb[1] as Vector2) * 5.0) + 0.1, (cb[0] as Vector2).y) + Vector3((cb[1] as Vector2).y, 0, -(cb[1] as Vector2).x) * 1.2
+	dn.verb_fn = func() -> String: return "翻下潮沟" if _stage_now() == "way" else "看看"
+	parent.add_child(dn)
 	var e := Examine.make("清账的告示", "看告示", func(_who: FpController) -> Dictionary:
 		var gs := (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameState")       # 不直接写 GameState：生成高度场的脚本里没有自动加载（同 Harbor.tide）
 		if gs:

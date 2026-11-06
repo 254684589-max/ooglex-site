@@ -1093,6 +1093,15 @@ godot/
 - **打扮**：`data/looks.json` 加 14 套（科尔温、莫德、科妮莉亚、搬运工、卖鱼的女人、账房先生、等船的人、船工、收债的打手、喝酒的船工、看门的、约斯特、门房、酒馆老板娘），回来的老面孔（奥迪隆、塞缪尔、塞拉斯、埃德里克、赫尔曼、罗薇娜）用原来那套。
 - **测试**：`ch4people` 组（开场主线、城里和四间屋子里的人都站在空地上、北境派谁、序章没放走埃德里克的会馆里没有他、科尔温三步、勒索过的先提银币、借据、塞拉斯四种开场、三家开价和主线推进、罗薇娜说火、渡工之子、听过守灵夜的问莫德、进场提示）。
 
+### 4.87 把冠弄出来（路线图 7.5，2026-11-06）
+
+- **赎 / 换**：`harbor.json colwin` 在主线 `way` 时从 `deal` 开始：选项按 `ch4_envoy_*`、`has_item` 出现，洛蒙德、北境两条是口才检定（北境按 `ch4_note_shown` 分 15 / 11 两条，同一个检定编号）；赎记 `ch4_crown_way = bought`、`ch4_buyer`，换记 `traded`、`ch4_traded`、`give_item iron_crown`，都推进到 `to_city`。之后 `start_if` 换成 `settled` / `stolen_after`。
+- **偷**（`HarborTown.canal_descend`）：西边那座跨北潮沟的桥（`canal_bridge()`：`bridges()` 里在北潮沟上、离钥楼最近的那座）桥面上一个 `Examine`「翻下潮沟」。条件依次：主线在 `way`、还没定；`Harbor.low_tide()`（夜里）；`ch4_redline` 或 `ch4_guild_kin`；`sluice_key` 或撬锁（`check ch4_gate_pick` 潜行 13，一次定）。过了就记 `ch4_gate_open`、`ch4_vault_entered`，再定一回潜行 14（`ch4_vault_sneaky`），返回 `kind = travel` 到 `key_vault` 的出生点 `gate`（`Examine` 的结果和门一样走 `main._on_interacted`）。不直接写 GameState（读自动加载）：生成高度场的场景里也要编得过。
+- **金库之夜**（`HarborRooms.vault_night()`：进了水门、主线在 way / to_city、冠还没定或是偷的）：东墙水门变成通双钥港 `keyhouse_gate`（桥南头）的门；`HarborPeople.room_people("key_vault")` 放莫德（`maud_vault`：睡着 / 醒着 / 打完 / 拿走了）和三个雇佣兵（组 `encounter:vault_guards`、`enemy_kind swordsman`，「拔剑」= `{"fight": "vault_guards", "win": "ch4_vault", "value": "caught"}`）；铁匣（`crown_box()`）要 `ch4_maud_keys` 才打开，`ch4_vault` 没设过的记 `unseen`。
+- **塞拉斯的人**（`HarborPeople.silas_men_due()`：序章勒索过、主线在 envoys / way、`ch4_thugs` 没设）：码头街上三个打手，组 `encounter:silas_men`（clubber）；付钱、说走用 `leave` 效果撤掉。
+- **截图参数** `?vault=1|sneak`（配 `area=key_vault&spawn=gate`）：直接到金库之夜。
+- **测试**：`ch4crown` 组（赎塞弗林、北境两档难度、借据换不来、信换冠、换完再问；埃德里克的钥匙、红线；涨潮 / 陷泥 / 进金库 / 还没到这一步；金库之夜的人和水门；莫德开铁笼；没听过守灵夜只能拔剑、三个雇佣兵动手；打完拿钥匙；睡着拿钥匙；塞拉斯的人只堵勒索过的、付钱走人）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

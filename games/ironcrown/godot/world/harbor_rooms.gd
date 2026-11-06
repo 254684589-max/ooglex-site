@@ -35,7 +35,7 @@ const DEBT_TEXT := "看门的桌上摊着一本账，一行一个人、一个数
 static func spawns(area: String) -> Dictionary:
 	var s: Dictionary = SPEC[area]
 	if area == "key_vault":
-		return {"front": [Vector3(-1.8, 0, -1.4), -120.0], "stair": [Vector3(-1.8, 0, -1.4), -120.0]}
+		return {"front": [Vector3(-1.8, 0, -1.4), -120.0], "stair": [Vector3(-1.8, 0, -1.4), -120.0], "gate": [VAULT_GATE + Vector3(-1.0, 0, 0.0), 90.0]}
 	var out := {"front": [Vector3(float(s.door_x), 0, float(s.d) * 0.5 - 0.9), 0.0]}
 	if area == "key_hall":
 		out["vault_stair"] = [HALL_VAULT_DOOR + Vector3(0.0, 0, 1.2), 180.0]
@@ -237,6 +237,28 @@ static func _finish(parent: Node3D, kit: MeshKit, area: String) -> void:
 	parent.add_child(mi)
 
 
+## 金库之夜：从水门进来了、冠还没拿到、事还没定（7.5）
+static func vault_night() -> bool:
+	return GameState.has_flag("ch4_vault_entered") and GameState.quest_stage("ch4_main") in ["way", "to_city"] and str(GameState.get_flag("ch4_crown_way", "")) in ["", "stolen"]
+
+
+## 那只铁匣：白天只能看；金库之夜拿到了莫德的钥匙（她睡着了顺手拿的、打完了她扔下的）就打开铁笼拿走
+static func crown_box() -> Dictionary:
+	GameState.set_flag("ch4_crown_seen")
+	if GameState.has_item("iron_crown"):
+		return {"toast": "铁笼开着，石台上空了。"}
+	if not vault_night():
+		return {"toast": CROWN_TEXT}
+	if not GameState.has_flag("ch4_maud_keys"):
+		return {"toast": "铁笼锁着。钥匙在莫德腰上那一大串里。"}
+	GameState.add_item("iron_crown")
+	GameState.set_flag("ch4_crown_way", "stolen")
+	if str(GameState.get_flag("ch4_vault", "")) == "":
+		GameState.set_flag("ch4_vault", "unseen")
+	GameState.set_stage("ch4_main", "to_city")
+	return {"toast": "最小的那把钥匙打开了铁笼。铁匣不沉，比你想的轻。你把它揣进怀里——一圈暗色的铁，冠底下那块星铁冰得扎手。（得到：铁冠）"}
+
+
 ## 搭这一间：区域入口（main 调）
 static func build(area: String, parent: Node3D, reduced_motion := false) -> Transform3D:
 	match area:
@@ -404,12 +426,21 @@ static func _key_vault(parent: Node3D, reduced_motion: bool) -> void:
 	up.name = "StairUp"
 	up.transform = Transform3D(Basis(Vector3.UP, PI * 0.5), st + Vector3(0.3, 0, 0.5))
 	parent.add_child(up)
-	var gate := Door.make("铁栅水门", 2.2, 2.0, true)
+	var night := vault_night()
+	var gate := Door.make("铁栅水门", 2.2, 2.0, not night)
 	gate.locked_text = GATE_TEXT
 	gate.name = "WaterGate"
+	if night:                                                          # 金库之夜（7.5）：从水门进来的，也从水门出去（顺着北潮沟摸回西边那座桥）
+		gate.to_area = "harbor"
+		gate.to_spawn = "keyhouse_gate"
+		gate.verb = "从水门出去"
 	gate.transform = Transform3D(Basis(Vector3.UP, PI * 0.5), Vector3(g.x - 0.1, 0, g.z + 1.1))
 	parent.add_child(gate)
-	_examine(parent, "星铁包角的铁匣", "看看", CROWN_TEXT, cb + Vector3(0, 0, 0.8), Vector3(1.6, 1.6, 0.4), "CrownBox", "ch4_crown_seen")
+	var box := Examine.make("星铁包角的铁匣", "看看", func(_who: FpController) -> Dictionary: return crown_box(), Vector3(1.6, 1.6, 0.4))
+	box.name = "CrownBox"
+	box.position = cb + Vector3(0, 0, 0.8)
+	box.verb_fn = func() -> String: return "打开铁笼" if vault_night() and GameState.has_flag("ch4_maud_keys") and not GameState.has_item("iron_crown") else "看看"
+	parent.add_child(box)
 	_examine(parent, "抵押匣", "看签", SHELF_TEXT, Vector3(-2.2, 0, 0.3), Vector3(2.4, 1.8, 0.4), "PledgeShelf")
 	_lamp(parent, cb + Vector3(0.9, 0.5, 0.8), 1.8, 7.0, Color("ffb060"), not reduced_motion, "VaultCandle")
 	_lamp(parent, Vector3(-4.0, 2.2, 2.4), 1.4, 7.0, Look.LAMP_COLOR, not reduced_motion, "VaultLantern")
