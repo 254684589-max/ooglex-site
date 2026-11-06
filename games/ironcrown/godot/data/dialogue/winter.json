@@ -25,7 +25,7 @@
       "lucien": {"text": "大主祭卢西安：（他把冠放进凹槽，手很稳）四百年前，教会烧了这一页。这一笔，由教会来还。（他划破手掌）\n（血一滴一滴落进誓瓶。井口上那一圈人动了——头一个顺着石阶往下走）", "options": [{"text": "（……）", "do": [{"set": "ch5_ritual"}], "end": true}]},
       "you": {"text": "（冠放进凹槽的那一刻，像一把钥匙转了半圈。你划破手掌，把血滴进誓瓶）\n（血一滴一滴落进誓瓶。井口上那一圈人动了——头一个顺着石阶往下走）", "options": [{"text": "（……）", "do": [{"set": "ch5_ritual"}], "end": true}]},
       "norbert": {"text": "（诺伯特顺着石阶下来，走得很慢。他看了一眼冰壁上那片空着的冰）三十五年前就该是我。（他从你手里接过誓瓶）冠你来放。血，我来滴。\n（血一滴一滴落进誓瓶。井口上那一圈人动了——头一个顺着石阶往下走）", "options": [{"text": "（……）", "do": [{"set": "ch5_ritual"}], "end": true}]},
-      "none": {"text": "（你把冠和誓瓶收了起来。冰壁上那片空着的冰还空着。井口上那一圈人，一动不动）", "do": [{"set": "oath_taker", "value": "none"}, {"set": "ch5_oath", "value": "none"}, {"set": "ending", "value": "long_winter"}, {"quest": "ch5_main", "stage": "after"}], "options": [{"text": "（转身，顺着石阶往上走）", "end": true}]}
+      "none": {"text": "（你把冠和誓瓶收了起来。冰壁上那片空着的冰还空着。井口上那一圈人，一动不动）", "do": [{"set": "oath_taker", "value": "none"}, {"set": "ch5_oath", "value": "none"}, {"set": "ending", "value": "long_winter"}, {"quest": "ch5_main", "stage": "after"}, {"ending": "final"}], "options": [{"text": "（转身，顺着石阶往上走）", "end": true}]}
     }},
   "nell5": {"speaker": "妮尔", "start": "greet",
     "start_if": [{"if": [{"flag": "ch5_nell"}], "node": "again"}],

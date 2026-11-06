@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -10665,6 +10665,45 @@ func test_ch5oath() -> void:
 	var r3 := OathRitual.start(w)
 	check(r3 != null and r3.total == OathRitual.COUNT / 2 and say_runner("matthias5", [], "winter") == "again", "和马蒂亚斯把第二十一烽的人引开过：往下涌的少一半")
 	w.queue_free()
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch5end() -> void:
+	# 第五章（8.5）：三种结局（新王 / 无冠之春 / 长冬）的结局画面、一路走来的回顾
+	ch4_state({"ch4_done": true, "crown_holder": "valen", "valen_heir": "ivette", "prologue_edric": "release", "ch2_fire": "lit", "ch3_evidence_to": "tenants", "ch2_nell": "left", "ch5_nell": "woke", "ch5_companion": "ivette", "oath_taker": "heir"})
+	CrownPeople.ch5_begin()
+	GameState.set_stage("ch5_main", "oath")
+	OathRitual.settle("sealed")
+	check(Chapter5.ending() == "new_king" and Chapter5.title() == "新王" and Chapter5.text().contains("伊薇特在冠城加冕") and Chapter5.text().contains("一百一十七张借据")
+		and Chapter5.recap().contains("放埃德里克") and Chapter5.recap().contains("伊薇特手里") and Chapter5.recap().contains("一直亮着") and Chapter5.recap().contains("妮尔醒过来"),
+		"伊薇特留名、封上了：新王（每年入冬回井边，借据还在）；回顾从序章写到第五章")
+	GameState.pending_load = {"scene": "well_bottom", "spawn": "front", "player": {}}
+	var main := await make_area("well_bottom")
+	await physics(4)
+	main.ch3_end_after = 0.3
+	main._finale()
+	await seconds(0.8)
+	var ep: EndingPanel = main.ending_panel
+	check(GameState.has_flag("ch5_done") and GameState.quest_done("ch5_main") and ep.visible and ep.title.text == "新王" and ep.sub.text == "终" and ep.header.text.contains("冬井") and not ep.continue_btn.visible
+		and ep.seal.text.contains("加冕"), "结局画面：「第五章「冬井」完 / 新王 / 终」，没有「继续」")
+	ep.close()
+	ep.open_chapter4(true, 0)
+	check(ep.sub.text == "开发中", "别的章末画面照旧写「开发中」")
+	ep.close()
+	await free_main(main)
+	for c: Array in [["you", "sealed", "crownless_spring", "没有人知道是你做的"], ["norbert", "sealed", "crownless_spring", "诺伯特的名字"], ["lucien", "sealed", "crownless_spring", "大主祭卢西安的名字"], ["you", "failed", "long_winter", "最后一座火熄灭了"]]:
+		ch4_state({"ch4_done": true, "crown_holder": "kept", "oath_taker": c[0]})
+		CrownPeople.ch5_begin()
+		GameState.set_stage("ch5_main", "oath")
+		OathRitual.settle(str(c[1]))
+		check(Chapter5.ending() == str(c[2]) and Chapter5.text().contains(str(c[3])), "%s留名、%s：%s" % [c[0], c[1], Chapter5.title()])
+	ch4_state({"ch4_done": true, "crown_holder": "kept"})
+	CrownPeople.ch5_begin()
+	GameState.set_stage("ch5_main", "oath")
+	say_runner("oath", ["（把冠和誓瓶收起来）不封了。", "（转身，顺着石阶往上走）"], "winter")
+	check(GameState.pending_ending == "final" and Chapter5.title() == "长冬" and Chapter5.text().contains("收了起来"), "不封了：对话关上直接出结局画面（长冬）")
+	GameState.pending_ending = ""
 	GameState.chapter = 0
 	GameState.pending_load = {}
 

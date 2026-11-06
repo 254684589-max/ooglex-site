@@ -247,5 +247,6 @@
   "ch5_oath": {"desc": "封誓的结果（8.4）：sealed 封上了 / failed 火盆灭了、长眠者够着了石台 / none 不封了", "set_in": "world/oath_ritual.gd settle；winter.json oath/none", "read_in": "结局（8.5）"},
   "ending": {"desc": "结局（8.4 定、8.5 画）：new_king 新王 / crownless_spring 无冠之春 / long_winter 长冬", "set_in": "world/oath_ritual.gd settle；winter.json oath/none", "read_in": "结局画面（8.5）"},
   "ch5_nell": {"desc": "冰壁前的妮尔（8.4）：woke 叫醒了 / with 陪她找了", "set_in": "data/dialogue/winter.json nell5", "read_in": "结局（8.5）"},
-  "ch5_watch21": {"desc": "第二十一烽的人：和马蒂亚斯举着火把把他们从井口引开（8.4；封誓时往下涌的少一半）", "set_in": "data/dialogue/winter.json matthias5", "read_in": "world/oath_ritual.gd start；结局（8.5）"}
+  "ch5_watch21": {"desc": "第二十一烽的人：和马蒂亚斯举着火把把他们从井口引开（8.4；封誓时往下涌的少一半）", "set_in": "data/dialogue/winter.json matthias5", "read_in": "world/oath_ritual.gd start；结局（8.5）"},
+  "ch5_done": {"desc": "全作完（8.5）：封誓的事定了、结局画面出过", "set_in": "scenes/main.gd _finale", "read_in": "结局画面不重复出"}
 }

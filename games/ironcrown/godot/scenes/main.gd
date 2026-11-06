@@ -180,6 +180,10 @@ func _ready() -> void:
 			CrownPeople.ch5_begin()
 			GameState.set_flag("ch5_archive")
 			GameState.set_stage("ch5_main", "north")
+			if _query("ending_kind") in ["new_king", "crownless_spring", "long_winter"]:
+				GameState.set_flag("ending", _query("ending_kind"))
+				GameState.set_flag("oath_taker", "heir" if _query("ending_kind") == "new_king" else "you")
+				GameState.set_flag("ch5_oath", "failed" if _query("ending_kind") == "long_winter" else "sealed")
 			if _query("ch5") in ["well", "bottom", "ritual"]:
 				GameState.add_item("oath_vial")
 				GameState.set_flag("ch5_vial", "norbert")
@@ -504,6 +508,8 @@ func _ready() -> void:
 		show_ending.call_deferred("ch2")                 # 截图用（5.8b）：?ending=ch2 第二章的章末画面（回顾按当前旗标，配 ?well=all）
 	elif _query("ending") == "ch3" and area in ["scriptorium", "plain"] and arrived_by == "" and loaded_from == "":
 		show_ending.call_deferred("ch3")                 # 截图用（6.8b）：?ending=ch3 第三章的章末画面（回顾按当前旗标，配 ?mill=）
+	elif _query("ending") == "final" and arrived_by == "" and loaded_from == "":
+		show_ending.call_deferred("final")               # 截图用（8.5）：?ending=final 全作的结局画面（回顾按当前旗标，配 ?ch5=…&ending_kind=…）
 	elif _query("ending") == "ch4" and area in ["council_hall", "crown_city"] and arrived_by == "" and loaded_from == "":
 		show_ending.call_deferred("ch4")                 # 截图用（7.8）：?ending=ch4 第四章的章末画面（回顾按当前旗标，配 ?council=）
 	if _query("map") == "1" and GameState.chapter >= 1 and not Engine.has_meta("ic_map_param_done") \
@@ -1634,6 +1640,8 @@ func _on_dialogue_closed() -> void:
 		_ch3_bell()                                         # 守灵夜听完（6.8b）：先响晨钟，再出章末画面
 	elif ending == "ch4":
 		_ch4_bell()                                         # 冬议散了（7.8）：钟楼的黄昏钟，再出章末画面
+	elif ending == "final":
+		_finale()                                           # 不封了（8.5）：直接是长冬
 	elif ending != "":
 		show_ending.call_deferred(ending)
 	player.interactor.refresh()
@@ -1693,7 +1701,9 @@ func show_ending(id: String, choice := "") -> void:
 	hud.visible = false                 # 提示、按钮和触屏摇杆都压在结束画面底下会叠字（平板上「挡」「攻」叠在回顾上），先藏起来
 	touch_was_visible = touch.visible
 	touch.visible = false
-	if id == "ch4":
+	if id == "final":
+		ending_panel.open_final(Settings.reduced_motion)                                             # 全作完（8.5）
+	elif id == "ch4":
 		ending_panel.open_chapter4(Settings.reduced_motion, 5 if playable_chapter >= 5 else 0)       # 第四章完（7.8）；第五章开放以前只有 ?preview=5 能继续（8.1）
 	elif id == "ch3":
 		ending_panel.open_chapter3(Settings.reduced_motion, 4 if playable_chapter >= 4 else 0)       # 第三章完（6.8b）；第四章还没有（Chapters 里没登记就不出「继续」）
@@ -2367,12 +2377,24 @@ func _ch3_bell() -> void:
 			show_ending("ch3"))
 
 
-## 封誓完了（8.4）：封上了、断了（结局画面在 8.5）
+## 封誓完了（8.4）：封上了、断了；过一会儿出结局画面（8.5）
 func _on_oath_finished(result: String) -> void:
 	if result == "sealed":
 		hud.say("（最后一滴血落进誓瓶。冰壁上那一大片空着的冰里，慢慢浮出一个名字。井口上那一圈人站住了——一个，接一个，转过身，往南走）")
 	else:
 		hud.say("（火盆一个接一个暗下去。那一圈人从石阶上走下来，围住了石台。誓瓶还是空的）")
+	_finale()
+
+
+## 全作完（8.5）：主线「冬井」完、第五章完，自动存档，过 ch3_end_after 秒出结局画面
+func _finale() -> void:
+	get_tree().create_timer(ch3_end_after).timeout.connect(func():
+		if is_inside_tree() and not GameState.has_flag("ch5_done"):
+			GameState.set_flag("ch5_done")
+			if GameState.quest_active("ch5_main"):
+				GameState.complete_quest("ch5_main")
+			save_game("auto", true)
+			show_ending("final"))
 
 
 ## 第四章完（7.8）：冬议散了，钟楼上的黄昏钟响起来，画面停在钟声里，再出「第五章 · 冬井　开发中」
