@@ -10583,8 +10583,8 @@ func test_ch5well() -> void:
 		"下到冬井底：主线到「封誓」；伊莎贝拉捧着冠在石台边，随她去了的妮尔站在冰壁前（都站在空地上）")
 	var names := main.world.find_child("IceNames", true, false) as Examine
 	var altar := main.world.find_child("Altar", true, false) as Examine
-	check(str(names.on_use.call(p).toast).contains("冠历三百九十七年") and str(altar.on_use.call(p).toast).contains("一个冠形的") and GameState.has_flag("ch5_names_read") and GameState.has_flag("ch5_altar_seen")
-		and main.world.find_child("StarIron", true, false) != null and main.world.find_children("Brazier*", "", true, false).size() == 4, "冰壁里的名字（最后一个刻在约四百年前）、星铁、石台上的两个凹槽、四角四个冷火盆")
+	check(str(names.on_use.call(p).toast).contains("冠历三百九十七年") and WellRooms.ALTAR_TEXT.contains("一个冠形的") and str(altar.on_use.call(p).get("id", "")) == "oath" and GameState.has_flag("ch5_names_read") and GameState.has_flag("ch5_altar_seen")
+		and main.world.find_child("StarIron", true, false) != null and main.world.find_children("Brazier*", "", true, false).size() == 4, "冰壁里的名字（最后一个刻在约四百年前）、星铁、石台上的两个凹槽（主线到了封誓，石台打开封誓的对话，8.4）、四角四个冷火盆")
 	var ex: Dictionary = (main.world.find_child("Exit", true, false) as Door).interact(p)
 	var spec := AreaMap.spec("well_bottom")
 	check(str(ex.area) == "highland" and str(ex.spawn) == "well" and spec.shapes.size() >= 3 and str(spec.exits[0].to) == "highland", "顺着石阶回井口（余火高地井边）；本地地图")
@@ -10620,6 +10620,8 @@ func test_ch5oath() -> void:
 	check(rit != null and rit.total == OathRitual.COUNT, "井底摆上封誓：%d 个长眠者会从石阶上下来" % (rit.total if rit else 0))
 	var b0 := main.world.find_child("Brazier0", true, false) as Examine
 	check(b0.verb_now() == "点着火盆" and str(b0.on_use.call(p).toast).contains("点着了") and rit.lit(0) and b0.verb_now() == "添柴", "火盆能点着，点着了以后是「添柴」")
+	rit.step(0.05)
+	check(rit.walkers.size() == 1 and rit.walkers[0].node is CharacterModel, "头一个长眠者从石阶顶上下来（真人模型，麻衣光脚）")
 	# 火盆一直点着（模拟你来回添柴）：撑满时间，封上了
 	for i in 600:
 		for k in 4:

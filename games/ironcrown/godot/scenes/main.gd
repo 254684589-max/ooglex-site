@@ -169,7 +169,7 @@ func _ready() -> void:
 				GameState.set_flag("ch4_vault_sneaky")
 			GameState.set_stage("ch4_main", "way")
 			GameState.daypart = "night"
-		if _query("ch5") in ["north", "well", "bottom"] and not Engine.has_meta("ic_ch5_param_done"):
+		if _query("ch5") in ["north", "well", "bottom", "ritual"] and not Engine.has_meta("ic_ch5_param_done"):
 			Engine.set_meta("ic_ch5_param_done", true)        # 截图用（8.2）：?area=highland&ch5=north 刚到高地 / well 誓瓶在手、去井边（配 &fire=lit|out、&holder=valen…）
 			GameState.chapter = 5
 			GameState.set_flag("ch4_done")
@@ -180,10 +180,14 @@ func _ready() -> void:
 			CrownPeople.ch5_begin()
 			GameState.set_flag("ch5_archive")
 			GameState.set_stage("ch5_main", "north")
-			if _query("ch5") in ["well", "bottom"]:
+			if _query("ch5") in ["well", "bottom", "ritual"]:
 				GameState.add_item("oath_vial")
 				GameState.set_flag("ch5_vial", "norbert")
 				GameState.set_stage("ch5_main", "well" if _query("ch5") == "well" else "descend")
+				if _query("ch5") == "ritual":
+					GameState.set_flag("oath_taker", "you")
+					GameState.set_flag("ch5_ritual")
+					GameState.set_stage("ch5_main", "oath")
 				GameState.daypart = "night"
 		if _query("ch5") in ["1", "archive"] and not Engine.has_meta("ic_ch5_param_done"):
 			Engine.set_meta("ic_ch5_param_done", true)        # 截图用（8.1）：?ch5=1 第四章刚完（冠在你手里）；?ch5=archive 已经跟大主祭下了钟楼
@@ -1227,6 +1231,10 @@ func _story_progress() -> void:
 			hud.toast(Chapters.wip_note_of(4), 7.0)
 	if GameState.chapter == 4 and (area == "crown_city" or area in HarborRooms.CROWN_AREAS):
 		CrownPeople.arrived()                               # 上了冠城（7.6）：主线 to_city → in_city
+	if area == "well_bottom" and world != null:
+		var rit0 := OathRitual.start(world)                 # 封誓到一半读档 / 进来（8.4）：接着封
+		if rit0:
+			rit0.finished.connect(_on_oath_finished)
 	if area == "highland":
 		var note := Winter5.arrived()                       # 第五章（8.2）：北上到了余火高地
 		if note != "" and hud:

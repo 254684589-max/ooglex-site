@@ -13,11 +13,11 @@ signal finished(result: String)
 const DURATION := 45.0
 const INTERVAL := 4.0
 const COUNT := 10
-const FUEL := 16.0
+const FUEL := 18.0
 const FIRE_R := 3.0
 const REACH_R := 1.6
 const FAIL_AT := 3
-const SPEED := 0.9
+const SPEED := 0.7
 const PATH := [Vector3(3.0, 3.6, 5.3), Vector3(-4.0, 0.0, 5.3), Vector3(-2.0, 0.0, 2.0), Vector3(0.0, 0.0, 0.2)]
 
 var t := 0.0

@@ -1148,6 +1148,12 @@ godot/
 - **室内**：`HarborRooms.SPEC["well_bottom"]`（`out = highland`、出口 `well`），新列表 `WELL_AREAS`：陈设 `WellRooms.build`、人 `WellRooms.build_people`、本地地图 `WellRooms.map_shapes`。冰是半透明带一点自发光的材质（`_ice`），星铁是深色高金属（`_star`）；屋顶不画（井很深，往上是黑的）。四个火盆先是 `Examine`（8.4 换成能点的）。进来时主线 descend → oath。
 - **测试**：`ch5well` 组。
 
+### 4.94 封誓（路线图 8.4，2026-11-06）
+
+- **谁来留名**：石台（`WellRooms.altar()`）在主线 oath、还没开始时返回 `{"kind": "dialogue", "area": "winter", "id": "oath"}`（`main._on_interacted` 照对话开）；选项按 `ch5_companion`、`ch3_vigil` 出现，定下 `oath_taker` 和 `ch5_ritual`；不封了直接设 `ch5_oath = none`、`ending = long_winter`。
+- **封誓**（`OathRitual`，挂在井底的 world 下）：对话结束时（`main._ch3_sides_heard`）和进井底时 `OathRitual.start()`（`due()`：主线 oath、`ch5_ritual`、还没结果）。`step(delta)` 每帧：火盆燃料倒数、每 `INTERVAL` 秒从 `PATH[0]`（石阶顶）放一个长眠者（真人模型，麻衣）沿 `PATH` 走，进了点着的火盆 `FIRE_R` 以内往回退 1.2 秒；到石台 `REACH_R` 以内算够着；`FAIL_AT` 个就 failed，撑满 `DURATION` 就 sealed。`settle()` 写 `ch5_oath`、`ending`（sealed：heir → new_king，其余 → crownless_spring；failed → long_winter），主线到 after。火盆的 `Examine`（`WellRooms.brazier`）调 `feed()`，`verb_fn` 按状态显示「点着火盆 / 添柴」。
+- **测试**：`ch5oath` 组（石台开对话、能留名的人、妮尔、伊薇特留名开始、头一个长眠者、火盆点着和添柴、一直点着封上了、一直不点断了、你自己留名封上是无冠之春、不封了是长冬、第二十一烽的人引开一半）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
