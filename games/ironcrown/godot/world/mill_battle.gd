@@ -309,7 +309,9 @@ static func _far_man_mesh() -> Mesh:
 	var m := MeshKit.flat_mat(0.9)
 	m.albedo_color = Color(0.16, 0.15, 0.16)
 	var mi := kit.build({"a": m})
-	return mi.mesh
+	var mesh := mi.mesh
+	mi.free()                                              # 只要网格；这个节点不进场景（不放掉就是退出时的泄漏，全量测试查出来的）
+	return mesh
 
 
 static func _far_fire_mesh() -> Mesh:
