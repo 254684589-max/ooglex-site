@@ -9921,7 +9921,7 @@ func test_ch4people() -> void:
 	var has_night := mr.options().any(func(o): return str(o.text).contains("三年前"))
 	ch4_state({"ch3_vigil": true}, "envoys")
 	check(not has_night and say_runner("maud", ["三年前送冠进来的那一夜，你在吗？"], "harbor") == "night" and GameState.has_flag("ch4_maud_night"), "听过守灵夜的才问得出：莫德说出三年前送冠进金库的那一夜")
-	check(Chapters.wip_note_of(4).contains("三家的使者"), "第四章进场的提示：做到见科尔温和三家的使者")
+	check(Chapters.wip_note_of(4).contains("冬议") and Chapters.wip_note_of(4).contains("三条支线"), "第四章进场的提示：做到冬议和章末、三条支线（7.8）")
 	GameState.chapter = 0
 	GameState.pending_load = {}
 
