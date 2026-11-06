@@ -1260,6 +1260,12 @@ func _ch3_sides_heard() -> void:
 	CrownPeople.council_settle()                    # 冬议（7.8）：当众拿出来的罪证
 	if area == "crown_city" and world != null:
 		CrownTown.refresh_bell_door(world)          # 第五章（8.1）：大主祭开了钟楼的门
+	if area == "well_bottom" and world != null:
+		var rit := OathRitual.start(world)          # 第五章（8.4）：石台前定了谁来留名，封誓开始
+		if rit:
+			rit.finished.connect(_on_oath_finished)
+			hud.toast("井口上那一圈人动了。头一个顺着石阶往下走——点着火盆！", 5.0)
+			save_game.call_deferred("auto", true)
 
 
 ## 区域名；连片地图上加你在的那一块：「鹭沼 · 芦栈村」（4.4）
@@ -2351,6 +2357,14 @@ func _ch3_bell() -> void:
 			GameState.set_flag("ch3_done")
 			save_game("auto", true)
 			show_ending("ch3"))
+
+
+## 封誓完了（8.4）：封上了、断了（结局画面在 8.5）
+func _on_oath_finished(result: String) -> void:
+	if result == "sealed":
+		hud.say("（最后一滴血落进誓瓶。冰壁上那一大片空着的冰里，慢慢浮出一个名字。井口上那一圈人站住了——一个，接一个，转过身，往南走）")
+	else:
+		hud.say("（火盆一个接一个暗下去。那一圈人从石阶上走下来，围住了石台。誓瓶还是空的）")
 
 
 ## 第四章完（7.8）：冬议散了，钟楼上的黄昏钟响起来，画面停在钟声里，再出「第五章 · 冬井　开发中」

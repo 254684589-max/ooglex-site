@@ -155,6 +155,9 @@ func _people() -> void:
 	else:                                                                # 火灭了：他一个人先去了井边
 		var np := NORBERT_WELL
 		_npc("norbert5", "诺伯特", WinterWell.ground(np), _face(np), "norbert5_well", [])
+	if Origins.current() == "deserter" or str(GameState.get_flag("ch2_roll", "")) == "served":     # 支线「第二十一烽的人」（8.4）：马蒂亚斯举着火把在井边
+		var mp := Vector2(-25.0, -118.0)
+		_npc("matthias5", "马蒂亚斯", WinterWell.ground(mp), _face(mp), "matthias5", [])
 	var c := companion()
 	if not c.is_empty():
 		var lines := {"young_bertrand": ["（他把那只铁匣抱在怀里，抱得太紧了）……祖父说，戴上它就行了。", "（他看着那一圈人，往你身后退了一步）"],

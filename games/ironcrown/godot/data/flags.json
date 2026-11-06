@@ -241,5 +241,11 @@
   "ch5_vial": {"desc": "空誓瓶怎么到手的（8.2）：norbert 诺伯特在塔顶给的 / ashes 在他小屋的炉灰里找到的", "set_in": "data/dialogue/winter.json norbert5/vial；world/winter5.gd hearth_vial", "read_in": "winter.json norbert5_well；封誓（8.4）"},
   "ch5_lid_open": {"desc": "掀开了冬井井口的石盖（8.2）", "set_in": "world/winter5.gd lid", "read_in": "冬井底（8.3）"},
   "ch5_names_read": {"desc": "看过冬井底冰壁里的名字（8.3）", "set_in": "world/well_rooms.gd", "read_in": "封誓（8.4）、结局"},
-  "ch5_altar_seen": {"desc": "看过冬井底的石台（冠形的凹槽、誓瓶的凹槽，8.3）", "set_in": "world/well_rooms.gd", "read_in": "封誓（8.4）"}
+  "ch5_altar_seen": {"desc": "看过冬井底的石台（冠形的凹槽、誓瓶的凹槽，8.3）", "set_in": "world/well_rooms.gd", "read_in": "封誓（8.4）"},
+  "oath_taker": {"desc": "谁去封誓（8.4）：heir 同行的继承人 / lucien 大主祭 / you 你自己 / norbert 诺伯特 / none 不封了", "set_in": "data/dialogue/winter.json oath", "read_in": "world/oath_ritual.gd settle；结局（8.5）"},
+  "ch5_ritual": {"desc": "石台前定下了谁来留名，封誓开始（8.4）", "set_in": "data/dialogue/winter.json oath", "read_in": "world/oath_ritual.gd due；world/well_rooms.gd"},
+  "ch5_oath": {"desc": "封誓的结果（8.4）：sealed 封上了 / failed 火盆灭了、长眠者够着了石台 / none 不封了", "set_in": "world/oath_ritual.gd settle；winter.json oath/none", "read_in": "结局（8.5）"},
+  "ending": {"desc": "结局（8.4 定、8.5 画）：new_king 新王 / crownless_spring 无冠之春 / long_winter 长冬", "set_in": "world/oath_ritual.gd settle；winter.json oath/none", "read_in": "结局画面（8.5）"},
+  "ch5_nell": {"desc": "冰壁前的妮尔（8.4）：woke 叫醒了 / with 陪她找了", "set_in": "data/dialogue/winter.json nell5", "read_in": "结局（8.5）"},
+  "ch5_watch21": {"desc": "第二十一烽的人：和马蒂亚斯举着火把把他们从井口引开（8.4；封誓时往下涌的少一半）", "set_in": "data/dialogue/winter.json matthias5", "read_in": "world/oath_ritual.gd start；结局（8.5）"}
 }

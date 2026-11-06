@@ -103,9 +103,22 @@ static func build(parent: Node3D, reduced_motion: bool) -> void:
 		Inn._solid(parent, b + Vector3(0, 0.5, 0), Vector3(0.9, 1.0, 0.9))
 	HarborRooms._examine(parent, "冰壁里的名字", "看看", NAMES_TEXT, Vector3(-w * 0.5 + 0.8, 1.4, -1.0), Vector3(0.8, 2.0, 4.0), "IceNames", "ch5_names_read")
 	HarborRooms._examine(parent, "星铁", "看看", STAR_TEXT, STAR + Vector3(0, 1.2, 1.3), Vector3(2.6, 2.0, 0.8), "StarIron")
-	HarborRooms._examine(parent, "石台", "看看", ALTAR_TEXT, ALTAR + Vector3(0, 0.7, 0.6), Vector3(1.8, 1.0, 0.6), "Altar", "ch5_altar_seen")
-	for k in BRAZIERS.size():
-		HarborRooms._examine(parent, "铁火盆", "看看", BRAZIER_TEXT, BRAZIERS[k] + Vector3(0, 0.8, 0), Vector3(1.0, 1.0, 1.0), "Brazier%d" % k)
+	for k in BRAZIERS.size():                                            # 铁火盆（8.4）：封誓的时候点着、添柴
+		var kk := k
+		var b := Examine.make("铁火盆", "看看", func(_who: FpController) -> Dictionary: return brazier(parent, kk), Vector3(1.0, 1.0, 1.0))
+		b.name = "Brazier%d" % k
+		b.position = BRAZIERS[k] + Vector3(0, 0.8, 0)
+		b.verb_fn = func() -> String:
+			var r := parent.get_node_or_null("OathRitual") as OathRitual
+			if r == null or r.done != "":
+				return "看看"
+			return "添柴" if r.lit(kk) else "点着火盆"
+		parent.add_child(b)
+	var al := Examine.make("石台", "看看", func(_who: FpController) -> Dictionary: return altar(), Vector3(1.8, 1.0, 0.6))   # 石台（8.4）：封誓从这儿开始
+	al.name = "Altar"
+	al.position = ALTAR + Vector3(0, 0.7, 0.6)
+	al.verb_fn = func() -> String: return "封誓" if GameState.quest_stage("ch5_main") == "oath" and not GameState.has_flag("ch5_ritual") else "看看"
+	parent.add_child(al)
 	for p: Vector3 in [Vector3(-3.0, 4.0, -2.0), Vector3(3.0, 4.0, -2.0), Vector3(0, 3.6, 3.0)]:
 		var f := OmniLight3D.new()
 		f.light_color = Color("7a9ec0")
@@ -121,6 +134,22 @@ static func build(parent: Node3D, reduced_motion: bool) -> void:
 	parent.add_child(glow)
 
 
+## 石台（8.4）：主线到了「封誓」、还没开始，就打开石台前的对话（winter.json oath：谁来留名）
+static func altar() -> Dictionary:
+	GameState.set_flag("ch5_altar_seen")
+	if GameState.quest_stage("ch5_main") == "oath" and not GameState.has_flag("ch5_ritual"):
+		return {"kind": "dialogue", "area": "winter", "id": "oath", "name": "石台"}
+	return {"toast": ALTAR_TEXT}
+
+
+## 火盆（8.4）：封誓的时候点着、添柴；平时只是冷灰
+static func brazier(parent: Node3D, k: int) -> Dictionary:
+	var r := parent.get_node_or_null("OathRitual") as OathRitual
+	if r == null:
+		return {"toast": BRAZIER_TEXT}
+	return r.feed(k)
+
+
 ## 井底的人（8.3）：同行的人捧着冠站在石台边；随她去了的妮尔站在西面冰壁前，睁着眼
 static func people() -> Array:
 	var out := []
@@ -128,7 +157,7 @@ static func people() -> Array:
 	if not c.is_empty():
 		out.append(["companion_well", str(c[1]), Vector3(1.9, 0, 0.4), -150.0, ["（捧着那只铁匣，看着石台上那个冠形的凹槽）", "……和议事厅王座上那个一模一样。"]])
 	if str(GameState.get_flag("ch2_nell", "")) == "left":
-		out.append(["nell_well", "妮尔", Vector3(-5.6, 0, -1.4), 90.0, ["（她站在冰壁前，眼睛是睁着的。手指一行一行地摸过那些名字，嘴唇在动）"]])
+		out.append(["nell_well", "妮尔", Vector3(-5.6, 0, -1.4), 90.0, [], "nell5"])
 	return out
 
 
@@ -138,6 +167,9 @@ static func build_people(parent: Node3D) -> void:
 	for it: Array in people():
 		var n := Npc.make(str(it[1]), it[4], Color("5a5650"))
 		n.name = "Npc_" + str(it[0])
+		if it.size() > 5:
+			n.dialogue_area = "winter"
+			n.dialogue_id = str(it[5])
 		n.position = it[2]
 		n.rotation.y = deg_to_rad(float(it[3]))
 		parent.add_child(n)

@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -10591,6 +10591,78 @@ func test_ch5well() -> void:
 	await free_main(main)
 	var hp: Vector3 = Areas.spawn("highland", "well").origin
 	check(hp.distance_to(WinterWell.ground(HighlandLayout.WELL)) < 8.0, "井边的出生点在井旁边（%.1f 米）" % hp.distance_to(WinterWell.ground(HighlandLayout.WELL)))
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch5oath() -> void:
+	# 第五章（8.4）：封誓——谁来留名、四个火盆、往下涌的长眠者；两条支线
+	ch4_state({"ch4_done": true, "crown_holder": "valen", "valen_heir": "ivette", "ch2_nell": "left", "ch3_vigil": true})
+	CrownPeople.ch5_begin()
+	GameState.add_item("oath_vial")
+	GameState.set_flag("ch5_companion", "ivette")
+	GameState.set_stage("ch5_main", "oath")
+	GameState.pending_load = {"scene": "well_bottom", "spawn": "front", "player": {}}
+	var main := await make_area("well_bottom")
+	await physics(6)
+	var p: FpController = main.player
+	var altar := main.world.find_child("Altar", true, false) as Examine
+	var r: Dictionary = altar.on_use.call(p)
+	check(str(r.get("kind", "")) == "dialogue" and str(r.id) == "oath" and altar.verb_now() == "封誓", "石台前：「封誓」打开谁来留名的对话")
+	var dr := DialogueRunner.new()
+	dr.start("winter", "oath")
+	var opts := dr.options().map(func(o): return str(o.text))
+	check(opts.size() == 4 and opts.has("（把誓瓶交给伊薇特）冠是你们家的。由你来留名。") and opts.has("（朝井口喊）诺伯特——下来。"), "能留名的：伊薇特（同行的继承人）、你自己、诺伯特（听过守灵夜的）、或者不封了")
+	check(say_runner("nell5", ["妮尔。"], "winter") in ["woke", "far"] and str(GameState.get_flag("ch5_nell", "")) != "", "冰壁前的妮尔：叫她的名字（口才 13）")
+	check(say_runner("oath", ["（把誓瓶交给伊薇特）冠是你们家的。由你来留名。", "（……）"], "winter") == "" and str(GameState.get_flag("oath_taker", "")) == "heir" and GameState.has_flag("ch5_ritual") and OathRitual.due(), "伊薇特来留名：封誓开始")
+	main._ch3_sides_heard()
+	var rit := main.world.get_node_or_null("OathRitual") as OathRitual
+	check(rit != null and rit.total == OathRitual.COUNT, "井底摆上封誓：%d 个长眠者会从石阶上下来" % (rit.total if rit else 0))
+	var b0 := main.world.find_child("Brazier0", true, false) as Examine
+	check(b0.verb_now() == "点着火盆" and str(b0.on_use.call(p).toast).contains("点着了") and rit.lit(0) and b0.verb_now() == "添柴", "火盆能点着，点着了以后是「添柴」")
+	# 火盆一直点着（模拟你来回添柴）：撑满时间，封上了
+	for i in 600:
+		for k in 4:
+			rit.fuel[k] = OathRitual.FUEL
+		rit.step(0.1)
+		if rit.done != "":
+			break
+	check(rit.done == "sealed" and rit.reached < OathRitual.FAIL_AT and str(GameState.get_flag("ch5_oath", "")) == "sealed" and str(GameState.get_flag("ending", "")) == "new_king" and GameState.quest_stage("ch5_main") == "after",
+		"四个火盆一直点着：长眠者碰到火就往回退，撑满 %d 秒——封上了（新王）" % int(OathRitual.DURATION))
+	await free_main(main)
+	# 火盆不点：长眠者够着石台，封誓断了
+	ch4_state({"ch4_done": true, "crown_holder": "kept"})
+	CrownPeople.ch5_begin()
+	GameState.add_item("oath_vial")
+	GameState.set_stage("ch5_main", "oath")
+	check(say_runner("oath", ["（把冠放进那个凹槽，划破手掌）我来留名。", "（……）"], "winter") == "" and str(GameState.get_flag("oath_taker", "")) == "you", "冠在你怀里：你自己留名")
+	var r2 := OathRitual.new()
+	add_child(r2)
+	for i in 900:
+		r2.step(0.1)
+		if r2.done != "":
+			break
+	check(r2.done == "failed" and r2.reached >= OathRitual.FAIL_AT and str(GameState.get_flag("ending", "")) == "long_winter", "火盆一个都没点：长眠者够着了石台，封誓断了（长冬）")
+	r2.queue_free()
+	ch4_state({"ch4_done": true, "crown_holder": "kept"})
+	CrownPeople.ch5_begin()
+	GameState.set_stage("ch5_main", "oath")
+	OathRitual.settle("sealed")
+	check(str(GameState.get_flag("ending", "")) == "crownless_spring", "你自己留名、封上了：无冠之春")
+	ch4_state({"ch4_done": true, "crown_holder": "kept"})
+	CrownPeople.ch5_begin()
+	GameState.set_stage("ch5_main", "oath")
+	say_runner("oath", ["（把冠和誓瓶收起来）不封了。", "（转身，顺着石阶往上走）"], "winter")
+	check(str(GameState.get_flag("oath_taker", "")) == "none" and str(GameState.get_flag("ending", "")) == "long_winter" and not OathRitual.due() and GameState.quest_stage("ch5_main") == "after", "不封了：长冬")
+	# 第二十一烽的人：引开一半
+	ch4_state({"ch4_done": true, "crown_holder": "kept", "ch2_roll": "served", "ch5_watch21": true, "ch5_ritual": true})
+	CrownPeople.ch5_begin()
+	GameState.set_stage("ch5_main", "oath")
+	var w := Node3D.new()
+	add_child(w)
+	var r3 := OathRitual.start(w)
+	check(r3 != null and r3.total == OathRitual.COUNT / 2 and say_runner("matthias5", [], "winter") == "again", "和马蒂亚斯把第二十一烽的人引开过：往下涌的少一半")
+	w.queue_free()
 	GameState.chapter = 0
 	GameState.pending_load = {}
 
