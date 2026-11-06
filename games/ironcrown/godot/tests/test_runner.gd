@@ -9613,7 +9613,7 @@ func test_harbor() -> void:
 		var m := HarborLayout.masks(x, z)
 		var c := Harbor._paint[j * HarborLayout.NX + i]
 		paint_worst = maxf(paint_worst, maxf(absf(c.r - m.x), maxf(absf(c.g - m.y), absf(c.b - m.z))))
-	check(worst < 0.01 and paint_worst < 0.01 and Harbor.field_ms < 200.0, "高度场、地面颜色图和布局一致（最大差 %.4f 米 / %.4f；不一致就跑 tests/gen_harbor_field.gd）；读文件 %.0f 毫秒" % [worst, paint_worst, Harbor.field_ms])
+	check(worst < 0.01 and paint_worst < 0.01 and Harbor.field_ms < 200.0, "高度场、地面颜色图和布局一致（最大差 %.4f 米 / %.4f；不一致就跑 tests/gen_harbor_field.tscn）；读文件 %.0f 毫秒" % [worst, paint_worst, Harbor.field_ms])
 	# 城在台地上、高过涨潮；泥滩在涨潮以下、退潮以上；潮沟底退潮露出来、涨潮盖住；河道和海比深水线深
 	var town := HarborLayout.height(-40.0, -20.0)
 	var flats := HarborLayout.height(-40.0, 66.0)
@@ -9655,6 +9655,7 @@ func test_harbor() -> void:
 		var x := rng.randf_range(-120.0, 120.0)
 		var z := rng.randf_range(-100.0, 100.0)
 		var rq := PhysicsRayQueryParameters3D.create(Vector3(x, 100.0, z), Vector3(x, -50.0, z), 1)
+		rq.exclude = [(main.world.find_child("HarborSolids", true, false) as StaticBody3D).get_rid()]     # 房子、栈桥、栏石不算（7.2）
 		var hit: Dictionary = space.intersect_ray(rq)
 		col_worst = maxf(col_worst, absf((float(hit.position.y) if not hit.is_empty() else -999.0) - Harbor.height_at(x, z)))
 	check(col_worst < 0.05, "碰撞（高度图）和地形一致（60 个点最大差 %.3f 米）" % col_worst)
@@ -9694,7 +9695,55 @@ func test_harbor() -> void:
 	for sh: Dictionary in spec.get("shapes", []):
 		if sh.has("label"):
 			labels.append(str(sh.label))
-	check(labels.has("灰鲸河") and labels.has("钥楼") and labels.has("泥滩") and labels.has("灯塔") and spec.get("zones", []).size() == 4, "本地地图：灰鲸河、潮沟、海、钥楼、泥滩、灯塔（%s）" % "、".join(labels))
+	check(labels.has("灰鲸河") and labels.has("钥楼") and labels.has("泥滩") and labels.has("灯塔") and labels.has("债牢") and labels.has("渡工行会会馆") and spec.get("zones", []).size() == 4
+		and spec.shapes.filter(func(x): return str(x.k) == "house").size() >= 60, "本地地图：灰鲸河、潮沟、海、钥楼、会馆、债牢、泥滩、灯塔、房子（%s）" % "、".join(labels))
+	# 城（7.2）
+	var hs := HarborTown.houses()
+	var hs_ok := true
+	for h: Dictionary in hs:
+		for q: Vector2 in HarborTown.footprint(h):
+			if HarborLayout.canal_d(q) < HarborLayout.CANAL_HALF + HarborLayout.CANAL_BANK or HarborLayout.street_d(q) < HarborLayout.STREET_HALF - 0.1 or Harbor.height_at(q.x, q.y) < 1.0:
+				hs_ok = false
+	check(hs.size() >= 60 and hs_ok and hs.filter(func(h): return bool(h.stone)).size() >= 8, "沿街摆了 %d 栋房子（钥楼街上 %d 栋全石砌的商行），都不压在街、潮沟、石岸上" % [hs.size(), hs.filter(func(h): return bool(h.stone)).size()])
+	var blocks: Array = main.world.find_children("Houses_*", "Node3D", true, false)
+	check(blocks.size() >= 6 and blocks.all(func(b): return b.is_in_group("house") and b.get_node_or_null("Mesh") != null) and main.world.find_child("KeyHouse", true, false) != null
+		and main.world.find_child("GuildHall", true, false) != null and main.world.find_child("Prison", true, false) != null and main.world.find_child("Lighthouse", true, false) != null,
+		"一块里的房子合成一个网格（%d 块，按时段亮灯）；钥楼、会馆、债牢、灯塔都搭了" % blocks.size())
+	var mesh: MeshInstance3D = blocks[0].get_node("Mesh")
+	check(mesh.mesh.get_surface_count() <= 12, "一块房子只有 %d 种材质（= 几次绘制）" % mesh.mesh.get_surface_count())
+	var lantern: Node = main.world.find_child("LighthouseEmber", true, false)
+	check(lantern != null and lantern.is_in_group("night_light") and main.world.find_child("Ship0", true, false) != null and main.world.find_child("Ship1", true, false) != null,
+		"灯塔顶上一盏很弱的灯（夜里才亮）；河口停着两条船")
+	var ship := main.world.find_child("Ship0", true, false) as Node3D
+	main.set_daypart("night", false)
+	await seconds(1.6)
+	var ship_night := ship.position.y
+	main.set_daypart("day", false)
+	await seconds(1.6)
+	check(absf(ship.position.y - ship_night - (Harbor.TIDE.day - Harbor.TIDE.night)) < 0.01, "船跟着潮水上下（白天比夜里高 %.1f 米）" % (ship.position.y - ship_night))
+	var doors := ["KeyHouseDoor", "GuildDoor", "PrisonDoor", "LighthouseDoor"].all(func(n): return main.world.find_child(n, true, false) is Door)
+	var signs := ["QuaySign", "KeyStreetSign"].all(func(n): return main.world.find_child(n, true, false) is RoadSign)
+	var notice := main.world.find_child("ClearingNotice", true, false) as Examine
+	check(doors and signs and notice != null and str(notice.on_use.call(p).toast).contains("冬至日") and GameState.has_flag("ch4_notice_read")
+		and main.world.find_children("HarborDoor_*", "Door", true, false).size() >= 10,
+		"钥楼、会馆、债牢、灯塔的门（锁着、各一句话）、街上一些人家的门；码头、钥楼前的路牌（旅行地图出发的地方）；钥楼门口清账的告示")
+	var pier: Array = HarborTown.piers()[2]
+	var pm: Vector2 = ((pier[0] as Vector2) + (pier[1] as Vector2)) * 0.5 + Vector2(3.0, 0.0)
+	var pq := PhysicsRayQueryParameters3D.create(Vector3(pm.x, 10.0, pm.y), Vector3(pm.x, -10.0, pm.y), 1)
+	var ph: Dictionary = space.intersect_ray(pq)
+	check(not ph.is_empty() and absf(float(ph.position.y) - HarborTown.pier_y(pier)) < 0.05 and HarborTown.piers().size() == 5, "5 座栈桥伸进河里，桥面站得住（%.2f 米）" % (float(ph.position.y) if not ph.is_empty() else -99.0))
+	var br: Array = HarborTown.bridges()[0]
+	var bq := PhysicsRayQueryParameters3D.create(Vector3((br[0] as Vector2).x, 10.0, (br[0] as Vector2).y), Vector3((br[0] as Vector2).x, -10.0, (br[0] as Vector2).y), 1)
+	var bh: Dictionary = space.intersect_ray(bq)
+	check(HarborTown.bridges().size() >= 4 and not bh.is_empty() and float(bh.position.y) > 1.5, "街跨潮沟的地方都有石桥（%d 座），桥面站得住" % HarborTown.bridges().size())
+	var sx: float = HarborLayout.STAIRS[0]
+	var sp2 := HarborLayout.stair_span(sx)
+	var steep := 0.0
+	for k in 20:
+		var z0 := lerpf(sp2.x, sp2.y, k / 20.0)
+		var z1 := lerpf(sp2.x, sp2.y, (k + 1) / 20.0)
+		steep = maxf(steep, rad_to_deg(atan2(absf(Harbor.height_at(sx, z1) - Harbor.height_at(sx, z0)), z1 - z0)))
+	check(steep < 40.0 and HarborTown.kerbs().size() > 200, "城南边石岸下到泥滩的石阶最陡 %.0f°（走得下去）；码头边、潮沟边、石岸上沿一圈栏石（%d 段）" % [steep, HarborTown.kerbs().size()])
 	await free_main(main)
 	check(Travel.validate().is_empty() and Travel.region_title(4) == "河口" and Travel.places(4) == ["harbor_quay", "keyhouse_street", "lighthouse", "crown_city"] and Travel.built("harbor_quay") and not Travel.built("crown_city")
 		and Travel.region_of_chapter(3) == "south", "旅行地图第四章翻到「河口」：木栈码头、钥楼街能去，灯塔、冠城还没做好")

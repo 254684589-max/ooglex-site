@@ -56,14 +56,19 @@ const CANAL_BED := -1.7
 const CANAL_BANK := 0.9
 ## 深水：比这个低的地方走不进去（河道、泥滩外的海）
 const DEEP_Y := -2.6
+## 城南边石岸下到泥滩的石阶（7.2）：x、宽；石岸那一段的地形改成一道直的斜坡（不然石阶底下是 60° 的陡坎，人站不住）
+const STAIRS := [-28.0, -88.0]
+const STAIR_HALF := 1.4
+const STAIR_UP := 3.5           # 斜坡从石岸上沿往北多远开始
+const STAIR_DOWN := 2.0         # 到石岸脚往南多远
 
 ## 地点（7.2 起放房子）：中心
-const KEY_HOUSE := Vector2(-34.0, -58.0)        # 钥楼：北潮沟北岸，钥楼街当中
-const GUILD := Vector2(10.0, 30.0)              # 渡工行会的港口会馆：南潮沟南边、码头头上
+const KEY_HOUSE := Vector2(-34.0, -55.0)        # 钥楼：钥楼街和北潮沟中间，正面朝北对着街、背后的墙直接立在潮沟边上（水门，7.5）
+const GUILD := Vector2(-4.0, 27.0)              # 渡工行会的港口会馆：南潮沟南边、鱼市东头，正面朝南（7.2：原来 (10, 30) 压在码头街上）
 const PRISON := Vector2(-106.0, -88.0)          # 债牢：城的西北角
 const QUAY := Vector2(18.0, -10.0)              # 木栈码头（第四章从这儿上岸）
 const FISH := Vector2(-40.0, 38.0)              # 鱼市、晒鱼架、盐仓：城南边靠泥滩
-const PADS := [[KEY_HOUSE, 12.0, 6.0], [GUILD, 9.0, 5.0], [PRISON, 9.0, 6.0]]
+const PADS := [[KEY_HOUSE, 10.0, 5.0], [GUILD, 9.0, 5.0], [PRISON, 9.0, 6.0]]
 
 ## 街（铺石的路）：[点...]，路面半宽 STREET_HALF
 const STREETS := [
@@ -73,6 +78,9 @@ const STREETS := [
 	[Vector2(-58.0, -10.0), Vector2(-20.0, -14.0), Vector2(13.0, -16.0)],                                               # 城中往码头的横街
 	[Vector2(-40.0, 38.0), Vector2(-10.0, 38.0), Vector2(12.0, 44.0)],                                                  # 鱼市沿着石岸
 	[Vector2(-100.0, -60.0), Vector2(-106.0, -88.0)],                                                                   # 往债牢
+	[Vector2(-112.0, -36.0), Vector2(-90.0, -32.0), Vector2(-62.0, -34.0)],                                             # 西边的小巷（7.2）
+	[Vector2(-28.0, -38.0), Vector2(-26.0, -10.0), Vector2(-22.0, 22.0), Vector2(-20.0, 38.0)],                       # 城中南北的小巷：跨南潮沟（7.2）
+	[Vector2(-96.0, -10.0), Vector2(-92.0, 14.0), Vector2(-86.0, 36.0)],                                                # 西南的小巷：跨南潮沟西头附近、下到盐仓（7.2）
 ]
 const STREET_HALF := 2.4
 const STREET_BLEND := 2.0
@@ -80,9 +88,9 @@ const STREET_BLEND := 2.0
 ## 出生点：[位置 (x, z), 朝向（度；0 = 面朝北，-90 = 面朝东）]
 const SPAWN_XZ := {
 	"quay": [Vector2(16.0, -8.0), -100.0],          # 木栈码头上岸（从河上坐船下来）：面朝河、对岸的盐沼和沙嘴
-	"keyhouse": [Vector2(-34.0, -66.0), 180.0],     # 钥楼街：面朝钥楼
+	"keyhouse": [Vector2(-34.0, -64.0), 180.0],     # 钥楼街：面朝钥楼（往南）
 	"fishmarket": [Vector2(-34.0, 32.0), 160.0],    # 鱼市：面朝南边的泥滩和海
-	"guild": [Vector2(4.0, 24.0), -120.0],
+	"guild": [Vector2(-4.0, 37.0), 0.0],           # 会馆门口：面朝会馆（往北）
 }
 
 ## ?view=N 的固定机位：[位置（x, 离地高度, z）, 水平朝向, 俯仰]——截图、冒烟用
@@ -91,11 +99,13 @@ const VIEW_SPEC := [
 	[Vector3(-10.0, 1.7, 39.0), 170.0, -4.0],       # 1 鱼市石岸上往南：泥滩、海、东南边的沙嘴和灯塔那块礁石
 	[Vector3(-30.0, 1.7, -52.0), -80.0, -6.0],      # 2 钥楼背后、北潮沟边往东：潮沟一直通到河
 	[Vector3(84.0, 1.7, 52.0), 150.0, -2.0],        # 3 沙嘴上往西南：沙嘴尽头的礁石、海
-	[Vector3(-100.0, 1.7, -96.0), -45.0, 0.0],      # 4 债牢那边（西北角高处）往东南看整座城
+	[Vector3(-100.0, 1.7, -96.0), -135.0, -3.0],     # 4 债牢那边（西北角高处）往东南看整座城（7.2：原来 -45 朝东北、对着地图边）
 	[Vector3(14.0, 1.7, 40.0), -170.0, -3.0],       # 5 码头南头往南：河口、两边的泥滩
 	[Vector3(-60.0, 1.7, 0.0), -80.0, -6.0],        # 6 南潮沟西头往东
+	[Vector3(-54.0, 1.7, -62.0), -92.0, 6.0],       # 7 钥楼街西头往东：两边的石头商行、钥楼和门口的告示（7.2）
+	[Vector3(-48.0, 1.7, 37.0), 20.0, 2.0],         # 8 鱼市：晒鱼架、往北的小巷（7.2）
 ]
-const VIEW_NAMES := ["码头上岸", "鱼市石岸", "北潮沟", "沙嘴上", "城西北角", "河口", "南潮沟"]
+const VIEW_NAMES := ["码头上岸", "鱼市石岸", "北潮沟", "沙嘴上", "城西北角", "河口", "南潮沟", "钥楼街", "鱼市"]
 
 const SEA_DIR := Vector2(0.25, 1.0)              # 海在南边（远景，Harbor.far_height）
 
@@ -167,6 +177,22 @@ static func flats_end_z(x: float) -> float:
 	return FLATS_END_Z + 6.0 * sin(x / 31.0 + 0.7)
 
 
+## 第 idx 条潮沟中线在 x 处的 z（潮沟大体东西走向）
+static func canal_z_at(x: float, idx: int) -> float:
+	var cn: Array = CANALS[idx]
+	for i in cn.size() - 1:
+		var a: Vector2 = cn[i]
+		var b: Vector2 = cn[i + 1]
+		if x >= a.x and x <= b.x:
+			return lerpf(a.y, b.y, (x - a.x) / (b.x - a.x))
+	return (cn[0] as Vector2).y if x < (cn[0] as Vector2).x else (cn[cn.size() - 1] as Vector2).y
+
+
+## 石阶的斜坡：[上头 z, 下头 z]
+static func stair_span(x: float) -> Vector2:
+	return Vector2(quay_z(x) - QUAY_DROP - STAIR_UP, quay_z(x) + STAIR_DOWN)
+
+
 static func canal_d(p: Vector2) -> float:
 	var d := INF
 	for c in CANALS:
@@ -217,6 +243,17 @@ static func natural(x: float, z: float) -> float:
 	if sd < SPIT_HALF * 2.2:
 		var k := _smooth(clampf(1.0 - sd / (SPIT_HALF * 2.2), 0.0, 1.0))
 		y = maxf(y, lerpf(FLATS_Y - 0.4, SPIT_Y + 0.3 * _noise_big.get_noise_2d(x * 3.0, z * 3.0), k))
+	if west_bank(p):                                                           # 石阶：石岸那一段改成直的斜坡
+		for sx: float in STAIRS:
+			var dx := absf(x - sx)
+			if dx < STAIR_HALF + 0.8:
+				var sp := stair_span(sx)
+				if z > sp.x and z < sp.y + 1.0:
+					var top := TOWN_Y + 0.25 * _noise_big.get_noise_2d(sx, sp.x)
+					var t := clampf((z - sp.x) / (sp.y - sp.x), 0.0, 1.0)
+					var ramp := lerpf(top, FLATS_Y, t)
+					var k := _smooth(clampf((STAIR_HALF + 0.8 - dx) / 0.8, 0.0, 1.0))
+					y = lerpf(y, ramp, k) if z < sp.y else y
 	var ld := p.distance_to(LIGHTHOUSE)                                         # 灯塔那块礁石
 	if ld < LIGHTHOUSE_R + 8.0:
 		var k := _smooth(clampf((LIGHTHOUSE_R + 8.0 - ld) / 8.0, 0.0, 1.0))

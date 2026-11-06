@@ -55,12 +55,20 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 		print("IC_HARBOR placeholder (章节包没到)")
 		return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
 	ensure_field()
+	for k in ["roof", "plaster", "castle", "stone", "timber", "snow"]:
+		Look.mat(k)                                    # 房子的贴图先读（第一块房子在分帧的活里才读，那一块要多七八十毫秒，6.3b）
+	HarborTown.mats()
 	hb._collision()
 	hb._deep_walls()
 	ground_material()
 	water_material()
 	hb._water()
 	hb._far()
+	HarborTown.interactables(p_parent)               # 双钥港的城（7.2）：门、路牌、钥楼门口的告示（同步：一进场就看得见、推得开）
+	HarborTown.ships(p_parent)                       # 河口停着的两条船（跟着潮位上下）
+	for n in p_parent.get_children():                # 门、路牌远了不画（同平原，6.7a）
+		if n is Door or n is RoadSign:
+			Plain._cut_far(n, Plain.DETAIL_FAR)
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent
@@ -103,6 +111,9 @@ static func set_tide(root: Node) -> void:
 		var w := root.find_child(nm, true, false) as Node3D
 		if w:
 			w.position.y = y
+	for n in root.get_children():                    # 停在河口的船跟着潮位浮起来、落下去（7.2）
+		if n.is_in_group("tide_float"):
+			(n as Node3D).position.y = y + float(n.get_meta("float_off", 0.0))
 	if _water_mat:
 		_water_mat.set_shader_parameter("tide", y)
 	if _mat:
@@ -217,6 +228,18 @@ func _collision() -> void:
 	cs.shape = hm
 	cs.position = Vector3(HarborLayout.BOUNDS.get_center().x, 0.0, HarborLayout.BOUNDS.get_center().y)
 	ground.add_child(cs)
+	var tb := StaticBody3D.new()                     # 城（7.2）：房子、钥楼、会馆、债牢、灯塔、盐仓、栈桥、桥、闸墩、栏石、零碎
+	tb.name = "HarborSolids"
+	tb.collision_layer = 1
+	tb.collision_mask = 0
+	parent.add_child(tb)
+	for so: Array in HarborTown.solids():
+		var scs := CollisionShape3D.new()
+		var sbs := BoxShape3D.new()
+		sbs.size = so[1]
+		scs.shape = sbs
+		scs.transform = so[0]
+		tb.add_child(scs)
 	var wb := StaticBody3D.new()
 	wb.name = "HarborWalls"
 	wb.collision_layer = FpController.LAYER_BOUNDARY
@@ -325,6 +348,7 @@ static func water_material() -> ShaderMaterial:
 
 
 static func clear_cache() -> void:
+	HarborTown.clear_cache()
 	_mat = null
 	_water_mat = null
 	_sky_mat = null
@@ -460,7 +484,10 @@ func _jobs(st: ChunkStreamer) -> void:
 		var z := b.position.y
 		while z < b.end.y - 0.01:
 			var r := Rect2(x, z, minf(cs, b.end.x - x), minf(cs, b.end.y - z))
-			st.add_chunk("%d_%d" % [cx, cz], r, [_job_terrain.bind(r)])
+			var jobs: Array = [_job_terrain.bind(r)]
+			for j: Callable in HarborTown.jobs_for(r):            # 城（7.2）：一块里的房子合成一个网格、钥楼、会馆、债牢、灯塔、码头和水边、零碎
+				jobs.append(Plain._with_lod.bind(j))               # 远处换单色网格、门板远了不画（同平原，6.7a）
+			st.add_chunk("%d_%d" % [cx, cz], r, jobs)
 			z += cs
 			cz += 1
 		x += cs
@@ -687,8 +714,8 @@ static func map_spec() -> Dictionary:
 	for r in HarborLayout.STREETS:
 		for i in r.size() - 1:
 			shapes.append({"k": "road", "pts": _strip(r[i], r[i + 1], HarborLayout.STREET_HALF)})
-	for m in [[HarborLayout.QUAY, "木栈码头"], [HarborLayout.KEY_HOUSE, "钥楼"], [HarborLayout.GUILD, "渡工行会会馆"], [HarborLayout.FISH, "鱼市"],
-			[HarborLayout.PRISON, "债牢"], [HarborLayout.LIGHTHOUSE, "灯塔"], [Vector2(-20.0, 66.0), "泥滩"]]:
+	shapes.append_array(HarborTown.map_shapes())                   # 房子、钥楼、会馆、债牢、盐仓、栈桥（7.2）
+	for m in [[HarborLayout.QUAY, "木栈码头"], [HarborLayout.FISH, "鱼市"], [HarborLayout.LIGHTHOUSE, "灯塔"], [Vector2(-20.0, 66.0), "泥滩"], [HarborTown.WRECK[0], "搁浅的粮船"]]:
 		shapes.append({"k": "mark", "at": m[0], "label": m[1]})
 	return {"bounds": HarborLayout.BOUNDS, "shapes": shapes, "exits": [], "zones": [
 		{"name": "钥楼街", "pts": _rect(Rect2(-100, -74, 120, 22))},

@@ -113,6 +113,23 @@ func banner(top: Vector3, n: Vector3, w: float, h: float, field: Color, charge: 
 			kit.box(t, cr, Vector3(0.48 * u, 0.1 * u, 0.008), b)
 			for k in 3:
 				kit.box(t, cr + b.x * (k - 1) * 0.19 * u + Vector3(0, 0.12 * u, 0), Vector3(0.1 * u, 0.1 * u, 0.008), b * Basis(Vector3.BACK, PI * 0.25))
+		"keys":                                       # 卡斯韦尔家的双钥交叉（7.2）：两把钥匙斜着交叉——钥柄的圆环、钥杆、钥齿
+			for s: float in [-1.0, 1.0]:
+				var kb := b * Basis(Vector3.BACK, s * 0.62)
+				var up := kb * Vector3.UP
+				var side := kb * Vector3.RIGHT
+				kit.box(ch, m + n * 0.001 * (s + 1.0), Vector3(0.07 * u, 1.05 * u, 0.008), kb)                       # 钥杆
+				var ring := m + up * 0.5 * u + n * 0.001 * (s + 1.0)
+				for k in 6:                                                                                           # 钥柄：一圈六段
+					var a := TAU * k / 6.0
+					kit.box(ch, ring + (kb * Vector3(cos(a), sin(a), 0)) * 0.13 * u, Vector3(0.1 * u, 0.05 * u, 0.008), kb * Basis(Vector3.BACK, a + PI * 0.5))
+				for k in 2:                                                                                           # 钥齿：钥杆下头伸出两齿
+					kit.box(ch, m - up * (0.4 + k * 0.1) * u + side * 0.08 * u + n * 0.001 * (s + 1.0), Vector3(0.16 * u, 0.05 * u, 0.008), kb)
+		"oar":                                        # 渡工行会（7.2）：一支竖着的桨、桨叶朝下，桨杆上系一个绳结
+			kit.box(ch, m + Vector3(0, 0.15 * u, 0), Vector3(0.06 * u, 1.0 * u, 0.008), b)
+			kit.box(ch, m + Vector3(0, -0.5 * u, 0), Vector3(0.22 * u, 0.42 * u, 0.008), b)
+			kit.box(t, m + Vector3(0, 0.3 * u, 0) + n * 0.001, Vector3(0.26 * u, 0.07 * u, 0.008), b * Basis(Vector3.BACK, 0.5))
+			kit.box(t, m + Vector3(0, 0.3 * u, 0) + n * 0.002, Vector3(0.26 * u, 0.07 * u, 0.008), b * Basis(Vector3.BACK, -0.5))
 		"star":                                       # 星铁教会的八角星（坠星）
 			for k in 4:
 				kit.box(ch, m + n * 0.001 * k, Vector3(0.16 * u, 1.2 * u, 0.008), b * Basis(Vector3.BACK, PI * 0.25 * k))
