@@ -72,6 +72,17 @@ static func crowd() -> Array:
 	return out
 
 
+## 城里有对话的人（7.7）：[编号, 名字, 位置, 朝向, 对话编号]
+static func talkers() -> Array:
+	var pier: Array = HarborTown.piers()[3]                              # 离木栈码头上岸处最近的那座栈桥，伸进河里那头
+	var fp: Vector2 = (pier[1] as Vector2) + Vector2(-2.2, 0.7)
+	var tp := Vector2(61.6, 99.6)                                         # 灯塔门口（门朝西南）
+	var bp := Vector2(67.8, 95.6)                                         # 礁石边上靠着小船
+	return [["ferry", "摆渡的船工", fp, yaw_to(fp, fp + Vector2(-1, 0)), "ferry"],
+		["thibault", "老蒂博", tp, yaw_to(tp, Vector2(66.4, 92.4)), "thibault"],
+		["ferry_back", "摆渡的船工", bp, yaw_to(bp, Vector2(66.4, 92.4)), "ferry_back"]]
+
+
 ## 脚下的高度：栈桥上的是桥面，别处是地面
 static func _floor_y(at: Vector2) -> float:
 	for p: Array in HarborTown.piers():
@@ -106,6 +117,17 @@ static func build(parent: Node3D) -> void:
 			t.set_meta("enemy_kind", "clubber")
 			t.set_meta("enemy_id", "silas_man%d" % k)
 			parent.add_child(t)
+	for it: Array in talkers():                                         # 有对话的（7.7）：沙嘴上的老蒂博、码头和沙嘴上摆渡的船工
+		var at: Vector2 = it[2]
+		var t := Npc.make(str(it[1]), [], Color("5a5248"))
+		t.name = "Npc_" + str(it[0])
+		t.dialogue_area = "harbor"
+		t.dialogue_id = str(it[4])
+		t.position = Vector3(at.x, _floor_y(at), at.y)
+		t.rotation.y = deg_to_rad(float(it[3]))
+		t.far_end = Plain.NPC_FAR
+		t.label_far = Plain.LABEL_FAR
+		parent.add_child(t)
 	for it: Array in crowd():
 		var at: Vector2 = it[2]
 		var n := Npc.make(str(it[1]), it[4], Color("5a5248"))
@@ -151,8 +173,10 @@ static func room_people(area: String) -> Array:
 				["vault_guard1", "卡斯韦尔家的雇佣兵", Vector3(-2.3, 0, -2.0), 190.0, "", guard_lines],
 				["vault_guard2", "卡斯韦尔家的雇佣兵", Vector3(-4.4, 0, 2.6), 120.0, "", guard_lines]]
 		"debt_prison":
-			return [["jailer", "看门的", Vector3(3.6, 0, 2.45), 0.0, "", JAILER_LINES],
-				["jost", "约斯特", Vector3(0.6, 0, -2.6), 180.0, "", JOST_LINES]]
+			var out := [["jailer", "看门的", Vector3(3.6, 0, 2.45), 0.0, "", JAILER_LINES]]
+			if str(GameState.get_flag("ch4_debtor", "")) == "":                 # 出来了（7.7）：牢里就空了
+				out.append(["jost", "约斯特", Vector3(0.6, 0, -2.6), 180.0, "jost", []])
+			return out
 	return []
 
 

@@ -214,5 +214,13 @@
   "ch4_council_notice": {"desc": "看过钟楼脚下冬议的告示（7.6）", "set_in": "world/crown_town.gd", "read_in": "7.8 冬议、章末回顾"},
   "ch4_throne_seen": {"desc": "在议事厅里看过空王座（椅背上那个冠形的凹槽，7.6）", "set_in": "world/crown_rooms.gd", "read_in": "7.8 冬议"},
   "ch4_throne_asked": {"desc": "问过议事厅的差役王座为什么空着（7.6）", "set_in": "data/dialogue/crown.json council_steward/throne", "read_in": "7.8 冬议"},
-  "ch4_old_sign": {"desc": "看过玛蒂尔达酒馆墙上「倒钩鱼」的旧招牌（7.6）", "set_in": "world/crown_rooms.gd", "read_in": "章末回顾"}
+  "ch4_old_sign": {"desc": "看过玛蒂尔达酒馆墙上「倒钩鱼」的旧招牌（7.6）", "set_in": "world/crown_rooms.gd", "read_in": "章末回顾"},
+  "ch4_lighthouse": {"desc": "灯塔的火（7.7）：lit 点亮了（黄昏、夜里行会的船肯撑进北潮沟送你到水门）/ dark 上冠城时还没亮（第二天码头外多一条沉船）", "set_in": "data/dialogue/harbor.json thibault/lit；world/crown_people.gd arrived（dark）", "read_in": "world/harbor_town.gd canal_descend、_lighthouse、沉船；章末回顾（7.8）"},
+  "ch4_oil_asked": {"desc": "替老蒂博向科尔温要过灯油钱（一次）", "set_in": "data/dialogue/harbor.json colwin/oil_*", "read_in": "harbor.json colwin 选项条件"},
+  "ch4_oil_paid": {"desc": "科尔温答应付灯塔的油钱（口才 13 过了）", "set_in": "data/dialogue/harbor.json colwin/oil_yes", "read_in": "harbor.json thibault/again"},
+  "ch4_oil_seen": {"desc": "从盐仓「借」灯油被看盐仓的人看见了（卡斯韦尔家 −5）", "set_in": "world/harbor_town.gd oil_barrels", "read_in": "章末回顾（7.8）"},
+  "ch4_debtor": {"desc": "债牢里的约斯特怎么出来的（7.7）：paid 替他还了四十二枚 / pressed 拿老王的担保压科尔温（口才 14）/ broken 夜里撬了牢门（潜行 14）", "set_in": "data/dialogue/harbor.json jost、colwin/jost_yes；world/harbor_rooms.gd", "read_in": "world/harbor_people.gd（出来了牢里就没人）；冬议上他站在旁听席里（7.8）"},
+  "ch4_jost_pressed": {"desc": "拿老王的担保跟科尔温说过约斯特的事（一次）", "set_in": "data/dialogue/harbor.json colwin/jost_*", "read_in": "harbor.json colwin 选项条件"},
+  "ch4_matilda": {"desc": "玛蒂尔达的人（7.7）：found 找到了米洛", "set_in": "data/dialogue/crown.json matilda/found", "read_in": "world/crown_people.gd；冬议（7.8）、章末回顾"},
+  "ch4_regent_visitor": {"desc": "米洛看见谁昨夜去过摄政的宅子：lucien 大主祭卢西安（没挂旗的车停在后门）", "set_in": "data/dialogue/crown.json matilda/found", "read_in": "冬议（7.8）"}
 }

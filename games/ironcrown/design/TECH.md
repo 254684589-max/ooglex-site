@@ -1112,6 +1112,14 @@ godot/
 - **时段**：`Daypart.AREA_ALIAS = {crown_city: harbor}`（同一套预设），`Daypart.apply` 给冠城换阴云天空（`CrownCity.apply_sky`）。
 - **测试**：`crown` 组（登记、高度场一致、地形、出生点、碰撞、块、河面与远景、石桥与桥门、房子、晾衣绳、门和路牌、告示、出生点不卡、栏石、时段、本地地图、两间室内与出口、旅行门槛）、`crownpeople` 组（到了 in_city、人站在空地上、排队七人、玛蒂尔达推进到 council、伏击三人 / 两人、走进去自己开对话、说走与了结）。
 
+### 4.89 第四章支线（路线图 7.7，2026-11-06）
+
+- **灯塔的火**（`ch4_lighthouse`）：双钥港出生点 `lighthouse` 在灯塔礁石上；码头、礁石上各一个摆渡的船工（`HarborPeople.talkers()`，对话 `ferry` / `ferry_back` 用 `goto` 在同一区域里换出生点）。老蒂博（`thibault`）开任务；科尔温的选项按 `quest_stage` 出现（口才 13）；`HarborTown.oil_barrels()`（盐仓边的 `Examine`，潜行 12，没过卡斯韦尔家 −5，油都到手）。亮了：`refresh_lighthouse()` 把塔顶的光调亮、火盆发光调高（`_lighthouse` 搭的时候和对话结束时各调一次）；`canal_descend()` 里 `boat` = 亮了且黄昏 / 夜，跳过退潮和红线（锁照旧）。`CrownPeople.arrived()` 在 to_city 进冠城时没亮就记 `dark`；`second_wreck()`（主线 in_city / council、没亮）在 `ships()` 里多搭一条歪着的船（组 tide_float）。
+- **礁石**：`HarborLayout.height()` 的河道刻深乘上离灯塔的距离（半径 7 米以内不刻），重新生成 `harbor_field.res` / `harbor_paint.res`；`HarborTown.rock_ring()` 一圈 20 段矮石栏（碰撞 1.05 米、画面跟灯塔一个网格）。
+- **债牢里的人**（`ch4_debtor`）：约斯特改成有对话的（`jost`，`ch2_roll = served` 换开场白）；付钱、科尔温（口才 14）在对话里；`HarborRooms.cell_lock()`（牢门上的 `Examine`，夜里、潜行 14 一次定，过了返回 `travel` 回到债牢门口——屋子重搭，牢里就空了）。
+- **玛蒂尔达的人**（`ch4_matilda`）：`CrownPeople.talkers()` 放面包师（面包坊门东边），米洛只在 `bakery` / `lane` 时缩在第三条小巷尽头；`back` / `found` 以后他在酒馆里（`room_people`）。
+- **测试**：`ch4side` 组（摆渡、礁石上站得住、接任务、科尔温没说动、盐仓被看见、交油点灯、塔顶光变亮、黄昏坐船进潮沟要锁、没亮下不去、上冠城记 dark 和沉船；约斯特认出补名的人、压科尔温、付钱、白天撬不了、夜里撬开；玛蒂尔达托付、面包师、米洛站位、米洛回来、大主祭）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

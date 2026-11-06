@@ -41,6 +41,8 @@ const LIGHT_DOOR_TEXT := "灯塔的门从外面挂着锁。门边码着几个空
 const HOUSE_TEXTS := ["门闩着。屋里有人在数钱，听见敲门声停了。", "门上贴着一张欠条，被雨泡烂了一半。", "门推不开。里面一股咸鱼味。", "门从里面顶着。有个女人隔着门说：「船钱月底给。」"]
 const SHIPS := [[Vector2(46.0, 58.0), 172.0, 18.0], [Vector2(52.0, 86.0), 150.0, 15.0]]   # 停在河口深水里的两条单桅船：位置、船头朝向、长
 const WRECK := [Vector2(96.0, 80.0), 62.0, 14.0]                                        # 搁浅在沙嘴东边泥滩上的运粮船
+const WRECK2 := Vector2(40.0, 30.0)                                                       # 灯塔没亮时，上冠城以后码头外河道里又一条（7.7）
+const OIL_AT := Vector2(-88.4, 45.8)                                                      # 盐仓边的油桶（灯塔的火，7.7）
 const RACKS := [Vector2(-56.0, 31.0), Vector2(-50.0, 31.0), Vector2(-44.0, 31.0), Vector2(-26.0, 31.0), Vector2(-20.0, 31.0)]   # 晒鱼架（鱼市北边一排）
 const SHEDS := [[Vector2(-96.0, 42.0), 0.0], [Vector2(-80.0, 42.5), 0.0], [Vector2(-66.0, 41.0), 0.0]]   # 盐仓：正面朝南、对着石岸（卸盐的船在泥滩外）
 const TAVERN_FRONT := Vector2(9.5, -8.0)    # 「咸潮」酒馆（7.3）：码头街西边，正面朝东对着河
@@ -284,6 +286,8 @@ static func solids() -> Array:
 	out.append([px * Transform3D(Basis.IDENTITY, Vector3(0, 4.0, -PRISON_D * 0.5)), Vector3(PRISON_W + 0.2, 8.0, PRISON_D + 0.2)])
 	var lp := HarborLayout.LIGHTHOUSE
 	out.append([Transform3D(Basis.IDENTITY, Vector3(lp.x, ground(lp) + 4.0, lp.y)), Vector3(LIGHT_R * 1.9, 8.0, LIGHT_R * 1.9)])
+	for seg: Array in rock_ring():                                       # 礁石边一圈矮石栏（7.7）：别一脚踩进河口的深水里
+		out.append([seg[0], Vector3(seg[1], KERB_BLOCK, 0.4)])
 	for sh: Array in SHEDS:
 		var sx := xf_of(sh[0] + Vector2(0, SHED_D * 0.5), float(sh[1]))
 		out.append([sx * Transform3D(Basis.IDENTITY, Vector3(0, 1.6, -SHED_D + 0.2)), Vector3(SHED_W, 3.2, 0.4)])           # 背墙
@@ -410,9 +414,10 @@ static func canal_descend() -> Dictionary:
 		return {}
 	if _stage_now() != "way" or str(gs.get_flag("ch4_crown_way", "")) != "":
 		return {"toast": "桥下是北潮沟。往东看，钥楼的背墙直接立在沟边上，墙脚一道铁栅水门。"}
-	if not Harbor.low_tide():
-		return {"toast": "涨着潮。沟里的水齐腰深，钥楼那道铁栅水门淹在水底下。（夜里才退潮）"}
-	if not gs.has_flag("ch4_redline") and not gs.has_flag("ch4_guild_kin"):
+	var boat := lighthouse_lit() and str(gs.daypart) in ["dusk", "night"]          # 灯塔亮了（7.7）：黄昏以后行会的船看得见灯，涨着潮也撑进潮沟
+	if not Harbor.low_tide() and not boat:
+		return {"toast": "涨着潮。沟里的水齐腰深，钥楼那道铁栅水门淹在水底下。（夜里才退潮%s）" % ("；灯塔亮了，黄昏以后行会的船肯撑进来" if lighthouse_lit() else "")}
+	if not boat and not gs.has_flag("ch4_redline") and not gs.has_flag("ch4_guild_kin"):
 		return {"toast": "退潮了，沟底露出一片黑泥。你试着踩下去——半条腿一下子陷住了，好不容易才拔出来。得知道沟底哪段能落脚。（渡工行会会馆的河道图上有一条红线）"}
 	if not gs.has_item("sluice_key") and not gs.has_flag("ch4_gate_open"):
 		if not gs.check("ch4_gate_pick", "stealth", 13):
@@ -421,7 +426,29 @@ static func canal_descend() -> Dictionary:
 	gs.set_flag("ch4_vault_entered")
 	if gs.check("ch4_vault_sneak", "stealth", 14):
 		gs.set_flag("ch4_vault_sneaky")
+	if boat and not Harbor.low_tide():
+		return {"kind": "travel", "area": "key_vault", "spawn": "gate", "name": "钥楼的水门", "toast": "灯塔亮着。科妮莉亚的人撑着一条小船从潮沟口进来，贴着南岸把你送到钥楼背后。你开了铁栅水门，钻进钥楼底下。"}
 	return {"kind": "travel", "area": "key_vault", "spawn": "gate", "name": "钥楼的水门", "toast": "你顺着红线踩着沟底的硬泥往东摸，开了铁栅水门，钻进钥楼底下。"}
+
+
+## 盐仓边上码着的油桶（灯塔的火，7.7）：接了老蒂博的事、还没亮、手里没油，就「借」两桶——潜行 12 过了没人看见，没过看盐仓的喊了一声（卡斯韦尔家 −5）
+static func oil_barrels() -> Dictionary:
+	var gs := _gs()
+	var base_text := "盐仓边码着十几只小油桶，桶上烙着双钥的印。看盐仓的人坐在门口打盹。"
+	if gs == null or not gs.quest_active("ch4_lighthouse") or lighthouse_lit() or gs.has_item("lamp_oil") or gs.has_flag("ch4_oil_paid"):
+		return {"toast": base_text}
+	gs.add_item("lamp_oil")
+	if gs.check("ch4_oil_steal", "stealth", 12):
+		return {"toast": "你等看盐仓的人把头埋进领子里，滚走了两桶。（得到：两桶灯油）"}
+	gs.set_flag("ch4_oil_seen")
+	gs.change_rep("caswell", -5)
+	return {"toast": "你刚扛起第二桶，看盐仓的人醒了，喊了一声「钥楼的油！」——你扛着两桶跑了。钥楼会记这一笔。（得到：两桶灯油；卡斯韦尔家 −5）"}
+
+
+## 上了冠城、灯塔没亮（7.7）：第二天码头外又搁浅了一条船
+static func second_wreck() -> bool:
+	var gs := _gs()
+	return gs != null and not lighthouse_lit() and str(gs.quest_stage("ch4_main")) in ["in_city", "council"]
 
 
 ## 门、路牌、告示（同步）
@@ -458,6 +485,11 @@ static func interactables(parent: Node3D) -> void:
 		rs.position = Vector3((s[0] as Vector2).x, ground(s[0]), (s[0] as Vector2).y)
 		rs.rotation_degrees.y = float(s[2])
 		parent.add_child(rs)
+	var oil := Examine.make("盐仓边的油桶", "看看", func(_who: FpController) -> Dictionary: return oil_barrels(), Vector3(1.6, 1.2, 1.2))
+	oil.name = "OilBarrels"
+	oil.position = Vector3(OIL_AT.x, ground(OIL_AT), OIL_AT.y)
+	oil.verb_fn = func() -> String: return "「借」两桶" if _gs() != null and _gs().quest_active("ch4_lighthouse") and not lighthouse_lit() and not _gs().has_item("lamp_oil") and not _gs().has_flag("ch4_oil_paid") else "看看"
+	parent.add_child(oil)
 	var cb := canal_bridge()                                           # 金库之夜（7.5）：西边那座跨北潮沟的桥上，从这儿翻下潮沟
 	var dn := Examine.make("桥下的北潮沟", "看看", func(_who: FpController) -> Dictionary: return canal_descend(), Vector3(1.2, 1.4, 1.2))
 	dn.name = "CanalDescend"
@@ -757,6 +789,9 @@ static func _lighthouse(root: Node3D) -> void:
 		kit.cylinder("iron", p, p + Vector3(0, 1.0, 0), 0.04, 0.04, 4)
 	kit.cylinder("iron", base + Vector3(0, LIGHT_H + 0.5, 0), base + Vector3(0, LIGHT_H + 1.3, 0), 0.25, 0.9, 8, 0.8)   # 火盆
 	kit.cylinder("ember", base + Vector3(0, LIGHT_H + 1.2, 0), base + Vector3(0, LIGHT_H + 1.35, 0), 0.75, 0.6, 8)
+	for seg: Array in rock_ring():                                       # 礁石边的矮石栏
+		var xf: Transform3D = seg[0]
+		kit.box("stone", xf.origin + Vector3(0, KERB_H * 0.5 - KERB_BLOCK * 0.5 - 0.1, 0), Vector3(float(seg[1]), KERB_H + 0.2, 0.45), xf.basis, 0.8, 0.6)
 	for k in 3:                                                          # 塔身三个小窗
 		var y := 4.0 + k * 3.6
 		var a := deg_to_rad(-30.0 + k * 50.0)
@@ -773,6 +808,41 @@ static func _lighthouse(root: Node3D) -> void:
 	l.position = base + Vector3(0, LIGHT_H + 1.8, 0)
 	l.add_to_group("night_light")
 	node.add_child(l)
+	refresh_lighthouse(root)
+
+
+## 灯塔礁石边上一圈矮石栏：[变换（墙脚中点）, 长]
+static func rock_ring() -> Array:
+	var out := []
+	var lp := HarborLayout.LIGHTHOUSE
+	var r := HarborLayout.LIGHTHOUSE_R - 0.6
+	var n := 20
+	for k in n:
+		var a0 := TAU * k / n
+		var a1 := TAU * (k + 1) / n
+		var p0 := lp + Vector2(cos(a0), sin(a0)) * r
+		var p1 := lp + Vector2(cos(a1), sin(a1)) * r
+		var m := (p0 + p1) * 0.5
+		var d := p1 - p0
+		out.append([Transform3D(Basis(Vector3.UP, -atan2(d.y, d.x)), Vector3(m.x, ground(m) + KERB_BLOCK * 0.5, m.y)), d.length() + 0.1])
+	return out
+
+
+## 灯塔的火（7.7）：点亮了（ch4_lighthouse = lit）塔顶的火盆烧旺，光照得远；没点亮还是一点暗红的炭。对话结束时 main 也调一回（当场点着）
+static func lighthouse_lit() -> bool:
+	var gs := _gs()
+	return gs != null and str(gs.get_flag("ch4_lighthouse", "")) == "lit"
+
+
+static func refresh_lighthouse(root: Node) -> void:
+	var l := root.find_child("LighthouseEmber", true, false) as Tavern.FireLight
+	if l == null:
+		return
+	var lit := lighthouse_lit()
+	l.base = 5.0 if lit else 0.9
+	l.omni_range = 34.0 if lit else 9.0
+	l.light_color = Color("ffb060") if lit else Color("ff7a3a")
+	_ember().emission_energy_multiplier = 6.0 if lit else 1.2
 
 
 ## 这一块里有没有码头和水边的东西（便宜地查：不真的搭）
@@ -971,6 +1041,15 @@ static func ships(parent: Node3D) -> void:
 		mi.add_to_group("tide_float")
 		mi.set_meta("float_off", -0.55)
 		parent.add_child(mi)
+	if second_wreck():                                                   # 灯塔没亮（7.7）：码头外河道里又一条，船头扎进河底、船尾翘着
+		var kit := MeshKit.new()
+		_hull(kit, Vector3.ZERO, Basis(Vector3.UP, deg_to_rad(20.0)) * Basis(Vector3.RIGHT, 0.18) * Basis(Vector3.BACK, -0.3), 13.0, true)
+		var wm := kit.build(mats())
+		wm.name = "Wreck2"
+		wm.position = Vector3(WRECK2.x, Harbor.tide() - 1.1, WRECK2.y)
+		wm.add_to_group("tide_float")
+		wm.set_meta("float_off", -1.1)
+		parent.add_child(wm)
 
 
 ## 码头上、鱼市里、会馆门口的零碎：木桶、板条箱、麻袋、空车、渔篓（Decor，碰撞同步）
@@ -988,7 +1067,8 @@ static func props_decor(rect := Rect2()) -> Decor:
 	items.append_array([["cart", Vector2(-74.0, 33.0), 0.2, "none"], ["cart", Vector2(-88.0, 33.5), -0.3, "none"],     # 盐仓前空着两辆车（粮船没来）
 		["creel", Vector2(-38.0, 34.5), 0.3], ["creel", Vector2(-37.0, 35.2), 1.1], ["creel", Vector2(-31.0, 34.8), 2.0],
 		["sack", Vector2(-60.0, 38.0), 0.5], ["sack", Vector2(-59.4, 38.6), 1.9],
-		["barrel", Vector2(-46.0, -60.5), 0.0], ["crate", Vector2(-20.0, -60.6), 0.6]])
+		["barrel", Vector2(-46.0, -60.5), 0.0], ["crate", Vector2(-20.0, -60.6), 0.6],
+		["barrel", OIL_AT + Vector2(0.5, -0.4), 0.0], ["barrel", OIL_AT + Vector2(1.2, -0.2), 0.0], ["barrel", OIL_AT + Vector2(0.8, 0.4), 0.0], ["barrel", OIL_AT + Vector2(1.6, 0.5), 0.0]])
 	for it: Array in items:
 		var p: Vector2 = it[1]
 		if not inside.call(p) or HarborLayout.street_d(p) < HarborLayout.STREET_HALF - 0.6 and str(it[0]) != "cart":

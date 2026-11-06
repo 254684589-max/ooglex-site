@@ -266,6 +266,24 @@ static func crown_box() -> Dictionary:
 	return {"toast": "最小的那把钥匙打开了铁笼。铁匣不沉，比你想的轻。你把它揣进怀里——一圈暗色的铁，冠底下那块星铁冰得扎手。（得到：铁冠）"}
 
 
+## 约斯特那间牢门（7.7）：夜里看门的打盹，撬锁（潜行 14，一次定）；白天、或者人已经出来了，只是看看
+static func cell_lock() -> Dictionary:
+	if str(GameState.get_flag("ch4_debtor", "")) != "":
+		return {"toast": "牢门开着，草铺上没有人。"}
+	if not GameState.quest_active("ch4_debtor"):
+		return {"toast": "一把生锈的挂锁，锁着当中那间牢门。"}
+	if GameState.daypart != "night":
+		return {"toast": "看门的就坐在桌子后面，眼睛一直没离开过你。（夜里他会打盹）"}
+	if GameState.checks.has("ch4_jost_pick") and not bool(GameState.checks["ch4_jost_pick"]):
+		return {"toast": "锁眼被你上回别弯了，再也捅不进去。"}
+	if not GameState.check("ch4_jost_pick", "stealth", 14):
+		return {"toast": "锁太紧。看门的翻了个身，你只好住手——锁眼被你别弯了。（潜行 14 没过）"}
+	GameState.set_flag("ch4_debtor", "broken")
+	GameState.complete_quest("ch4_debtor")
+	GameState.change_rep("caswell", -5)
+	return {"kind": "travel", "area": "debt_prison", "spawn": "front", "name": "债牢", "toast": "锁「咔」的一声开了。约斯特从草铺上爬起来，跟着你贴着墙溜出去，在门口回头看了一眼：「冬至那天，我去议事厅。」（卡斯韦尔家 −5）"}
+
+
 ## 搭这一间：区域入口（main 调）
 static func build(area: String, parent: Node3D, reduced_motion := false) -> Transform3D:
 	match area:
@@ -620,6 +638,11 @@ static func _debt_prison(parent: Node3D, reduced_motion: bool) -> void:
 	Inn._solid(parent, t + Vector3(0, 0.4, 0), Vector3(1.6, 0.8, 0.8))
 	Inn._solid(parent, br + Vector3(0, 0.4, 0), Vector3(0.8, 0.8, 0.8))
 	_examine(parent, "看门的账", "看看", DEBT_TEXT, t + Vector3(0, 0.6, 0), Vector3(1.4, 0.6, 0.8), "DebtBook", "ch4_debts_read")
+	var lock := Examine.make("牢门的锁", "看看", func(_who: FpController) -> Dictionary: return cell_lock(), Vector3(1.0, 1.2, 0.5))   # 债牢里的人（7.7）：夜里撬开约斯特那间
+	lock.name = "CellLock"
+	lock.position = Vector3(0.0, 0.6, -1.55)
+	lock.verb_fn = func() -> String: return "撬锁" if GameState.quest_active("ch4_debtor") and GameState.daypart == "night" else "看看"
+	parent.add_child(lock)
 	_lamp(parent, Vector3(3.6, 1.6, 1.6), 1.6, 7.0, Color("ffb060"), not reduced_motion, "TableCandle")
 	_fill(parent, Vector3(-1.0, 2.6, 1.6), 1.6, 10.0)
 	_fill(parent, Vector3(0.0, 2.6, -1.0), 1.0, 7.0)

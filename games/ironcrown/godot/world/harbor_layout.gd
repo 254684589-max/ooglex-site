@@ -96,6 +96,7 @@ const SPAWN_XZ := {
 	"prison_door": [Vector2(-104.6, -81.6), -168.0],   # 出了债牢：门外，面朝东南（往城里去的街）
 	"tavern_door": [Vector2(11.1, -8.0), -90.0],       # 出了「咸潮」酒馆：门外码头街上，面朝东（河）
 	"keyhouse_gate": [Vector2(-61.0, -41.6), 180.0],   # 金库之夜出来（7.5）：顺着北潮沟摸回西边那座桥，从桥头爬上来，站在桥南头
+	"lighthouse": [Vector2(66.4, 92.4), 128.0],        # 坐摆渡的船到灯塔（7.7）：沙嘴尽头外那块礁石，面朝灯塔
 }
 
 ## ?view=N 的固定机位：[位置（x, 离地高度, z）, 水平朝向, 俯仰]——截图、冒烟用
@@ -109,8 +110,9 @@ const VIEW_SPEC := [
 	[Vector3(-60.0, 1.7, 0.0), -80.0, -6.0],        # 6 南潮沟西头往东
 	[Vector3(-54.0, 1.7, -62.0), -92.0, 6.0],       # 7 钥楼街西头往东：两边的石头商行、钥楼和门口的告示（7.2）
 	[Vector3(-48.0, 1.7, 37.0), 20.0, 2.0],         # 8 鱼市：晒鱼架、往北的小巷（7.2）
+	[Vector3(67.6, 1.7, 91.0), 125.0, 12.0],        # 9 灯塔礁石上（7.7）：灯塔、塔门口的老蒂博
 ]
-const VIEW_NAMES := ["码头上岸", "鱼市石岸", "北潮沟", "沙嘴上", "城西北角", "河口", "南潮沟", "钥楼街", "鱼市"]
+const VIEW_NAMES := ["码头上岸", "鱼市石岸", "北潮沟", "沙嘴上", "城西北角", "河口", "南潮沟", "钥楼街", "鱼市", "灯塔礁石"]
 
 const SEA_DIR := Vector2(0.25, 1.0)              # 海在南边（远景，Harbor.far_height）
 
@@ -288,6 +290,7 @@ static func height(x: float, z: float) -> float:
 	var bank := RIVER_BANK if west_bank(p) else 12.0
 	if re < bank:
 		var k := 1.0 if re <= 0.0 else 1.0 - _smooth(re / bank)
+		k *= _smooth(clampf((p.distance_to(LIGHTHOUSE) - LIGHTHOUSE_R) / 2.5, 0.0, 1.0))   # 灯塔那块礁石露在河口外（7.7：原先被河道刻没了）
 		y = lerpf(y, RIVER_BED + 0.3 * _noise_small.get_noise_2d(x * 0.5, z * 0.5), k) if y > RIVER_BED else y
 	return y
 

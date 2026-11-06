@@ -1208,6 +1208,8 @@ func _ch3_sides_heard() -> void:
 	PlainPeople.evidence_settle()
 	HarborPeople.envoys_heard()                     # 第四章主线第 3 步（7.4）：三家的使者都开过价
 	CrownPeople.matilda_heard()                     # 第四章主线第 6 步（7.6）：玛蒂尔达说完了冬议上的椅子和昨夜的酒
+	if area == "harbor" and world != null:
+		HarborTown.refresh_lighthouse(world)        # 灯塔的火（7.7）：跟老蒂博说完当场点着
 
 
 ## 区域名；连片地图上加你在的那一块：「鹭沼 · 芦栈村」（4.4）

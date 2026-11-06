@@ -14,6 +14,7 @@ const BOATMAN_LINES := ["回双钥港？顺流半天。船在这儿等到午后�
 const CROWD_LINES := ["辰时开门。我们这种人，站在栏杆外头听个响。", "王座空了三年，今天总该有个说法。", "（他朝议事厅门上那根空旗杆努了努嘴）王室那面旗，没人敢挂。"]
 const DRINKER_LINES := ["（他捧着杯子）霜渡镇来的老板娘，酒淡，嘴紧。", "（他朝门口看了一眼）这条街上，晚上别一个人走。"]
 const OUTLAW_LINES := ["（他把帽檐往下一压）鹭沼那一回，你没把我们卖了。斜街上这几天有生面孔，盯着从桥门进来的人。", "（他靠着墙，像在晒太阳）我在这儿。你走你的。"]
+const MILO_LINES := ["（他捧着一碗热汤，吹了半天也不喝）", "（他小声说）我再也不去上城送面包了。"]
 const AMBUSH_AT := Vector2(-9.6, -6.2)               # 斜街上堵你的人：第二条小巷的巷口（往北那条）
 const AMBUSH_FACE := Vector2(-12.0, 0.4)
 
@@ -37,6 +38,8 @@ static func ambush_count() -> int:
 
 ## 进了冠城：主线到 in_city（main 进区域时调；只从 to_city 往前推）
 static func arrived() -> bool:
+	if GameState.quest_stage("ch4_main") == "to_city" and str(GameState.get_flag("ch4_lighthouse", "")) != "lit":
+		GameState.set_flag("ch4_lighthouse", "dark")                    # 灯塔的火（7.7）：上冠城时还没亮
 	if GameState.quest_stage("ch4_main") == "to_city":
 		GameState.set_stage("ch4_main", "in_city")
 		return true
@@ -109,6 +112,17 @@ static func build(parent: Node3D) -> void:
 		tr.name = "AmbushTrigger"
 		tr.position = Vector3(-11.0, ground(Vector2(-11.0, 0.0)), 0.0)
 		parent.add_child(tr)
+	for it: Array in talkers():                                         # 有对话的（7.7）：面包师、巷子里的米洛
+		var at: Vector2 = it[2]
+		var t := Npc.make(str(it[1]), [], Color("5a5248"))
+		t.name = "Npc_" + str(it[0])
+		t.dialogue_area = "crown"
+		t.dialogue_id = str(it[4])
+		t.position = Vector3(at.x, ground(at), at.y)
+		t.rotation.y = deg_to_rad(float(it[3]))
+		t.far_end = Plain.NPC_FAR
+		t.label_far = Plain.LABEL_FAR
+		parent.add_child(t)
 	for it: Array in crowd():
 		var at: Vector2 = it[2]
 		var n := Npc.make(str(it[1]), it[4], Color("5a5248"))
@@ -118,6 +132,23 @@ static func build(parent: Node3D) -> void:
 		n.far_end = Plain.NPC_FAR
 		n.label_far = Plain.LABEL_FAR
 		parent.add_child(n)
+
+
+## 有对话的（7.7）：[编号, 名字, 位置, 朝向, 对话编号]。米洛只在玛蒂尔达托你找他、还没找到的时候缩在巷子里
+const MILO_AT := Vector2(24.8, 33.3)
+
+
+static func talkers() -> Array:
+	var bk := CrownTown.bakery()
+	var face: Vector2 = bk.face
+	var along := Vector2(-face.y, face.x)
+	if along.x > 0.0:
+		along = -along
+	var bp: Vector2 = (bk.front as Vector2) + face * 0.8 - along * 1.3   # 门的另一边（队排在西边）
+	var out := [["baker", "面包师", bp, yaw_to(bp, bp + face), "baker"]]
+	if str(GameState.quest_stage("ch4_matilda")) in ["bakery", "lane"]:
+		out.append(["milo", "米洛", MILO_AT, yaw_to(MILO_AT, Vector2(20.0, 22.0)), "milo"])
+	return out
 
 
 static func _floor_y(at: Vector2) -> float:
@@ -134,7 +165,8 @@ static func room_people(area: String) -> Array:
 		"matilda_inn":
 			return [["matilda", "玛蒂尔达", Vector3(1.1, 0, -2.0), 180.0, "matilda", []],
 				["inn_drinker1", "喝酒的脚夫", Vector3(2.2, 0, 1.4), 0.0, "", DRINKER_LINES],
-				["inn_drinker2", "喝酒的脚夫", Vector3(-2.0, 0, 1.5), 10.0, "", DRINKER_LINES.slice(1) + DRINKER_LINES.slice(0, 1)]]
+				["inn_drinker2", "喝酒的脚夫", Vector3(-2.0, 0, 1.5), 10.0, "", DRINKER_LINES.slice(1) + DRINKER_LINES.slice(0, 1)]] + (
+				[["milo_inn", "米洛", Vector3(0.6, 0, 1.6), -20.0, "", MILO_LINES]] if str(GameState.quest_stage("ch4_matilda")) == "back" or str(GameState.get_flag("ch4_matilda", "")) == "found" else [])
 		"council_hall":
 			return [["council_steward", "议事厅的差役", Vector3(5.6, 0, -0.9), 120.0, "council_steward", []]]
 	return []

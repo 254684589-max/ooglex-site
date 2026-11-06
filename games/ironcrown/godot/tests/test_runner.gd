@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -10243,6 +10243,104 @@ func test_crownpeople() -> void:
 	GameState.add_item("iron_crown")
 	GameState.set_flag("ch4_ambush", "talked")
 	check(not CrownPeople.ambush_due(), "了结过的（说走了 / 打过了）不再堵你")
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch4side() -> void:
+	# 第四章支线（7.7）：灯塔的火、债牢里的人、玛蒂尔达的人
+	# 灯塔：摆渡的船到沙嘴；老蒂博；钥楼付油钱 / 自己出钱 / 盐仓「借」两桶；亮了以后黄昏涨潮也进得了潮沟
+	ch4_state({"ch4_colwin_met": true}, "envoys")
+	GameState.pending_load = {"scene": "harbor", "spawn": "quay", "player": {}}
+	var main := await make_area("harbor")
+	await physics(6)
+	var ferry := main.world.find_child("Npc_ferry", true, false) as Npc
+	var oil := main.world.find_child("OilBarrels", true, false) as Examine
+	check(ferry != null and ferry.dialogue_id == "ferry" and await stands_clear(ferry) and oil != null and str(oil.on_use.call(main.player).toast).contains("双钥的印") and not GameState.has_item("lamp_oil"),
+		"木栈码头上摆渡的船工（站在栈桥上）；盐仓边的油桶没接灯塔的事时只是看看")
+	check(say_runner("ferry", ["去沙嘴灯塔。"], "harbor") == "" and GameState.pending_goto.get("spawn", "") == "lighthouse", "坐摆渡的船去沙嘴")
+	GameState.pending_goto = {}
+	await free_main(main)
+	GameState.pending_load = {"scene": "harbor", "spawn": "lighthouse", "player": {}}
+	main = await make_area("harbor")
+	await physics(8)
+	var p: FpController = main.player
+	var tb := main.world.find_child("Npc_thibault", true, false) as Npc
+	var back := main.world.find_child("Npc_ferry_back", true, false) as Npc
+	check(p.is_on_floor() and p.global_position.distance_to(Harbor.spawn_points().lighthouse[0]) < 0.4 and tb != null and await stands_clear(tb) and back != null and await stands_clear(back),
+		"到了沙嘴尽头：老蒂博蹲在灯塔门口，摆渡的船工等着送你回去")
+	check(say_runner("thibault", ["灯要多少油？", "我去钥楼替你要油钱。"], "harbor") == "" and GameState.quest_stage("ch4_lighthouse") == "ask", "接了「灯塔的火」")
+	GameState.checks["ch4_oil_talk"] = false
+	check(say_runner("colwin", [], "harbor") == "again" and say_runner("colwin", ["灯塔三个月没付油钱。昨夜那条粮船，就是看不见灯。"], "harbor") == "oil_no" and not GameState.has_flag("ch4_oil_paid"),
+		"跟科尔温要油钱没说动：「船沉了，账就清了」")
+	GameState.checks["ch4_oil_steal"] = false
+	var cw := GameState.get_rep("caswell")
+	var r := HarborTown.oil_barrels()
+	check(GameState.has_item("lamp_oil") and GameState.has_flag("ch4_oil_seen") and GameState.get_rep("caswell") == cw - 5 and str(r.toast).contains("钥楼会记这一笔"),
+		"从盐仓「借」两桶，被看见了：卡斯韦尔家 −5，油照样到手")
+	var lamp := main.world.find_child("LighthouseEmber", true, false) as Tavern.FireLight
+	var dim := lamp.omni_range
+	var fr := GameState.get_rep("ferrymen")
+	check(say_runner("thibault", ["（放下两桶灯油）"], "harbor") == "lit" and str(GameState.get_flag("ch4_lighthouse", "")) == "lit" and GameState.quest_done("ch4_lighthouse") and not GameState.has_item("lamp_oil")
+		and GameState.get_rep("ferrymen") == fr + 5, "把油交给老蒂博：灯塔亮了（行会 +5）")
+	main._ch3_sides_heard()
+	check(lamp.omni_range > dim * 2.0 and HarborTown.lighthouse_lit(), "灯塔顶上的火当场烧旺（光照得远）")
+	await free_main(main)
+	ch4_state({"ch4_lighthouse": "lit"}, "way")
+	GameState.daypart = "dusk"
+	Daypart.current = "dusk"
+	var cd := HarborTown.canal_descend()
+	check(str(cd.get("kind", "")) == "" and str(cd.toast).contains("铁栅"), "灯塔亮了、黄昏：行会的船肯撑进潮沟，但水门的锁还是要钥匙或撬开")
+	GameState.add_item("sluice_key")
+	cd = HarborTown.canal_descend()
+	check(str(cd.get("kind", "")) == "travel" and str(cd.toast).contains("小船") and not Harbor.low_tide(), "灯塔亮了：黄昏涨着潮，不知道红线也能坐船到水门")
+	ch4_state({}, "way")
+	GameState.add_item("sluice_key")
+	GameState.daypart = "dusk"
+	check(str(HarborTown.canal_descend().toast).contains("涨着潮"), "灯塔没亮：黄昏还是下不去")
+	ch4_state({}, "to_city")
+	CrownPeople.arrived()
+	check(str(GameState.get_flag("ch4_lighthouse", "")) == "dark" and HarborTown.second_wreck(), "上冠城时灯塔还没亮：记 dark，码头外又多一条沉船")
+	GameState.daypart = "day"
+	Daypart.current = "day"
+	# 债牢里的人
+	ch4_state({"ch4_colwin_met": true, "ch2_roll": "served"}, "envoys")
+	var jr := DialogueRunner.new()
+	jr.start("harbor", "jost")
+	check(jr.text().contains("「补」字"), "第十九烽名册上补过名的：约斯特认得你（他爹是烽誓团的人）")
+	check(say_runner("jost", ["我去跟科尔温说说老王的担保。"], "harbor") == "go_colwin" and GameState.quest_active("ch4_debtor"), "接了「债牢里的人」")
+	GameState.checks["ch4_jost_press"] = true
+	check(say_runner("colwin", ["债牢里的约斯特，担保人是老王。老王的担保作废了——北境那些盖着王印的债，也跟着作废吗？"], "harbor") == "jost_yes" and str(GameState.get_flag("ch4_debtor", "")) == "pressed" and GameState.quest_done("ch4_debtor"),
+		"拿老王的担保压科尔温（口才 14）：约斯特的账记回王室，放人")
+	check(HarborPeople.room_people("debt_prison").filter(func(x): return str(x[0]) == "jost").is_empty(), "放出来了：牢里没有约斯特")
+	ch4_state({"ch4_colwin_met": true}, "envoys")
+	GameState.add_silver(50)
+	var sv := GameState.silver
+	check(say_runner("jost", ["（数出四十二枚银币，放在看门的桌上）"], "harbor") == "paid" and GameState.silver == sv - 42 and str(GameState.get_flag("ch4_debtor", "")) == "paid", "替他还了四十二枚")
+	ch4_state({"ch4_colwin_met": true}, "envoys")
+	say_runner("jost", ["告辞。"], "harbor")
+	GameState.daypart = "day"
+	check(str(HarborRooms.cell_lock().toast).contains("夜里"), "白天撬不了：看门的盯着")
+	GameState.daypart = "night"
+	GameState.checks["ch4_jost_pick"] = true
+	var cl := HarborRooms.cell_lock()
+	check(str(cl.get("kind", "")) == "travel" and str(GameState.get_flag("ch4_debtor", "")) == "broken" and GameState.quest_done("ch4_debtor"), "夜里撬开牢门（潜行 14）：约斯特跟着你溜出去")
+	GameState.daypart = "day"
+	# 玛蒂尔达的人
+	ch4_state({"ch4_matilda_met": true}, "in_city")
+	check(say_runner("matilda", ["你在等谁？"], "crown") == "errand" and GameState.quest_stage("ch4_matilda") == "bakery", "玛蒂尔达托你找米洛")
+	check(say_runner("baker", [], "crown") == "milo" and GameState.quest_stage("ch4_matilda") == "lane", "面包师：米洛钻进了广场那头往北的小巷")
+	GameState.pending_load = {"scene": "crown_city", "spawn": "square", "player": {}}
+	main = await make_area("crown_city")
+	await physics(6)
+	var milo := main.world.find_child("Npc_milo", true, false) as Npc
+	var baker := main.world.find_child("Npc_baker", true, false) as Npc
+	check(milo != null and await stands_clear(milo) and baker != null and await stands_clear(baker), "米洛缩在小巷尽头的门洞里；面包师站在面包坊门口（都站在空地上）")
+	await free_main(main)
+	check(say_runner("milo", ["（蹲下来）你饿不饿？", "玛蒂尔达让我来找你。她在等你。", "走，回酒馆。"], "crown") == "" and GameState.quest_stage("ch4_matilda") == "back", "米洛只肯跟玛蒂尔达说")
+	check(say_runner("matilda", ["米洛找到了。"], "crown") == "found" and str(GameState.get_flag("ch4_regent_visitor", "")) == "lucien" and GameState.quest_done("ch4_matilda")
+		and CrownPeople.room_people("matilda_inn").any(func(x): return str(x[0]) == "milo_inn") and CrownPeople.talkers().size() == 1,
+		"玛蒂尔达：昨夜大主祭卢西安的车停在摄政宅子的后门；米洛回了酒馆")
 	GameState.chapter = 0
 	GameState.pending_load = {}
 
