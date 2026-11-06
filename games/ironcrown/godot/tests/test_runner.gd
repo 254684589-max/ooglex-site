@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9274,6 +9274,102 @@ func test_plainperf() -> void:
 	var s14 := plain_surfaces(main, 14)
 	check(s8 < 300 and s14 < 300, "最重的两个机位画的东西：坠星院回廊 %d、营地东北头往回看 %d 个表面（优化以前 530 / 513；网页中画质量到 339 / 379 次绘制，预算 400）" % [s8, s14])
 	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func mill_state(side: String, flags := {}, daypart := "night") -> void:
+	GameState.new_game(671)
+	GameState.chapter = 3
+	GameState.daypart = daypart
+	GameState.start_quest("ch3_main")
+	GameState.set_flag("ch3_side", side)
+	GameState.set_stage("ch3_main", {"lomond": "to_mill_lomond", "tenants": "to_mill_tenants", "severin": "to_mill_severin"}[side])
+	for k in flags:
+		GameState.set_flag(k, flags[k])
+
+
+func make_mill(spawn: String) -> Node3D:
+	GameState.pending_load = {"scene": "plain", "spawn": spawn, "player": {}}
+	var main := await make_main(false)
+	await physics(3)
+	return main
+
+
+func test_millbattle() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	# —— 抉择定了、白天：没有仗；走到磨坊就入夜
+	mill_state("lomond", {}, "dusk")
+	var main := await make_mill("mill")
+	check(main.battle == null and MillBattle.pending() and not MillBattle.due(), "黄昏、还没到磨坊：没有仗")
+	check(MillBattle.at_muster(Vector2(20, -10)) and not MillBattle.at_muster(Vector2(-40, 20)) and MillBattle.night_arrival()[0] == "mill_night", "守磨坊：走进磨坊院子就入夜，站到院子里")
+	await free_main(main)
+	# —— 守磨坊：摆好
+	mill_state("lomond")
+	main = await make_mill("mill_night")
+	var b: Battle = main.battle
+	var def := soldiers_of(main, MillBattle.DEF)
+	var atk := soldiers_of(main, MillBattle.ATK)
+	check(b != null and not b.started and b.player_side == MillBattle.DEF and b.squad.size() == 6 and def.size() == 14 and atk.size() == 10 and b.side_total(MillBattle.ATK) == 40,
+		"守磨坊：你的 6 个护院、护院头目和 7 个守东门缺口的（守方 14）；攻方第一拨前 10 个在东门外，后 10 个、第二拨 20 个晚些来（一共 40）")
+	check(b.waves.size() == 2 and b.waves.any(func(w): return w.soldiers.any(func(x): return x.display_override == "奥迪隆" and x.kind == "captain")) and main.world.find_child("Npc_captain", true, false) == null,
+		"第二波由奥迪隆（队长）带队；白天那个护院头目 NPC 拿掉了（在军阵里）")
+	var path := NavigationServer3D.map_get_path(main.world.get_world_3d().navigation_map, MillBattle.p3(Vector2(60, -30)), MillBattle.p3(Vector2(35, -18)), true)
+	check(not main.nav.is_empty() and path.size() > 1 and NavBuilder.path_length(path) < 45.0 and path[path.size() - 1].distance_to(MillBattle.p3(Vector2(35, -18))) < 1.5,
+		"磨坊那一片烘焙了导航：东门外到粮仓走得通（%.1f 米，%d 个多边形）" % [NavBuilder.path_length(path), int(main.nav.get("polygons", 0))])
+	var path2 := NavigationServer3D.map_get_path(main.world.get_world_3d().navigation_map, MillBattle.p3(Vector2(27.5, -50)), MillBattle.p3(Vector2(30, -30)), true)
+	check(path2.size() > 1 and path2[path2.size() - 1].distance_to(MillBattle.p3(Vector2(30, -30))) < 1.5 and NavBuilder.path_length(path2) < 30.0, "北边过来走得进缺口（%.1f 米）" % NavBuilder.path_length(path2))
+	await physics(10)
+	check(not b.started, "到了还没过 %d 秒：还没开打" % int(MillBattle.START_AFTER))
+	await seconds(MillBattle.START_AFTER + 0.5)
+	check(b.started and main.in_combat() and main.hud.toast_label.text.contains("粮仓"), "到了几秒：开打")
+	var auto := Saves.read_slot("auto")
+	check(auto.has("data") and str(auto.data.state.quests.ch3_main.stage) == "to_mill_lomond", "开打前自动存档")
+	var x0: Array = atk.slice(0, 6).map(func(x): return x.global_position.x)
+	await seconds(4.0)
+	var moved: Array = range(6).map(func(i): return float(x0[i]) - atk[i].global_position.x)
+	check(moved.all(func(m): return m > 2.0), "第一波往东门压（4 秒往西走了 %s 米）" % str(moved.map(func(m): return snappedf(m, 0.1))))
+	# 据点规则：6 个人冲进粮仓那片就失守
+	for x in atk.slice(0, 6):
+		x.global_position = MillBattle.p3(MillBattle.granary_doors()[0])
+	await seconds(0.6)
+	check(b.finished and b.winner == MillBattle.ATK and str(GameState.get_flag("ch3_mill", "")) == "lost" and GameState.quest_stage("ch3_main") == "after_mill" and main.hud.toast_label.text.contains("失守"),
+		"6 个人摸到粮仓门口：失守（ch3_mill = lost），主线到「打完了」")
+	await free_main(main)
+	main = await make_mill("mill")
+	check(main.battle == null, "打过了：再来没有仗")
+	await free_main(main)
+	# —— 开仓、护院撤走了：只有佃农
+	mill_state("tenants", {"ch3_granary_opened": true, "ch3_guards_left": true})
+	main = await make_mill("mill_night")
+	b = main.battle
+	def = soldiers_of(main, MillBattle.DEF)
+	check(b != null and b.squad.size() == 6 and def.size() == 12 and def.all(func(x): return x.kind in ["levy", "captain"]) and def.any(func(x): return x.display_override == "老贝恩"),
+		"开仓、护院撤走了：守磨坊的只有佃农（6 个跟着你，缺口东门各 2 个，老贝恩和 1 个人守粮仓）")
+	await free_main(main)
+	mill_state("tenants", {"ch3_granary_opened": true, "ch3_captain_aside": true})
+	main = await make_mill("mill_night")
+	b = main.battle
+	check(b != null and soldiers_of(main, MillBattle.DEF).size() == 24, "开仓、护院留下了：护院 14 人 + 佃农 10 人守磨坊")
+	await free_main(main)
+	# —— 跟塞弗林家：从营地口入夜，东门外开打；抢到了
+	mill_state("severin", {}, "dusk")
+	check(MillBattle.at_muster((PlainLayout.SPAWN_XZ.camp as Array)[0]) and not MillBattle.at_muster(Vector2(20, -10)) and MillBattle.night_arrival()[0] == "mill_raid", "跟塞弗林家：到营地口就入夜，站到东门外")
+	mill_state("severin")
+	main = await make_mill("mill_raid")
+	b = main.battle
+	check(b != null and b.player_side == MillBattle.ATK and b.squad.size() == 6 and soldiers_of(main, MillBattle.ATK).size() == 20 and soldiers_of(main, MillBattle.DEF).size() == 12
+		and b.waves.size() == 2 and b.waves.any(func(w): return w.side == MillBattle.DEF and w.soldiers.any(func(x): return x.display_override == "老贝恩")),
+		"跟塞弗林家：你和第一波 20 人（6 个跟着你）vs 护院头目和 11 个护院；老贝恩带 8 个佃农晚些从南门进来；奥迪隆的第二拨照样来")
+	var lom := GameState.get_rep("lomond")
+	check(MillBattle.finish(MillBattle.ATK).contains("抢到了") and str(GameState.get_flag("ch3_mill", "")) == "seized" and GameState.get_rep("lomond") == lom - 25, "抢到了：ch3_mill = seized，洛蒙德家 −25")
+	await free_main(main)
+	mill_state("lomond")
+	var sev := GameState.get_rep("severin")
+	check(MillBattle.finish(MillBattle.DEF).contains("守住了") and str(GameState.get_flag("ch3_mill", "")) == "held" and GameState.get_rep("severin") == sev - 10, "守住了：ch3_mill = held，塞弗林家 −10")
+	mill_state("severin")
+	check(MillBattle.finish(MillBattle.DEF).contains("打不进去") and str(GameState.get_flag("ch3_mill", "")) == "repelled", "跟塞弗林家打不进去：ch3_mill = repelled")
 	GameState.chapter = 0
 	GameState.pending_load = {}
 

@@ -144,6 +144,18 @@ func _ready() -> void:
 			GameState.set_flag("ch2_ambush", _query("rob"))
 			GameState.set_stage("ch2_main", "rob_ready")
 			GameState.daypart = "night"
+		if _query("mill") in ["lomond", "tenants", "tenants_left", "severin"] and not Engine.has_meta("ic_mill_param_done"):
+			Engine.set_meta("ic_mill_param_done", true)       # 截图用（6.7b）：?area=plain&spawn=mill_night|mill_raid&mill=lomond|tenants|tenants_left|severin 直接到磨坊之战那一夜（配 &cwskip=秒 开打并快进）
+			var ms := _query("mill")
+			GameState.chapter = 3
+			if not GameState.quest_active("ch3_main"):
+				GameState.start_quest("ch3_main")
+			GameState.set_flag("ch3_side", "tenants" if ms == "tenants_left" else ms)
+			if ms.begins_with("tenants"):
+				GameState.set_flag("ch3_granary_opened")
+				GameState.set_flag("ch3_guards_left" if ms == "tenants_left" else "ch3_captain_aside")
+			GameState.set_stage("ch3_main", {"lomond": "to_mill_lomond", "severin": "to_mill_severin"}.get(ms, "to_mill_tenants"))
+			GameState.daypart = "night"
 		if _query("dawn") in ["lit", "out"] and not Engine.has_meta("ic_dawn_param_done"):
 			Engine.set_meta("ic_dawn_param_done", true)       # 截图用（5.8）：?dawn=lit|out 直接到第二夜过去的早上（劫下了粮 / 被打退了）
 			for f in ["matthias_met", "norbert_met", "norbert_day2"]:
@@ -302,6 +314,8 @@ func _ready() -> void:
 		ConvoyAmbush.setup(world)                       # 第二夜 · 劫粮（5.7a）：主线「设伏」、还没打过，在伏击段摆好；走到伏击点开打
 		ConvoyEscort.setup(world)                       # 第二夜 · 护粮（5.7b）：主线「护车」、还没走过，三辆车在伏击段下头；到了几秒以后动身
 		WinterWell.setup(world)                         # 白寂边缘的冬井（5.8b）：井一直在；主线「冬井」起井边站着一圈长眠的人、诺伯特在山脊背后等你
+	if area == "plain":
+		MillBattle.setup(world)                         # 磨坊之战（6.7b）：抉择定了、夜里、还没打过，摆好；到了几秒开打
 	if area == "marsh":
 		CausewayBattle.setup(world)                     # 堤道夜战（4.9a）：入夜备战说定了、还没打过，摆好；走到守点开打
 		sleeper = Sleeper.place(world)                  # 家主走了以后回芦栈村（4.10b）：一个说过话的村民夜里没醒
@@ -314,6 +328,9 @@ func _ready() -> void:
 	if nb.has_volume():
 		nav = NavBuilder.bake(world, nb)
 		print("IC_NAV area=%s ms=%.0f polygons=%d" % [area, nav.ms, nav.polygons])
+	if area == "plain" and world.get_node_or_null("MillBattle") != null:    # 磨坊之战：只烘焙磨坊那一片（整张平原太大；同鹭沼营地 4.7c），兵绕着院墙走
+		nav = NavBuilder.bake(world, MillBattle.NAV_BOUNDS)
+		print("IC_NAV area=plain mill ms=%.0f polygons=%d" % [nav.ms, nav.polygons])
 	# 时段（4.2）：区域搭好以后套光（窗户、夜灯、雾带都在了）；画质在后面（月光阴影、泛光开关、雾带减半归画质）
 	daypart = Daypart.effective(area, GameState.daypart)
 	Daypart.apply(self, daypart)
@@ -1915,6 +1932,17 @@ func _on_battle_ended(winner: String) -> void:
 			if is_inside_tree() and not leaving and area == "highland":
 				_ch2_dawn_world())
 		return
+	if area == "plain" and world.get_node_or_null("MillBattle") != null:     # 磨坊之战（6.7b）：写 ch3_mill、声望、推进主线、自动存档；过一会儿天亮
+		hud.toast(MillBattle.finish(winner), 6.0)
+		print("IC_MILL end winner=%s result=%s" % [winner, GameState.get_flag("ch3_mill", "")])
+		save_game.call_deferred("auto", true)
+		get_tree().create_timer(DAWN_DELAY).timeout.connect(func():
+			if is_inside_tree() and not leaving and area == "plain":
+				var to := MillBattle.dawn_arrival(str(GameState.get_flag("ch3_mill", "")))
+				Engine.set_meta("ic_arrive_note", to[1])
+				GameState.daypart = "dawn"
+				travel("plain", str(to[0])))
+		return
 	if area == "marsh":                                 # 堤道夜战（4.9a）：写旗标、推进主线、自动存档；过一会儿天亮（4.10a）
 		var held := winner == battle.player_side
 		hud.toast(CausewayBattle.finish(held), 6.0)
@@ -2048,6 +2076,29 @@ func _on_tide_ended(result: String) -> void:
 		GameState.set_stage("ch2_nell", "decide")      # 妮尔背着包袱要往北去（5.5b）
 	set_daypart("dawn", false)
 	save_game("auto", true)
+
+
+## 磨坊之战（6.7b，world/mill_battle.gd）：抉择定了，天黑以前走到磨坊（跟塞弗林家的：营地口）就入夜、站到开打的地方；到了几秒开打（先自动存档）
+func _mill_tick() -> void:
+	if area != "plain" or player == null or leaving or GameState.chapter != 3:
+		return
+	if MillBattle.pending() and GameState.daypart != "night" and (battle == null or not is_instance_valid(battle)) and MillBattle.at_muster(player_xz()):
+		var to := MillBattle.night_arrival()
+		Engine.set_meta("ic_arrive_note", to[1])
+		travel("plain", str(to[0]), "night")
+		return
+	var mb := world.get_node_or_null("MillBattle") as MillBattle
+	if mb and _query("mill") != "" and _query("cam") == "" and not mb.has_meta("placed"):
+		mb.set_meta("placed", true)                       # 截图用（?mill=）：站到开打的地方
+		var sp: Array = PlainLayout.spawn_points()["mill_raid" if MillBattle.raiding() else "mill_night"]
+		player.global_position = sp[0]
+		player.rotation.y = deg_to_rad(float(sp[1]))
+	if mb and mb.ready_to_start():
+		start_battle()
+		hud.toast("◆ 他们来了！按 1 让小队跟着你、2 原地坚守、3 冲锋（触屏「令」）。%s" % ("别让六个人冲进粮仓那片。" if not MillBattle.raiding() else "冲进粮仓那片院子！"), 5.0)
+		if _query("cwskip").is_valid_float():         # 截图用（同堤道夜战）：快进到开打后第 N 秒
+			Engine.time_scale = 8.0
+			Engine.max_physics_steps_per_frame = 64
 
 
 ## 第二夜 · 劫粮（5.7a，world/convoy_ambush.gd）：主线到「设伏」时天黑透、粮车出村——把你放到伏击段（重新载入高地，摆好那场仗）；走到伏击点开打
@@ -2323,6 +2374,7 @@ func _process(delta: float) -> void:
 	_escort_tick()
 	_empty_night_tick()
 	_well_tick()
+	_mill_tick()
 	if sleeper != null and is_instance_valid(sleeper) and sleeper.near(player.global_position):
 		_sleeper_seen()                                 # 长眠者第一次露面（4.10b）
 	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):
