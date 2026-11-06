@@ -20,6 +20,14 @@ const SMITH_LINES := ["枪头，马掌，钉子。征粮的营地，打的全是
 
 
 ## 主线第 4 步（顺序随意）：老贝恩的坟、奥迪隆的征粮令都看过了 → 「天黑以前决定站哪边」（main 每段对话结束时调）
+## 罪证留着（6.8a，院长那儿说「我什么都不交」）：south_evidence 按你手里有什么记（两样 both / 账本 lomond / 信 severin / 什么都没有 none）；main 每段对话结束时调
+static func evidence_settle() -> void:
+	if str(GameState.get_flag("ch3_evidence_to", "")) == "kept" and str(GameState.get_flag("south_evidence", "")) == "":
+		var l := GameState.has_item("granary_ledger")
+		var r := GameState.has_item("regent_letter")
+		GameState.set_flag("south_evidence", "both" if l and r else ("lomond" if l else ("severin" if r else "none")))
+
+
 static func sides_heard() -> bool:
 	if GameState.quest_stage("ch3_main") == "sides" and GameState.has_flag("ch3_bain_grave") and GameState.has_flag("ch3_odilon_order"):
 		GameState.set_stage("ch3_main", "choose")
@@ -71,6 +79,31 @@ static func build(parent: Node3D) -> void:
 	_grave(parent)
 	_listen_door(parent)
 	_pry(parent)
+	_letter_chest(parent)
+
+
+## 指挥帐床边那口箱子（6.8a）：摄政的信每夜锁在里头。学徒说过（ch3_letter_place）或者跟塞弗林家走的，打完以后（营地里人都下了坡、还没回来）拿得走
+static func letter_chest_open() -> Dictionary:
+	if GameState.has_item("regent_letter") or GameState.has_flag("ch3_letter_taken"):
+		return {"toast": "箱子里只剩几卷征粮令的底稿。"}
+	var knows := GameState.has_flag("ch3_letter_place") or str(GameState.get_flag("ch3_side", "")) == "severin"
+	if str(GameState.get_flag("ch3_mill", "")) == "":
+		return {"toast": "一口包铁皮的箱子，锁着。奥迪隆就在帐子里——这会儿别碰。" if knows else "一口包铁皮的箱子，锁着。"}
+	if not knows:
+		return {"toast": "一口包铁皮的箱子，锁着。不知道里头有什么，撬它不值当。"}
+	GameState.add_item("regent_letter")
+	GameState.set_flag("ch3_letter_taken")
+	return {"toast": "营地里的人都还在坡下。你撬开箱子，几卷征粮令底下压着一封红蜡封的信——印是铁砧托冠，摄政自己的戒指。（得到：摄政的信）"}
+
+
+static func _letter_chest(parent: Node3D) -> void:
+	var fur: Array = PlainCamp._pav_furniture()
+	var pc := PlainCamp.at(PlainCamp.PAVILION[0], PlainCamp.PAVILION[1])
+	var at: Vector3 = Vector3(pc.x, ground(pc), pc.y) + (fur[2][0] as Vector3) - Vector3(0, 0.3, 0)
+	var e := Examine.make("征粮官床边的箱子", "看看", func(_who: FpController) -> Dictionary: return letter_chest_open(), Vector3(1.0, 0.8, 0.7))
+	e.name = "LetterChest"
+	e.position = at
+	parent.add_child(e)
 
 
 ## 开仓（6.6，先开仓那条路）：主线在 open_granary 时，佃农的撬棍插进第一座粮仓的门缝——洛蒙德家 −20；

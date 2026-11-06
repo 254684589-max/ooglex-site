@@ -1036,6 +1036,14 @@ godot/
 - 实测：开打 72 秒中画质 289 次绘制（原来 285）。
 - **测试**（都在 `millbattle` 组，共 25 项）：背景大军 240 人、120 支火把、旗、压到最近也离磨坊 70 米；「去那儿」没指地方下不了、指了站位都在附近；准星指的地方；院子里顺着水渠绕到缺口外走得通；第二拨到了、小队在那儿：士气掉、`ch3_flanked`、之前有提示；背景大军开打以后在动。`touch` / `squad` 组的按钮排法、小队那一行跟着改。
 
+### 4.81 第三章的罪证（路线图 6.8a，2026-11-06）
+
+- **物品**（`items.json`，任务物品）：`granary_ledger` 洛蒙德家的粮仓账本、`regent_letter` 摄政的信。
+- **从哪儿来**：`MillInside.open_ledger()`——有了 `ch3_mill` 以后：`ledger_takeable()`（held / seized，或者开过仓）给账本、`ch3_ledger_taken`；失守了「账箱被砸开……空了」；没打以前照旧是 6.5 的偷看。动作字跟着换（拿走账本 / 看看）。`MillBattle.finish`：held 且 `ch3_odilon_down` → 信。`PlainPeople.letter_chest_open()`（指挥帐床边箱子 `LetterChest`，位置同 `PlainCamp._pav_furniture()[2]`）：要 `ch3_letter_place` 或者 `ch3_side` = severin，且打完了（`ch3_mill`）；`ch3_letter_taken`。船夫 `night_ledger`（有 `ch3_mill`、渡工之子那条线以后）`give_item` 账本、`ch3_boat_ledger`。
+- **交给谁**（主线 `after_mill` → `vigil`）：院长 `gregor/dawn`（`take_item` 账本 / 信 / 两样，`south_evidence` lomond / severin / both、`ch3_evidence_to` = abbey；账本洛蒙德家 −10）或 `keep`（kept）；老贝恩 `bain/dawn`（`read_ledger` / `read_letter` / `read_both`，tenants；账本洛蒙德家 −20、信塞弗林家 −10；`ch3_ida` = witness 时 `ida_speaks`）。`PlainPeople.evidence_settle()`（main 每段对话结束时调）：kept 的按手里有什么补 `south_evidence`。
+- **佃农挡路**（`MillBattle`，跟塞弗林家）：老贝恩那一拨的兵留一份（`tenants`）；`WAVE_TEN_AT + SPARE_AFTER` 时小队命令是「原地坚守」= 让开：`ch3_tenants_spared`，佃农 `guard_post` 挪到第一座仓门口、`guard_r` 3.5；`at_granary_door` 让开以后不算第一座。提示写在援军那句话里。
+- **测试**：`ch3evidence` 组 14 项（打倒奥迪隆得信；守住了拿账本、再开是空的；两样交给院长；失守了账箱空、没有信；不知道信在哪不撬、学徒说过拿得到；把信念给佃农；开过仓的失守也拿得到账本；船夫给夜船那本；当着全村念账本、伊达作证；跟院长说留着、按手里记；跟塞弗林家佃农挡路让开）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

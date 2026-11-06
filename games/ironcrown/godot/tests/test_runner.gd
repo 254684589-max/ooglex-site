@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9409,6 +9409,57 @@ func test_millbattle() -> void:
 	var t0 := mb.far_t
 	await seconds(1.0)
 	check(mb.far_t > t0 + 0.5, "背景大军开打以后慢慢往前压（按开打后的秒数摆，%d 秒压 %d 米）" % [int(MillBattle.FAR_ADVANCE_T), int(MillBattle.FAR_ADVANCE)])
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch3evidence() -> void:
+	# 罪证（6.8a）：账本、摄政的信从哪儿来；交给院长 / 佃农 / 留着；跟塞弗林家时佃农挡路
+	mill_state("lomond")
+	GameState.set_flag("ch3_odilon_down")
+	check(MillBattle.finish(MillBattle.DEF).contains("摄政的信") and GameState.has_item("regent_letter") and GameState.quest_stage("ch3_main") == "after_mill", "守住了、打倒了奥迪隆：从他怀里搜出摄政的信")
+	check(MillInside.ledger_takeable() and str(MillInside.open_ledger().toast).contains("得到") and GameState.has_item("granary_ledger") and str(MillInside.open_ledger().toast) == "账箱空了。", "守住了：磨坊账房的铁皮箱里拿走粮仓账本（再开是空的）")
+	var lom := GameState.get_rep("lomond")
+	check(say_runner("gregor", ["账本和信，两样都交给你。"], "plain") == "took_both" and str(GameState.get_flag("south_evidence", "")) == "both" and str(GameState.get_flag("ch3_evidence_to", "")) == "abbey"
+		and not GameState.has_item("granary_ledger") and not GameState.has_item("regent_letter") and GameState.get_rep("lomond") == lom - 10 and GameState.quest_stage("ch3_main") == "vigil",
+		"两样都交给院长：south_evidence = both、ch3_evidence_to = abbey、洛蒙德家 −10、主线到守灵夜")
+	mill_state("lomond")
+	MillBattle.finish(MillBattle.ATK)
+	check(not MillInside.ledger_takeable() and str(MillInside.open_ledger().toast).contains("空了") and not GameState.has_item("granary_ledger") and not GameState.has_item("regent_letter"), "失守了：账箱被砸开、空了，也没有信")
+	check(str(PlainPeople.letter_chest_open().toast).contains("不知道里头有什么") and not GameState.has_item("regent_letter"), "不知道信在哪：指挥帐床边那口箱子不撬")
+	GameState.set_flag("ch3_letter_place")
+	check(str(PlainPeople.letter_chest_open().toast).contains("得到") and GameState.has_item("regent_letter"), "学徒说过信在哪：打完以后从指挥帐床边箱子里拿到摄政的信")
+	GameState.set_flag("ch3_ida", "witness")
+	var sev := GameState.get_rep("severin")
+	check(say_runner("bain", ["摄政的信。念给全村人听。"], "plain") == "read_letter" and str(GameState.get_flag("ch3_evidence_to", "")) == "tenants" and GameState.get_rep("severin") == sev - 10, "把信念给麦渡的人听：塞弗林家 −10")
+	mill_state("tenants", {"ch3_granary_opened": true, "ch3_guards_left": true, "ch3_night_boats": true, "ch3_ida": "witness"})
+	MillBattle.finish(MillBattle.ATK)
+	check(MillInside.ledger_takeable(), "开过仓的，失守了账箱也拿得到（夜里没人顾得上那间屋子）")
+	check(say_runner("boatman", ["昨夜那条船……"], "plain") == "night_ledger" and GameState.has_item("granary_ledger"), "渡工之子：船夫把夜船上捞上来的那本账给你（罪证的另一条来路）")
+	check(say_runner("bain", ["洛蒙德家的粮仓账本。念给全村人听。", "（看向伊达）"], "plain") == "ida_speaks" and str(GameState.get_flag("south_evidence", "")) == "lomond", "当着全村念账本：伊达站出来作证")
+	mill_state("lomond")
+	MillBattle.finish(MillBattle.DEF)
+	MillInside.open_ledger()
+	check(say_runner("gregor", ["我什么都不交。东西我留着。"], "plain") == "keep" and str(GameState.get_flag("ch3_evidence_to", "")) == "kept" and GameState.has_item("granary_ledger"), "跟院长说什么都不交：留着（ch3_evidence_to = kept）")
+	PlainPeople.evidence_settle()
+	check(str(GameState.get_flag("south_evidence", "")) == "lomond", "留着的：south_evidence 按手里有什么记（这回是账本 = lomond）")
+	# 跟塞弗林家：佃农挡路，让开
+	mill_state("severin")
+	var main := await make_mill("mill_raid")
+	var b: Battle = main.battle
+	var mb := main.world.find_child("MillBattle", true, false) as MillBattle
+	await seconds(MillBattle.START_AFTER + 0.5)
+	for x in soldiers_of(main, MillBattle.DEF):         # 守方挪远：这一段只看佃农进来以后
+		x.global_position = MillBattle.p3(Vector2(-120.0, 100.0)) + Vector3(randf_range(-3, 3), 0.3, randf_range(-3, 3))
+	b.order("hold")
+	b.elapsed = MillBattle.WAVE_TEN_AT + 0.5
+	await seconds(0.8)
+	b.elapsed = MillBattle.WAVE_TEN_AT + MillBattle.SPARE_AFTER + 0.5
+	await seconds(0.6)
+	check(mb.spare_decided and GameState.has_flag("ch3_tenants_spared") and mb.tenants.size() == 8 and mb.tenants.all(func(x): return x.guard_r < 4.0)
+		and not MillBattle.at_granary_door(MillBattle.p3(MillBattle.granary_doors()[0])) and MillBattle.at_granary_door(MillBattle.p3(MillBattle.granary_doors()[1])),
+		"跟塞弗林家：老贝恩的人挡在粮仓前，你让小队坚守 = 让开——他们只守第一座仓，那座不算抢")
 	await free_main(main)
 	GameState.chapter = 0
 	GameState.pending_load = {}

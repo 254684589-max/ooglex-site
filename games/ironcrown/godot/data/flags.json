@@ -166,5 +166,11 @@
   "ch3_guards_left": {"desc": "没说动护院头目就撬了仓：洛蒙德家的护院撤回庄园，今夜只有佃农跟你守（6.6）", "set_in": "world/plain_people.gd pry_granary", "read_in": "6.7 磨坊之战"},
   "ch3_mill": {"desc": "磨坊之战（6.7b）：守的一方 held = 守住 / lost = 失守（粮被抢上砧山）；跟塞弗林家 seized = 抢到了 / repelled = 打不进去", "set_in": "world/mill_battle.gd finish", "read_in": "6.8 罪证、章末回顾"},
   "ch3_odilon_down": {"desc": "磨坊之战里打倒了奥迪隆（6.7b；6.8 他身上那封摄政的信）", "set_in": "world/mill_battle.gd setup（captain_down）", "read_in": "6.8 罪证"},
-  "ch3_flanked": {"desc": "磨坊之战里小队顺着水渠绕到北墙缺口外，打在第二拨背后（6.7c）", "set_in": "world/mill_battle.gd _process", "read_in": "6.8 章末回顾"}
+  "ch3_flanked": {"desc": "磨坊之战里小队顺着水渠绕到北墙缺口外，打在第二拨背后（6.7c）", "set_in": "world/mill_battle.gd _process", "read_in": "6.8 章末回顾"},
+  "south_evidence": {"desc": "第三章的罪证交出去（或留着）的是谁的（6.8a）：lomond = 洛蒙德家的粮仓账本，severin = 摄政的信，both = 两样，none = 什么都没有", "set_in": "plain.json gregor/give_*、bain/read_*、gregor/keep", "read_in": "6.8b 院长放人、章末回顾；第四章"},
+  "ch3_evidence_to": {"desc": "罪证交给了谁（6.8a）：abbey = 坠星院院长（送进教会档案馆 / 替你保密），tenants = 麦渡的佃农（当着全村念出来），kept = 自己留着（第四章当筹码）", "set_in": "plain.json gregor、bain", "read_in": "6.8b、章末回顾"},
+  "ch3_tenants_spared": {"desc": "跟塞弗林家抢磨坊时，老贝恩的人挡在粮仓前，你让小队坚守、让开了（他们只守自己那一座仓）（6.8a，6.7c 挪过来）", "set_in": "world/mill_battle.gd _process", "read_in": "章末回顾"},
+  "ch3_boat_ledger": {"desc": "渡工之子：船夫把磨坊夜船上捞上来的那本账给了你（6.8a，罪证的另一条来路）", "set_in": "plain.json boatman/night_ledger", "read_in": "plain.json boatman"},
+  "ch3_ledger_taken": {"desc": "打完以后从磨坊账房铁皮箱里拿走了粮仓账本（6.8a）", "set_in": "world/mill_inside.gd open_ledger", "read_in": "world/mill_inside.gd"},
+  "ch3_letter_taken": {"desc": "打完以后从指挥帐床边箱子里拿走了摄政的信（6.8a）", "set_in": "world/plain_people.gd letter_chest_open", "read_in": "world/plain_people.gd"}
 }

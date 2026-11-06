@@ -71,6 +71,9 @@ var far_fire: MultiMeshInstance3D
 var far_base: Array = []                                 # 每个人原来的位置
 var far_t := 0.0
 var wave2: Array = []                                    # 奥迪隆和第二拨（水渠绕后打的是他们）
+var tenants: Array = []                                  # 跟塞弗林家时老贝恩带来的佃农（6.8a：挡路时冲过去还是让开）
+var spare_decided := false
+const SPARE_AFTER := 10.0                                # 佃农进来以后这么多秒内你让小队坚守，就算让开
 
 
 ## 现在该摆这场仗吗：抉择定了（主线到 to_mill_*）、夜里、还没打过
@@ -165,8 +168,11 @@ static func granary_doors() -> Array:
 
 static func at_granary_door(p: Vector3) -> bool:
 	var q := Vector2(p.x, p.z)
-	for d: Vector2 in granary_doors():
-		if q.distance_to(d) < DOOR_R:
+	var doors := granary_doors()
+	for i in doors.size():
+		if i == 0 and GameState.has_flag("ch3_tenants_spared"):
+			continue                                       # 让开了：第一座是麦渡的口粮，不算
+		if q.distance_to(doors[i]) < DOOR_R:
 			return true
 	return false
 
@@ -201,6 +207,7 @@ static func setup(world: Node3D) -> Battle:
 	var ten_label := func(_k: String, _i: int) -> String: return "麦渡的佃农"
 	var sev_label := func(k: String, _i: int) -> String: return "塞弗林家 · %s" % kind_name(k)
 	var west := Vector2(-1, 0)
+	var raid_tenants: Array = []
 	if raid:
 		var van := _block(WAVE1, "raid", ATK, WAVE1_AT + Vector2(-2.0, 0), west, ATK_COAT, ATK_BAND, sev_label)
 		for i in van.size():
@@ -221,7 +228,8 @@ static func setup(world: Node3D) -> Battle:
 			b.enlist(s, world)
 		var ten := _block(["captain", "levy", "levy", "levy", "levy", "levy", "levy", "levy"], "tenant", DEF, TEN_FROM, Vector2(0, -1), TEN_COAT, DEF_BAND, ten_label)
 		(ten[0] as Soldier).display_override = "老贝恩"
-		b.add_wave(DEF, ten, world, WAVE_TEN_AT, "◆ 南门外一阵喊——老贝恩带着麦渡的人拿着棍棒冲进来了，护着自己的口粮！")
+		b.add_wave(DEF, ten, world, WAVE_TEN_AT, "◆ 南门外一阵喊——老贝恩带着麦渡的人拿着棍棒冲进来，挡在粮仓前！按 2 让小队坚守就是让开（他们只护自己那一座仓），不然就冲过去。")
+		raid_tenants = ten
 	else:
 		var left := side() == "tenants" and GameState.has_flag("ch3_guards_left")
 		var with_tenants := side() == "tenants"
@@ -262,6 +270,7 @@ static func setup(world: Node3D) -> Battle:
 	mb.name = "MillBattle"
 	mb.battle = b
 	mb.wave2 = second
+	mb.tenants = raid_tenants
 	world.add_child(mb)
 	mb.build_far_host()
 	print("IC_MILL setup side=%s def=%d atk=%d waves=%d guards_left=%s" % [side(), b.side_total(DEF), b.side_total(ATK), b.waves.size(), GameState.has_flag("ch3_guards_left")])
@@ -274,6 +283,17 @@ func _process(delta: float) -> void:
 	if battle == null or not battle.started or battle.finished:
 		return
 	_far_tick(delta)
+	if raiding() and not spare_decided and battle.elapsed >= WAVE_TEN_AT + SPARE_AFTER:
+		spare_decided = true
+		if battle.squad_order == "hold":                   # 让开：佃农只守第一座仓（他们自己的口粮），你们只砸另外两座
+			GameState.set_flag("ch3_tenants_spared")
+			for s in tenants:
+				if is_instance_valid(s) and (s as Node).is_inside_tree():
+					s.guard_post = p3(granary_doors()[0])
+					s.guard_r = 3.5
+			battle.wave_note.emit("◆ 你让开了。老贝恩的人退到第一座仓门口，背靠着门站着——那是麦渡的口粮。")
+		else:
+			battle.wave_note.emit("◆ 你没让。塞弗林家的兵冲着佃农的棍棒压了过去。")
 	if not hinted and battle.elapsed >= WAVE2_AT - HINT_BEFORE:
 		hinted = true
 		battle.wave_note.emit("◆ 北边缺口外的麦茬地里火把越聚越多。" + ("顺着西边的水渠能绕到他们背后——按 4 让小队去（准星指着那儿）。" if not raiding() else "第二拨要从缺口进去了。"))
@@ -423,11 +443,13 @@ static func finish(winner: String) -> String:
 			GameState.change_rep("severin", 10)
 		"repelled":
 			GameState.change_rep("severin", -5)
+	if res == "held" and GameState.has_flag("ch3_odilon_down") and not GameState.has_item("regent_letter"):
+		GameState.add_item("regent_letter")                # 打倒了奥迪隆：天亮以前从他怀里搜出那封信（6.8a）
 	if GameState.quest_active("ch3_main"):
 		GameState.set_stage("ch3_main", "after_mill")
 	match res:
 		"held":
-			return "✓ 守住了！塞弗林家的兵退回了麦茬地，三座仓的门都还锁着。" + ("奥迪隆倒在缺口里。" if GameState.has_flag("ch3_odilon_down") else "")
+			return "✓ 守住了！塞弗林家的兵退回了麦茬地，三座仓的门都还锁着。" + ("奥迪隆倒在缺口里——你从他怀里搜出一封红蜡封的信。（得到：摄政的信）" if GameState.has_flag("ch3_odilon_down") else "")
 		"lost":
 			return "× 磨坊失守了。粮仓的门被砸开，一袋一袋麦子扛上了车，往砧山那边去了……"
 		"seized":

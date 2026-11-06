@@ -158,11 +158,27 @@ static func _ledger_chest(parent: Node3D) -> void:
 	var e := Examine.make("铁皮账箱", "打开", func(_who: FpController) -> Dictionary: return open_ledger(), Vector3(0.9, 0.8, 0.7))
 	e.name = "LedgerChestOpen"
 	e.position = c
-	e.verb_fn = func() -> String: return "翻账" if GameState.has_flag("ch3_ledger_open") else ("开锁" if GameState.has_flag("ch3_ledger_key") else "撬锁")
+	e.verb_fn = func() -> String: return ("拿走账本" if ledger_takeable() and not GameState.has_item("granary_ledger") else "看看") if str(GameState.get_flag("ch3_mill", "")) != "" else ("翻账" if GameState.has_flag("ch3_ledger_open") else ("开锁" if GameState.has_flag("ch3_ledger_key") else "撬锁"))
 	parent.add_child(e)
 
 
+## 打完以后（6.8a）：守住了、抢到了、或者开过仓的，账本能拿走（罪证）；失守了的，账箱被砸开、空了
+static func ledger_takeable() -> bool:
+	var m := str(GameState.get_flag("ch3_mill", ""))
+	return m in ["held", "seized"] or (m != "" and GameState.has_flag("ch3_granary_opened"))
+
+
 static func open_ledger() -> Dictionary:
+	var m := str(GameState.get_flag("ch3_mill", ""))
+	if m != "":
+		if GameState.has_item("granary_ledger") or GameState.has_flag("ch3_ledger_taken"):
+			return {"toast": "账箱空了。"}
+		if not ledger_takeable():
+			return {"toast": "账箱被砸开了，锁扣歪在一边——里头空了。塞弗林家的人连账一起扛走了。"}
+		GameState.add_item("granary_ledger")
+		GameState.set_flag("ch3_ledger_taken")
+		GameState.set_flag("ch3_ledger_read")
+		return {"toast": "夜里没人顾得上这间屋子。你把最上头那本账抽出来，揣进怀里——塞缪尔的账，一年一本，去年那本记到腊月。（得到：洛蒙德家的粮仓账本）"}
 	if not GameState.has_flag("ch3_ledger_open"):
 		if GameState.has_flag("ch3_ledger_key"):
 			GameState.set_flag("ch3_ledger_open")
