@@ -7,9 +7,10 @@ extends RefCounted
 ## 室内的光不跟时段走；窗玻璃按时段换颜色（Inn.glass）。先回答「这里住着谁、缺什么、刚发生过什么」（ART.md 第十节），写在每个房间的注释里。
 
 const AREAS := ["key_hall", "key_vault", "guild_hall", "dock_tavern", "debt_prison"]
-const CROWN_AREAS := ["council_hall", "matilda_inn", "church_archive"]          # 冠城的两间（7.6，陈设在 world/crown_rooms.gd；出去回 crown_city）
+const CROWN_AREAS := ["council_hall", "matilda_inn", "church_archive"]          # 冠城的几间（7.6、8.1，陈设在 world/crown_rooms.gd；出去回 crown_city）
+const WELL_AREAS := ["well_bottom"]                          # 冬井底（8.3，陈设和人在 world/well_rooms.gd；出去回 highland）
 const NAMES := {"key_hall": "钥楼 · 大厅", "key_vault": "钥楼 · 金库", "guild_hall": "渡工行会会馆", "dock_tavern": "「咸潮」酒馆", "debt_prison": "债牢",
-	"council_hall": "冠城 · 议事厅", "matilda_inn": "玛蒂尔达的小酒馆", "church_archive": "钟楼底下 · 教会档案馆"}
+	"council_hall": "冠城 · 议事厅", "matilda_inn": "玛蒂尔达的小酒馆", "church_archive": "钟楼底下 · 教会档案馆", "well_bottom": "冬井底"}
 ## 每个房间：宽、进深、高，墙用哪种材质，出口门（南墙上的 x、宽），出去站在双钥港哪个出生点
 const SPEC := {
 	"key_hall": {"w": 14.0, "d": 7.0, "h": 4.4, "wall": "castle", "floor": "street", "door_x": 0.0, "door_w": 1.6, "exit": "keyhouse_door", "exit_name": "回到钥楼街"},
@@ -19,6 +20,7 @@ const SPEC := {
 	"debt_prison": {"w": 11.0, "d": 8.0, "h": 3.6, "wall": "castle", "floor": "street", "door_x": 0.0, "door_w": 1.2, "exit": "prison_door", "exit_name": "回到街上"},
 	"council_hall": {"w": 16.0, "d": 10.0, "h": 7.0, "wall": "castle", "floor": "street", "door_x": 0.0, "door_w": 2.0, "exit": "council_door", "exit_name": "回到议事厅广场", "out": "crown_city"},
 	"matilda_inn": {"w": 7.0, "d": 6.0, "h": 3.0, "wall": "plaster", "floor": "timber", "door_x": 0.0, "door_w": 1.0, "exit": "matilda_door", "exit_name": "回到斜街", "out": "crown_city"},
+	"well_bottom": {"w": 14.0, "d": 12.0, "h": 6.0, "wall": "stone", "floor": "street", "door_x": 3.6, "door_w": 1.4, "exit": "well", "exit_name": "顺着石阶回井口", "out": "highland"},
 	"church_archive": {"w": 10.0, "d": 12.0, "h": 3.6, "wall": "castle", "floor": "street", "door_x": 0.0, "door_w": 1.2, "exit": "bell_door", "exit_name": "上石阶回钟楼脚下", "out": "crown_city"},
 }
 const VAULT_STAIR := Vector3(-1.2, 0, -3.0)                 # 金库北墙那道上大厅的石阶的脚（石阶贴着北墙往西上，钻进顶上一个黑洞——上面是大厅西北角那扇铁门）
@@ -54,12 +56,13 @@ const VIEW_SPECS := {
 	"dock_tavern": [[Vector3(2.6, 0, 2.7), 20.0, -6.0], [Vector3(-2.5, 0, 1.8), -60.0, -8.0], [Vector3(1.4, 0, -1.2), 160.0, -6.0]],
 	"debt_prison": [[Vector3(0.0, 0, 3.1), 0.0, -6.0], [Vector3(3.6, 0, 1.0), 40.0, -6.0], [Vector3(-3.6, 0, 1.4), -30.0, -6.0]],
 	"council_hall": [[Vector3(0.0, 0, 4.1), 0.0, 4.0], [Vector3(-5.6, 0, 1.2), -60.0, 0.0], [Vector3(5.8, 0, 3.6), 30.0, 6.0]],
+	"well_bottom": [[Vector3(-3.0, 0, 4.4), -20.0, 2.0], [Vector3(4.6, 0, 1.6), 50.0, 4.0], [Vector3(-5.0, 0, -4.6), -120.0, 0.0]],
 	"church_archive": [[Vector3(0.0, 0, 5.0), 0.0, -4.0], [Vector3(-3.2, 0, 2.0), -30.0, -8.0], [Vector3(2.6, 0, -2.6), 160.0, -6.0]],
 	"matilda_inn": [[Vector3(0.0, 0, 2.2), 0.0, -6.0], [Vector3(-2.6, 0, 2.2), -40.0, -6.0], [Vector3(2.4, 0, -0.4), 140.0, -6.0]],
 }
 const VIEW_NAMES := {"key_hall": ["进门看大厅", "柜台和天平", "黑板和下金库的门"], "key_vault": ["石阶下看金库", "铁匣和铁笼", "水门"],
 	"guild_hall": ["进门看会馆", "潮汐表", "船期板和炉子"], "dock_tavern": ["进门看酒馆", "炉边", "柜台"], "debt_prison": ["进门看债牢", "牢房", "看门的桌子"],
-	"council_hall": ["进门看议事厅", "栏杆边看椅子", "东南角看王座"], "matilda_inn": ["进门看酒馆", "桌边看柜台", "火塘边"], "church_archive": ["下了石阶看档案馆", "卷宗架之间", "铁箱和铁栅门"]}
+	"council_hall": ["进门看议事厅", "栏杆边看椅子", "东南角看王座"], "matilda_inn": ["进门看酒馆", "桌边看柜台", "火塘边"], "church_archive": ["下了石阶看档案馆", "卷宗架之间", "铁箱和铁栅门"], "well_bottom": ["石阶下看井底", "石台和星铁", "冰壁"]}
 
 
 static func views(area: String) -> Array:
@@ -305,9 +308,13 @@ static func build(area: String, parent: Node3D, reduced_motion := false) -> Tran
 			CrownRooms.matilda_inn(parent, reduced_motion)
 		"church_archive":
 			CrownRooms.church_archive(parent, reduced_motion)          # 第五章（8.1）
+		"well_bottom":
+			WellRooms.build(parent, reduced_motion)                     # 第五章（8.3）
 	_colliders(parent, area)
 	_exit(parent, area)
-	if area in CROWN_AREAS:
+	if area in WELL_AREAS:
+		WellRooms.build_people(parent)
+	elif area in CROWN_AREAS:
 		CrownPeople.build_room(area, parent)
 	else:
 		HarborPeople.build_room(area, parent)        # 屋里的人（7.4）
@@ -676,6 +683,8 @@ static func map_spec(area: String) -> Dictionary:
 				{"k": "furniture", "rect": Rect2(-3.3, 0.15, 1.8, 0.9)}, {"k": "furniture", "rect": Rect2(-0.5, 0.55, 1.8, 0.9)}, {"k": "furniture", "rect": Rect2(-2.1, 1.95, 1.8, 0.9)}]
 		"debt_prison":
 			shapes = [{"k": "furniture", "rect": Rect2(-5.4, -4.0, 10.8, 2.2), "label": "牢房"}, {"k": "furniture", "rect": Rect2(2.8, 1.2, 1.6, 0.8), "label": "看门的桌子"}]
+		"well_bottom":
+			shapes = WellRooms.map_shapes()
 		"council_hall", "matilda_inn", "church_archive":
 			shapes = CrownRooms.map_shapes(area)
 	if str(s.exit) != "":

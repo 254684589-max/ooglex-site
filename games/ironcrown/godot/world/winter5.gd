@@ -91,7 +91,7 @@ static func lid() -> Dictionary:
 	if GameState.quest_stage("ch5_main") == "well":
 		GameState.set_stage("ch5_main", "descend")
 	if Areas.known("well_bottom"):
-		return {"kind": "travel", "area": "well_bottom", "spawn": "stair", "name": "冬井", "toast": "你和同行的人一起把那半块石盖推开。井壁上凿着一道石阶，往下，再往下。"}
+		return {"kind": "travel", "area": "well_bottom", "spawn": "front", "name": "冬井", "toast": ("你和%s一起把那半块石盖推开。" % str(companion()[1]) if not companion().is_empty() else "你一个人把那半块石盖推开。") + "井壁上凿着一道石阶，往下，再往下。"}
 	return {"toast": "你把那半块石盖推开了。井壁上凿着一道石阶，往下是黑的。（第五章还在制作中：井底是下一步）"}
 
 

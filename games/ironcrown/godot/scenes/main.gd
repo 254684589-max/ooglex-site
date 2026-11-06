@@ -335,7 +335,7 @@ func _ready() -> void:
 			t = Plain.build(world, Settings.reduced_motion)              # 金穗平原（6.1a，第三章）
 		"harbor":
 			t = Harbor.build(world, Settings.reduced_motion)             # 双钥港（7.1，第四章）
-		"key_hall", "key_vault", "guild_hall", "dock_tavern", "debt_prison", "council_hall", "matilda_inn", "church_archive":
+		"key_hall", "key_vault", "guild_hall", "dock_tavern", "debt_prison", "council_hall", "matilda_inn", "church_archive", "well_bottom":
 			t = HarborRooms.build(area, world, Settings.reduced_motion)  # 双钥港的室内（7.3）、冠城的两间（7.6）
 		"crown_city":
 			t = CrownCity.build(world, Settings.reduced_motion)          # 冠城一角（7.6，第四章）

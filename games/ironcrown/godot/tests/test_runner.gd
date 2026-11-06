@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -10559,6 +10559,39 @@ func test_ch5north() -> void:
 	check(Winter5.arrived().contains("借你一冬") and GameState.has_item("iron_crown") and Winter5.crown_here(), "冠回了钥楼的：科尔温的人把冠借给你（利息另算）")
 	GameState.chapter = 0
 	GameState.daypart = "day"
+	GameState.pending_load = {}
+
+
+func test_ch5well() -> void:
+	# 第五章（8.3）：冬井底——井壁石阶、星铁、冰壁里的名字、石台上冠和誓瓶的凹槽
+	check(Areas.known("well_bottom") and Areas.is_indoor("well_bottom") and Areas.chapter_of("well_bottom") == 5 and Areas.spawn("highland", "well") != null, "冬井底登记了（第五章的室内）；余火高地有井边的出生点")
+	ch4_state({"ch4_done": true, "crown_holder": "lomond", "ch2_nell": "left"})
+	CrownPeople.ch5_begin()
+	GameState.add_item("oath_vial")
+	GameState.set_stage("ch5_main", "descend")
+	GameState.pending_load = {"scene": "well_bottom", "spawn": "front", "player": {}}
+	var main := await make_area("well_bottom")
+	await physics(8)
+	var p: FpController = main.player
+	var people: Array = main.world.find_children("Npc_*", "Npc", true, false)
+	var ok := true
+	for n in people:
+		if not await stands_clear(n):
+			ok = false
+	check(p.is_on_floor() and GameState.quest_stage("ch5_main") == "oath" and people.size() == 2 and ok and main.world.find_child("Npc_companion_well", true, false) != null
+		and (main.world.find_child("Npc_companion_well", true, false) as Npc).display_name == "伊莎贝拉·洛蒙德" and main.world.find_child("Npc_nell_well", true, false) != null,
+		"下到冬井底：主线到「封誓」；伊莎贝拉捧着冠在石台边，随她去了的妮尔站在冰壁前（都站在空地上）")
+	var names := main.world.find_child("IceNames", true, false) as Examine
+	var altar := main.world.find_child("Altar", true, false) as Examine
+	check(str(names.on_use.call(p).toast).contains("冠历三百九十七年") and str(altar.on_use.call(p).toast).contains("冠形的凹槽") and GameState.has_flag("ch5_names_read") and GameState.has_flag("ch5_altar_seen")
+		and main.world.find_child("StarIron", true, false) != null and main.world.find_children("Brazier*", "", true, false).size() == 4, "冰壁里的名字（最后一个刻在约四百年前）、星铁、石台上的两个凹槽、四角四个冷火盆")
+	var ex: Dictionary = (main.world.find_child("Exit", true, false) as Door).interact(p)
+	var spec := AreaMap.spec("well_bottom")
+	check(str(ex.area) == "highland" and str(ex.spawn) == "well" and spec.shapes.size() >= 3 and str(spec.exits[0].to) == "highland", "顺着石阶回井口（余火高地井边）；本地地图")
+	await free_main(main)
+	var hp: Vector3 = Areas.spawn("highland", "well").origin
+	check(hp.distance_to(WinterWell.ground(HighlandLayout.WELL)) < 8.0, "井边的出生点在井旁边（%.1f 米）" % hp.distance_to(WinterWell.ground(HighlandLayout.WELL)))
+	GameState.chapter = 0
 	GameState.pending_load = {}
 
 
