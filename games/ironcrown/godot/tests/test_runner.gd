@@ -10583,7 +10583,7 @@ func test_ch5well() -> void:
 		"下到冬井底：主线到「封誓」；伊莎贝拉捧着冠在石台边，随她去了的妮尔站在冰壁前（都站在空地上）")
 	var names := main.world.find_child("IceNames", true, false) as Examine
 	var altar := main.world.find_child("Altar", true, false) as Examine
-	check(str(names.on_use.call(p).toast).contains("冠历三百九十七年") and str(altar.on_use.call(p).toast).contains("冠形的凹槽") and GameState.has_flag("ch5_names_read") and GameState.has_flag("ch5_altar_seen")
+	check(str(names.on_use.call(p).toast).contains("冠历三百九十七年") and str(altar.on_use.call(p).toast).contains("一个冠形的") and GameState.has_flag("ch5_names_read") and GameState.has_flag("ch5_altar_seen")
 		and main.world.find_child("StarIron", true, false) != null and main.world.find_children("Brazier*", "", true, false).size() == 4, "冰壁里的名字（最后一个刻在约四百年前）、星铁、石台上的两个凹槽、四角四个冷火盆")
 	var ex: Dictionary = (main.world.find_child("Exit", true, false) as Door).interact(p)
 	var spec := AreaMap.spec("well_bottom")

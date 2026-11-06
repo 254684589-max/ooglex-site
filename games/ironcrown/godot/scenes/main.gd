@@ -169,7 +169,7 @@ func _ready() -> void:
 				GameState.set_flag("ch4_vault_sneaky")
 			GameState.set_stage("ch4_main", "way")
 			GameState.daypart = "night"
-		if _query("ch5") in ["north", "well"] and not Engine.has_meta("ic_ch5_param_done"):
+		if _query("ch5") in ["north", "well", "bottom"] and not Engine.has_meta("ic_ch5_param_done"):
 			Engine.set_meta("ic_ch5_param_done", true)        # 截图用（8.2）：?area=highland&ch5=north 刚到高地 / well 誓瓶在手、去井边（配 &fire=lit|out、&holder=valen…）
 			GameState.chapter = 5
 			GameState.set_flag("ch4_done")
@@ -180,10 +180,10 @@ func _ready() -> void:
 			CrownPeople.ch5_begin()
 			GameState.set_flag("ch5_archive")
 			GameState.set_stage("ch5_main", "north")
-			if _query("ch5") == "well":
+			if _query("ch5") in ["well", "bottom"]:
 				GameState.add_item("oath_vial")
 				GameState.set_flag("ch5_vial", "norbert")
-				GameState.set_stage("ch5_main", "well")
+				GameState.set_stage("ch5_main", "well" if _query("ch5") == "well" else "descend")
 				GameState.daypart = "night"
 		if _query("ch5") in ["1", "archive"] and not Engine.has_meta("ic_ch5_param_done"):
 			Engine.set_meta("ic_ch5_param_done", true)        # 截图用（8.1）：?ch5=1 第四章刚完（冠在你手里）；?ch5=archive 已经跟大主祭下了钟楼

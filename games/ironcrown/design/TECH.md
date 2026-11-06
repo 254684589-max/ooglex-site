@@ -1143,6 +1143,11 @@ godot/
 - **第五章叠在余火高地上**（`world/winter5.gd`，`Winter5.active()`：第五章、主线在 north / vial / well / descend / oath）：`main` 在高地搭完以后 `Winter5.setup(world)`（`WinterWell` 之后）——让第二章的 `WinterWell` 摆上里圈（`_build_ring`），自己再摆外圈 `OUTER_N` 个真人模型（同里圈的做法：麻衣、光脚、定住、远了不画）；诺伯特（`ch2_fire = lit` 在塔顶火盆边，不然在井边）；同行的人（`companion()` 按 `crown_holder`，只说一句的 NPC）；井口 `Examine`（`lid()`）。进区域时 `arrived()`（north → vial，记 `ch5_companion`；冠回了钥楼的给铁冠）。`HighlandBeacon.people` / `BeaconTower.build` 在 `Winter5.active()` 时不放第二章的诺伯特；`BeaconTower` 那时在小铁炉放炉灰的 `Examine`（`hearth_vial()`）。
 - **测试**：`ch5north` 组。
 
+### 4.93 冬井底（路线图 8.3，2026-11-06）
+
+- **室内**：`HarborRooms.SPEC["well_bottom"]`（`out = highland`、出口 `well`），新列表 `WELL_AREAS`：陈设 `WellRooms.build`、人 `WellRooms.build_people`、本地地图 `WellRooms.map_shapes`。冰是半透明带一点自发光的材质（`_ice`），星铁是深色高金属（`_star`）；屋顶不画（井很深，往上是黑的）。四个火盆先是 `Examine`（8.4 换成能点的）。进来时主线 descend → oath。
+- **测试**：`ch5well` 组。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
