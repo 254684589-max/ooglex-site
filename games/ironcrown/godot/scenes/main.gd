@@ -103,6 +103,8 @@ var cold_shown := ""            # HUD 上现在写的那行寒冷
 var first_tide: FirstTide       # 第一夜潮水（5.4c）：主线到「插火把」「潮水」时在高地搭起来
 var empty_night := false         # 两手空空那一夜正在熬（5.8）
 var well_end_after := WELL_END_AFTER   # 到了冬井边多久章末（全流程测试里调短，5.9）
+var ch3_end_after := 7.0                # 晨钟响起多久出第三章章末画面（6.8b；测试里调短）
+var ch3_bell_player: AudioStreamPlayer = null
 var streamer: ChunkStreamer     # 连片地图的分块搭建（4.4 鹭沼）；别的区域为空
 
 signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
@@ -441,6 +443,8 @@ func _ready() -> void:
 		show_ending.call_deferred("prologue", _query("ending"))
 	elif _query("ending") == "ch2" and area == "highland" and arrived_by == "" and loaded_from == "":
 		show_ending.call_deferred("ch2")                 # 截图用（5.8b）：?ending=ch2 第二章的章末画面（回顾按当前旗标，配 ?well=all）
+	elif _query("ending") == "ch3" and area in ["scriptorium", "plain"] and arrived_by == "" and loaded_from == "":
+		show_ending.call_deferred("ch3")                 # 截图用（6.8b）：?ending=ch3 第三章的章末画面（回顾按当前旗标，配 ?mill=）
 	if _query("map") == "1" and GameState.chapter >= 1 and not Engine.has_meta("ic_map_param_done") \
 			and (Areas.pack_chapter(area) == 0 or Chapters.content_ready(Areas.pack_chapter(area))):     # 章节包还没到（先铺平地等重新载入）时不开（5.2a）
 		Engine.set_meta("ic_map_param_done", true)     # 截图、冒烟用（4.2）：第一章起直接打开一次旅行地图（每次打开页面只开一次）
@@ -1535,7 +1539,9 @@ func _on_dialogue_closed() -> void:
 		print("IC_SQUAD hold=%s gate_guard=%s water_gate=%s" % [GameState.get_flag("ch1_hold", ""), GameState.has_flag("ch1_gate_guard"), GameState.get_flag("ch1_water_gate", "")])
 	var ending := GameState.pending_ending
 	GameState.pending_ending = ""
-	if ending != "":
+	if ending == "ch3":
+		_ch3_bell()                                         # 守灵夜听完（6.8b）：先响晨钟，再出章末画面
+	elif ending != "":
 		show_ending.call_deferred(ending)
 	player.interactor.refresh()
 	var t := player.interactor.target
@@ -1594,7 +1600,9 @@ func show_ending(id: String, choice := "") -> void:
 	hud.visible = false                 # 提示、按钮和触屏摇杆都压在结束画面底下会叠字（平板上「挡」「攻」叠在回顾上），先藏起来
 	touch_was_visible = touch.visible
 	touch.visible = false
-	if id == "ch2":
+	if id == "ch3":
+		ending_panel.open_chapter3(Settings.reduced_motion, 4 if playable_chapter >= 4 else 0)       # 第三章完（6.8b）；第四章还没有（Chapters 里没登记就不出「继续」）
+	elif id == "ch2":
 		ending_panel.open_chapter2(Settings.reduced_motion, 3 if playable_chapter >= 3 else 0)       # 第二章完（5.8b）；第三章开放以前只有 ?preview=3 能继续（6.2c）
 	elif id == "ch1":
 		ending_panel.open_chapter1(Settings.reduced_motion, 2 if playable_chapter >= 2 else 0)       # 第一章完（4.10b）；第二章开放以前只有 ?preview=2 能继续（5.1a）
@@ -2239,6 +2247,27 @@ func _well_tick() -> void:
 		hud.toast("诺伯特从天窗下去了：「翻过山脊，往冰原那边。我在那儿等你。」", 5.0)
 	ww._build_ring()
 	ww.ensure_norbert()
+
+
+## 守灵夜听完（6.8b；STORY.md 6.5 第 9 步「画面停在修道院钟楼的晨钟里」）：钟楼上敲了三下晨钟，然后第三章完
+func _ch3_bell() -> void:
+	hud.say("（钟声从钟楼上落下来，一下，又一下。隔着那扇高窗，看得见平原上的雪亮了）")
+	if Settings.sound:
+		if ch3_bell_player == null:
+			ch3_bell_player = AudioStreamPlayer.new()
+			ch3_bell_player.volume_db = -8.0
+			ch3_bell_player.max_polyphony = 3
+			ch3_bell_player.stream = Bell.make_stream()
+			add_child(ch3_bell_player)
+		for i in 3:
+			get_tree().create_timer(0.1 + i * 2.2).timeout.connect(func():
+				if is_instance_valid(ch3_bell_player):
+					ch3_bell_player.play())
+	get_tree().create_timer(ch3_end_after).timeout.connect(func():
+		if is_inside_tree() and not GameState.has_flag("ch3_done"):
+			GameState.set_flag("ch3_done")
+			save_game("auto", true)
+			show_ending("ch3"))
 
 
 func _on_well_reached() -> void:

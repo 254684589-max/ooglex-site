@@ -172,5 +172,10 @@
   "ch3_tenants_spared": {"desc": "跟塞弗林家抢磨坊时，老贝恩的人挡在粮仓前，你让小队坚守、让开了（他们只守自己那一座仓）（6.8a，6.7c 挪过来）", "set_in": "world/mill_battle.gd _process", "read_in": "章末回顾"},
   "ch3_boat_ledger": {"desc": "渡工之子：船夫把磨坊夜船上捞上来的那本账给了你（6.8a，罪证的另一条来路）", "set_in": "plain.json boatman/night_ledger", "read_in": "plain.json boatman"},
   "ch3_ledger_taken": {"desc": "打完以后从磨坊账房铁皮箱里拿走了粮仓账本（6.8a）", "set_in": "world/mill_inside.gd open_ledger", "read_in": "world/mill_inside.gd"},
-  "ch3_letter_taken": {"desc": "打完以后从指挥帐床边箱子里拿走了摄政的信（6.8a）", "set_in": "world/plain_people.gd letter_chest_open", "read_in": "world/plain_people.gd"}
+  "ch3_letter_taken": {"desc": "打完以后从指挥帐床边箱子里拿走了摄政的信（6.8a）", "set_in": "world/plain_people.gd letter_chest_open", "read_in": "world/plain_people.gd"},
+  "ch3_monk_freed": {"desc": "院长凭什么给了抄经室的钥匙（6.8b）：ledger / letter / both = 罪证交给了他，isabella = 守住了磨坊、伊莎贝拉一早写了信，soup = 门房替你说话，speech = 口才说动，waited = 说不动、在门洞外等了一个上午", "set_in": "plain.json gregor/free_*", "read_in": "章末回顾"},
+  "ch3_poor_deed": {"desc": "这个冬天替挨饿的人做过事（6.8b，伊格纳兹只肯对这样的人开口）：开过仓、要来了修道院的粥、帮学徒溜走、罪证念给了佃农、伊达作证、跟塞弗林家时让开了佃农（Chapter3.poor_deed，进抄经室时按这些旗标记）", "set_in": "quest/chapter3.gd settle", "read_in": "plain.json ignaz/deed"},
+  "ch3_vial_heard": {"desc": "伊格纳兹说出了誓瓶的事：封誓的誓瓶是空的，诺伯特捧着它走出去（6.8b）", "set_in": "plain.json ignaz/vial", "read_in": "章末钩子"},
+  "ch3_vigil": {"desc": "听完了伊格纳兹的守灵夜（6.8b）：老王把铁冠亲手交给一个从双钥港来的人，手上戴着双钥交叉的戒指", "set_in": "plain.json ignaz/done、silent", "read_in": "scenes/main.gd 晨钟与章末"},
+  "ch3_done": {"desc": "第三章完（6.8b）：晨钟响过、章末画面", "set_in": "scenes/main.gd _ch3_bell", "read_in": "第四章"}
 }

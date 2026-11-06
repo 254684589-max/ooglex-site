@@ -17,7 +17,7 @@ const LIST := {
 	2: {"name": "第二章 · 熄灭的烽燧", "pack": "ch2", "probe": "res://chapters/ch2/sky/overcast_sky.jpg", "area": "highland", "spawn": "village", "daypart": "day"},
 	## 第三章（6.1a 起）：平原的贴图、天空照片在章节包 ch3 里；还没对玩家打开（PLAYABLE 仍是 2，?preview=3 或 ?area=plain 能看）
 	3: {"name": "第三章 · 粮与铁", "pack": "ch3", "probe": "res://chapters/ch3/sky/misty_sky.jpg", "area": "plain", "spawn": "dock", "daypart": "day",
-		"wip": "制作中", "wip_note": "第三章还在制作中：现在能到麦渡、坠星院、洛蒙德庄园、水磨坊和塞弗林营地，主线做到磨坊之战（站哪边、开仓、两波）；水渠绕后、罪证、守灵夜和章末还没做。"},
+		"wip": "制作中", "wip_note": "第三章还在制作中：现在能到麦渡、坠星院、洛蒙德庄园、水磨坊和塞弗林营地，主线、三条支线和磨坊之战都做完了（一直到守灵夜和章末），还在打磨。"},
 }
 
 

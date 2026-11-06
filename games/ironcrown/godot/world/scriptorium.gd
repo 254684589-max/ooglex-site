@@ -24,7 +24,6 @@ const SHELF := Rect2(-4.45, -2.2, 0.4, 3.0)
 const PALLET := Rect2(3.0, -1.9, 1.4, 2.2)            # 伊格纳兹的草铺（东头靠北）
 const TALLY_WALL_X := 4.48                            # 刻满划痕的那面墙（东墙）
 const IGNAZ := [Vector3(3.85, 0, 0.7), -90.0]         # 跪在东墙下、草铺旁边，面朝刻满划痕的墙
-const IGNAZ_LINES := ["（他背对着你，跪在东墙下，手指一道一道摸着墙上的划痕）……三十四……三十五……", "（他没回头）门开着，冷。……关上吧。"]
 const SPAWNS := {
 	"front": [Vector3(DOOR_X, 0, 1.8), 0.0],
 }
@@ -48,8 +47,11 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_decor(parent, reduced_motion)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
-	var ig := Npc.make("灰袍修士", IGNAZ_LINES, Color("6a6a74"))           # 伊格纳兹（6.4 放进来；6.8 院长放人以后才开口，对话那时候加）
+	Chapter3.settle()                                                    # 替挨饿的人做过事没有（6.8b：伊格纳兹只肯对这样的人开口）
+	var ig := Npc.make("灰袍修士", [], Color("6a6a74"))                  # 伊格纳兹（6.4 放进来；6.8b 院长放人以后开口：plain.json ignaz）
 	ig.name = "Npc_ignaz"
+	ig.dialogue_area = "plain"
+	ig.dialogue_id = "ignaz"
 	ig.position = IGNAZ[0]
 	ig.rotation.y = deg_to_rad(float(IGNAZ[1]))
 	parent.add_child(ig)

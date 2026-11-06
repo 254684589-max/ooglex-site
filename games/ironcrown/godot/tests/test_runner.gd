@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9462,6 +9462,127 @@ func test_ch3evidence() -> void:
 		"跟塞弗林家：老贝恩的人挡在粮仓前，你让小队坚守 = 让开——他们只守第一座仓，那座不算抢")
 	await free_main(main)
 	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func vigil_state(flags := {}) -> void:
+	GameState.new_game(672)
+	GameState.chapter = 3
+	GameState.daypart = "dawn"
+	GameState.start_quest("ch3_main")
+	GameState.set_stage("ch3_main", "vigil")
+	for k in flags:
+		GameState.set_flag(k, flags[k])
+
+
+func test_ch3vigil() -> void:
+	# 守灵夜与章末（6.8b）：院长按你交出的东西放人、伊格纳兹说出那一夜、晨钟、第三章完
+	var free_cases := [
+		[{"ch3_evidence_to": "abbey", "south_evidence": "lomond"}, "账本你也翻过了。", "free_ledger", "ledger"],
+		[{"ch3_evidence_to": "abbey", "south_evidence": "severin"}, "那封信你也读过了。", "free_letter", "letter"],
+		[{"ch3_evidence_to": "abbey", "south_evidence": "both"}, "账本和信，你都看过了。", "free_both", "both"],
+		[{"ch3_evidence_to": "kept", "ch3_side": "lomond", "ch3_mill": "held"}, "伊莎贝拉说过：守住了磨坊，她就写信给你。", "free_isabella", "isabella"],
+		[{"ch3_evidence_to": "tenants", "ch3_soup": "done"}, "门房说过，他替我说话。", "free_soup", "soup"],
+	]
+	for c: Array in free_cases:
+		vigil_state(c[0])
+		check(say_runner("gregor", [c[1]], "plain") == c[2] and GameState.has_item("scriptorium_key") and GameState.quest_stage("ch3_main") == "to_ignaz"
+			and str(GameState.get_flag("ch3_monk_freed", "")) == c[3], "院长放人（%s）：「%s」→ 给抄经室的钥匙，主线去见灰袍修士" % [c[3], c[1]])
+	check(say_runner("gregor", [], "plain") == "key_given", "给过钥匙再说话：东边那排石屋，最里头那间")
+	vigil_state({"ch3_evidence_to": "tenants", "ch3_side": "severin", "ch3_mill": "seized"})
+	var opts := []
+	var r := DialogueRunner.new()
+	r.start("plain", "gregor")
+	for o in r.options():
+		opts.append(str(o.text))
+	check(r.node_id == "vigil" and not opts.has("账本你也翻过了。") and not opts.has("门房说过，他替我说话。") and not opts.has("伊莎贝拉说过：守住了磨坊，她就写信给你。"),
+		"什么都没交给他、没替门房要粥、不是替伊莎贝拉守住的：只剩口才（%s）" % "／".join(opts))
+	var n := say_runner("gregor", ["他在墙上刻了三十五年。让他说出来吧。"], "plain")
+	if n == "refuse":
+		n = say_runner("gregor", ["他在墙上刻了三十五年。让他说出来吧。", "那我就在门洞外等。等到你肯为止。"], "plain")
+	check(n in ["free_speech", "free_wait"] and GameState.has_item("scriptorium_key") and GameState.quest_stage("ch3_main") == "to_ignaz",
+		"口才说动了给钥匙；说不动就在门洞外等一个上午，他也扔下钥匙（%s，不会卡死）" % n)
+	# 交罪证的那一句接着问抄经室
+	vigil_state({})
+	GameState.set_stage("ch3_main", "after_mill")
+	GameState.add_item("granary_ledger")
+	check(say_runner("gregor", ["洛蒙德家的粮仓账本。交给你。", "抄经室里那个人……"], "plain") == "vigil", "交了账本接着问抄经室里那个人：院长掂着钥匙问你凭什么")
+	# 抄经室的门：没钥匙锁着，有钥匙进得去
+	var holder := Node3D.new()
+	add_child(holder)
+	PlainAbbey.interactables(holder)
+	var door := holder.find_child("ScriptoriumDoor", true, false) as Door
+	vigil_state({})
+	var res := door.interact(null)
+	check(door.locked and str(res.get("kind", "")) == "door" and str(res.get("toast", "")) == PlainAbbey.SCRIPTORIUM_DOOR_TEXT, "抄经室的门：没钥匙还是锁着，门缝里有人在说话")
+	GameState.add_item("scriptorium_key")
+	res = door.interact(null)
+	check(str(res.get("kind", "")) == "travel" and str(res.get("area", "")) == "scriptorium" and str(res.get("spawn", "")) == "front", "有院长的钥匙：开锁进抄经室")
+	holder.free()
+	# 替挨饿的人做过事没有
+	for c: Array in [[{"ch3_granary_opened": true}, "opened"], [{"ch3_evidence_to": "tenants"}, "read"], [{"ch3_soup": "done"}, "soup"], [{"ch3_ida": "witness"}, "ida"],
+			[{"ch3_apprentice": "freed"}, "apprentice"], [{"ch3_tenants_spared": true}, "spared"], [{"ch3_apprentice": "handed", "ch3_evidence_to": "kept"}, ""]]:
+		vigil_state(c[0])
+		Chapter3.settle()
+		check(Chapter3.poor_deed() == c[1] and str(GameState.get_flag("ch3_poor_deed", "")) == c[1], "替挨饿的人做过的事：%s → %s" % [JSON.stringify(c[0]), c[1] if c[1] != "" else "没有"])
+	# 伊格纳兹：火、做过的事、那一夜、戒指、誓瓶
+	vigil_state({"ch2_fire": "lit", "origin": "deserter", "knows_double_key_ring": true, "ch3_poor_deed": "soup"})
+	GameState.set_stage("ch3_main", "to_ignaz")
+	check(say_runner("ignaz", ["还亮着。第十九烽，我看着它亮到天亮。", "你在等什么？", "（说出你做过的事）", "（听他说）", "两把钥匙交叉……霜渡镇那个南方人手上，就是这一枚。",
+		"后来呢？", "还有别的吗？", "护送誓瓶北上的，是烽誓团的人。", "（不说话）"], "plain") == "done"
+		and GameState.has_flag("ch3_vigil") and GameState.has_flag("ch3_vial_heard") and GameState.quest_stage("ch3_main") == "ch3_end" and GameState.pending_ending == "ch3",
+		"伊格纳兹（火亮着、替穷人做过事、见过双钥戒指、烽誓团逃兵）：说完那一夜和誓瓶，主线到章末、等着出章末画面")
+	GameState.pending_ending = ""
+	check(say_runner("ignaz", [], "plain") == "after", "说完以后：钟响过了，去吧")
+	vigil_state({"ch2_fire": "out", "ch2_roll": "served", "ch3_poor_deed": "read"})
+	GameState.set_stage("ch3_main", "to_ignaz")
+	check(say_runner("ignaz", ["熄了。", "说什么？", "（说出你做过的事）", "（听他说）", "老王亲手给他的？", "后来呢？", "还有别的吗？", "第二十一烽……"], "plain") == "vial_roll",
+		"火熄了、名册上认下补守的：他记得第二十一烽")
+	vigil_state({})
+	GameState.set_stage("ch3_main", "to_ignaz")
+	var r2 := DialogueRunner.new()
+	r2.start("plain", "ignaz")
+	check(r2.options().size() == 1 and str(r2.options()[0].text) == "我不知道。", "北边的火的事你不知道（没有 ch2_fire）：只能说不知道")
+	check(say_runner("ignaz", ["我不知道。", "你在等什么？", "什么都没做。", "那我走了。"], "plain") == "silent" and GameState.has_flag("ch3_vigil") and not GameState.has_flag("ch3_vial_heard")
+		and GameState.pending_ending == "ch3", "什么都没做、也不肯说：他只说冠去了双钥港，誓瓶的事不说；照样到章末")
+	GameState.pending_ending = ""
+	# 在抄经室里听完：晨钟，然后第三章完
+	wipe_test_saves()
+	vigil_state({"ch3_side": "tenants", "ch3_granary_opened": true, "ch3_guards_left": true, "ch3_mill": "held", "ch3_flanked": true, "ch3_odilon_down": true,
+		"south_evidence": "lomond", "ch3_evidence_to": "tenants", "ch3_ida": "witness", "ch3_soup": "done", "ch3_apprentice": "freed", "ch3_monk_freed": "soup", "ch2_fire": "lit"})
+	GameState.set_stage("ch3_main", "to_ignaz")
+	GameState.add_item("scriptorium_key")
+	GameState.pending_load = {"scene": "scriptorium", "spawn": "front", "player": {}}
+	var main := await make_area("scriptorium")
+	await frames(3)
+	var ig := main.world.find_child("Npc_ignaz", true, false) as Npc
+	check(ig != null and ig.dialogue_area == "plain" and ig.dialogue_id == "ignaz" and str(GameState.get_flag("ch3_poor_deed", "")) == "opened", "进了抄经室：灰袍修士有话说了；开过仓的记成替挨饿的人做过事")
+	say_runner("ignaz", ["还亮着。第十九烽，我看着它亮到天亮。", "你在等什么？", "（说出你做过的事）", "（听他说）", "老王亲手给他的？", "后来呢？", "还有别的吗？", "诺伯特还活着。他在第十九烽守了三十五年。", "（不说话）"], "plain")
+	main.ch3_end_after = 0.6
+	main._on_dialogue_closed()
+	await frames(2)
+	check(not GameState.has_flag("ch3_done") and not main.ending_panel.visible, "说完了：先响晨钟（章末画面还没出）")
+	await seconds(1.0)
+	var ep: EndingPanel = main.ending_panel
+	check(GameState.has_flag("ch3_done") and ep.visible and ep.header.text == "第三章「粮与铁」完" and ep.title.text == "第四章 · 双钥港的账" and ep.sub.text == "开发中"
+		and not ep.continue_btn.visible and not Saves.read_slot("auto").is_empty() and get_tree().paused,
+		"晨钟以后章末：「第三章「粮与铁」完 / 第四章 · 双钥港的账 / 开发中」，没有「继续」（第四章还没有），自动存档")
+	check(ep.recap.text.contains("撬开了粮仓") and ep.recap.text.contains("护院撤回了庄园") and ep.recap.text.contains("水渠") and ep.recap.text.contains("守到了天亮")
+		and ep.recap.text.contains("奥迪隆倒在") and ep.recap.text.contains("念了洛蒙德家的粮仓账本") and ep.recap.text.contains("伊达站出来作证") and ep.recap.text.contains("立住了勺子") and ep.recap.text.contains("学徒顺着河溜走了"),
+		"回顾按旗标写：开仓、护院撤走、水渠、守到天亮、奥迪隆、念账本、伊达、粥、学徒")
+	check(ep.seal.text.contains("双钥港") and ep.seal.text.contains("双钥交叉的戒指") and ep.seal.text.contains("誓瓶是空的"), "钩子：铁冠交给了双钥港来的人、双钥戒指、空的誓瓶")
+	check(ep.back_btn.text == "在晨钟里再站一会儿", "按钮：在晨钟里再站一会儿")
+	ep.close()
+	await frames(2)
+	check(not get_tree().paused, "关掉章末接着走")
+	await free_main(main)
+	vigil_state({"ch3_side": "severin", "ch3_mill": "seized", "ch3_tenants_spared": true, "ch3_evidence_to": "kept", "south_evidence": "severin", "ch3_apprentice": "handed", "ch3_monk_freed": "waited"})
+	var rc := Chapter3.recap()
+	check(rc.contains("跟着奥迪隆的兵") and rc.contains("抢下了磨坊") and rc.contains("让开了") and rc.contains("摄政的信还在你手里") and rc.contains("交还给了奥迪隆") and rc.contains("门洞外等了一个上午")
+		and not Chapter3.hook().contains("誓瓶"), "跟塞弗林家、留着信、交还学徒、院长说不动的回顾；没听到誓瓶的钩子不提誓瓶")
+	check(Chapters.wip_note_of(3).contains("守灵夜和章末") and not Chapters.wip_note_of(3).contains("还没做"), "第三章进场的提示：主线做到章末了")
+	GameState.chapter = 0
+	GameState.daypart = "day"
 	GameState.pending_load = {}
 
 

@@ -120,6 +120,10 @@ static func interactables(parent: Node3D) -> void:
 		var spec: Dictionary = h[1]
 		var d := House.door_node(spec.door)
 		d.name = str(h[2])
+		if d.name == "ScriptoriumDoor":                  # 6.8b：院长给了钥匙（scriptorium_key）就进得去；没钥匙还是锁着
+			d.to_area = "scriptorium"
+			d.to_spawn = "front"
+			d.key_item = "scriptorium_key"
 		d.transform = Transform3D(Basis(Vector3.UP, deg_to_rad(float((h[0] as Array)[1]))), house_pos(h[0])) * Transform3D(Basis.IDENTITY, Vector3(float(spec.door_x) - 0.55, 0, 0.05))
 		parent.add_child(d)
 	var rs := RoadSign.new()

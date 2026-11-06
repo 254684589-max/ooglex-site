@@ -1044,6 +1044,14 @@ godot/
 - **佃农挡路**（`MillBattle`，跟塞弗林家）：老贝恩那一拨的兵留一份（`tenants`）；`WAVE_TEN_AT + SPARE_AFTER` 时小队命令是「原地坚守」= 让开：`ch3_tenants_spared`，佃农 `guard_post` 挪到第一座仓门口、`guard_r` 3.5；`at_granary_door` 让开以后不算第一座。提示写在援军那句话里。
 - **测试**：`ch3evidence` 组 14 项（打倒奥迪隆得信；守住了拿账本、再开是空的；两样交给院长；失守了账箱空、没有信；不知道信在哪不撬、学徒说过拿得到；把信念给佃农；开过仓的失守也拿得到账本；船夫给夜船那本；当着全村念账本、伊达作证；跟院长说留着、按手里记；跟塞弗林家佃农挡路让开）。
 
+### 4.82 守灵夜与章末（路线图 6.8b，2026-11-06）
+
+- **院长放人**：`plain.json gregor` 的 `start_if` 前面加 `ch3_end` → `bell`、`to_ignaz` → `key_given`、`vigil` → `vigil`；罪证那几句「抄经室里那个人……」直接去 `vigil`（原来的「天亮透了再来」删了）。`vigil` 的选项按条件出现：`ch3_evidence_to` = abbey 且 `south_evidence` lomond / severin / both、`ch3_side` = lomond 且 `ch3_mill` = held、`ch3_soup` = done；口才 14 那一条总在，失败去 `refuse` →「在门洞外等」`free_wait`（不卡主线）。每个 `free_*` 都给 `scriptorium_key`、记 `ch3_monk_freed`、主线 `to_ignaz`。
+- **抄经室的门**：`PlainAbbey.interactables` 里 `ScriptoriumDoor` 设 `to_area` scriptorium、`key_item` scriptorium_key（`Door` 原有的钥匙锁：没钥匙还是那句门缝里的话，有钥匙开锁进区域）。
+- **伊格纳兹**：`Scriptorium.build` 先 `Chapter3.settle()`（`poor_deed()` 按开仓、念给佃农、粥、伊达作证、帮学徒、让开佃农记 `ch3_poor_deed`——对话条件只有「且」，「任一」在代码里算成一个旗标），人改成 `dialogue_id` ignaz。对话 `turn`（按 `ch2_fire` 三选一）→ `deed`（有 `ch3_poor_deed` 才有「说出你做过的事」，没有的口才 14 / 走）→ `night` → `ring` / `ring_known`（`knows_double_key_ring`）→ `after_night` → `vial`（`ch3_vial_heard`；逃兵 / 补守 / 默认三句）→ `done`；`silent` 是没做过事又说不动的短版。`done`、`silent` 都记 `ch3_vigil`、主线 `ch3_end`、`{"ending": "ch3"}`（`EndingPanel.ENDINGS` 加了 ch3）。
+- **晨钟与章末**：`main._on_dialogue_closed` 见到 `pending_ending` = ch3 调 `_ch3_bell()`：字幕一句、开了声音的用 `Bell.make_stream()` 隔 2.2 秒敲三下；`ch3_end_after`（7 秒，测试里调短）后记 `ch3_done`、自动存档、`show_ending("ch3")` → `EndingPanel.open_chapter3`（`Chapter3.recap()` 按站哪边、开仓 / 护院撤走、水渠、磨坊结果、奥迪隆、罪证交给谁、伊达、粥、学徒、在门洞外等写；`hook()` 写双钥港、戒指、誓瓶）。第四章没登记，不出「继续」。`?ending=ch3`（抄经室或平原）直接出画面，截图用。
+- **测试**：`ch3vigil` 组（院长五条放人的路、只剩口才时的选项、说不动也拿得到钥匙；交账本接着问；抄经室的门有钥匙才进得去；替挨饿的人做过的六件事；伊格纳兹两条完整的路和不肯说的短版；抄经室里听完：先钟后画面、章末标题、没有「继续」、自动存档、回顾和钩子；另一种站法的回顾）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
