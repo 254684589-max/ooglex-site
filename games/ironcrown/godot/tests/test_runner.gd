@@ -10506,7 +10506,7 @@ func test_ch5archive() -> void:
 
 func test_ch5north() -> void:
 	# 第五章（8.2）：北上——旅行地图、余火高地上的诺伯特和誓瓶、井边更大的一圈、同行的人、井口的石盖
-	ch4_state({"ch4_done": true, "crown_holder": "valen", "valen_heir": "ivette", "ch2_fire": "lit"})
+	ch4_state({"ch4_done": true, "crown_holder": "valen", "valen_heir": "ivette", "ch2_fire": "lit", "ch5_archive": true})
 	CrownPeople.ch5_begin()
 	check(GameState.chapter == 5 and Travel.region_of_chapter(5) == "north" and Travel.places(5).has("crown_city") and Travel.places(5).has("yangji") and Travel.places(5).has("beacon19")
 		and Travel.pos_of("crown_city", "north") == [0.5, 0.94] and Travel.validate().is_empty(), "第五章的旅行地图翻到北境北部：冠城画在南边、羊脊村、第十九烽")
@@ -10522,7 +10522,7 @@ func test_ch5north() -> void:
 	var nb := main.world.find_child("Npc_norbert5", true, false) as Npc
 	var lid := main.world.find_child("WellLid", true, false) as Examine
 	var comp := main.world.find_child("Npc_companion", true, false) as Npc
-	var outer := main.world.find_child("WellRingOuter", true, false)
+	var outer: Node = main.world.find_child("WellRingOuter", true, false)
 	check(nb != null and nb.dialogue_id == "norbert5" and nb.position.y > HighlandLayout.TOWER_H - 0.5 and main.world.find_children("Npc_norbert", "", true, false).is_empty()
 		and comp != null and comp.display_name == "伊薇特" and outer != null and outer.get_child_count() >= 18 and main.world.find_child("WellRing", true, false) != null,
 		"火亮着：诺伯特在塔顶火盆边（第二章那个不放）；井边第二章那一圈外面又站了一圈（%d 人）；伊薇特先到了井边" % (outer.get_child_count() if outer else 0))
@@ -10534,6 +10534,7 @@ func test_ch5north() -> void:
 	await free_main(main)
 	# 火灭了：诺伯特先去了井边；誓瓶在塔里小屋的炉灰里
 	ch4_state({"ch4_done": true, "crown_holder": "kept", "ch2_fire": "out"})
+	GameState.add_item("iron_crown")
 	CrownPeople.ch5_begin()
 	GameState.set_stage("ch5_main", "north")
 	GameState.pending_load = {"scene": "highland", "spawn": "village", "player": {}}

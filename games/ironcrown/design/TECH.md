@@ -1137,6 +1137,12 @@ godot/
 - **档案馆**：`HarborRooms.SPEC` 一间，`out = crown_city`、出口 `bell_door`；陈设在 `CrownRooms.church_archive`；人在 `CrownPeople.room_people`。`wardens_settle()` 进屋时定拦不拦（`ch4_ambush = beaten` 且冠不在教会：`ch5_simeon_block`；不然 `ch5_wardens = let`）；三个修士一组 `encounter:wardens`。
 - **测试**：`ch5archive` 组。
 
+### 4.92 北上（路线图 8.2，2026-11-06）
+
+- **旅行地图**：`Travel.region_of_chapter(5) = "north"`；地点可以带 `also: {页: {pos}}`，在别的页上也画（`places()` 收进来、`pos_of()` 取那一页的位置；`TravelMap` 两处取位置都改用它）。冠城 → 羊脊村带 `needs`（主线 north 起）。`CrownPeople.ch5_begin()` 把 `GameState.chapter` 抬到 5。
+- **第五章叠在余火高地上**（`world/winter5.gd`，`Winter5.active()`：第五章、主线在 north / vial / well / descend / oath）：`main` 在高地搭完以后 `Winter5.setup(world)`（`WinterWell` 之后）——让第二章的 `WinterWell` 摆上里圈（`_build_ring`），自己再摆外圈 `OUTER_N` 个真人模型（同里圈的做法：麻衣、光脚、定住、远了不画）；诺伯特（`ch2_fire = lit` 在塔顶火盆边，不然在井边）；同行的人（`companion()` 按 `crown_holder`，只说一句的 NPC）；井口 `Examine`（`lid()`）。进区域时 `arrived()`（north → vial，记 `ch5_companion`；冠回了钥楼的给铁冠）。`HighlandBeacon.people` / `BeaconTower.build` 在 `Winter5.active()` 时不放第二章的诺伯特；`BeaconTower` 那时在小铁炉放炉灰的 `Examine`（`hearth_vial()`）。
+- **测试**：`ch5north` 组。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
