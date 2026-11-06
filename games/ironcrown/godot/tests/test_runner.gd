@@ -9385,6 +9385,8 @@ func test_millbattle() -> void:
 		"远处的背景大军：北边麦茬地上 240 个兵、120 支火把、几面红旗（压到最近也离磨坊 %.0f 米；只是背景，不进军阵）" % near_far)
 	check(not b.order("goto") and b.order("goto", MillBattle.p3(MillBattle.FLANK)) and b.squad.all(func(x): return x.order == "goto" and x.anchor.distance_to(MillBattle.p3(MillBattle.FLANK)) < 4.0),
 		"「去那儿」：没指地方下不了；指了地方，小队的站位都在那一点附近")
+	for x in soldiers_of(main, MillBattle.ATK):         # 第一拨挪到远处：这一段只看绕后（不然你不动、守方先打输了，第二拨就不来了——全量测试里撞上过）
+		x.global_position = MillBattle.p3(Vector2(140.0, 40.0)) + Vector3(randf_range(-3, 3), 0.3, randf_range(-3, 3))
 	await seconds(MillBattle.START_AFTER + 0.5)
 	main.player.rotation.y = deg_to_rad(0.0)
 	main.player.global_position = MillBattle.p3(Vector2(16.0, -30.0)) + Vector3(0, 0.3, 0)
@@ -9398,7 +9400,8 @@ func test_millbattle() -> void:
 	for x in b.squad:
 		x.global_position = MillBattle.p3(MillBattle.FLANK) + Vector3(randf_range(-2, 2), 0.3, randf_range(-2, 2))
 	b.elapsed = MillBattle.WAVE2_AT + 0.5
-	await frames(3)
+	await seconds(0.8)                                  # 援军按 Battle 的检查步（0.25 秒）进场
+	check(not b.finished, "（这一段仗还没打完）")
 	var w2: Array = soldiers_of(main, MillBattle.ATK).filter(func(x): return str(x.enemy_id).begins_with("wave2") or x.enemy_id == "odilon")
 	var m0: float = w2.map(func(x): return x.morale).reduce(func(a2, c2): return a2 + c2, 0.0) / maxf(w2.size(), 1)
 	check(mb.hinted and mb.flank_done and GameState.has_flag("ch3_flanked") and w2.size() >= 10 and m0 < 70.0 - MillBattle.FLANK_HIT + 5.0,
