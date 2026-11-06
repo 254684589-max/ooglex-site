@@ -33,6 +33,7 @@
         "beacon_tower": {"pos": [0.55, 0.12], "host": "highland"}
       }
     },
-    "plain": {"title": "金穗平原一带", "areas": {"plain": {"pos": [0.5, 0.55]}, "scriptorium": {"pos": [0.66, 0.82], "host": "plain"}, "manor_hall": {"pos": [0.76, 0.3], "host": "plain"}, "mill_inside": {"pos": [0.56, 0.45], "host": "plain"}}}
+    "plain": {"title": "金穗平原一带", "areas": {"plain": {"pos": [0.5, 0.55]}, "scriptorium": {"pos": [0.66, 0.82], "host": "plain"}, "manor_hall": {"pos": [0.76, 0.3], "host": "plain"}, "mill_inside": {"pos": [0.56, 0.45], "host": "plain"}}},
+    "harbor": {"title": "双钥港一带", "river": {"label": "灰鲸河", "pts": [[0.62, 0.02], [0.6, 0.3], [0.64, 0.6], [0.74, 0.98]]}, "areas": {"harbor": {"pos": [0.42, 0.55]}, "key_hall": {"pos": [0.3, 0.22], "host": "harbor"}, "key_vault": {"pos": [0.3, 0.08], "host": "harbor"}, "guild_hall": {"pos": [0.46, 0.84], "host": "harbor"}, "dock_tavern": {"pos": [0.56, 0.4], "host": "harbor"}, "debt_prison": {"pos": [0.1, 0.1], "host": "harbor"}}}
   }
 }

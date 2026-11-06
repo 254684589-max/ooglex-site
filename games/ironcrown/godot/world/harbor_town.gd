@@ -37,15 +37,15 @@ const SIGN_KEY := Vector2(-22.0, -63.6)
 const SIGN_KEY_TEXT := "往码头 · 鱼市"
 const NOTICE := Vector2(-44.0, -59.2)
 const NOTICE_TEXT := "钥楼门口的告示板上钉着一张新的告示，墨还没干透：「冬至日，冠城摄政会议清账。凡持王室担保之借据者，冬至以前到钥楼登记，逾期不录。——卡斯韦尔家」底下有人用炭写了一行小字：「老王欠的，凭什么我们还。」"
-const KEY_DOOR_TEXT := "钥楼的门包着铁皮，门环是两把交叉的钥匙。门房从小窗里看了你一眼：「今天不见客。」（钥楼里面路线图 7.3 才做）"
-const GUILD_DOOR_TEXT := "会馆的门开着一条缝，里头有人在吵船钱。门口的伙计伸手一拦：「行会的人才进。」（会馆里面路线图 7.3 才做）"
-const PRISON_DOOR_TEXT := "债牢的铁门上开着一个小窗，里面黑洞洞的，有人在咳。看门的抱着胳膊：「来赎人的？先去钥楼把账算清楚。」"
 const LIGHT_DOOR_TEXT := "灯塔的门从外面挂着锁。门边码着几个空油桶，桶底结着一层冰。"
 const HOUSE_TEXTS := ["门闩着。屋里有人在数钱，听见敲门声停了。", "门上贴着一张欠条，被雨泡烂了一半。", "门推不开。里面一股咸鱼味。", "门从里面顶着。有个女人隔着门说：「船钱月底给。」"]
 const SHIPS := [[Vector2(46.0, 58.0), 172.0, 18.0], [Vector2(52.0, 86.0), 150.0, 15.0]]   # 停在河口深水里的两条单桅船：位置、船头朝向、长
 const WRECK := [Vector2(96.0, 80.0), 62.0, 14.0]                                        # 搁浅在沙嘴东边泥滩上的运粮船
 const RACKS := [Vector2(-56.0, 31.0), Vector2(-50.0, 31.0), Vector2(-44.0, 31.0), Vector2(-26.0, 31.0), Vector2(-20.0, 31.0)]   # 晒鱼架（鱼市北边一排）
 const SHEDS := [[Vector2(-96.0, 42.0), 0.0], [Vector2(-80.0, 42.5), 0.0], [Vector2(-66.0, 41.0), 0.0]]   # 盐仓：正面朝南、对着石岸（卸盐的船在泥滩外）
+const TAVERN_FRONT := Vector2(9.5, -8.0)    # 「咸潮」酒馆（7.3）：码头街西边，正面朝东对着河
+const TAVERN_W := 9.0
+const TAVERN_D := 8.0
 const SHED_W := 12.0
 const SHED_D := 6.0
 
@@ -180,7 +180,7 @@ static func _fits(h: Dictionary, others: Array) -> bool:
 		if not HarborLayout.BOUNDS.grow(-8.0).has_point(q):
 			return false
 	var r := maxf(float(h.w), float(h.d)) * 0.5
-	for keep: Array in [[HarborLayout.KEY_HOUSE, 12.0], [HarborLayout.GUILD, 10.5], [HarborLayout.PRISON, 11.0], [HarborLayout.FISH, 14.0], [NOTICE, 3.0], [SIGN_KEY, 2.5], [SIGN_QUAY, 2.5]]:
+	for keep: Array in [[TAVERN_FRONT + Vector2(-TAVERN_D * 0.5, 0), 6.5], [HarborLayout.KEY_HOUSE, 12.0], [HarborLayout.GUILD, 10.5], [HarborLayout.PRISON, 11.0], [HarborLayout.FISH, 14.0], [NOTICE, 3.0], [SIGN_KEY, 2.5], [SIGN_QUAY, 2.5]]:
 		if c.distance_to(keep[0]) < float(keep[1]) + r * 0.7:
 			return false
 	for sh: Array in SHEDS:
@@ -278,6 +278,8 @@ static func solids() -> Array:
 	out.append([kx * Transform3D(Basis.IDENTITY, Vector3(0, 5.0, -KEY_D * 0.5)), Vector3(KEY_W + 0.2, 10.0, KEY_D + 0.2)])
 	var gx := xf_of(guild_front(), 0.0)
 	out.append([gx * Transform3D(Basis.IDENTITY, Vector3(0, 4.0, -GUILD_D * 0.5)), Vector3(GUILD_W + 0.2, 8.0, GUILD_D + 0.2)])
+	var tx := xf_of(TAVERN_FRONT, 90.0)
+	out.append([tx * Transform3D(Basis.IDENTITY, Vector3(0, 3.0, -TAVERN_D * 0.5)), Vector3(TAVERN_W + 0.2, 6.0, TAVERN_D + 0.2)])
 	var px := xf_of(prison_front(), PRISON_YAW)
 	out.append([px * Transform3D(Basis.IDENTITY, Vector3(0, 4.0, -PRISON_D * 0.5)), Vector3(PRISON_W + 0.2, 8.0, PRISON_D + 0.2)])
 	var lp := HarborLayout.LIGHTHOUSE
@@ -390,10 +392,12 @@ static func interactables(parent: Node3D) -> void:
 		d.name = "HarborDoor_%d" % k
 		d.transform = xf_of(h.front, float(h.yaw)) * Transform3D(Basis.IDENTITY, Vector3(-0.5, 0, 0.06))
 		parent.add_child(d)
-	for spec: Array in [[key_front(), 180.0, "钥楼的门", KEY_DOOR_TEXT, 1.6, 2.6, "KeyHouseDoor"], [guild_front(), 0.0, "会馆的门", GUILD_DOOR_TEXT, 1.4, 2.4, "GuildDoor"],
-			[prison_front(), PRISON_YAW, "债牢的铁门", PRISON_DOOR_TEXT, 1.2, 2.1, "PrisonDoor"]]:
-		var d := Door.make(str(spec[2]), float(spec[4]), float(spec[5]), true)
-		d.locked_text = str(spec[3])
+	for spec: Array in [[key_front(), 180.0, "钥楼的门", "key_hall", 1.6, 2.6, "KeyHouseDoor"], [guild_front(), 0.0, "会馆的门", "guild_hall", 1.4, 2.4, "GuildDoor"],
+			[prison_front(), PRISON_YAW, "债牢的铁门", "debt_prison", 1.2, 2.1, "PrisonDoor"], [TAVERN_FRONT, 90.0, "「咸潮」酒馆的门", "dock_tavern", 1.2, 2.2, "TavernDoor"]]:
+		var d := Door.make(str(spec[2]), float(spec[4]), float(spec[5]), false)       # 7.3：进得去（屋里是另一个区域，HarborRooms）
+		d.to_area = str(spec[3])
+		d.to_spawn = "front"
+		d.verb = "进入"
 		d.name = str(spec[6])
 		d.transform = xf_of(spec[0], float(spec[1])) * Transform3D(Basis.IDENTITY, Vector3(-float(spec[4]) * 0.5, 0, 0.08))
 		parent.add_child(d)
@@ -428,12 +432,18 @@ static func jobs_for(rect: Rect2) -> Array:
 	for h: Dictionary in houses():
 		if rect.has_point(house_center(h)):
 			hs.append(h)
-	if not hs.is_empty():
-		out.append(func(root: Node3D): _house_block(root, hs, rect))
+	var group := 0
+	while group * 8 < hs.size():                                         # 一件活最多 8 栋（一块 14 栋时这件活 90 多毫秒，分帧搭建会卡一下）
+		var part := hs.slice(group * 8, group * 8 + 8)
+		var tag := group
+		out.append(func(root: Node3D): _house_block(root, part, rect, tag))
+		group += 1
 	if rect.has_point(HarborLayout.KEY_HOUSE):
 		out.append(func(root: Node3D): _key_house(root))
 	if rect.has_point(HarborLayout.GUILD):
 		out.append(func(root: Node3D): _guild(root))
+	if rect.has_point(TAVERN_FRONT):
+		out.append(func(root: Node3D): _tavern(root))
 	if rect.has_point(HarborLayout.PRISON):
 		out.append(func(root: Node3D): _prison(root))
 	if rect.has_point(HarborLayout.LIGHTHOUSE):
@@ -446,11 +456,11 @@ static func jobs_for(rect: Rect2) -> Array:
 
 
 ## 一块里的房子合成一个网格（组 house：按时段整块亮灯 / 灭灯，Daypart.set_windows 找子节点 Mesh）
-static func _house_block(root: Node3D, hs: Array, rect: Rect2) -> void:
+static func _house_block(root: Node3D, hs: Array, rect: Rect2, tag := 0) -> void:
 	var node := Node3D.new()
-	node.name = "Houses_%d_%d" % [int(rect.position.x), int(rect.position.y)]
+	node.name = "Houses_%d_%d_%d" % [int(rect.position.x), int(rect.position.y), tag]
 	node.add_to_group("house")
-	node.set_meta("seed", int(rect.position.x * 7 + rect.position.y * 13))
+	node.set_meta("seed", int(rect.position.x * 7 + rect.position.y * 13) + tag * 31)
 	root.add_child(node)
 	var kit := MeshKit.new()
 	for h: Dictionary in hs:
@@ -461,7 +471,7 @@ static func _house_block(root: Node3D, hs: Array, rect: Rect2) -> void:
 	mi.name = "Mesh"
 	node.add_child(mi)
 	var smoke := RandomNumberGenerator.new()
-	smoke.seed = int(rect.position.x * 3 + rect.position.y)
+	smoke.seed = int(rect.position.x * 3 + rect.position.y) + tag
 	for h: Dictionary in hs:
 		if smoke.randf() < 0.3:
 			var top := GH + int(h.floors) * FH + float(h.w) * 0.5 * tan(deg_to_rad(ROOF_PITCH)) * 0.6
@@ -620,6 +630,34 @@ static func _guild(root: Node3D) -> void:
 		dec.barrel(at.call(-5.0 + k * 0.7, 0.0, 1.2))
 	dec.crate(at.call(4.5, 0.0, 1.4), 0.4)
 	dec.build(node, "GuildDecor")
+
+
+## 「咸潮」酒馆（7.3）：码头街西边一栋矮胖的两层，底层石砌、上层灰泥木构，门口挂一块木牌子（一条鱼、一道浪）、两盏灯
+static func _tavern(root: Node3D) -> void:
+	var node := Node3D.new()
+	node.name = "Tavern"
+	node.add_to_group("house")
+	node.set_meta("seed", 93)
+	root.add_child(node)
+	var kit := MeshKit.new()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7302
+	var xf := xf_of(TAVERN_FRONT, 90.0)
+	_merchant(kit, xf, TAVERN_W, TAVERN_D, 1, false, rng, 0.9)
+	var at := func(x: float, y: float, z: float) -> Vector3: return xf * Vector3(x, y, z)
+	var sp: Vector3 = at.call(1.6, 2.9, 0.6)                           # 招牌：伸出来的铁杆上吊一块木板
+	kit.box("iron", sp + xf.basis * Vector3(0, 0.3, -0.3), Vector3(0.05, 0.05, 1.0), xf.basis)
+	kit.box("timber", sp, Vector3(0.9, 0.55, 0.06), xf.basis * Basis(Vector3.UP, PI * 0.5), 1.0, 0.8)
+	kit.box("dark", sp + xf.basis * Vector3(0.04, 0.05, 0), Vector3(0.5, 0.14, 0.01), xf.basis * Basis(Vector3.UP, PI * 0.5))
+	var mi := kit.build(mats())
+	mi.name = "Mesh"
+	node.add_child(mi)
+	var dec := Decor.new()
+	for s: float in [-1.0, 1.0]:
+		dec.sconce(at.call(s * 1.2, 2.2, 0.06), xf.basis * Vector3.BACK, s > 0.0)
+	dec.barrel(at.call(-2.6, 0.0, 1.0))
+	dec.barrel(at.call(-3.2, 0.0, 1.2))
+	dec.build(node, "TavernDecor")
 
 
 ## 债牢：城西北角一栋矮胖的石头房子，窗子小、带铁栏，门是铁的；屋前一道矮院墙
@@ -936,6 +974,7 @@ static func map_shapes() -> Array:
 		out.append({"k": "house", "pts": footprint(h)})
 	out.append({"k": "house", "pts": House.footprint(Vector3(key_front().x, 0, key_front().y), 180.0, KEY_W, KEY_D), "label": "钥楼"})
 	out.append({"k": "house", "pts": House.footprint(Vector3(guild_front().x, 0, guild_front().y), 0.0, GUILD_W, GUILD_D), "label": "渡工行会会馆"})
+	out.append({"k": "house", "pts": House.footprint(Vector3(TAVERN_FRONT.x, 0, TAVERN_FRONT.y), 90.0, TAVERN_W, TAVERN_D), "label": "「咸潮」酒馆"})
 	out.append({"k": "house", "pts": House.footprint(Vector3(prison_front().x, 0, prison_front().y), PRISON_YAW, PRISON_W, PRISON_D), "label": "债牢"})
 	for sh: Array in SHEDS:
 		out.append({"k": "house", "pts": House.footprint(Vector3((sh[0] as Vector2).x, 0, (sh[0] as Vector2).y + SHED_D * 0.5), float(sh[1]), SHED_W, SHED_D)})

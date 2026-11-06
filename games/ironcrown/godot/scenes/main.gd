@@ -287,6 +287,8 @@ func _ready() -> void:
 			t = Plain.build(world, Settings.reduced_motion)              # 金穗平原（6.1a，第三章）
 		"harbor":
 			t = Harbor.build(world, Settings.reduced_motion)             # 双钥港（7.1，第四章）
+		"key_hall", "key_vault", "guild_hall", "dock_tavern", "debt_prison":
+			t = HarborRooms.build(area, world, Settings.reduced_motion)  # 双钥港的室内（7.3）
 		"waystation":
 			t = Waystation.build(world, Settings.reduced_motion)
 		"beacon_tower":

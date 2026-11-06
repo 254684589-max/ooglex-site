@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9747,6 +9747,81 @@ func test_harbor() -> void:
 	await free_main(main)
 	check(Travel.validate().is_empty() and Travel.region_title(4) == "河口" and Travel.places(4) == ["harbor_quay", "keyhouse_street", "lighthouse", "crown_city"] and Travel.built("harbor_quay") and not Travel.built("crown_city")
 		and Travel.region_of_chapter(3) == "south", "旅行地图第四章翻到「河口」：木栈码头、钥楼街能去，灯塔、冠城还没做好")
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_harborrooms() -> void:
+	# 双钥港的室内（7.3）：钥楼大厅、金库、会馆、「咸潮」酒馆、债牢
+	GameState.new_game(730)
+	GameState.chapter = 4
+	GameState.daypart = "day"
+	for area: String in HarborRooms.AREAS:
+		check(Areas.known(area) and Areas.is_indoor(area) and Areas.chapter_of(area) == 4 and Areas.display_name(area) == HarborRooms.display_name(area), "%s 登记了（室内、第四章）" % HarborRooms.display_name(area))
+		GameState.pending_load = {"scene": area, "spawn": "front", "player": {}}
+		var main := await make_area(area)
+		await physics(8)
+		var p: FpController = main.player
+		var sp: Vector3 = HarborRooms.spawns(area).front[0]
+		check(p.is_on_floor() and p.global_position.distance_to(sp) < 0.4, "进了%s：站在门里头的地上" % HarborRooms.display_name(area))
+		var spec := AreaMap.spec(area)
+		var ex_ok := true
+		for ex: Dictionary in spec.get("exits", []):
+			if not Areas.known(str(ex.to)) or Areas.spawn(str(ex.to), str(ex.spawn)) == null:
+				ex_ok = false
+		check(ex_ok and not spec.get("exits", []).is_empty() and spec.get("shapes", []).size() >= 2, "%s 的本地地图：%d 处陈设、出口都通到登记过的出生点" % [HarborRooms.display_name(area), spec.shapes.size()])
+		var exit := main.world.find_child("Exit", true, false) as Door
+		if area == "key_vault":
+			var up := main.world.find_child("StairUp", true, false) as Door
+			var gate := main.world.find_child("WaterGate", true, false) as Door
+			var box := main.world.find_child("CrownBox", true, false) as Examine
+			check(up != null and str(up.interact(p).get("area", "")) == "key_hall" and gate != null and gate.locked and str(gate.interact(p).toast).contains("北潮沟")
+				and box != null and str(box.on_use.call(p).toast).contains("星铁冠印") and GameState.has_flag("ch4_crown_seen"),
+				"金库：石阶上大厅；东墙的铁栅水门锁着（外面是北潮沟）；北墙石台上、铁笼里那只星铁包角的铁匣（封蜡上是星铁冠印）")
+		else:
+			var r := exit.interact(p) if exit != null else {}
+			check(exit != null and str(r.get("kind", "")) == "travel" and str(r.get("area", "")) == "harbor" and Areas.spawn("harbor", str(r.spawn)) != null, "%s 的门通回双钥港（%s）" % [HarborRooms.display_name(area), r.get("spawn", "")])
+		match area:
+			"key_hall":
+				var vd := main.world.find_child("VaultDoor", true, false) as Door
+				var board := main.world.find_child("ClearingBoard", true, false) as Examine
+				check(vd != null and vd.locked and str(vd.interact(p).toast).contains("莫德") and board != null and str(board.on_use.call(p).toast).contains("王室——未结")
+					and main.world.find_child("Scales", true, false) != null, "钥楼大厅：下金库的铁门锁着（钥匙在莫德身上）；清账的黑板、柜台上的天平")
+			"guild_hall":
+				var tide := main.world.find_child("TideChart", true, false) as Examine
+				check(tide != null and str(tide.on_use.call(p).toast).contains("子时退到底") and main.world.find_child("BoatSchedule", true, false) != null, "会馆：潮汐表（子时退到底）、船期板")
+			"dock_tavern":
+				check(main.world.find_child("TavernCounter", true, false) != null and main.world.find_child("Hearth", true, false) != null, "「咸潮」酒馆：柜台上刻的字、火塘")
+			"debt_prison":
+				var book := main.world.find_child("DebtBook", true, false) as Examine
+				check(book != null and str(book.on_use.call(p).toast).contains("约斯特") and str(book.on_use.call(p).toast).contains("转卖钥楼"), "债牢：看门的账上约斯特那一行（担保：王室）、「冬至以前不赎，转卖钥楼」")
+		await free_main(main)
+	# 双钥港那边：四扇门通进来，出来的出生点在门外、不在房子里
+	GameState.pending_load = {"scene": "harbor", "spawn": "quay", "player": {}}
+	var hm := await make_area("harbor")
+	await physics(4)
+	var into := {"KeyHouseDoor": "key_hall", "GuildDoor": "guild_hall", "PrisonDoor": "debt_prison", "TavernDoor": "dock_tavern"}
+	var in_ok := true
+	for n: String in into:
+		var d := hm.world.find_child(n, true, false) as Door
+		if d == null or str(d.interact(hm.player).get("area", "")) != str(into[n]):
+			in_ok = false
+	check(in_ok and hm.world.find_child("Tavern", true, false) != null, "双钥港：钥楼、会馆、债牢、「咸潮」酒馆的门都进得去（酒馆是码头街西边新盖的一栋）")
+	var space := hm.get_world_3d().direct_space_state
+	var out_ok := true
+	for id: String in ["keyhouse_door", "guild_door", "prison_door", "tavern_door"]:
+		var spv: Vector3 = Harbor.spawn_points()[id][0]
+		var q := PhysicsShapeQueryParameters3D.new()
+		var cap := CapsuleShape3D.new()
+		cap.radius = 0.3
+		cap.height = 1.6
+		q.shape = cap
+		q.transform = Transform3D(Basis.IDENTITY, spv + Vector3(0, 1.0, 0))
+		q.collision_mask = 1
+		if not space.intersect_shape(q, 4).is_empty():
+			out_ok = false
+	check(out_ok, "从屋里出来站的四个地方（门外）都是空地，不卡在房子里")
+	await free_main(hm)
 	GameState.chapter = 0
 	GameState.pending_load = {}
 
