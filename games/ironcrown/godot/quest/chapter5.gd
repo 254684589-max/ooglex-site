@@ -23,7 +23,8 @@ static func heir_name() -> String:
 			return "伊薇特"
 		"alric":
 			return "阿尔里克"
-	return "新王"
+	var c := Winter5.companion()                          # 没到高地就封了（截图、测试的捷径）：按冠在谁手里
+	return str(c[1]) if not c.is_empty() and str(c[0]) != "lucien" else "新王"
 
 
 ## 结局正文

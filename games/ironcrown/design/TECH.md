@@ -1154,6 +1154,12 @@ godot/
 - **封誓**（`OathRitual`，挂在井底的 world 下）：对话结束时（`main._ch3_sides_heard`）和进井底时 `OathRitual.start()`（`due()`：主线 oath、`ch5_ritual`、还没结果）。`step(delta)` 每帧：火盆燃料倒数、每 `INTERVAL` 秒从 `PATH[0]`（石阶顶）放一个长眠者（真人模型，麻衣）沿 `PATH` 走，进了点着的火盆 `FIRE_R` 以内往回退 1.2 秒；到石台 `REACH_R` 以内算够着；`FAIL_AT` 个就 failed，撑满 `DURATION` 就 sealed。`settle()` 写 `ch5_oath`、`ending`（sealed：heir → new_king，其余 → crownless_spring；failed → long_winter），主线到 after。火盆的 `Examine`（`WellRooms.brazier`）调 `feed()`，`verb_fn` 按状态显示「点着火盆 / 添柴」。
 - **测试**：`ch5oath` 组（石台开对话、能留名的人、妮尔、伊薇特留名开始、头一个长眠者、火盆点着和添柴、一直点着封上了、一直不点断了、你自己留名封上是无冠之春、不封了是长冬、第二十一烽的人引开一半）。
 
+### 4.95 结局（路线图 8.5，2026-11-06）
+
+- **结局画面**：`EndingPanel.open_final()`（`ENDINGS` 加 `final`；`_show` 每次把副标题复位成「开发中」，`open_final` 再改成「终」）；标题、正文、回顾在 `quest/chapter5.gd`（`ending()` 读 `ending` 旗标，`text()` 按 `oath_taker`、`ch5_oath` 分变体，`recap()` 每章一两句）。
+- **什么时候出**：封誓结束（`main._on_oath_finished` → `_finale()`）或者不封了（对话效果 `{"ending": "final"}` → `_finale()`）：等 `ch3_end_after` 秒，设 `ch5_done`、主线「冬井」完、自动存档、`show_ending("final")`。
+- **测试**：`ch5end` 组（新王的正文和回顾、结局画面、别的章末照旧「开发中」、无冠之春三种和长冬、不封了直接出）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
