@@ -1129,6 +1129,14 @@ godot/
 - **截图参数**：`?area=council_hall&council=stolen|bought`（直接到冬议）、`?ending=ch4`。
 - **测试**：`ch4council` 组（十个人站在空地上、谁念借据、走到栏杆跟前自己开、戈兰 / 伊薇特 / 偷的三句、当众拿出信、闭嘴的拿不到冠、交给大主祭一路到章末、`ch4_evidence_used`、黄昏钟和章末画面、第四章完以后只剩差役、赎给北境、赎给塞弗林却拿出信、换的自己留着自己念）。
 
+### 4.91 第五章开头：钟楼底下（路线图 8.1，2026-11-06）
+
+- **章节**：`Chapters.LIST[5]`（pack 用 `ch4`：冠城那几处在第四章的包里；北上的余火高地是第二章的包，进区域时按 `Areas.pack_chapter` 再下）；第四章章末的「继续」在 `playable_chapter >= 5` 时出现（`?preview=5`）。
+- **开场**：进冠城或冠城的屋子时 `CrownPeople.ch5_begin()`（有 `ch4_done`、主线还没开）开 `ch5_main`；`crown_holder` 空的（没有第四章存档）记 `kept`、给铁冠。场景比主线先搭，所以钟楼门口的大主祭按「`ch4_done` 且主线还没开」或「主线在 to_bell」放。
+- **钟楼的门**：`BellDoor` 原来锁着；`CrownTown.refresh_bell_door()` 看 `ch5_bell_open` 开锁、通 `church_archive`（搭的时候和对话结束时各调一次；`Door._ready` 会把 `verb` 改回「打开」，所以在 refresh 里设）。
+- **档案馆**：`HarborRooms.SPEC` 一间，`out = crown_city`、出口 `bell_door`；陈设在 `CrownRooms.church_archive`；人在 `CrownPeople.room_people`。`wardens_settle()` 进屋时定拦不拦（`ch4_ambush = beaten` 且冠不在教会：`ch5_simeon_block`；不然 `ch5_wardens = let`）；三个修士一组 `encounter:wardens`。
+- **测试**：`ch5archive` 组。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

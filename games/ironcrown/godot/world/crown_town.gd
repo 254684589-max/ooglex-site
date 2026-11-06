@@ -329,9 +329,12 @@ static func interactables(parent: Node3D) -> void:
 	var bt := CrownLayout.BELL_TOWER
 	var tdoor := Door.make("钟楼的门", 1.2, 2.3, true)
 	tdoor.locked_text = BELL_DOOR_TEXT
+	tdoor.to_spawn = "front"
+	tdoor.verb = "进入"
 	tdoor.name = "BellDoor"
 	tdoor.transform = Transform3D(Basis(Vector3.UP, deg_to_rad(-90.0)), Vector3(bt.x, ground(bt), bt.y)) * Transform3D(Basis.IDENTITY, Vector3(-0.6, 0, BELL_W * 0.5 + 0.02))
 	parent.add_child(tdoor)
+	refresh_bell_door(parent)
 	for s: Array in [[SIGN_BANK, SIGN_BANK_TEXT, 90.0, "BankSign"], [SIGN_GATE, SIGN_GATE_TEXT, -90.0, "GateSign"]]:
 		var rs := RoadSign.new()
 		rs.text = str(s[1])
@@ -780,6 +783,19 @@ static func palace(parent: Node3D) -> void:
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mi.extra_cull_margin = 50.0
 	parent.add_child(mi)
+
+
+## 钟楼的门（8.1）：大主祭开了锁（ch5_bell_open）就通钟楼底下的档案馆；对话结束时 main 也调一回（当场开锁）
+static func refresh_bell_door(root: Node) -> void:
+	var d := root.find_child("BellDoor", true, false) as Door
+	var gs := HarborTown._gs()
+	if d == null or gs == null:
+		return
+	var open: bool = gs.has_flag("ch5_bell_open")
+	d.locked = not open
+	d.to_area = "church_archive" if open else ""
+	d.verb = "下去" if open else "打开"
+	d.display_name = "钟楼底下的石阶" if open else "钟楼的门"
 
 
 ## 地图册「本地」页上的房子

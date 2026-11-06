@@ -139,6 +139,72 @@ static func matilda_inn(parent: Node3D, reduced_motion: bool) -> void:
 	HarborRooms._fill(parent, Vector3(-2.0, 2.0, 1.8), 1.4, 7.0)
 
 
+# ---------------- 钟楼底下 · 教会档案馆（第五章，8.1） ----------------
+## 住着谁：守卷的修士西缪和两个年轻修士；缺什么：光——只点得起抄经桌上的两根蜡烛，卷宗架之间是黑的；
+## 刚发生过什么：约四百年前改加冕礼的时候，教会在这儿烧掉了一箱东西，那只烧黑的铁箱一直没人挪过；斜街上蒙着脸堵你的三个人，是从这儿出去的。
+## 拱顶的地下室：南墙一道石阶上钟楼；两排卷宗架；当中一张抄经桌；东北角那只烧黑的铁箱；北墙一道铁栅门，门后是冠城地下的旧井道（不往下走）。
+const ARCHIVE_CHEST := Vector3(3.0, 0, -4.6)
+const ARCHIVE_GRATE := Vector3(-2.4, 0, -6.0)
+const GRATE_TEXT := "一道锈死的铁栅门，门后是往下去的旧井道，一股冷风从底下吹上来，带着雪的味道。门上的锁没有锁孔——只有一个冠形的凹槽。"
+const SHELF_TEXT := "一格一格的卷宗：加冕礼的记录、历代大主祭的手札、各家的婚约和借据的抄本。约四百年那一年的格子是空的，格子边上有一圈烧焦的印子。"
+const SCROLL_TEXT := "残卷只剩下半张，边上烧焦了：「……其七，封誓。持冠者以血封瓶，瓶置冬井，留名于冰。留名者，每冬还井，守井一夜，冬乃退。」底下一行小字，是后来添的：「无人肯还。此页毁之，改为游行。」"
+
+
+static func church_archive(parent: Node3D, reduced_motion: bool) -> void:
+	var kit := MeshKit.new()
+	HarborRooms._room(kit, "church_archive", [])
+	for k in 4:                                                          # 拱顶的肋：四道横着的石拱
+		var z := -4.5 + k * 3.0
+		kit.box("castle", Vector3(0, 3.35, z), Vector3(10.0, 0.5, 0.5), Basis.IDENTITY, 0.8, 0.6)
+		for s: float in [-1.0, 1.0]:
+			kit.box("castle", Vector3(s * 4.75, 1.7, z), Vector3(0.5, 3.4, 0.5), Basis.IDENTITY, 0.8, 0.5)
+	for s: float in [-1.0, 1.0]:                                         # 两排卷宗架（中间留一条道）
+		for k in 3:
+			var c := Vector3(s * 3.0, 0, -3.4 + k * 2.6)
+			kit.box("timber", c + Vector3(0, 1.2, 0), Vector3(2.2, 2.4, 0.5), Basis.IDENTITY, 0.8, 0.6)
+			for r in 4:
+				kit.box("cloth", c + Vector3(0, 0.35 + r * 0.55, 0.26), Vector3(2.0, 0.32, 0.02), Basis.IDENTITY, 0.9, 0.9)
+	kit.box("timber", Vector3(0, 0.8, 1.8), Vector3(1.6, 0.08, 0.9), Basis.IDENTITY, 1.0, 0.8)        # 抄经桌
+	for lx: float in [-0.7, 0.7]:
+		kit.box("timber", Vector3(lx, 0.39, 1.8), Vector3(0.1, 0.78, 0.7), Basis.IDENTITY, 0.8, 0.6)
+	kit.box("cloth", Vector3(-0.2, 0.85, 1.8), Vector3(0.7, 0.01, 0.5))
+	var ch := ARCHIVE_CHEST                                              # 烧黑的铁箱
+	kit.box("iron", ch + Vector3(0, 0.35, 0), Vector3(1.2, 0.7, 0.7), Basis(Vector3.UP, 0.2))
+	kit.box("ink", ch + Vector3(0, 0.72, 0), Vector3(1.22, 0.04, 0.72), Basis(Vector3.UP, 0.2))
+	var g := ARCHIVE_GRATE                                               # 北墙的铁栅门
+	kit.box("ink", g + Vector3(0, 1.2, 0.02), Vector3(1.6, 2.4, 0.05))
+	for k in 7:
+		kit.box("iron", g + Vector3(-0.72 + k * 0.24, 1.2, 0.1), Vector3(0.05, 2.4, 0.05))
+	kit.box("iron", g + Vector3(0, 2.4, 0.1), Vector3(1.7, 0.08, 0.08))
+	kit.box("brass", g + Vector3(0.0, 1.2, 0.14), Vector3(0.24, 0.16, 0.02))
+	_finish(parent, kit, "church_archive")
+	var dec := Decor.new()
+	dec.candles(Vector3(0.5, 0.84, 1.8), 2)
+	dec.books(Vector3(-0.7, 0.84, 1.6), Vector3(1, 0, 0), 0.5, 7)
+	dec.sconce(Vector3(-4.95, 2.0, 4.0), Vector3(1, 0, 0), true)
+	dec.build(parent, "Decor", not reduced_motion)
+	for s: float in [-1.0, 1.0]:
+		for k in 3:
+			Inn._solid(parent, Vector3(s * 3.0, 1.2, -3.4 + k * 2.6), Vector3(2.2, 2.4, 0.5))
+		for k in 4:
+			Inn._solid(parent, Vector3(s * 4.75, 1.7, -4.5 + k * 3.0), Vector3(0.5, 3.4, 0.5))
+	Inn._solid(parent, Vector3(0, 0.4, 1.8), Vector3(1.6, 0.8, 0.9))
+	Inn._solid(parent, ch + Vector3(0, 0.4, 0), Vector3(1.3, 0.8, 0.9))
+	var chest := Examine.make("烧黑的铁箱", "看看", func(_who: FpController) -> Dictionary:
+		if GameState.has_flag("ch5_archive"):
+			return {"toast": SCROLL_TEXT}
+		return {"toast": "一只烧黑的铁箱，锁扣是新的。钥匙在大主祭身上。"}, Vector3(1.4, 1.0, 1.0))
+	chest.name = "ScrollChest"
+	chest.position = ch + Vector3(0, 0.4, 0)
+	parent.add_child(chest)
+	HarborRooms._examine(parent, "铁栅门", "看看", GRATE_TEXT, g + Vector3(0, 1.0, 0.5), Vector3(1.8, 2.0, 0.6), "UnderGrate", "ch5_grate_seen")
+	HarborRooms._examine(parent, "卷宗架", "看看", SHELF_TEXT, Vector3(-3.0, 1.0, 0.0), Vector3(2.2, 2.0, 1.0), "Shelves")
+	HarborRooms._lamp(parent, Vector3(0.3, 1.4, 1.8), 1.6, 7.0, Color("ffb060"), not reduced_motion, "DeskCandles")
+	HarborRooms._lamp(parent, Vector3(-4.6, 2.2, 4.0), 1.8, 7.0, Look.LAMP_COLOR, not reduced_motion, "StairSconce")
+	HarborRooms._fill(parent, Vector3(0, 2.6, -2.0), 1.0, 9.0)
+	HarborRooms._fill(parent, Vector3(0, 2.6, 3.0), 0.8, 8.0)
+
+
 static func _finish(parent: Node3D, kit: MeshKit, area: String) -> void:
 	HarborRooms._finish(parent, kit, area)
 
@@ -152,6 +218,10 @@ static func map_shapes(area: String) -> Array:
 				var p := chair_pos(float(c[1]))
 				out.append({"k": "furniture", "rect": Rect2(p.x - 0.4, p.z - 0.4, 0.8, 0.8)})
 			return out
+		"church_archive":
+			return [{"k": "furniture", "rect": Rect2(-4.1, -3.65, 2.2, 5.7), "label": "卷宗架"}, {"k": "furniture", "rect": Rect2(1.9, -3.65, 2.2, 5.7), "label": "卷宗架"},
+				{"k": "furniture", "rect": Rect2(-0.8, 1.35, 1.6, 0.9), "label": "抄经桌"}, {"k": "furniture", "rect": Rect2(ARCHIVE_CHEST.x - 0.6, ARCHIVE_CHEST.z - 0.35, 1.2, 0.7), "label": "铁箱"},
+				{"k": "furniture", "rect": Rect2(ARCHIVE_GRATE.x - 0.8, ARCHIVE_GRATE.z, 1.6, 0.2), "label": "铁栅门"}]
 		"matilda_inn":
 			return [{"k": "furniture", "rect": Rect2(-2.4, -1.65, 3.8, 0.7), "label": "柜台"}, {"k": "furniture", "rect": Rect2(2.7, -2.1, 0.8, 1.4), "label": "火塘"},
 				{"k": "furniture", "rect": Rect2(1.5, 0.2, 1.4, 0.8)}, {"k": "furniture", "rect": Rect2(-2.7, 0.3, 1.4, 0.8)}]

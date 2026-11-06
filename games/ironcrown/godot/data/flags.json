@@ -229,5 +229,12 @@
   "ch4_ev_lomond": {"desc": "冬议上拿出了粮仓账本（洛蒙德家闭嘴，−10）", "set_in": "data/dialogue/crown.json council/ev_lomond", "read_in": "crown.json council 选项条件；world/crown_people.gd council_settle"},
   "ch4_debt_reader": {"desc": "冬议上谁念序章那张借据（7.8）：edric 放走的 / silas 勒索过的 / you 借据还在你身上 / valen 瓦伦家的人", "set_in": "world/crown_people.gd council_open", "read_in": "data/dialogue/crown.json council 选项条件；quest/chapter4.gd recap"},
   "ch4_note_read": {"desc": "借据在冬议上被念出来了（7.8）", "set_in": "data/dialogue/crown.json council/silence", "read_in": "第五章"},
-  "ch4_done": {"desc": "第四章完（7.8）：冬议散了、黄昏钟响过", "set_in": "scenes/main.gd _ch4_bell", "read_in": "crown.json council start_if；world/crown_people.gd council_due；章末"}
+  "ch4_done": {"desc": "第四章完（7.8）：冬议散了、黄昏钟响过", "set_in": "scenes/main.gd _ch4_bell", "read_in": "crown.json council start_if；world/crown_people.gd council_due；章末"},
+  "ch5_bell_open": {"desc": "大主祭开了钟楼的门（8.1）：钟楼西面那道门通钟楼底下的档案馆", "set_in": "data/dialogue/crown.json lucien/why", "read_in": "world/crown_town.gd refresh_bell_door"},
+  "ch5_regent_asked": {"desc": "问过大主祭冬议前一夜去摄政宅子做什么（8.1）", "set_in": "data/dialogue/crown.json lucien/regent", "read_in": "crown.json 选项条件；第五章章末"},
+  "ch5_simeon_block": {"desc": "档案馆里守卷的西缪拦你（斜街上跟他们打过、冠不在教会手里，8.1）", "set_in": "world/crown_people.gd wardens_settle", "read_in": "crown.json simeon start_if"},
+  "ch5_wardens": {"desc": "档案馆里守卷的修士（8.1）：let 没拦 / talked 口才 14 说开了 / beaten 打了一架", "set_in": "world/crown_people.gd wardens_settle；crown.json simeon；fight 效果", "read_in": "crown.json lucien_archive start_if；world/crown_people.gd room_people"},
+  "ch5_archive": {"desc": "读过封誓残卷（8.1）", "set_in": "data/dialogue/crown.json lucien_archive/scroll", "read_in": "world/crown_rooms.gd 铁箱；第五章主线"},
+  "ch5_ambush_known": {"desc": "大主祭认了：斜街上蒙着脸的是教会的人（8.1）", "set_in": "data/dialogue/crown.json lucien_archive/ambush", "read_in": "第五章章末"},
+  "ch5_grate_seen": {"desc": "看过档案馆北墙那道锁着的铁栅门（冠形的凹槽，8.1）", "set_in": "world/crown_rooms.gd", "read_in": "第五章章末"}
 }

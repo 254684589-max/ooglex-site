@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -10066,7 +10066,7 @@ func test_crown() -> void:
 		var spv: Vector3 = CrownLayout.spawn_points()[id][0]
 		if spv.y < CrownLayout.RIVER_Y + 2.0:
 			sp_ok = false
-	check(sp_ok and CrownLayout.SPAWN_XZ.has("bridge") and CrownLayout.spawn_points().size() == 5, "5 个出生点都在岸上（河西岸、桥门里、广场、议事厅和小酒馆门外）")
+	check(sp_ok and CrownLayout.SPAWN_XZ.has("bridge") and CrownLayout.spawn_points().size() == 6, "6 个出生点都在岸上（河西岸、桥门里、广场、议事厅和小酒馆门外、钟楼门外——8.1）")
 	check(CrownCity.deep_wall_faces().size() > 300 and CrownCity.tide() == CrownLayout.RIVER_Y, "深水边一圈看不见的墙；河面不跟潮走")
 	GameState.new_game(760)
 	GameState.daypart = "day"
@@ -10157,7 +10157,7 @@ func test_crown() -> void:
 	check(views_ok, "%d 个固定机位" % CrownLayout.VIEW_NAMES.size())
 	await free_main(main)
 	# 两间室内
-	for area: String in HarborRooms.CROWN_AREAS:
+	for area: String in ["council_hall", "matilda_inn"]:                      # 钟楼底下的档案馆是第五章的（8.1，ch5archive 组）
 		check(Areas.known(area) and Areas.is_indoor(area) and Areas.chapter_of(area) == 4, "%s 登记了（室内、第四章）" % Areas.display_name(area))
 		GameState.pending_load = {"scene": area, "spawn": "front", "player": {}}
 		var rm := await make_area(area)
@@ -10432,6 +10432,76 @@ func test_ch4council() -> void:
 	GameState.pending_load = {}
 	GameState.pending_ending = ""
 	GameState.pending_daypart = ""
+
+
+func test_ch5archive() -> void:
+	# 第五章（8.1）：钟楼底下的教会档案馆、守卷的修士、封誓残卷
+	check(Chapters.known(5) and Chapters.name_of(5) == "第五章 · 冬井" and Chapters.pack_of(5) == "ch4" and Chapters.wip_of(5) != "" and Areas.known("church_archive") and Areas.is_indoor("church_archive") and Areas.chapter_of("church_archive") == 5,
+		"第五章登记了（冠城那几处在第四章的包里）；钟楼底下的档案馆是室内")
+	ch4_state({"ch4_done": true, "crown_holder": "valen", "valen_heir": "ivette", "ch4_regent_visitor": "lucien", "ch4_ambush": "talked"})
+	GameState.pending_load = {"scene": "crown_city", "spawn": "bell_door", "player": {}}
+	var main := await make_area("crown_city")
+	await physics(8)
+	var p: FpController = main.player
+	var luc := main.world.find_child("Npc_lucien", true, false) as Npc
+	var door := main.world.find_child("BellDoor", true, false) as Door
+	check(GameState.quest_stage("ch5_main") == "to_bell" and p.is_on_floor() and luc != null and await stands_clear(luc) and door.locked, "冬议散了：主线「冬井」开始，大主祭在钟楼门口（站在空地上），钟楼的门还锁着")
+	check(say_runner("lucien", ["冬议前一夜，你去摄政的宅子做什么？", "冬天为什么没有退？", "走。"], "crown") == "" and GameState.has_flag("ch5_regent_asked") and GameState.quest_stage("ch5_main") == "to_archive", "问大主祭那一夜去摄政宅子做什么；他开了钟楼的门")
+	main._ch3_sides_heard()
+	var r := door.interact(p)
+	check(not door.locked and str(r.get("area", "")) == "church_archive" and door.verb_now() == "下去", "钟楼的门当场开了：下去就是档案馆")
+	await free_main(main)
+	GameState.pending_load = {"scene": "church_archive", "spawn": "front", "player": {}}
+	main = await make_area("church_archive")
+	await physics(8)
+	p = main.player
+	var people: Array = main.world.find_children("Npc_*", "Npc", true, false)
+	var ok := true
+	for n in people:
+		if not await stands_clear(n):
+			ok = false
+	var exit := main.world.find_child("Exit", true, false) as Door
+	var ex: Dictionary = exit.interact(p)
+	check(p.is_on_floor() and people.size() == 4 and ok and str(GameState.get_flag("ch5_wardens", "")) == "let" and str(ex.area) == "crown_city" and str(ex.spawn) == "bell_door",
+		"下了石阶：守卷的西缪、两个修士、大主祭都站在空地上；斜街上没打过，修士不拦你；石阶上去回钟楼门口")
+	var grate := main.world.find_child("UnderGrate", true, false) as Examine
+	var chest := main.world.find_child("ScrollChest", true, false) as Examine
+	check(grate != null and str(grate.on_use.call(p).toast).contains("冠形的凹槽") and str(chest.on_use.call(p).toast).contains("钥匙在大主祭身上"), "北墙的铁栅门（冠形的凹槽）；铁箱锁着")
+	await free_main(main)
+	check(say_runner("simeon", [], "crown") == "greet_talked", "斜街上说走了的：西缪「那一句话，大主祭听了」")
+	check(say_runner("lucien_archive", ["（接过残卷，就着蜡烛读）", "「持冠者」——不一定是王？", "斜街上蒙着脸堵我的人，是你的？"], "crown") == "ambush" and GameState.has_flag("ch5_archive") and GameState.has_flag("ch5_ambush_known")
+		and GameState.quest_stage("ch5_main") == "north", "大主祭打开铁箱：封誓残卷；斜街上的人是他的；主线到「北上」")
+	var r2 := DialogueRunner.new()
+	GameState.set_flag("ch5_archive", false)
+	GameState.flags.erase("ch5_archive")
+	r2.start("crown", "lucien_archive")
+	r2.choose(0)
+	r2.choose(0)
+	check(r2.text().contains("伊薇特会去"), "冠在瓦伦家、伊薇特当家：她跟你去")
+	check(CrownRooms.SCROLL_TEXT.contains("留名于冰"), "残卷原文：留名于冰、每冬还井")
+	# 斜街上打过、冠不在教会：西缪拦你
+	ch4_state({"ch4_done": true, "crown_holder": "kept", "ch4_ambush": "beaten"})
+	CrownPeople.ch5_begin()
+	CrownPeople.wardens_settle()
+	check(GameState.has_flag("ch5_simeon_block") and str(GameState.get_flag("ch5_wardens", "")) == "" and say_runner("lucien_archive", [], "crown") == "blocked", "斜街上打过的：西缪胳膊上缠着布，挡着铁箱；大主祭也拦不住")
+	GameState.checks["ch5_simeon_talk"] = true
+	check(say_runner("simeon", ["大主祭要冠回冬井，我要冬天退。我们要的是一回事。"], "crown") == "talked" and str(GameState.get_flag("ch5_wardens", "")) == "talked" and say_runner("lucien_archive", [], "crown") == "greet",
+		"说开了（口才 14）：他让开，大主祭打开铁箱")
+	ch4_state({"ch4_done": true, "ch4_ambush": "beaten"})
+	CrownPeople.ch5_begin()
+	CrownPeople.wardens_settle()
+	GameState.pending_load = {"scene": "church_archive", "spawn": "front", "player": {}}
+	main = await make_area("church_archive")
+	await physics(6)
+	var grp := get_tree().get_nodes_in_group(Encounter.group_name("wardens"))
+	check(str(GameState.get_flag("crown_holder", "")) == "kept" and GameState.has_item("iron_crown") and grp.size() == 3, "没有第四章存档的：冠在你手里；三个修士是一组（拔剑就动手）")
+	await free_main(main)
+	ch4_state({"ch4_done": true, "crown_holder": "church", "ch4_ambush": "beaten"})
+	CrownPeople.ch5_begin()
+	CrownPeople.wardens_settle()
+	check(str(GameState.get_flag("ch5_wardens", "")) == "let", "冠交给了教会的：打过也不拦")
+	GameState.chapter = 0
+	GameState.pending_load = {}
 
 
 func test_highland() -> void:

@@ -21,6 +21,9 @@ const LIST := {
 	## 第四章（7.1 起）：双钥港的贴图、天空照片、高度场在章节包 ch4 里；还没对玩家打开（?preview=4 或 ?area=harbor 能看）
 	4: {"name": "第四章 · 双钥港的账", "pack": "ch4", "probe": "res://chapters/ch4/sky/sea_cloud_sky.jpg", "area": "harbor", "spawn": "quay", "daypart": "day",
 		"wip": "制作中", "wip_note": "第四章还在制作中：双钥港、冠城、主线（一直到冬议和章末）和三条支线都做完了，还在打磨。"},
+	## 第五章（8.1 起）：冠城那几处在第四章的包里，北上的余火高地在第二章的包里（到了再下）；还没对玩家打开（?preview=5 能从第四章章末进）
+	5: {"name": "第五章 · 冬井", "pack": "ch4", "probe": "res://chapters/ch4/sky/sea_cloud_sky.jpg", "area": "crown_city", "spawn": "bell_door", "daypart": "day",
+		"wip": "制作中", "wip_note": "第五章还在制作中：现在能下钟楼底下的教会档案馆、看封誓残卷；北上、冬井和封誓还没做。"},
 }
 
 

@@ -14,6 +14,32 @@ const BOATMAN_LINES := ["回双钥港？顺流半天。船在这儿等到午后�
 const CROWD_LINES := ["辰时开门。我们这种人，站在栏杆外头听个响。", "王座空了三年，今天总该有个说法。", "（他朝议事厅门上那根空旗杆努了努嘴）王室那面旗，没人敢挂。"]
 const DRINKER_LINES := ["（他捧着杯子）霜渡镇来的老板娘，酒淡，嘴紧。", "（他朝门口看了一眼）这条街上，晚上别一个人走。"]
 const OUTLAW_LINES := ["（他把帽檐往下一压）鹭沼那一回，你没把我们卖了。斜街上这几天有生面孔，盯着从桥门进来的人。", "（他靠着墙，像在晒太阳）我在这儿。你走你的。"]
+const WARDEN_LINES := ["（他低着头，手里的蜡烛没点）", "（他把一卷羊皮抱在怀里，往架子后面退了一步）"]
+const LUCIEN_AT := Vector2(75.0, -16.4)                # 冬议散了（8.1）：大主祭在钟楼门口等你
+
+
+## 第五章开头（8.1）：冬议散了，主线「冬井」开始；没有第四章存档（?preview=5）的冠在你手里
+static func ch5_begin() -> bool:
+	if not GameState.has_flag("ch4_done") or GameState.quest_active("ch5_main") or GameState.quest_done("ch5_main"):
+		return false
+	if str(GameState.get_flag("crown_holder", "")) == "":
+		GameState.set_flag("crown_holder", "kept")
+		if not GameState.has_item("iron_crown"):
+			GameState.add_item("iron_crown")
+	GameState.start_quest("ch5_main")
+	return true
+
+
+## 档案馆里守卷的修士拦不拦你：斜街上跟他们打过、冠又不在教会手里的才拦（没拦的记 let）
+static func wardens_settle() -> void:
+	if str(GameState.get_flag("ch5_wardens", "")) != "":
+		return
+	if str(GameState.get_flag("ch4_ambush", "")) == "beaten" and str(GameState.get_flag("crown_holder", "")) != "church":
+		GameState.set_flag("ch5_simeon_block")
+	else:
+		GameState.set_flag("ch5_wardens", "let")
+
+
 const MILO_LINES := ["（他捧着一碗热汤，吹了半天也不喝）", "（他小声说）我再也不去上城送面包了。"]
 const AMBUSH_AT := Vector2(-9.6, -6.2)               # 斜街上堵你的人：第二条小巷的巷口（往北那条）
 const AMBUSH_FACE := Vector2(-12.0, 0.4)
@@ -139,6 +165,13 @@ const MILO_AT := Vector2(24.8, 33.3)
 
 
 static func talkers() -> Array:
+	var pre := []
+	if str(GameState.quest_stage("ch5_main")) == "to_bell" or (GameState.has_flag("ch4_done") and not GameState.quest_active("ch5_main") and not GameState.quest_done("ch5_main")):   # 第五章（8.1）：大主祭在钟楼门口（场景先搭、主线后开）
+		pre.append(["lucien", "大主祭卢西安", LUCIEN_AT, yaw_to(LUCIEN_AT, Vector2(60.0, -12.0)), "lucien"])
+	return pre + _talkers_ch4()
+
+
+static func _talkers_ch4() -> Array:
 	var bk := CrownTown.bakery()
 	var face: Vector2 = bk.face
 	var along := Vector2(-face.y, face.x)
@@ -167,6 +200,15 @@ static func room_people(area: String) -> Array:
 				["inn_drinker1", "喝酒的脚夫", Vector3(2.2, 0, 1.4), 0.0, "", DRINKER_LINES],
 				["inn_drinker2", "喝酒的脚夫", Vector3(-2.0, 0, 1.5), 10.0, "", DRINKER_LINES.slice(1) + DRINKER_LINES.slice(0, 1)]] + (
 				[["milo_inn", "米洛", Vector3(0.6, 0, 1.6), -20.0, "", MILO_LINES]] if str(GameState.quest_stage("ch4_matilda")) == "back" or str(GameState.get_flag("ch4_matilda", "")) == "found" else [])
+		"church_archive":                                                # 第五章（8.1）：守卷的修士、大主祭
+			var out := []
+			if str(GameState.get_flag("ch5_wardens", "")) != "beaten":
+				out.append(["simeon", "守卷的修士西缪", Vector3(0.0, 0, -1.2), 180.0, "simeon", []])
+				out.append(["warden1", "守卷的修士", Vector3(-1.2, 0, -3.0), 150.0, "", WARDEN_LINES])
+				out.append(["warden2", "守卷的修士", Vector3(1.2, 0, -2.6), -150.0, "", WARDEN_LINES.slice(1) + WARDEN_LINES.slice(0, 1)])
+			if str(GameState.quest_stage("ch5_main")) in ["to_archive", "north"]:
+				out.append(["lucien_archive", "大主祭卢西安", Vector3(1.9, 0, -4.9), 160.0, "lucien_archive", []])
+			return out
 		"council_hall":
 			var out := [["council_steward", "议事厅的差役", Vector3(5.6, 0, -0.9), 120.0, "council_steward", []]]
 			if council_due():
@@ -231,6 +273,8 @@ static func council_settle() -> void:
 static func build_room(area: String, parent: Node3D) -> void:
 	if area == "council_hall" and council_due():
 		council_open()
+	if area == "church_archive":
+		wardens_settle()
 	for it: Array in room_people(area):
 		var n := Npc.make(str(it[1]), it[5], Color("5a5248"))
 		n.name = "Npc_" + str(it[0])
@@ -239,6 +283,10 @@ static func build_room(area: String, parent: Node3D) -> void:
 			n.dialogue_id = str(it[4])
 		n.position = it[2]
 		n.rotation.y = deg_to_rad(float(it[3]))
+		if str(it[0]) in ["simeon", "warden1", "warden2"]:                     # 档案馆（8.1）：拦你的时候拔剑，三个修士动手（组 encounter:wardens）
+			n.add_to_group(Encounter.group_name("wardens"))
+			n.set_meta("enemy_kind", "clubber")
+			n.set_meta("enemy_id", str(it[0]))
 		parent.add_child(n)
 	if area == "council_hall" and council_due():                       # 走到栏杆跟前，冬议就开始了
 		var lead := parent.get_node_or_null("Npc_council_caswell") as Node3D

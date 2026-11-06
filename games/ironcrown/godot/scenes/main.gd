@@ -169,6 +169,15 @@ func _ready() -> void:
 				GameState.set_flag("ch4_vault_sneaky")
 			GameState.set_stage("ch4_main", "way")
 			GameState.daypart = "night"
+		if _query("ch5") in ["1", "archive"] and not Engine.has_meta("ic_ch5_param_done"):
+			Engine.set_meta("ic_ch5_param_done", true)        # 截图用（8.1）：?ch5=1 第四章刚完（冠在你手里）；?ch5=archive 已经跟大主祭下了钟楼
+			GameState.chapter = 5
+			GameState.set_flag("ch4_done")
+			CrownPeople.ch5_begin()
+			if _query("ch5") == "archive":
+				GameState.set_flag("ch5_bell_open")
+				GameState.set_stage("ch5_main", "to_archive")
+			GameState.daypart = "day"
 		if _query("council") in ["stolen", "bought"] and not Engine.has_meta("ic_council_param_done"):
 			Engine.set_meta("ic_council_param_done", true)    # 截图用（7.8）：?area=council_hall&council=stolen|bought 直接到冬议（偷的冠在你怀里 / 科尔温替塞弗林家带来）
 			GameState.chapter = 4
@@ -310,7 +319,7 @@ func _ready() -> void:
 			t = Plain.build(world, Settings.reduced_motion)              # 金穗平原（6.1a，第三章）
 		"harbor":
 			t = Harbor.build(world, Settings.reduced_motion)             # 双钥港（7.1，第四章）
-		"key_hall", "key_vault", "guild_hall", "dock_tavern", "debt_prison", "council_hall", "matilda_inn":
+		"key_hall", "key_vault", "guild_hall", "dock_tavern", "debt_prison", "council_hall", "matilda_inn", "church_archive":
 			t = HarborRooms.build(area, world, Settings.reduced_motion)  # 双钥港的室内（7.3）、冠城的两间（7.6）
 		"crown_city":
 			t = CrownCity.build(world, Settings.reduced_motion)          # 冠城一角（7.6，第四章）
@@ -1201,6 +1210,9 @@ func _story_progress() -> void:
 			hud.toast(Chapters.wip_note_of(4), 7.0)
 	if GameState.chapter == 4 and (area == "crown_city" or area in HarborRooms.CROWN_AREAS):
 		CrownPeople.arrived()                               # 上了冠城（7.6）：主线 to_city → in_city
+	if (area == "crown_city" or area in HarborRooms.CROWN_AREAS) and CrownPeople.ch5_begin():
+		if Chapters.wip_note_of(5) != "" and hud:
+			hud.toast(Chapters.wip_note_of(5), 7.0)          # 第五章开场（8.1）：冬议散了
 	if GameState.chapter == 1 and area in ["marsh", "inn"] and GameState.quest_stage("ch1_main") in ["", "to_reedwharf"] and not GameState.quest_done("ch1_main"):
 		GameState.set_stage("ch1_main", "ask_reedwharf")
 	if GameState.chapter == 1 and area == "castle" and GameState.quest_stage("ch1_main") in ["", "to_reedwharf", "ask_reedwharf", "to_blackheron"] and not GameState.quest_done("ch1_main"):
@@ -1225,6 +1237,8 @@ func _ch3_sides_heard() -> void:
 	if area == "harbor" and world != null:
 		HarborTown.refresh_lighthouse(world)        # 灯塔的火（7.7）：跟老蒂博说完当场点着
 	CrownPeople.council_settle()                    # 冬议（7.8）：当众拿出来的罪证
+	if area == "crown_city" and world != null:
+		CrownTown.refresh_bell_door(world)          # 第五章（8.1）：大主祭开了钟楼的门
 
 
 ## 区域名；连片地图上加你在的那一块：「鹭沼 · 芦栈村」（4.4）
@@ -1645,7 +1659,7 @@ func show_ending(id: String, choice := "") -> void:
 	touch_was_visible = touch.visible
 	touch.visible = false
 	if id == "ch4":
-		ending_panel.open_chapter4(Settings.reduced_motion, 0)                                        # 第四章完（7.8）；第五章还没有
+		ending_panel.open_chapter4(Settings.reduced_motion, 5 if playable_chapter >= 5 else 0)       # 第四章完（7.8）；第五章开放以前只有 ?preview=5 能继续（8.1）
 	elif id == "ch3":
 		ending_panel.open_chapter3(Settings.reduced_motion, 4 if playable_chapter >= 4 else 0)       # 第三章完（6.8b）；第四章还没有（Chapters 里没登记就不出「继续」）
 	elif id == "ch2":

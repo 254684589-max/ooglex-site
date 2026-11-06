@@ -1,5 +1,5 @@
 {
-  "_说明": "冠城一角的人（路线图 7.6；STORY.md 7.2、7.5 第 6 步、7.6「冠城斜街」）。主线 ch4_main：to_city（冠的事定了，坐行会的船上冠城）→ in_city（天亮在河西岸靠岸，进了冠城）→ council（玛蒂尔达说完了冬议上谁坐哪张椅子、昨夜谁跟谁喝过酒：上议事厅，冬议是 7.8）。冠在你手里（换、偷）进冠城的：斜街上三个蒙着脸的人堵你（无旗者收编过的少一个，ch1_outlaws = ally），说走（口才 15）或者打（ch4_ambush）。 7.7 支线「玛蒂尔达的人」（ch4_matilda）：她的眼线米洛（送面包的孩子）昨天傍晚往上城送面包没回来——面包师说他往广场那头往北的小巷里钻了；找到了，他只跟玛蒂尔达说：昨夜大主祭卢西安的车停在摄政宅子的后门（ch4_regent_visitor，冬议 7.8 用）。",
+  "_说明": "冠城一角的人（路线图 7.6；STORY.md 7.2、7.5 第 6 步、7.6「冠城斜街」）。主线 ch4_main：to_city（冠的事定了，坐行会的船上冠城）→ in_city（天亮在河西岸靠岸，进了冠城）→ council（玛蒂尔达说完了冬议上谁坐哪张椅子、昨夜谁跟谁喝过酒：上议事厅，冬议是 7.8）。冠在你手里（换、偷）进冠城的：斜街上三个蒙着脸的人堵你（无旗者收编过的少一个，ch1_outlaws = ally），说走（口才 15）或者打（ch4_ambush）。 7.7 支线「玛蒂尔达的人」（ch4_matilda）：她的眼线米洛（送面包的孩子）昨天傍晚往上城送面包没回来——面包师说他往广场那头往北的小巷里钻了；找到了，他只跟玛蒂尔达说：昨夜大主祭卢西安的车停在摄政宅子的后门（ch4_regent_visitor，冬议 7.8 用）。 第五章（8.1）：冬议散了，大主祭卢西安在钟楼门口等你（lucien），开钟楼的门（ch5_bell_open）；钟楼底下的档案馆里守卷的修士西缪（simeon：斜街上跟他们打过、冠又不在教会手里的才拦——口才 14 或者打，ch5_wardens），大主祭打开烧黑的铁箱给你看封誓残卷（lucien_archive，ch5_archive），主线 ch5_main：to_bell → to_archive → north。",
   "matilda": {"speaker": "玛蒂尔达", "start": "greet",
     "start_if": [{"if": [{"flag": "ch4_matilda_met"}], "node": "again"}],
     "nodes": {
@@ -63,5 +63,31 @@
       "note_you": {"text": "（你把它展开。议事厅里只剩你一个人的声音）\n「瓦伦家借卡斯韦尔家银币一千二百枚，以霜渡镇渡口税权作押。担保：王室。」（你把借据翻过来）借据翻过来，背面压着一枚星铁冠印——和铁匣封蜡上那一枚一模一样。", "options": [{"text": "（……）", "next": "silence"}]},
       "silence": {"text": "老王押出去的不只是冠。他拿整个北境的债，担保过烽燧线的每一车粮。\n（议事厅里没有人说话）", "text_if": [{"if": [{"flag": "ch4_debtor"}], "text": "老王押出去的不只是冠。他拿整个北境的债，担保过烽燧线的每一车粮。\n（旁听席上有人喊了一声：「那是北边的粮！」——是约斯特。差役去拉他，他没动）\n（议事厅里再没有人说话）"}], "do": [{"set": "ch4_note_read"}, {"quest_done": "ch4_main"}, {"daypart": "dusk"}, {"ending": "ch4"}], "options": [{"text": "（……）", "end": true}]},
       "after": {"text": "（议事厅里只剩差役在擦椅子。黄昏的光从高窗里斜进来，落在空王座上）", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "lucien": {"speaker": "大主祭卢西安", "start": "greet",
+    "nodes": {
+      "greet": {"text": "（他站在钟楼的门口，像一截没点的蜡烛）冬议散了。冠有了去处，冬天却没有退。你也看见了——黄昏钟响的时候，高窗外又下雪了。", "text_if": [{"if": [{"flag": "crown_holder", "eq": "church"}], "text": "（他站在钟楼的门口，双手捧着那只星铁包角的铁匣）冠在我手里了。冬议散了，冬天却没有退。你也看见了——黄昏钟响的时候，高窗外又下雪了。"}], "options": [{"text": "冬天为什么没有退？", "next": "why"}, {"text": "冬议前一夜，你去摄政的宅子做什么？", "if": [{"flag": "ch4_regent_visitor", "eq": "lucien"}, {"not_flag": "ch5_regent_asked"}], "next": "regent"}, {"text": "告辞。", "end": true}]},
+      "why": {"text": "因为冠只是一把钥匙。（他回头看了一眼那道门）钟楼底下有一样东西，四百年没有人看过——教会烧了它，没烧完。跟我下去。", "do": [{"set": "ch5_bell_open"}, {"quest": "ch5_main", "stage": "to_archive"}], "options": [{"text": "冬议前一夜，你去摄政的宅子做什么？", "if": [{"flag": "ch4_regent_visitor", "eq": "lucien"}, {"not_flag": "ch5_regent_asked"}], "next": "regent"}, {"text": "走。", "end": true}]},
+      "regent": {"text": "（他沉默了一会儿）我去要一句话：冠回冬井的那一天，塞弗林家不拦。他答应了——只要冠是戴在他孙子头上回去的。（他把手拢进袖子里）摄政想要一个春天，也想要那个春天姓塞弗林。", "do": [{"set": "ch5_regent_asked"}], "options": [{"text": "冬天为什么没有退？", "next": "why"}, {"text": "告辞。", "end": true}]}
+    }},
+  "lucien_archive": {"speaker": "大主祭卢西安", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch5_archive"}], "node": "again"}, {"if": [{"not_flag": "ch5_wardens"}], "node": "blocked"}],
+    "nodes": {
+      "blocked": {"text": "（他站在铁箱边，看着西缪）西缪不让开。他是这儿的守卷人——我也拦不住他。", "options": [{"text": "告辞。", "end": true}]},
+      "greet": {"text": "（他从怀里拿出一把小钥匙，打开那只烧黑的铁箱）约四百年前改加冕礼的时候，教会在这儿烧了一页。没烧完。（他把半张羊皮递给你，手在抖）", "options": [{"text": "（接过残卷，就着蜡烛读）", "next": "scroll"}]},
+      "scroll": {"text": "「……其七，封誓。持冠者以血封瓶，瓶置冬井，留名于冰。留名者，每冬还井，守井一夜，冬乃退。」（底下一行小字，是后来添的）「无人肯还。此页毁之，改为游行。」", "do": [{"set": "ch5_archive"}], "options": [{"text": "「持冠者」——不一定是王？", "next": "who"}]},
+      "who": {"text": "残卷上只写「持冠者」。（他看着你）四百年前没有一个国王肯每个冬天回到北边那口井边去，所以教会烧了这一页，改成了游行。\n冠在你怀里。没有人会跟你去。", "text_if": [{"if": [{"flag": "crown_holder", "eq": "severin"}], "text": "残卷上只写「持冠者」。（他看着你）四百年前没有一个国王肯每个冬天回到北边那口井边去，所以教会烧了这一页，改成了游行。\n冠在塞弗林家。贝尔特兰不会去——他会让孙子去。十四岁。"}, {"if": [{"flag": "crown_holder", "eq": "lomond"}], "text": "残卷上只写「持冠者」。（他看着你）四百年前没有一个国王肯每个冬天回到北边那口井边去，所以教会烧了这一页，改成了游行。\n冠在洛蒙德家。伊莎贝拉会去：她要亲眼看看，她替王国还的账值不值。"}, {"if": [{"flag": "crown_holder", "eq": "valen"}, {"flag": "valen_heir", "eq": "ivette"}], "text": "残卷上只写「持冠者」。（他看着你）四百年前没有一个国王肯每个冬天回到北边那口井边去，所以教会烧了这一页，改成了游行。\n冠在瓦伦家。伊薇特会去——北境的人，总是自己往北走。"}, {"if": [{"flag": "crown_holder", "eq": "valen"}], "text": "残卷上只写「持冠者」。（他看着你）四百年前没有一个国王肯每个冬天回到北边那口井边去，所以教会烧了这一页，改成了游行。\n冠在瓦伦家。阿尔里克会去——他不想去，可他更不想让别人去。"}, {"if": [{"flag": "crown_holder", "eq": "church"}], "text": "残卷上只写「持冠者」。（他看着你）四百年前没有一个国王肯每个冬天回到北边那口井边去，所以教会烧了这一页，改成了游行。\n冠在我手里。我跟你去。"}, {"if": [{"flag": "crown_holder", "eq": "caswell"}], "text": "残卷上只写「持冠者」。（他看着你）四百年前没有一个国王肯每个冬天回到北边那口井边去，所以教会烧了这一页，改成了游行。\n冠回了钥楼。科尔温不会去冬井——可他会借给你。利息另算。"}], "do": [{"quest": "ch5_main", "stage": "north"}], "options": [{"text": "斜街上蒙着脸堵我的人，是你的？", "if": [{"flag": "ch4_ambush"}, {"not_flag": "ch5_ambush_known"}], "next": "ambush"}, {"text": "北边那口井，我见过。", "next": "well"}, {"text": "告辞。", "end": true}]},
+      "well": {"text": "（他闭了一下眼睛）第十九烽背后，山脊那一边。三十五年前，有一只空瓶从那儿被捧了回来。（他看着你）那只瓶，还在守塔的人手里。", "options": [{"text": "斜街上蒙着脸堵我的人，是你的？", "if": [{"flag": "ch4_ambush"}, {"not_flag": "ch5_ambush_known"}], "next": "ambush"}, {"text": "告辞。", "end": true}]},
+      "ambush": {"text": "（他没有看你）是我的。我要冠回冬井——可我不要它在一个誓剑手里回去。（他把铁箱合上）我错了一半。", "do": [{"set": "ch5_ambush_known"}], "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（他坐在抄经桌边，那半张残卷摊在烛光底下）「留名者，每冬还井。」四百年了，这一行字一直在这儿。", "options": [{"text": "斜街上蒙着脸堵我的人，是你的？", "if": [{"flag": "ch4_ambush"}, {"not_flag": "ch5_ambush_known"}], "next": "ambush"}, {"text": "告辞。", "end": true}]}
+    }},
+  "simeon": {"speaker": "守卷的修士西缪", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch5_simeon_block"}, {"not_flag": "ch5_wardens"}], "node": "block"}, {"if": [{"flag": "ch4_ambush", "eq": "talked"}], "node": "greet_talked"}],
+    "nodes": {
+      "block": {"text": "（他胳膊上缠着布，挡在那排卷宗架前面，另外两个修士站到了他身后）……斜街上的那一位。大主祭让你下来，我没答应。", "options": [{"text": "大主祭要冠回冬井，我要冬天退。我们要的是一回事。", "check": {"id": "ch5_simeon_talk", "skill": "speech", "dc": 14, "pass": "talked", "fail": "no_talk"}}, {"text": "（拔剑）", "do": [{"fight": "wardens", "win": "ch5_wardens", "value": "beaten"}], "end": true}]},
+      "talked": {"text": "（他看了你很久，侧身让开）……那就去吧。残卷在最里头那只铁箱里。", "do": [{"set": "ch5_wardens", "value": "talked"}], "options": [{"text": "告辞。", "end": true}]},
+      "no_talk": {"text": "（他把手按在腰上的短棍上）斜街上你也是这么说的。", "options": [{"text": "（拔剑）", "do": [{"fight": "wardens", "win": "ch5_wardens", "value": "beaten"}], "end": true}]},
+      "greet_talked": {"text": "（他朝你点了点头，又低下头去抄书）斜街上那一句话，大主祭听了。我也听了。", "options": [{"text": "告辞。", "end": true}]},
+      "greet": {"text": "（他抱着一摞卷宗，从架子之间走出来）大主祭在最里头。别碰架子上的东西——有些纸，一碰就碎了。", "options": [{"text": "告辞。", "end": true}]}
     }}
 }
