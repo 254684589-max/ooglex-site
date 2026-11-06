@@ -4,774 +4,6 @@
  "previous": null,
  "results": [
   {
-   "id": "e0741415-6c63-4236-9736-24a6c04485bc",
-   "url": "https://ll.thespacedevs.com/2.3.0/launches/e0741415-6c63-4236-9736-24a6c04485bc/",
-   "name": "Nuri | NeonSat-2 to 6",
-   "response_mode": "detailed",
-   "slug": "nuri-neonsat-2-to-6",
-   "launch_designator": "2026-229",
-   "status": {
-    "id": 3,
-    "name": "Launch Successful",
-    "abbrev": "Success",
-    "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
-   },
-   "last_updated": "2026-10-09T01:02:13Z",
-   "net": "2026-10-07T03:25:00Z",
-   "net_precision": {
-    "id": 0,
-    "name": "Second",
-    "abbrev": "SEC",
-    "description": "The T-0 is accurate to the second."
-   },
-   "window_end": "2026-10-07T04:23:00Z",
-   "window_start": "2026-10-07T03:23:00Z",
-   "image": {
-    "id": 1283,
-    "name": "Nuri liftoff from LC-2 (NEXTSat-2 & SNIPE)",
-    "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/nuri_liftoff_2_image_20240820080542.jpeg",
-    "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/nuri_liftoff_2_image_thumbnail_20240820080542.jpeg",
-    "credit": "KARI/VNA/CVN",
-    "license": {
-     "id": 1,
-     "name": "Unknown",
-     "priority": 9,
-     "link": null
-    },
-    "single_use": false,
-    "variants": []
-   },
-   "infographic": null,
-   "probability": null,
-   "weather_concerns": null,
-   "failreason": "",
-   "hashtag": null,
-   "launch_service_provider": {
-    "response_mode": "normal",
-    "id": 41,
-    "url": "https://ll.thespacedevs.com/2.3.0/agencies/41/",
-    "name": "Korea Aerospace Research Institute",
-    "abbrev": "KARI",
-    "type": {
-     "id": 1,
-     "name": "Government"
-    },
-    "featured": false,
-    "country": [
-     {
-      "id": 35,
-      "name": "South Korea",
-      "alpha_2_code": "KR",
-      "alpha_3_code": "KOR",
-      "nationality_name": "South Korean",
-      "nationality_name_composed": "South Korean"
-     }
-    ],
-    "description": "The Korea Aerospace Research Institute (KARI) established in 1989, is the aeronautics and space agency of Republic of Korea. Its main laboratories are located in Daejeon, in the Daedeok Science Town.",
-    "administrator": "Administrator: Lee Sang-Ryool",
-    "founding_year": 1989,
-    "launchers": "Nuri",
-    "spacecraft": "",
-    "parent": "Korea AeroSpace Administration",
-    "image": null,
-    "logo": {
-     "id": 154,
-     "name": "[AUTO] Korea Aerospace Research Institute - logo",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/korea2520aerospace2520research2520institute_logo_20200806032236.png",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185029.png",
-     "credit": null,
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "social_logo": {
-     "id": 72,
-     "name": "[AUTO] Korea Aerospace Research Institute - social_logo",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/korea2520aerospace2520research2520institute_nation_20230604194037.jpg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184817.jpeg",
-     "credit": null,
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "total_launch_count": 9,
-    "consecutive_successful_launches": 4,
-    "successful_launches": 6,
-    "failed_launches": 3,
-    "pending_launches": 2,
-    "consecutive_successful_landings": 0,
-    "successful_landings": 0,
-    "failed_landings": 0,
-    "attempted_landings": 0,
-    "successful_landings_spacecraft": 0,
-    "failed_landings_spacecraft": 0,
-    "attempted_landings_spacecraft": 0,
-    "successful_landings_payload": 0,
-    "failed_landings_payload": 0,
-    "attempted_landings_payload": 0,
-    "info_url": "https://www.kari.kr/",
-    "wiki_url": "https://en.wikipedia.org/wiki/Korea_Aerospace_Research_Institute",
-    "social_media_links": []
-   },
-   "rocket": {
-    "id": 8848,
-    "configuration": {
-     "response_mode": "detailed",
-     "id": 117,
-     "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/117/",
-     "name": "Nuri",
-     "families": [
-      {
-       "response_mode": "detailed",
-       "id": 99,
-       "name": "KSLV",
-       "manufacturer": [
-        {
-         "response_mode": "normal",
-         "id": 41,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/41/",
-         "name": "Korea Aerospace Research Institute",
-         "abbrev": "KARI",
-         "type": {
-          "id": 1,
-          "name": "Government"
-         },
-         "featured": false,
-         "country": [
-          {
-           "id": 35,
-           "name": "South Korea",
-           "alpha_2_code": "KR",
-           "alpha_3_code": "KOR",
-           "nationality_name": "South Korean",
-           "nationality_name_composed": "South Korean"
-          }
-         ],
-         "description": "The Korea Aerospace Research Institute (KARI) established in 1989, is the aeronautics and space agency of Republic of Korea. Its main laboratories are located in Daejeon, in the Daedeok Science Town.",
-         "administrator": "Administrator: Lee Sang-Ryool",
-         "founding_year": 1989,
-         "launchers": "Nuri",
-         "spacecraft": "",
-         "parent": "Korea AeroSpace Administration",
-         "image": null,
-         "logo": {
-          "id": 154,
-          "name": "[AUTO] Korea Aerospace Research Institute - logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/korea2520aerospace2520research2520institute_logo_20200806032236.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185029.png",
-          "credit": null,
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "social_logo": {
-          "id": 72,
-          "name": "[AUTO] Korea Aerospace Research Institute - social_logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/korea2520aerospace2520research2520institute_nation_20230604194037.jpg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184817.jpeg",
-          "credit": null,
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "total_launch_count": 9,
-         "consecutive_successful_launches": 4,
-         "successful_launches": 6,
-         "failed_launches": 3,
-         "pending_launches": 2,
-         "consecutive_successful_landings": 0,
-         "successful_landings": 0,
-         "failed_landings": 0,
-         "attempted_landings": 0,
-         "successful_landings_spacecraft": 0,
-         "failed_landings_spacecraft": 0,
-         "attempted_landings_spacecraft": 0,
-         "successful_landings_payload": 0,
-         "failed_landings_payload": 0,
-         "attempted_landings_payload": 0,
-         "info_url": "https://www.kari.kr/",
-         "wiki_url": "https://en.wikipedia.org/wiki/Korea_Aerospace_Research_Institute",
-         "social_media_links": []
-        }
-       ],
-       "parent": null,
-       "description": "",
-       "active": true,
-       "maiden_flight": "2009-08-25",
-       "total_launch_count": 9,
-       "consecutive_successful_launches": 4,
-       "successful_launches": 6,
-       "failed_launches": 3,
-       "pending_launches": 2,
-       "attempted_landings": 0,
-       "successful_landings": 0,
-       "failed_landings": 0,
-       "consecutive_successful_landings": 0
-      }
-     ],
-     "full_name": "KSLV-2 Nuri",
-     "variant": "2",
-     "active": true,
-     "is_placeholder": false,
-     "manufacturer": {
-      "response_mode": "normal",
-      "id": 41,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/41/",
-      "name": "Korea Aerospace Research Institute",
-      "abbrev": "KARI",
-      "type": {
-       "id": 1,
-       "name": "Government"
-      },
-      "featured": false,
-      "country": [
-       {
-        "id": 35,
-        "name": "South Korea",
-        "alpha_2_code": "KR",
-        "alpha_3_code": "KOR",
-        "nationality_name": "South Korean",
-        "nationality_name_composed": "South Korean"
-       }
-      ],
-      "description": "The Korea Aerospace Research Institute (KARI) established in 1989, is the aeronautics and space agency of Republic of Korea. Its main laboratories are located in Daejeon, in the Daedeok Science Town.",
-      "administrator": "Administrator: Lee Sang-Ryool",
-      "founding_year": 1989,
-      "launchers": "Nuri",
-      "spacecraft": "",
-      "parent": "Korea AeroSpace Administration",
-      "image": null,
-      "logo": {
-       "id": 154,
-       "name": "[AUTO] Korea Aerospace Research Institute - logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/korea2520aerospace2520research2520institute_logo_20200806032236.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185029.png",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "social_logo": {
-       "id": 72,
-       "name": "[AUTO] Korea Aerospace Research Institute - social_logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/korea2520aerospace2520research2520institute_nation_20230604194037.jpg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184817.jpeg",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "total_launch_count": 9,
-      "consecutive_successful_launches": 4,
-      "successful_launches": 6,
-      "failed_launches": 3,
-      "pending_launches": 2,
-      "consecutive_successful_landings": 0,
-      "successful_landings": 0,
-      "failed_landings": 0,
-      "attempted_landings": 0,
-      "successful_landings_spacecraft": 0,
-      "failed_landings_spacecraft": 0,
-      "attempted_landings_spacecraft": 0,
-      "successful_landings_payload": 0,
-      "failed_landings_payload": 0,
-      "attempted_landings_payload": 0,
-      "info_url": "https://www.kari.kr/",
-      "wiki_url": "https://en.wikipedia.org/wiki/Korea_Aerospace_Research_Institute",
-      "social_media_links": []
-     },
-     "program": [],
-     "reusable": false,
-     "image": {
-      "id": 1797,
-      "name": "Nuri on the launch pad",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/nuri_on_the_lau_image_20240307163812.jpeg",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/nuri_on_the_lau_image_thumbnail_20240307163813.jpeg",
-      "credit": "Korea Aerospace Research Institute",
-      "license": {
-       "id": 15,
-       "name": "Korea Open Government License Type I: Attribution",
-       "priority": 6,
-       "link": "https://www.kogl.or.kr/edu/eduDataFileDown.do?dataIdx=97&dataFileIdx=1"
-      },
-      "single_use": true,
-      "variants": []
-     },
-     "info_url": "https://www.kari.re.kr/eng/sub03_03_01.do",
-     "wiki_url": "https://en.wikipedia.org/wiki/KSLV-2",
-     "description": "Nuri, also known as KSLV-II, is South Korea's second carrier rocket and the successor to KSLV-1.",
-     "alias": "",
-     "min_stage": 3,
-     "max_stage": 3,
-     "length": 47.2,
-     "diameter": 3.5,
-     "maiden_flight": "2021-10-21",
-     "launch_cost": null,
-     "launch_mass": 200.0,
-     "leo_capacity": 2600.0,
-     "gto_capacity": null,
-     "geo_capacity": null,
-     "sso_capacity": null,
-     "to_thrust": 2612.0,
-     "apogee": null,
-     "total_launch_count": 5,
-     "consecutive_successful_launches": 4,
-     "successful_launches": 4,
-     "failed_launches": 1,
-     "pending_launches": 2,
-     "attempted_landings": 0,
-     "successful_landings": 0,
-     "failed_landings": 0,
-     "consecutive_successful_landings": 0,
-     "fastest_turnaround": "P242DT23H"
-    },
-    "launcher_stage": [],
-    "spacecraft_stage": [],
-    "payloads": []
-   },
-   "mission": {
-    "id": 7439,
-    "name": "NeonSat-2 to 6",
-    "type": "Earth Science",
-    "description": "NeonSat-2 to 6 are part of the South Korean government's Earth observation micro-satellite constellation NeonSat (New-space Earth Observation Satellite). The NeonSat constellation is the first satellite system developed by the government using a mass-production approach for precise monitoring of the Korean Peninsula.\r\n\r\n10 ride-sharing small satellites from various Korean institutes and organizations will also fly on this launch:\r\n* SLEDGE\r\n* GBSAT\r\n* PERSAT02\r\n* UEL-Y-Sys\r\n* SD-1 SAT\r\n* E3_TESTER-KARI-2\r\n* DaejonSat-1\r\n* BEE-1012\r\n* JACK-007\r\n* CPSat",
-    "image": null,
-    "orbit": {
-     "id": 17,
-     "name": "Sun-Synchronous Orbit",
-     "abbrev": "SSO",
-     "celestial_body": {
-      "response_mode": "list",
-      "id": 1,
-      "name": "Earth"
-     }
-    },
-    "agencies": [],
-    "info_urls": [],
-    "vid_urls": []
-   },
-   "pad": {
-    "id": 192,
-    "url": "https://ll.thespacedevs.com/2.3.0/pads/192/",
-    "active": true,
-    "agencies": [
-     {
-      "response_mode": "normal",
-      "id": 41,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/41/",
-      "name": "Korea Aerospace Research Institute",
-      "abbrev": "KARI",
-      "type": {
-       "id": 1,
-       "name": "Government"
-      },
-      "featured": false,
-      "country": [
-       {
-        "id": 35,
-        "name": "South Korea",
-        "alpha_2_code": "KR",
-        "alpha_3_code": "KOR",
-        "nationality_name": "South Korean",
-        "nationality_name_composed": "South Korean"
-       }
-      ],
-      "description": "The Korea Aerospace Research Institute (KARI) established in 1989, is the aeronautics and space agency of Republic of Korea. Its main laboratories are located in Daejeon, in the Daedeok Science Town.",
-      "administrator": "Administrator: Lee Sang-Ryool",
-      "founding_year": 1989,
-      "launchers": "Nuri",
-      "spacecraft": "",
-      "parent": "Korea AeroSpace Administration",
-      "image": null,
-      "logo": {
-       "id": 154,
-       "name": "[AUTO] Korea Aerospace Research Institute - logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/korea2520aerospace2520research2520institute_logo_20200806032236.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305185029.png",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "social_logo": {
-       "id": 72,
-       "name": "[AUTO] Korea Aerospace Research Institute - social_logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/korea2520aerospace2520research2520institute_nation_20230604194037.jpg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184817.jpeg",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      }
-     }
-    ],
-    "name": "LC-2",
-    "image": {
-     "id": 1283,
-     "name": "Nuri liftoff from LC-2 (NEXTSat-2 & SNIPE)",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/nuri_liftoff_2_image_20240820080542.jpeg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/nuri_liftoff_2_image_thumbnail_20240820080542.jpeg",
-     "credit": "KARI/VNA/CVN",
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": false,
-     "variants": []
-    },
-    "description": "",
-    "info_url": null,
-    "wiki_url": "https://en.wikipedia.org/wiki/Naro_Space_Center",
-    "map_url": "https://www.google.com/maps?q=34.431867,127.535069",
-    "latitude": 34.431867,
-    "longitude": 127.535069,
-    "country": {
-     "id": 35,
-     "name": "South Korea",
-     "alpha_2_code": "KR",
-     "alpha_3_code": "KOR",
-     "nationality_name": "South Korean",
-     "nationality_name_composed": "South Korean"
-    },
-    "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_lc-2_20210812070305.jpg",
-    "total_launch_count": 6,
-    "orbital_launch_attempt_count": 5,
-    "fastest_turnaround": "P242DT23H",
-    "location": {
-     "response_mode": "normal",
-     "id": 9,
-     "url": "https://ll.thespacedevs.com/2.3.0/locations/9/",
-     "name": "Naro Space Center, South Korea",
-     "celestial_body": {
-      "response_mode": "normal",
-      "id": 1,
-      "name": "Earth",
-      "type": {
-       "id": 1,
-       "name": "Planet"
-      },
-      "diameter": 12742000.0,
-      "mass": 5.972168e+24,
-      "gravity": 9.80655,
-      "length_of_day": "1 00:00:00",
-      "atmosphere": true,
-      "image": {
-       "id": 2040,
-       "name": "Earth (Apollo 17)",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
-       "credit": "NASA",
-       "license": {
-        "id": 4,
-        "name": "NASA Image and Media Guidelines",
-        "priority": 0,
-        "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
-      "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
-      "failed_launches": 557,
-      "total_attempted_landings": 1384,
-      "successful_landings": 1335,
-      "failed_landings": 49
-     },
-     "active": true,
-     "country": {
-      "id": 35,
-      "name": "South Korea",
-      "alpha_2_code": "KR",
-      "alpha_3_code": "KOR",
-      "nationality_name": "South Korean",
-      "nationality_name_composed": "South Korean"
-     },
-     "description": "The Naro Space Center is a South Korean spaceport in South Jeolla's Goheung County, operated by the state-run Korea Aerospace Research Institute.",
-     "image": {
-      "id": 1797,
-      "name": "Nuri on the launch pad",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/nuri_on_the_lau_image_20240307163812.jpeg",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/nuri_on_the_lau_image_thumbnail_20240307163813.jpeg",
-      "credit": "Korea Aerospace Research Institute",
-      "license": {
-       "id": 15,
-       "name": "Korea Open Government License Type I: Attribution",
-       "priority": 6,
-       "link": "https://www.kogl.or.kr/edu/eduDataFileDown.do?dataIdx=97&dataFileIdx=1"
-      },
-      "single_use": true,
-      "variants": []
-     },
-     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/location_9_20200803142441.jpg",
-     "longitude": 127.535,
-     "latitude": 34.431944,
-     "timezone_name": "Asia/Seoul",
-     "total_launch_count": 9,
-     "total_landing_count": 0
-    }
-   },
-   "webcast_live": false,
-   "program": [],
-   "orbital_launch_attempt_count": 7410,
-   "location_launch_attempt_count": 9,
-   "pad_launch_attempt_count": 6,
-   "agency_launch_attempt_count": 9,
-   "orbital_launch_attempt_count_year": 237,
-   "location_launch_attempt_count_year": 1,
-   "pad_launch_attempt_count_year": 1,
-   "agency_launch_attempt_count_year": 1,
-   "flightclub_url": null,
-   "updates": [
-    {
-     "id": 16435,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Launch success.",
-     "info_url": "https://x.com/kari2030/status/2107702183487742126",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-10-07T05:28:00Z"
-    },
-    {
-     "id": 16434,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "All payload have separated.",
-     "info_url": "https://www.youtube.com/watch?v=v9gY7VkVT0w",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-10-07T03:43:00Z"
-    },
-    {
-     "id": 16433,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Liftoff.",
-     "info_url": "https://www.youtube.com/watch?v=v9gY7VkVT0w",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-10-07T03:25:00Z"
-    },
-    {
-     "id": 16432,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/ll2_profile_20230311134739.png",
-     "comment": "Official Webcast by 우주항공청 KASA has started",
-     "info_url": "https://www.youtube.com/watch?v=pA96fyDkqMw",
-     "created_by": "LL2",
-     "created_on": "2026-10-07T01:38:00Z"
-    },
-    {
-     "id": 16431,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "New T-0.",
-     "info_url": "https://x.com/kari2030/status/2107620738312364362",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-10-07T00:35:00Z"
-    },
-    {
-     "id": 15956,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "GO for launch on October 7.",
-     "info_url": "https://x.com/kari2030/status/2092801867604689327",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-08-27T02:42:00Z"
-    },
-    {
-     "id": 15685,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Delayed to NET October.",
-     "info_url": "https://v.daum.net/v/20260728180002336",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-07-29T11:13:00Z"
-    },
-    {
-     "id": 15590,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET September.",
-     "info_url": "https://en.sedaily.com/technology/2026/06/25/kasa-to-begin-nuri-rocket-assembly-next-week-confirm-second",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-07-17T21:24:00Z"
-    },
-    {
-     "id": 13381,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "NET Q3 2026.",
-     "info_url": "https://www.kasa.go.kr/SynapDocViewServer/viewer/doc.html?key=62db11ad983e4989968581324ea06ead&convType=html&convLocale=ko_KR&contextPath=/SynapDocViewServer/",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2025-12-17T22:03:00Z"
-    },
-    {
-     "id": 13209,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Added launch.",
-     "info_url": "https://www.yna.co.kr/view/AKR20250918087300017",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2025-12-09T17:08:00Z"
-    }
-   ],
-   "info_urls": [],
-   "vid_urls": [
-    {
-     "priority": 10,
-     "source": "youtube.com",
-     "publisher": "우주항공청 KASA",
-     "title": "국내 최초 군집위성 탑재 누리호 5차 발사 LIVE",
-     "description": "",
-     "feature_image": "https://i.ytimg.com/vi/pA96fyDkqMw/maxresdefault.jpg",
-     "url": "https://www.youtube.com/watch?v=pA96fyDkqMw",
-     "type": {
-      "id": 1,
-      "name": "Official Webcast"
-     },
-     "language": {
-      "id": 9,
-      "name": "Korean",
-      "code": "ko"
-     },
-     "start_time": "2026-10-07T01:37:29Z",
-     "end_time": "2026-10-07T05:55:25Z",
-     "live": false
-    },
-    {
-     "priority": 11,
-     "source": "youtube.com",
-     "publisher": "한국항공우주연구원 KARI TV",
-     "title": "[LIVE] 누리호 5차 발사 공식 생중계 🚀 2026.10.07.",
-     "description": "대한민국 독자 개발 우주발사체 누리호(KSLV-II)가 다섯 번째 비행에 나섭니다. 🚀\n\n이번 누리호 5차 발사에는 주탑재위성인 초소형군집위성 2~6호 5기와 큐브위성 10기 등 총 15기의 위성이 탑재됩니다.\n\n누리호가 우주로 향하는 순간을 한국항공우주연구원 공식 유튜브 생중계로 함께해 주세요.\n\n📅 발사 예정일 : 2026년 10월 7일(수)\n🚀 발사체 : 누리호(KSLV-II)\n🛰️ 탑재위성 : 총 15기\n\n※ 발사 일정 및 시각은 기상 상황과 발사 준비 상황 등에 따라 변경될 수 있습니다.\n\n#한국항공우주연구원 #항우연 #KARI #누리호 #누리호5차발사 #KSLVII #누리호생중계",
-     "feature_image": "https://i.ytimg.com/vi/v9gY7VkVT0w/maxresdefault.jpg",
-     "url": "https://www.youtube.com/watch?v=v9gY7VkVT0w",
-     "type": {
-      "id": 1,
-      "name": "Official Webcast"
-     },
-     "language": {
-      "id": 9,
-      "name": "Korean",
-      "code": "ko"
-     },
-     "start_time": "2026-10-07T01:31:20Z",
-     "end_time": "2026-10-07T05:51:37Z",
-     "live": false
-    }
-   ],
-   "timeline": [
-    {
-     "type": {
-      "id": 10,
-      "abbrev": "Liftoff",
-      "description": "First upwards movement of the rocket"
-     },
-     "relative_time": "P0D"
-    },
-    {
-     "type": {
-      "id": 13,
-      "abbrev": "Stage 2 Separation",
-      "description": "Separation of the second stage from the first"
-     },
-     "relative_time": "PT2M3S"
-    },
-    {
-     "type": {
-      "id": 15,
-      "abbrev": "Fairing Separation",
-      "description": "Separation of the payload fairing"
-     },
-     "relative_time": "PT3M53S"
-    },
-    {
-     "type": {
-      "id": 74,
-      "abbrev": "Stage 3 Separation",
-      "description": "Separation of the third stage from the second"
-     },
-     "relative_time": "PT4M28S"
-    },
-    {
-     "type": {
-      "id": 76,
-      "abbrev": "Stage 3 Cutoff",
-      "description": "Third stage engine shuts down."
-     },
-     "relative_time": "PT12M41S"
-    },
-    {
-     "type": {
-      "id": 78,
-      "abbrev": "Payload Deployment Sequence Start",
-      "description": "Start of the payload deployment sequence"
-     },
-     "relative_time": "PT13M30S"
-    },
-    {
-     "type": {
-      "id": 79,
-      "abbrev": "Payload Deployment Sequence End",
-      "description": "End of the payload deployment sequence."
-     },
-     "relative_time": "PT17M15S"
-    }
-   ],
-   "pad_turnaround": "P314DT11H12M",
-   "mission_patches": [
-    {
-     "id": 1350,
-     "name": "Nuri F5 Patch",
-     "priority": 10,
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/mission_patch_images/nuri2520f5252_mission_patch_20261007015251.png",
-     "agency": {
-      "response_mode": "list",
-      "id": 41,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/41/",
-      "name": "Korea Aerospace Research Institute",
-      "abbrev": "KARI",
-      "type": {
-       "id": 1,
-       "name": "Government"
-      }
-     },
-     "response_mode": "normal"
-    }
-   ]
-  },
-  {
    "id": "a1bb0984-19d4-4b47-9bba-706d225573e2",
    "url": "https://ll.thespacedevs.com/2.3.0/launches/a1bb0984-19d4-4b47-9bba-706d225573e2/",
    "name": "Long March 12 | SatNet LEO Group 27",
@@ -886,11 +118,11 @@
      "single_use": true,
      "variants": []
     },
-    "total_launch_count": 621,
-    "consecutive_successful_launches": 12,
-    "successful_launches": 605,
+    "total_launch_count": 622,
+    "consecutive_successful_launches": 13,
+    "successful_launches": 606,
     "failed_launches": 16,
-    "pending_launches": 10,
+    "pending_launches": 9,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -990,11 +222,11 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 621,
-         "consecutive_successful_launches": 12,
-         "successful_launches": 605,
+         "total_launch_count": 622,
+         "consecutive_successful_launches": 13,
+         "successful_launches": 606,
          "failed_launches": 16,
-         "pending_launches": 10,
+         "pending_launches": 9,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -1014,9 +246,9 @@
        "description": "",
        "active": true,
        "maiden_flight": "1970-04-24",
-       "total_launch_count": 674,
-       "consecutive_successful_launches": 12,
-       "successful_launches": 654,
+       "total_launch_count": 675,
+       "consecutive_successful_launches": 13,
+       "successful_launches": 655,
        "failed_launches": 20,
        "pending_launches": 9,
        "attempted_landings": 2,
@@ -1101,11 +333,11 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 621,
-         "consecutive_successful_launches": 12,
-         "successful_launches": 605,
+         "total_launch_count": 622,
+         "consecutive_successful_launches": 13,
+         "successful_launches": 606,
          "failed_launches": 16,
-         "pending_launches": 10,
+         "pending_launches": 9,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -1292,11 +524,11 @@
        "single_use": true,
        "variants": []
       },
-      "total_launch_count": 621,
-      "consecutive_successful_launches": 12,
-      "successful_launches": 605,
+      "total_launch_count": 622,
+      "consecutive_successful_launches": 13,
+      "successful_launches": 606,
       "failed_launches": 16,
-      "pending_launches": 10,
+      "pending_launches": 9,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -1440,8 +672,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -2946,8 +2178,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -4954,8 +4186,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -5291,17 +4523,17 @@
     },
     {
      "type": {
-      "id": 3,
-      "abbrev": "Stage 1 LOX Load",
-      "description": "Start of liquid oxygen loading in the first stage"
+      "id": 2,
+      "abbrev": "Prop Load",
+      "description": "Start of propelland loading"
      },
      "relative_time": "-PT35M"
     },
     {
      "type": {
-      "id": 2,
-      "abbrev": "Prop Load",
-      "description": "Start of propelland loading"
+      "id": 3,
+      "abbrev": "Stage 1 LOX Load",
+      "description": "Start of liquid oxygen loading in the first stage"
      },
      "relative_time": "-PT35M"
     },
@@ -5323,17 +4555,17 @@
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
@@ -5501,7 +4733,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-11-05T02:04:24Z",
+   "last_updated": "2026-11-06T02:05:08Z",
    "net": "2026-10-13T10:33:44Z",
    "net_precision": {
     "id": 0,
@@ -6736,8 +5968,8 @@
         "variants": []
        },
        "in_space": true,
-       "time_in_space": "P297DT23H26M31S",
-       "time_docked": "P289DT13H55M48S",
+       "time_in_space": "P298DT23H27M5S",
+       "time_docked": "P290DT13H56M22S",
        "flights_count": 4,
        "mission_ends_count": 3,
        "status": {
@@ -7136,7 +6368,7 @@
         "description": "Unpowered landing using parachute(s)."
        }
       },
-      "duration": "P22DT15H30M40.43177S",
+      "duration": "P23DT15H31M24.601601S",
       "turn_around_time": "P228DT2H49M44S",
       "response_mode": "detailed",
       "launch_crew": [],
@@ -7474,8 +6706,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -7958,17 +7190,17 @@
     },
     {
      "type": {
-      "id": 6,
-      "abbrev": "Startup",
-      "description": "The onboard computer takes control over the countdown and runs last checks"
+      "id": 7,
+      "abbrev": "Tank Press",
+      "description": "Fuel tanks are pressurized to flight levels"
      },
      "relative_time": "-PT1M"
     },
     {
      "type": {
-      "id": 7,
-      "abbrev": "Tank Press",
-      "description": "Fuel tanks are pressurized to flight levels"
+      "id": 6,
+      "abbrev": "Startup",
+      "description": "The onboard computer takes control over the countdown and runs last checks"
      },
      "relative_time": "-PT1M"
     },
@@ -8622,8 +7854,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -10055,8 +9287,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -11063,8 +10295,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -12905,8 +12137,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -13965,8 +13197,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -14623,8 +13855,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -14968,11 +14200,11 @@
      "single_use": true,
      "variants": []
     },
-    "total_launch_count": 621,
-    "consecutive_successful_launches": 12,
-    "successful_launches": 605,
+    "total_launch_count": 622,
+    "consecutive_successful_launches": 13,
+    "successful_launches": 606,
     "failed_launches": 16,
-    "pending_launches": 10,
+    "pending_launches": 9,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -15072,11 +14304,11 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 621,
-         "consecutive_successful_launches": 12,
-         "successful_launches": 605,
+         "total_launch_count": 622,
+         "consecutive_successful_launches": 13,
+         "successful_launches": 606,
          "failed_launches": 16,
-         "pending_launches": 10,
+         "pending_launches": 9,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -15096,9 +14328,9 @@
        "description": "",
        "active": true,
        "maiden_flight": "1970-04-24",
-       "total_launch_count": 674,
-       "consecutive_successful_launches": 12,
-       "successful_launches": 654,
+       "total_launch_count": 675,
+       "consecutive_successful_launches": 13,
+       "successful_launches": 655,
        "failed_launches": 20,
        "pending_launches": 9,
        "attempted_landings": 2,
@@ -15183,11 +14415,11 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 621,
-         "consecutive_successful_launches": 12,
-         "successful_launches": 605,
+         "total_launch_count": 622,
+         "consecutive_successful_launches": 13,
+         "successful_launches": 606,
          "failed_launches": 16,
-         "pending_launches": 10,
+         "pending_launches": 9,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -15374,11 +14606,11 @@
        "single_use": true,
        "variants": []
       },
-      "total_launch_count": 621,
-      "consecutive_successful_launches": 12,
-      "successful_launches": 605,
+      "total_launch_count": 622,
+      "consecutive_successful_launches": 13,
+      "successful_launches": 606,
       "failed_launches": 16,
-      "pending_launches": 10,
+      "pending_launches": 9,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -15536,8 +14768,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -15726,11 +14958,11 @@
      "single_use": true,
      "variants": []
     },
-    "total_launch_count": 621,
-    "consecutive_successful_launches": 12,
-    "successful_launches": 605,
+    "total_launch_count": 622,
+    "consecutive_successful_launches": 13,
+    "successful_launches": 606,
     "failed_launches": 16,
-    "pending_launches": 10,
+    "pending_launches": 9,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -15830,11 +15062,11 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 621,
-         "consecutive_successful_launches": 12,
-         "successful_launches": 605,
+         "total_launch_count": 622,
+         "consecutive_successful_launches": 13,
+         "successful_launches": 606,
          "failed_launches": 16,
-         "pending_launches": 10,
+         "pending_launches": 9,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -15854,9 +15086,9 @@
        "description": "",
        "active": true,
        "maiden_flight": "1970-04-24",
-       "total_launch_count": 674,
-       "consecutive_successful_launches": 12,
-       "successful_launches": 654,
+       "total_launch_count": 675,
+       "consecutive_successful_launches": 13,
+       "successful_launches": 655,
        "failed_launches": 20,
        "pending_launches": 9,
        "attempted_landings": 2,
@@ -15941,11 +15173,11 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 621,
-         "consecutive_successful_launches": 12,
-         "successful_launches": 605,
+         "total_launch_count": 622,
+         "consecutive_successful_launches": 13,
+         "successful_launches": 606,
          "failed_launches": 16,
-         "pending_launches": 10,
+         "pending_launches": 9,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -16132,11 +15364,11 @@
        "single_use": true,
        "variants": []
       },
-      "total_launch_count": 621,
-      "consecutive_successful_launches": 12,
-      "successful_launches": 605,
+      "total_launch_count": 622,
+      "consecutive_successful_launches": 13,
+      "successful_launches": 606,
       "failed_launches": 16,
-      "pending_launches": 10,
+      "pending_launches": 9,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -16294,8 +15526,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -17832,8 +17064,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -18516,11 +17748,11 @@
      "single_use": true,
      "variants": []
     },
-    "total_launch_count": 621,
-    "consecutive_successful_launches": 12,
-    "successful_launches": 605,
+    "total_launch_count": 622,
+    "consecutive_successful_launches": 13,
+    "successful_launches": 606,
     "failed_launches": 16,
-    "pending_launches": 10,
+    "pending_launches": 9,
     "consecutive_successful_landings": 1,
     "successful_landings": 1,
     "failed_landings": 1,
@@ -18620,11 +17852,11 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 621,
-         "consecutive_successful_launches": 12,
-         "successful_launches": 605,
+         "total_launch_count": 622,
+         "consecutive_successful_launches": 13,
+         "successful_launches": 606,
          "failed_launches": 16,
-         "pending_launches": 10,
+         "pending_launches": 9,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -18644,9 +17876,9 @@
        "description": "",
        "active": true,
        "maiden_flight": "1970-04-24",
-       "total_launch_count": 674,
-       "consecutive_successful_launches": 12,
-       "successful_launches": 654,
+       "total_launch_count": 675,
+       "consecutive_successful_launches": 13,
+       "successful_launches": 655,
        "failed_launches": 20,
        "pending_launches": 9,
        "attempted_landings": 2,
@@ -18731,11 +17963,11 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 621,
-         "consecutive_successful_launches": 12,
-         "successful_launches": 605,
+         "total_launch_count": 622,
+         "consecutive_successful_launches": 13,
+         "successful_launches": 606,
          "failed_launches": 16,
-         "pending_launches": 10,
+         "pending_launches": 9,
          "consecutive_successful_landings": 1,
          "successful_landings": 1,
          "failed_landings": 1,
@@ -18922,11 +18154,11 @@
        "single_use": true,
        "variants": []
       },
-      "total_launch_count": 621,
-      "consecutive_successful_launches": 12,
-      "successful_launches": 605,
+      "total_launch_count": 622,
+      "consecutive_successful_launches": 13,
+      "successful_launches": 606,
       "failed_launches": 16,
-      "pending_launches": 10,
+      "pending_launches": 9,
       "consecutive_successful_landings": 1,
       "successful_landings": 1,
       "failed_landings": 1,
@@ -19070,8 +18302,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -20675,8 +19907,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -21814,8 +21046,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -22040,14 +21272,14 @@
    "name": "Falcon 9 Block 5 | Starlink Group 15-18",
    "response_mode": "detailed",
    "slug": "falcon-9-block-5-starlink-group-15-18",
-   "launch_designator": null,
+   "launch_designator": "2026-246",
    "status": {
     "id": 3,
     "name": "Launch Successful",
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-10-31T05:09:34Z",
+   "last_updated": "2026-11-06T12:15:55Z",
    "net": "2026-10-31T04:04:34Z",
    "net_precision": {
     "id": 0,
@@ -23489,8 +22721,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -24561,8 +23793,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -25294,8 +24526,8 @@
       },
       "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
       "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7653,
-      "successful_launches": 7096,
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
       "failed_launches": 557,
       "total_attempted_landings": 1384,
       "successful_landings": 1335,
@@ -25367,6 +24599,838 @@
    "vid_urls": [],
    "timeline": [],
    "pad_turnaround": "P217DT13H15M",
+   "mission_patches": []
+  },
+  {
+   "id": "711de6bc-f755-475b-a12f-ec5240da3a11",
+   "url": "https://ll.thespacedevs.com/2.3.0/launches/711de6bc-f755-475b-a12f-ec5240da3a11/",
+   "name": "Long March 2C | Yaogan 51-07 to 09",
+   "response_mode": "detailed",
+   "slug": "long-march-2c-yaogan-51-07-to-09",
+   "launch_designator": null,
+   "status": {
+    "id": 3,
+    "name": "Launch Successful",
+    "abbrev": "Success",
+    "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
+   },
+   "last_updated": "2026-11-05T16:47:23Z",
+   "net": "2026-11-05T15:58:00Z",
+   "net_precision": {
+    "id": 1,
+    "name": "Minute",
+    "abbrev": "MIN",
+    "description": "The T-0 is accurate to the minute."
+   },
+   "window_end": "2026-11-05T16:16:00Z",
+   "window_start": "2026-11-05T15:52:00Z",
+   "image": {
+    "id": 1764,
+    "name": "[AUTO] Long March 2 - image",
+    "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/long_march_2_image_20230803100234.jpeg",
+    "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193713.jpeg",
+    "credit": null,
+    "license": {
+     "id": 1,
+     "name": "Unknown",
+     "priority": 9,
+     "link": null
+    },
+    "single_use": true,
+    "variants": []
+   },
+   "infographic": null,
+   "probability": null,
+   "weather_concerns": null,
+   "failreason": "",
+   "hashtag": null,
+   "launch_service_provider": {
+    "response_mode": "normal",
+    "id": 88,
+    "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+    "name": "China Aerospace Science and Technology Corporation",
+    "abbrev": "CASC",
+    "type": {
+     "id": 1,
+     "name": "Government"
+    },
+    "featured": true,
+    "country": [
+     {
+      "id": 6,
+      "name": "China",
+      "alpha_2_code": "CN",
+      "alpha_3_code": "CHN",
+      "nationality_name": "Chinese",
+      "nationality_name_composed": "Sino"
+     }
+    ],
+    "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+    "administrator": "Chairman & President: Lei Fanpei",
+    "founding_year": 1999,
+    "launchers": "Long March",
+    "spacecraft": "",
+    "parent": null,
+    "image": {
+     "id": 8,
+     "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+     "credit": null,
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": true,
+     "variants": []
+    },
+    "logo": {
+     "id": 124,
+     "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+     "credit": null,
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": true,
+     "variants": []
+    },
+    "social_logo": {
+     "id": 50,
+     "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+     "credit": null,
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": true,
+     "variants": []
+    },
+    "total_launch_count": 622,
+    "consecutive_successful_launches": 13,
+    "successful_launches": 606,
+    "failed_launches": 16,
+    "pending_launches": 9,
+    "consecutive_successful_landings": 1,
+    "successful_landings": 1,
+    "failed_landings": 1,
+    "attempted_landings": 2,
+    "successful_landings_spacecraft": 3,
+    "failed_landings_spacecraft": 0,
+    "attempted_landings_spacecraft": 3,
+    "successful_landings_payload": 2,
+    "failed_landings_payload": 0,
+    "attempted_landings_payload": 2,
+    "info_url": "https://english.spacechina.com/",
+    "wiki_url": "https://en.wikipedia.org/wiki/China_Aerospace_Science_and_Technology_Corporation",
+    "social_media_links": []
+   },
+   "rocket": {
+    "id": 9291,
+    "configuration": {
+     "response_mode": "detailed",
+     "id": 61,
+     "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/61/",
+     "name": "Long March 2C",
+     "families": [
+      {
+       "response_mode": "detailed",
+       "id": 106,
+       "name": "Long March",
+       "manufacturer": [
+        {
+         "response_mode": "normal",
+         "id": 88,
+         "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+         "name": "China Aerospace Science and Technology Corporation",
+         "abbrev": "CASC",
+         "type": {
+          "id": 1,
+          "name": "Government"
+         },
+         "featured": true,
+         "country": [
+          {
+           "id": 6,
+           "name": "China",
+           "alpha_2_code": "CN",
+           "alpha_3_code": "CHN",
+           "nationality_name": "Chinese",
+           "nationality_name_composed": "Sino"
+          }
+         ],
+         "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+         "administrator": "Chairman & President: Lei Fanpei",
+         "founding_year": 1999,
+         "launchers": "Long March",
+         "spacecraft": "",
+         "parent": null,
+         "image": {
+          "id": 8,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "logo": {
+          "id": 124,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "social_logo": {
+          "id": 50,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "total_launch_count": 622,
+         "consecutive_successful_launches": 13,
+         "successful_launches": 606,
+         "failed_launches": 16,
+         "pending_launches": 9,
+         "consecutive_successful_landings": 1,
+         "successful_landings": 1,
+         "failed_landings": 1,
+         "attempted_landings": 2,
+         "successful_landings_spacecraft": 3,
+         "failed_landings_spacecraft": 0,
+         "attempted_landings_spacecraft": 3,
+         "successful_landings_payload": 2,
+         "failed_landings_payload": 0,
+         "attempted_landings_payload": 2,
+         "info_url": "https://english.spacechina.com/",
+         "wiki_url": "https://en.wikipedia.org/wiki/China_Aerospace_Science_and_Technology_Corporation",
+         "social_media_links": []
+        }
+       ],
+       "parent": null,
+       "description": "",
+       "active": true,
+       "maiden_flight": "1970-04-24",
+       "total_launch_count": 675,
+       "consecutive_successful_launches": 13,
+       "successful_launches": 655,
+       "failed_launches": 20,
+       "pending_launches": 9,
+       "attempted_landings": 2,
+       "successful_landings": 1,
+       "failed_landings": 1,
+       "consecutive_successful_landings": 1
+      },
+      {
+       "response_mode": "detailed",
+       "id": 109,
+       "name": "Long March 2",
+       "manufacturer": [
+        {
+         "response_mode": "normal",
+         "id": 88,
+         "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+         "name": "China Aerospace Science and Technology Corporation",
+         "abbrev": "CASC",
+         "type": {
+          "id": 1,
+          "name": "Government"
+         },
+         "featured": true,
+         "country": [
+          {
+           "id": 6,
+           "name": "China",
+           "alpha_2_code": "CN",
+           "alpha_3_code": "CHN",
+           "nationality_name": "Chinese",
+           "nationality_name_composed": "Sino"
+          }
+         ],
+         "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+         "administrator": "Chairman & President: Lei Fanpei",
+         "founding_year": 1999,
+         "launchers": "Long March",
+         "spacecraft": "",
+         "parent": null,
+         "image": {
+          "id": 8,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "logo": {
+          "id": 124,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "social_logo": {
+          "id": 50,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "total_launch_count": 622,
+         "consecutive_successful_launches": 13,
+         "successful_launches": 606,
+         "failed_launches": 16,
+         "pending_launches": 9,
+         "consecutive_successful_landings": 1,
+         "successful_landings": 1,
+         "failed_landings": 1,
+         "attempted_landings": 2,
+         "successful_landings_spacecraft": 3,
+         "failed_landings_spacecraft": 0,
+         "attempted_landings_spacecraft": 3,
+         "successful_landings_payload": 2,
+         "failed_landings_payload": 0,
+         "attempted_landings_payload": 2,
+         "info_url": "https://english.spacechina.com/",
+         "wiki_url": "https://en.wikipedia.org/wiki/China_Aerospace_Science_and_Technology_Corporation",
+         "social_media_links": []
+        }
+       ],
+       "parent": {
+        "response_mode": "normal",
+        "id": 106,
+        "name": "Long March",
+        "manufacturer": [
+         {
+          "response_mode": "normal",
+          "id": 88,
+          "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+          "name": "China Aerospace Science and Technology Corporation",
+          "abbrev": "CASC",
+          "type": {
+           "id": 1,
+           "name": "Government"
+          },
+          "featured": true,
+          "country": [
+           {
+            "id": 6,
+            "name": "China",
+            "alpha_2_code": "CN",
+            "alpha_3_code": "CHN",
+            "nationality_name": "Chinese",
+            "nationality_name_composed": "Sino"
+           }
+          ],
+          "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+          "administrator": "Chairman & President: Lei Fanpei",
+          "founding_year": 1999,
+          "launchers": "Long March",
+          "spacecraft": "",
+          "parent": null,
+          "image": {
+           "id": 8,
+           "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+           "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+           "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+           "credit": null,
+           "license": {
+            "id": 1,
+            "name": "Unknown",
+            "priority": 9,
+            "link": null
+           },
+           "single_use": true,
+           "variants": []
+          },
+          "logo": {
+           "id": 124,
+           "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+           "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+           "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+           "credit": null,
+           "license": {
+            "id": 1,
+            "name": "Unknown",
+            "priority": 9,
+            "link": null
+           },
+           "single_use": true,
+           "variants": []
+          },
+          "social_logo": {
+           "id": 50,
+           "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+           "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+           "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+           "credit": null,
+           "license": {
+            "id": 1,
+            "name": "Unknown",
+            "priority": 9,
+            "link": null
+           },
+           "single_use": true,
+           "variants": []
+          }
+         }
+        ],
+        "parent": null
+       },
+       "description": "",
+       "active": true,
+       "maiden_flight": "1974-11-05",
+       "total_launch_count": 234,
+       "consecutive_successful_launches": 40,
+       "successful_launches": 228,
+       "failed_launches": 6,
+       "pending_launches": 2,
+       "attempted_landings": 0,
+       "successful_landings": 0,
+       "failed_landings": 0,
+       "consecutive_successful_landings": 0
+      }
+     ],
+     "full_name": "Long March 2C",
+     "variant": "C",
+     "active": true,
+     "is_placeholder": false,
+     "manufacturer": {
+      "response_mode": "normal",
+      "id": 88,
+      "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+      "name": "China Aerospace Science and Technology Corporation",
+      "abbrev": "CASC",
+      "type": {
+       "id": 1,
+       "name": "Government"
+      },
+      "featured": true,
+      "country": [
+       {
+        "id": 6,
+        "name": "China",
+        "alpha_2_code": "CN",
+        "alpha_3_code": "CHN",
+        "nationality_name": "Chinese",
+        "nationality_name_composed": "Sino"
+       }
+      ],
+      "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+      "administrator": "Chairman & President: Lei Fanpei",
+      "founding_year": 1999,
+      "launchers": "Long March",
+      "spacecraft": "",
+      "parent": null,
+      "image": {
+       "id": 8,
+       "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "logo": {
+       "id": 124,
+       "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "social_logo": {
+       "id": 50,
+       "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "total_launch_count": 622,
+      "consecutive_successful_launches": 13,
+      "successful_launches": 606,
+      "failed_launches": 16,
+      "pending_launches": 9,
+      "consecutive_successful_landings": 1,
+      "successful_landings": 1,
+      "failed_landings": 1,
+      "attempted_landings": 2,
+      "successful_landings_spacecraft": 3,
+      "failed_landings_spacecraft": 0,
+      "attempted_landings_spacecraft": 3,
+      "successful_landings_payload": 2,
+      "failed_landings_payload": 0,
+      "attempted_landings_payload": 2,
+      "info_url": "https://english.spacechina.com/",
+      "wiki_url": "https://en.wikipedia.org/wiki/China_Aerospace_Science_and_Technology_Corporation",
+      "social_media_links": []
+     },
+     "program": [],
+     "reusable": false,
+     "image": {
+      "id": 1764,
+      "name": "[AUTO] Long March 2 - image",
+      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/long_march_2_image_20230803100234.jpeg",
+      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193713.jpeg",
+      "credit": null,
+      "license": {
+       "id": 1,
+       "name": "Unknown",
+       "priority": 9,
+       "link": null
+      },
+      "single_use": true,
+      "variants": []
+     },
+     "info_url": null,
+     "wiki_url": "https://en.wikipedia.org/wiki/Long_March_2C",
+     "description": "The Long March 2C is a family of expendable launch vehicles made and operated by China. It is a two stage launch vehicle with storable propellants, consisting of Nitrogen Tetroxide and Unsymmetrical Dimethylhydrazine.",
+     "alias": "",
+     "min_stage": 2,
+     "max_stage": 2,
+     "length": 42.0,
+     "diameter": 3.35,
+     "maiden_flight": "1982-09-09",
+     "launch_cost": null,
+     "launch_mass": 233.0,
+     "leo_capacity": 3850.0,
+     "gto_capacity": null,
+     "geo_capacity": null,
+     "sso_capacity": 1400.0,
+     "to_thrust": null,
+     "apogee": null,
+     "total_launch_count": 67,
+     "consecutive_successful_launches": 45,
+     "successful_launches": 66,
+     "failed_launches": 1,
+     "pending_launches": 0,
+     "attempted_landings": 0,
+     "successful_landings": 0,
+     "failed_landings": 0,
+     "consecutive_successful_landings": 0,
+     "fastest_turnaround": "P15DT20H"
+    },
+    "launcher_stage": [],
+    "spacecraft_stage": [],
+    "payloads": []
+   },
+   "mission": {
+    "id": 7890,
+    "name": "Yaogan 51-07 to 09",
+    "type": "Government/Top Secret",
+    "description": "3 Chinese military “remote sensing” satellite of unknown purposes.",
+    "image": null,
+    "orbit": {
+     "id": 8,
+     "name": "Low Earth Orbit",
+     "abbrev": "LEO",
+     "celestial_body": {
+      "response_mode": "list",
+      "id": 1,
+      "name": "Earth"
+     }
+    },
+    "agencies": [],
+    "info_urls": [],
+    "vid_urls": []
+   },
+   "pad": {
+    "id": 66,
+    "url": "https://ll.thespacedevs.com/2.3.0/pads/66/",
+    "active": true,
+    "agencies": [
+     {
+      "response_mode": "normal",
+      "id": 17,
+      "url": "https://ll.thespacedevs.com/2.3.0/agencies/17/",
+      "name": "China National Space Administration",
+      "abbrev": "CNSA",
+      "type": {
+       "id": 1,
+       "name": "Government"
+      },
+      "featured": true,
+      "country": [
+       {
+        "id": 6,
+        "name": "China",
+        "alpha_2_code": "CN",
+        "alpha_3_code": "CHN",
+        "nationality_name": "Chinese",
+        "nationality_name_composed": "Sino"
+       }
+      ],
+      "description": "The China National Space Administration (CNSA) is the national space agency of the People's Republic of China. It is responsible for the national space program and for planning and development of space activities. CNSA and China Aerospace Corporation (CASC) assumed the authority over space development efforts previously held by the Ministry of Aerospace Industry. The CNSA has many launch sites around China with their orbital sites located in Jiuquan, Xichang, Taiyuan and Wenchang.",
+      "administrator": "Administrator: Tang Dengjie",
+      "founding_year": 1993,
+      "launchers": "",
+      "spacecraft": "Shenzhou",
+      "parent": null,
+      "image": {
+       "id": 9,
+       "name": "[AUTO] China National Space Administration - image",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520national2520space2520administration_image_20190207032431.jpeg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184601.jpeg",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "logo": {
+       "id": 125,
+       "name": "[AUTO] China National Space Administration - logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520national2520space2520administration_logo_20190207032431.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184936.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "social_logo": {
+       "id": 51,
+       "name": "CNSA social logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cnsa_social_log_image_20260504180043.jpg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cnsa_social_log_image_thumbnail_20260504180043.jpeg",
+       "credit": "CNSA",
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      }
+     }
+    ],
+    "name": "Launch Complex 3 (LC-3/LA-1)",
+    "image": {
+     "id": 2083,
+     "name": "CZ-2D liftoff from LC-3 (Yaogan 42-02)",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cz-2d_liftoff__image_20240428050501.jpg",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cz-2d_liftoff__image_thumbnail_20240428050502.jpeg",
+     "credit": "央视新闻",
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": false,
+     "variants": []
+    },
+    "description": "",
+    "info_url": null,
+    "wiki_url": "https://en.wikipedia.org/wiki/Xichang_Satellite_Launch_Center",
+    "map_url": "https://www.google.com/maps?q=28.247059,102.029008",
+    "latitude": 28.247059,
+    "longitude": 102.029008,
+    "country": {
+     "id": 6,
+     "name": "China",
+     "alpha_2_code": "CN",
+     "alpha_3_code": "CHN",
+     "nationality_name": "Chinese",
+     "nationality_name_composed": "Sino"
+    },
+    "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_66_20200803143611.jpg",
+    "total_launch_count": 109,
+    "orbital_launch_attempt_count": 109,
+    "fastest_turnaround": "P13DT6H21M",
+    "location": {
+     "response_mode": "normal",
+     "id": 16,
+     "url": "https://ll.thespacedevs.com/2.3.0/locations/16/",
+     "name": "Xichang Satellite Launch Center, People's Republic of China",
+     "celestial_body": {
+      "response_mode": "normal",
+      "id": 1,
+      "name": "Earth",
+      "type": {
+       "id": 1,
+       "name": "Planet"
+      },
+      "diameter": 12742000.0,
+      "mass": 5.972168e+24,
+      "gravity": 9.80655,
+      "length_of_day": "1 00:00:00",
+      "atmosphere": true,
+      "image": {
+       "id": 2040,
+       "name": "Earth (Apollo 17)",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
+       "credit": "NASA",
+       "license": {
+        "id": 4,
+        "name": "NASA Image and Media Guidelines",
+        "priority": 0,
+        "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
+      "wiki_url": "https://en.wikipedia.org/wiki/Earth",
+      "total_attempted_launches": 7654,
+      "successful_launches": 7097,
+      "failed_launches": 557,
+      "total_attempted_landings": 1384,
+      "successful_landings": 1335,
+      "failed_landings": 49
+     },
+     "active": true,
+     "country": {
+      "id": 6,
+      "name": "China",
+      "alpha_2_code": "CN",
+      "alpha_3_code": "CHN",
+      "nationality_name": "Chinese",
+      "nationality_name_composed": "Sino"
+     },
+     "description": "The Xichang Satellite Launch Center is a spaceport in China. It is located in Zeyuan Town, northwest of Xichang, Liangshan Yi Autonomous Prefecture in Sichuan.",
+     "image": {
+      "id": 1421,
+      "name": "Long March 3B/E liftoff from LC-2 (Beidou-3 G4)",
+      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/long2520march_image_20230728061656.jpeg",
+      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305192718.jpeg",
+      "credit": "China Pictorial/Wanquan",
+      "license": {
+       "id": 1,
+       "name": "Unknown",
+       "priority": 9,
+       "link": null
+      },
+      "single_use": false,
+      "variants": []
+     },
+     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/location_16_20200803142513.jpg",
+     "longitude": 102.026556,
+     "latitude": 28.246017,
+     "timezone_name": "Asia/Shanghai",
+     "total_launch_count": 243,
+     "total_landing_count": 0
+    }
+   },
+   "webcast_live": false,
+   "program": [],
+   "orbital_launch_attempt_count": 7430,
+   "location_launch_attempt_count": 243,
+   "pad_launch_attempt_count": 109,
+   "agency_launch_attempt_count": 622,
+   "orbital_launch_attempt_count_year": 257,
+   "location_launch_attempt_count_year": 7,
+   "pad_launch_attempt_count_year": 4,
+   "agency_launch_attempt_count_year": 52,
+   "flightclub_url": null,
+   "updates": [
+    {
+     "id": 16668,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
+     "comment": "Launch success.",
+     "info_url": "https://m.weibo.cn/detail/5362054531384120",
+     "created_by": "Cosmic_Penguin",
+     "created_on": "2026-11-05T16:47:00Z"
+    },
+    {
+     "id": 16625,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
+     "comment": "Added launch per NOTAMs; Payload and launch vehicle identities highly uncertain.",
+     "info_url": "https://forum.nasaspaceflight.com/index.php?topic=57867.msg2837209#msg2837209",
+     "created_by": "Cosmic_Penguin",
+     "created_on": "2026-10-30T13:34:00Z"
+    }
+   ],
+   "info_urls": [],
+   "vid_urls": [],
+   "timeline": [],
+   "pad_turnaround": "P158DT21H51M",
    "mission_patches": []
   }
  ]
