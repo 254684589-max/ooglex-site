@@ -1102,6 +1102,16 @@ godot/
 - **截图参数** `?vault=1|sneak`（配 `area=key_vault&spawn=gate`）：直接到金库之夜。
 - **测试**：`ch4crown` 组（赎塞弗林、北境两档难度、借据换不来、信换冠、换完再问；埃德里克的钥匙、红线；涨潮 / 陷泥 / 进金库 / 还没到这一步；金库之夜的人和水门；莫德开铁笼；没听过守灵夜只能拔剑、三个雇佣兵动手；打完拿钥匙；睡着拿钥匙；塞拉斯的人只堵勒索过的、付钱走人）。
 
+### 4.88 冠城一角（路线图 7.6，2026-11-06）
+
+- **地图**（`CrownLayout` / `CrownCity`）：照双钥港（4.83）的结构——布局类只放数据和 `height()` / `masks()`，`CrownCity` 搭高度场、碰撞、深水墙、河面（`tide()` 恒为 `RIVER_Y`，不跟时段）、远景；`tests/gen_crown_field.tscn` 生成 `chapters/ch4/crown_field.res` / `crown_paint.res`（进第四章章节包）。180 × 160 米、9 块。岛西岸在 x ≈ -44，往东 `island_y()` 平滑上坡到广场（+9.4 米）；街面、广场抹平。
+- **城**（`CrownTown`）：房子沿斜街和三条小巷两边自动摆、后排背对背，再拿一张网格把街巷背后的空地挤满（共 101 栋；`_fits` 查离石岸、街、广场、议事厅、钟楼、城墙、两栋认得出的房子、出生点、机位）；房子用 `HarborTown._merchant` 搭、一块最多 8 栋合一个网格，坡上靠下那头补一圈石墙基。两栋认得出的（面包坊、玛蒂尔达的小酒馆）由 `CrownLayout.street_front(段, 段上位置, 哪边, 宽, 深)` 算正面；`matilda_door` 出生点按它重算。城墙 `wall_runs()`（西岸一道、往北往南拐一截、收口砌到石岸边），桥门两座塔、门洞上的铁闸；石桥 `bridge_spans()` 每 3 米一段跟着 `CrownCity.bridge_y()` 拱起来；岛南北石岸上沿一圈栏石（碰撞高 1.05 米）。王宫和东头的城（`palace()`）是地图外一个不投影的网格。
+- **人**（`CrownPeople`）：同步放（远了不画）。进 `crown_city` 或冠城的两间屋：主线 `to_city → in_city`（`arrived()`）；对话结束查 `matilda_heard()`（`ch4_seats_heard` + `ch4_drinks_heard` → `council`）。斜街伏击：`ambush_due()`（有 `iron_crown`、没有 `ch4_ambush`），组 `encounter:crown_ambush`（领头 swordsman、其余 clubber），`ch1_outlaws = ally` 少一个；`StreetTrigger`（Area3D，层 2 的玩家走进来就 `main.open_dialogue`，只开一次，正在对话 / 打的时候不开）。
+- **室内**：`HarborRooms.SPEC` 加 `council_hall`、`matilda_inn`，新键 `out`（出口回哪个区域，默认 harbor）；陈设在 `CrownRooms`，人在 `CrownPeople.room_people`（对话文件 `crown`）。
+- **旅行**：路线可以带 `needs = {quest, stages, why}`（`Travel.needs_met`，读自动加载里的 GameState）：木栈码头 → 冠城要主线在 to_city / in_city / council，到了是 dawn。
+- **时段**：`Daypart.AREA_ALIAS = {crown_city: harbor}`（同一套预设），`Daypart.apply` 给冠城换阴云天空（`CrownCity.apply_sky`）。
+- **测试**：`crown` 组（登记、高度场一致、地形、出生点、碰撞、块、河面与远景、石桥与桥门、房子、晾衣绳、门和路牌、告示、出生点不卡、栏石、时段、本地地图、两间室内与出口、旅行门槛）、`crownpeople` 组（到了 in_city、人站在空地上、排队七人、玛蒂尔达推进到 council、伏击三人 / 两人、走进去自己开对话、说走与了结）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

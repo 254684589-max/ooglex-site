@@ -7,7 +7,9 @@ extends RefCounted
 ## 室内的光不跟时段走；窗玻璃按时段换颜色（Inn.glass）。先回答「这里住着谁、缺什么、刚发生过什么」（ART.md 第十节），写在每个房间的注释里。
 
 const AREAS := ["key_hall", "key_vault", "guild_hall", "dock_tavern", "debt_prison"]
-const NAMES := {"key_hall": "钥楼 · 大厅", "key_vault": "钥楼 · 金库", "guild_hall": "渡工行会会馆", "dock_tavern": "「咸潮」酒馆", "debt_prison": "债牢"}
+const CROWN_AREAS := ["council_hall", "matilda_inn"]          # 冠城的两间（7.6，陈设在 world/crown_rooms.gd；出去回 crown_city）
+const NAMES := {"key_hall": "钥楼 · 大厅", "key_vault": "钥楼 · 金库", "guild_hall": "渡工行会会馆", "dock_tavern": "「咸潮」酒馆", "debt_prison": "债牢",
+	"council_hall": "冠城 · 议事厅", "matilda_inn": "玛蒂尔达的小酒馆"}
 ## 每个房间：宽、进深、高，墙用哪种材质，出口门（南墙上的 x、宽），出去站在双钥港哪个出生点
 const SPEC := {
 	"key_hall": {"w": 14.0, "d": 7.0, "h": 4.4, "wall": "castle", "floor": "street", "door_x": 0.0, "door_w": 1.6, "exit": "keyhouse_door", "exit_name": "回到钥楼街"},
@@ -15,6 +17,8 @@ const SPEC := {
 	"guild_hall": {"w": 13.0, "d": 8.0, "h": 4.0, "wall": "plaster", "floor": "timber", "door_x": 0.0, "door_w": 1.4, "exit": "guild_door", "exit_name": "回到鱼市"},
 	"dock_tavern": {"w": 9.0, "d": 7.2, "h": 3.4, "wall": "plaster", "floor": "timber", "door_x": 2.6, "door_w": 1.2, "exit": "tavern_door", "exit_name": "回到码头街"},
 	"debt_prison": {"w": 11.0, "d": 8.0, "h": 3.6, "wall": "castle", "floor": "street", "door_x": 0.0, "door_w": 1.2, "exit": "prison_door", "exit_name": "回到街上"},
+	"council_hall": {"w": 16.0, "d": 10.0, "h": 7.0, "wall": "castle", "floor": "street", "door_x": 0.0, "door_w": 2.0, "exit": "council_door", "exit_name": "回到议事厅广场", "out": "crown_city"},
+	"matilda_inn": {"w": 7.0, "d": 6.0, "h": 3.0, "wall": "plaster", "floor": "timber", "door_x": 0.0, "door_w": 1.0, "exit": "matilda_door", "exit_name": "回到斜街", "out": "crown_city"},
 }
 const VAULT_STAIR := Vector3(-1.2, 0, -3.0)                 # 金库北墙那道上大厅的石阶的脚（石阶贴着北墙往西上，钻进顶上一个黑洞——上面是大厅西北角那扇铁门）
 const VAULT_GATE := Vector3(5.5, 0, 0.6)                  # 金库东墙的水门（铁栅，外面是北潮沟）
@@ -48,9 +52,12 @@ const VIEW_SPECS := {
 	"guild_hall": [[Vector3(0.0, 0, 3.1), 0.0, -6.0], [Vector3(-4.6, 0, 1.6), -50.0, -6.0], [Vector3(4.6, 0, 2.2), 50.0, -6.0]],
 	"dock_tavern": [[Vector3(2.6, 0, 2.7), 20.0, -6.0], [Vector3(-2.5, 0, 1.8), -60.0, -8.0], [Vector3(1.4, 0, -1.2), 160.0, -6.0]],
 	"debt_prison": [[Vector3(0.0, 0, 3.1), 0.0, -6.0], [Vector3(3.6, 0, 1.0), 40.0, -6.0], [Vector3(-3.6, 0, 1.4), -30.0, -6.0]],
+	"council_hall": [[Vector3(0.0, 0, 4.1), 0.0, 4.0], [Vector3(-5.6, 0, 1.2), -60.0, 0.0], [Vector3(5.8, 0, 3.6), 30.0, 6.0]],
+	"matilda_inn": [[Vector3(0.0, 0, 2.2), 0.0, -6.0], [Vector3(-2.6, 0, 2.2), -40.0, -6.0], [Vector3(2.4, 0, -0.4), 140.0, -6.0]],
 }
 const VIEW_NAMES := {"key_hall": ["进门看大厅", "柜台和天平", "黑板和下金库的门"], "key_vault": ["石阶下看金库", "铁匣和铁笼", "水门"],
-	"guild_hall": ["进门看会馆", "潮汐表", "船期板和炉子"], "dock_tavern": ["进门看酒馆", "炉边", "柜台"], "debt_prison": ["进门看债牢", "牢房", "看门的桌子"]}
+	"guild_hall": ["进门看会馆", "潮汐表", "船期板和炉子"], "dock_tavern": ["进门看酒馆", "炉边", "柜台"], "debt_prison": ["进门看债牢", "牢房", "看门的桌子"],
+	"council_hall": ["进门看议事厅", "栏杆边看椅子", "东南角看王座"], "matilda_inn": ["进门看酒馆", "桌边看柜台", "火塘边"]}
 
 
 static func views(area: String) -> Array:
@@ -167,7 +174,7 @@ static func _exit(parent: Node3D, area: String) -> void:
 		return
 	var exit := Door.make(str(s.exit_name), float(s.door_w), 2.3, false)
 	exit.verb = "离开"
-	exit.to_area = "harbor"
+	exit.to_area = str(s.get("out", "harbor"))
 	exit.to_spawn = str(s.exit)
 	exit.name = "Exit"
 	exit.position = Vector3(float(s.door_x) - float(s.door_w) * 0.5, 0, float(s.d) * 0.5 - 0.02)
@@ -272,9 +279,16 @@ static func build(area: String, parent: Node3D, reduced_motion := false) -> Tran
 			_dock_tavern(parent, reduced_motion)
 		"debt_prison":
 			_debt_prison(parent, reduced_motion)
+		"council_hall":
+			CrownRooms.council_hall(parent, reduced_motion)              # 冠城（7.6）
+		"matilda_inn":
+			CrownRooms.matilda_inn(parent, reduced_motion)
 	_colliders(parent, area)
 	_exit(parent, area)
-	HarborPeople.build_room(area, parent)            # 屋里的人（7.4）
+	if area in CROWN_AREAS:
+		CrownPeople.build_room(area, parent)
+	else:
+		HarborPeople.build_room(area, parent)        # 屋里的人（7.4）
 	var s: Array = spawns(area).front
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
 
@@ -635,6 +649,8 @@ static func map_spec(area: String) -> Dictionary:
 				{"k": "furniture", "rect": Rect2(-3.3, 0.15, 1.8, 0.9)}, {"k": "furniture", "rect": Rect2(-0.5, 0.55, 1.8, 0.9)}, {"k": "furniture", "rect": Rect2(-2.1, 1.95, 1.8, 0.9)}]
 		"debt_prison":
 			shapes = [{"k": "furniture", "rect": Rect2(-5.4, -4.0, 10.8, 2.2), "label": "牢房"}, {"k": "furniture", "rect": Rect2(2.8, 1.2, 1.6, 0.8), "label": "看门的桌子"}]
+		"council_hall", "matilda_inn":
+			shapes = CrownRooms.map_shapes(area)
 	if str(s.exit) != "":
-		exits.append({"at": Vector2(float(s.door_x), d * 0.5), "dir": Vector2(0, 1), "to": "harbor", "spawn": str(s.exit), "name": str(s.exit_name)})
+		exits.append({"at": Vector2(float(s.door_x), d * 0.5), "dir": Vector2(0, 1), "to": str(s.get("out", "harbor")), "spawn": str(s.exit), "name": str(s.exit_name)})
 	return {"bounds": Rect2(-w * 0.5, -d * 0.5, w, d), "shapes": shapes, "exits": exits}

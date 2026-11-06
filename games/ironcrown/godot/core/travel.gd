@@ -126,7 +126,20 @@ static func check(chapter: int, from: String, to: String, at_departure: bool) ->
 		why = ("从这里去不了，先到%s。" % name_of(mid)) if mid != "" else "从这里没有路过去。"
 	elif not at_departure:
 		why = "走到%s那里才能出发。" % str(place(from).get("depart_at", "出发的地方"))
+	elif not needs_met(r):
+		why = str((r.needs as Dictionary).get("why", "现在还去不了。"))
 	return {"ok": why == "", "why": why, "route": r}
+
+
+## 路线的前提（7.6）：needs = {quest, stages: 主线在这几步里才走得了, why}；没写 needs 的路线随时能走
+static func needs_met(r: Dictionary) -> bool:
+	if not r.has("needs"):
+		return true
+	var n: Dictionary = r.needs
+	var gs := (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameState")
+	if gs == null:
+		return false
+	return str(gs.quest_stage(str(n.get("quest", "")))) in n.get("stages", [])
 
 
 ## 检查数据（测试用）：地点的区域、出生点、位置、图标；路线两头的地点、到达时段

@@ -1,0 +1,27 @@
+{
+  "_说明": "冠城一角的人（路线图 7.6；STORY.md 7.2、7.5 第 6 步、7.6「冠城斜街」）。主线 ch4_main：to_city（冠的事定了，坐行会的船上冠城）→ in_city（天亮在河西岸靠岸，进了冠城）→ council（玛蒂尔达说完了冬议上谁坐哪张椅子、昨夜谁跟谁喝过酒：上议事厅，冬议是 7.8）。冠在你手里（换、偷）进冠城的：斜街上三个蒙着脸的人堵你（无旗者收编过的少一个，ch1_outlaws = ally），说走（口才 15）或者打（ch4_ambush）。",
+  "matilda": {"speaker": "玛蒂尔达", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch4_matilda_met"}], "node": "again"}],
+    "nodes": {
+      "greet": {"text": "（柜台后面那个女人抬起头，手里的抹布停了一下）……霜渡镇的雾，跟着你下来了。（她把一只杯子推到你面前）坐。这儿的酒比「倒钩鱼」的还淡，价钱是两倍。", "do": [{"set": "ch4_matilda_met"}], "options": [{"text": "你怎么在冠城？", "next": "why"}, {"text": "冬议上谁坐哪张椅子？", "next": "seats"}, {"text": "昨夜谁跟谁喝过酒？", "next": "drinks"}, {"text": "告辞。", "end": true}]},
+      "why": {"text": "「倒钩鱼」盘出去了。渡口的税权押给了钥楼以后，霜渡镇连酒都喝不起。（她擦着杯子）行会的人说冬至前冠城人多。人多，嘴就多——嘴多，就有人肯花钱听。", "options": [{"text": "冬议上谁坐哪张椅子？", "next": "seats"}, {"text": "昨夜谁跟谁喝过酒？", "next": "drinks"}, {"text": "告辞。", "end": true}]},
+      "seats": {"text": "五张高背椅，围着空王座摆成半圈。王座左手第一张，塞弗林家的贝尔特兰——摄政的人，他坐得最近。右手第一张是卡斯韦尔家，科尔温不说话，他记账。洛蒙德家的伊莎贝拉挨着塞弗林家，两张椅子中间留着一掌宽，谁也没去挪。北边两家坐最外头：瓦伦家、厄尔德家。（她顿了一下）大主祭卢西安不坐椅子，站在王座后面，跟王座一样高。", "text_if": [{"if": [{"flag": "ch3_mill", "eq": "held"}], "text": "五张高背椅，围着空王座摆成半圈。王座左手第一张，塞弗林家的贝尔特兰——摄政的人，他坐得最近。右手第一张是卡斯韦尔家，科尔温不说话，他记账。洛蒙德家的伊莎贝拉挨着塞弗林家，两张椅子中间留着一掌宽——她这回没让塞弗林家的人替她拉椅子，磨坊那一夜以后她说话硬了。北边两家坐最外头：瓦伦家、厄尔德家。（她顿了一下）大主祭卢西安不坐椅子，站在王座后面，跟王座一样高。"}], "do": [{"set": "ch4_seats_heard"}], "options": [{"text": "昨夜谁跟谁喝过酒？", "next": "drinks"}, {"text": "告辞。", "end": true}]},
+      "drinks": {"text": "摄政的管家在我这儿坐到打烊，请洛蒙德家两个护院一人一杯，一句正经话都没说。瓦伦家的人一个人喝，厄尔德家的卫兵在门外站了一夜，没进来。（她把声音压低）还有一个人——穿灰斗篷，没点酒，坐了一炷香就走了。往钥楼那边的码头去的。", "text_if": [{"if": [{"flag": "valen_heir", "eq": "ivette"}], "text": "摄政的管家在我这儿坐到打烊，请洛蒙德家两个护院一人一杯，一句正经话都没说。瓦伦家的人和厄尔德家的卫兵一张桌子喝的，喝完一起走的——伊薇特小姐的人。（她把声音压低）还有一个人——穿灰斗篷，没点酒，坐了一炷香就走了。往钥楼那边的码头去的。"}], "do": [{"set": "ch4_drinks_heard"}], "options": [{"text": "冬议上谁坐哪张椅子？", "next": "seats"}, {"text": "（压低声音）斜街上有人盯着我。", "if": [{"has_item": "iron_crown"}], "next": "crown"}, {"text": "告辞。", "end": true}]},
+      "crown": {"text": "（她看了一眼你揣着东西的那只手，又看了一眼门）斜街上的人鼻子灵。桥门里进来一个外乡人，怀里抱得那么紧——（她把门闩插上）冬议以前，别一个人走小巷。", "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（她没抬头）椅子还是那五张，酒还是那么淡。", "text_if": [{"if": [{"quest_stage": "ch4_main", "eq": "council"}], "text": "（她没抬头）上去吧。议事厅的门辰时就开——冬至的账，总得有人去听。"}], "options": [{"text": "冬议上谁坐哪张椅子？", "next": "seats"}, {"text": "昨夜谁跟谁喝过酒？", "next": "drinks"}, {"text": "告辞。", "end": true}]}
+    }},
+  "ambush": {"speaker": "蒙着脸的人", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch1_outlaws", "eq": "ally"}], "node": "greet_ally"}],
+    "nodes": {
+      "greet": {"text": "（巷口出来三个人，脸上蒙着灰布，一前两后堵住了斜街。领头的手里一把短刀，刀尖朝下）怀里那只匣子。放在地上，往后退三步。", "options": [{"text": "谁派你们来的？", "next": "who"}, {"text": "冠在冬议上等它的主人。你们的主人想要，叫他自己去议事厅开口。", "check": {"id": "ch4_ambush_talk", "skill": "speech", "dc": 15, "pass": "talked", "fail": "no_talk"}}, {"text": "（拔剑）", "do": [{"fight": "crown_ambush", "win": "ch4_ambush", "value": "beaten"}], "end": true}]},
+      "greet_ally": {"text": "（巷口出来两个人，脸上蒙着灰布，堵住了斜街。第三个人刚要跟出来，被巷子里一只手拽了回去——你看见一截沼地人的旧斗篷）……怀里那只匣子。放在地上，往后退三步。", "options": [{"text": "谁派你们来的？", "next": "who"}, {"text": "冠在冬议上等它的主人。你们的主人想要，叫他自己去议事厅开口。", "check": {"id": "ch4_ambush_talk", "skill": "speech", "dc": 15, "pass": "talked", "fail": "no_talk"}}, {"text": "（拔剑）", "do": [{"fight": "crown_ambush", "win": "ch4_ambush", "value": "beaten"}], "end": true}]},
+      "who": {"text": "（他没答。后面那个人往桥门那边看了一眼）不该问的别问。匣子。", "options": [{"text": "冠在冬议上等它的主人。你们的主人想要，叫他自己去议事厅开口。", "check": {"id": "ch4_ambush_talk", "skill": "speech", "dc": 15, "pass": "talked", "fail": "no_talk"}}, {"text": "（拔剑）", "do": [{"fight": "crown_ambush", "win": "ch4_ambush", "value": "beaten"}], "end": true}]},
+      "talked": {"text": "（领头的盯着你看了很久，刀尖慢慢垂下去）……他会开口的。（三个人退回巷子里，一转眼就不见了）", "do": [{"set": "ch4_ambush", "value": "talked"}, {"leave": "crown_ambush"}], "options": [{"text": "告辞。", "end": true}]},
+      "no_talk": {"text": "（他笑了一声，蒙脸的布动了动）话多。", "options": [{"text": "（拔剑）", "do": [{"fight": "crown_ambush", "win": "ch4_ambush", "value": "beaten"}], "end": true}]}
+    }},
+  "council_steward": {"speaker": "议事厅的差役", "start": "greet",
+    "nodes": {
+      "greet": {"text": "（一个穿灰袍的老差役，正拿一块软布擦第五张椅子的扶手）椅子是给五家的。王座谁都不许碰，连擦都不许。（他直起腰）冬议辰时开，你要是来听的，站在栏杆外头。", "text_if": [{"if": [{"has_item": "iron_crown"}], "text": "（一个穿灰袍的老差役，正拿一块软布擦第五张椅子的扶手。他看见你，手停了）……北边来的。（他把声音压得很低）外头都在传，冠在一个外乡人怀里。椅子是给五家的。王座谁都不许碰——冬议辰时开。"}], "options": [{"text": "王座为什么空着？", "next": "throne"}, {"text": "告辞。", "end": true}]},
+      "throne": {"text": "老王走了三年，冠也走了三年。没有冠，谁坐上去都是坐在一把椅子上。（他把布叠好）冬至这天，五家要把这三年的账算清——算清了，才轮得到谁去坐。", "do": [{"set": "ch4_throne_asked"}], "options": [{"text": "告辞。", "end": true}]}
+    }}
+}

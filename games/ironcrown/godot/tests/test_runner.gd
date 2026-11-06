@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9745,8 +9745,8 @@ func test_harbor() -> void:
 		steep = maxf(steep, rad_to_deg(atan2(absf(Harbor.height_at(sx, z1) - Harbor.height_at(sx, z0)), z1 - z0)))
 	check(steep < 40.0 and HarborTown.kerbs().size() > 200, "城南边石岸下到泥滩的石阶最陡 %.0f°（走得下去）；码头边、潮沟边、石岸上沿一圈栏石（%d 段）" % [steep, HarborTown.kerbs().size()])
 	await free_main(main)
-	check(Travel.validate().is_empty() and Travel.region_title(4) == "河口" and Travel.places(4) == ["harbor_quay", "keyhouse_street", "lighthouse", "crown_city"] and Travel.built("harbor_quay") and not Travel.built("crown_city")
-		and Travel.region_of_chapter(3) == "south", "旅行地图第四章翻到「河口」：木栈码头、钥楼街能去，灯塔、冠城还没做好")
+	check(Travel.validate().is_empty() and Travel.region_title(4) == "河口" and Travel.places(4) == ["harbor_quay", "keyhouse_street", "lighthouse", "crown_city"] and Travel.built("harbor_quay") and Travel.built("crown_city") and not Travel.built("lighthouse")
+		and Travel.region_of_chapter(3) == "south", "旅行地图第四章翻到「河口」：木栈码头、钥楼街、冠城（7.6）能去，灯塔还没做好")
 	GameState.chapter = 0
 	GameState.pending_load = {}
 
@@ -10021,6 +10021,228 @@ func test_ch4crown() -> void:
 		"付六十枚：他们走了")
 	GameState.daypart = "day"
 	Daypart.current = "day"
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_crown() -> void:
+	# 冠城一角（7.6）：岛城地图、石桥、桥门、斜街、议事厅广场、钟楼；两间室内；坐船上冠城
+	check(Areas.known("crown_city") and Areas.display_name("crown_city") == "冠城" and Areas.pack_chapter("crown_city") == 4 and Areas.chapter_of("crown_city") == 4 and not Areas.is_indoor("crown_city"),
+		"冠城登记了：室外，内容在第四章章节包里")
+	check(CrownCity.textures_ready() and ResourceLoader.exists(CrownCity.FIELD_PATH) and ResourceLoader.exists(CrownCity.PAINT_PATH), "冠城预先算好的高度场、贴图分布在 chapters/ch4/")
+	CrownCity._field = PackedFloat32Array()
+	CrownCity.ensure_field()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 76
+	var worst := 0.0
+	var paint_worst := 0.0
+	for k in 300:
+		var i := rng.randi_range(0, CrownLayout.NX - 1)
+		var j := rng.randi_range(0, CrownLayout.NZ - 1)
+		var x := CrownLayout.BOUNDS.position.x + i * CrownLayout.STEP
+		var z := CrownLayout.BOUNDS.position.y + j * CrownLayout.STEP
+		worst = maxf(worst, absf(CrownCity._field[j * CrownLayout.NX + i] - CrownLayout.height(x, z)))
+		var m := CrownLayout.masks(x, z)
+		var c := CrownCity._paint[j * CrownLayout.NX + i]
+		paint_worst = maxf(paint_worst, maxf(absf(c.r - m.x), maxf(absf(c.g - m.y), absf(c.b - m.z))))
+	check(worst < 0.01 and paint_worst < 0.01 and CrownCity.field_ms < 200.0, "高度场、地面颜色图和布局一致（最大差 %.4f 米 / %.4f；不一致就跑 tests/gen_crown_field.tscn）；读文件 %.0f 毫秒" % [worst, paint_worst, CrownCity.field_ms])
+	# 地形：河西岸、北岸南岸高过河面；两股河是深水；岛从桥门往东上坡，广场比桥门高九米多；斜街不陡
+	var bank := CrownLayout.height(-80.0, 0.0)
+	var river := CrownLayout.height(-53.0, 20.0)
+	var north := CrownLayout.height(20.0, -64.0)
+	var gate := CrownLayout.height(-36.0, 0.0)
+	var square := CrownLayout.height(56.0, -10.0)
+	var steep := 0.0
+	var st: Array = CrownLayout.STREET
+	for k in st.size() - 1:
+		for s in 10:
+			var a: Vector2 = (st[k] as Vector2).lerp(st[k + 1], s / 10.0)
+			var b: Vector2 = (st[k] as Vector2).lerp(st[k + 1], (s + 1) / 10.0)
+			steep = maxf(steep, absf(CrownLayout.height(b.x, b.y) - CrownLayout.height(a.x, a.y)) / a.distance_to(b))
+	check(bank > CrownLayout.RIVER_Y + 1.5 and river < CrownLayout.DEEP_Y and north < CrownLayout.DEEP_Y and gate > CrownLayout.RIVER_Y + 2.5 and square - gate > 9.0 and steep < 0.2,
+		"河西岸 %.1f 米、两股河 %.1f / %.1f 米是深水；桥门里 %.1f 米、广场 %.1f 米（高 %.1f 米）；斜街最陡 %.0f%%" % [bank, river, north, gate, square, square - gate, steep * 100.0])
+	var sp_ok := true
+	for id: String in CrownLayout.SPAWN_XZ:
+		var spv: Vector3 = CrownLayout.spawn_points()[id][0]
+		if spv.y < CrownLayout.RIVER_Y + 2.0:
+			sp_ok = false
+	check(sp_ok and CrownLayout.SPAWN_XZ.has("bridge") and CrownLayout.spawn_points().size() == 5, "5 个出生点都在岸上（河西岸、桥门里、广场、议事厅和小酒馆门外）")
+	check(CrownCity.deep_wall_faces().size() > 300 and CrownCity.tide() == CrownLayout.RIVER_Y, "深水边一圈看不见的墙；河面不跟潮走")
+	GameState.new_game(760)
+	GameState.daypart = "day"
+	GameState.chapter = 4
+	GameState.pending_load = {"scene": "crown_city", "spawn": "bridge", "player": {}}
+	var main := await make_area("crown_city")
+	await physics(10)
+	var p: FpController = main.player
+	var sp: Vector3 = CrownCity.spawn_points().bridge[0]
+	check(p.is_on_floor() and p.global_position.distance_to(sp) < 0.4 and GameState.quest_active("ch4_main"), "进冠城：站在河西岸行会的小码头边（%s）；第四章主线开着" % p.global_position)
+	var space := main.get_world_3d().direct_space_state
+	var col_worst := 0.0
+	for k in 60:
+		var x := rng.randf_range(-80.0, 80.0)
+		var z := rng.randf_range(-70.0, 70.0)
+		var rq := PhysicsRayQueryParameters3D.create(Vector3(x, 100.0, z), Vector3(x, -50.0, z), 1)
+		rq.exclude = [(main.world.find_child("CrownSolids", true, false) as StaticBody3D).get_rid()]
+		var hit: Dictionary = space.intersect_ray(rq)
+		col_worst = maxf(col_worst, absf((float(hit.position.y) if not hit.is_empty() else -999.0) - CrownCity.height_at(x, z)))
+	check(col_worst < 0.05, "碰撞（高度图）和地形一致（60 个点最大差 %.3f 米）" % col_worst)
+	var streamer: ChunkStreamer = main.streamer
+	streamer.build_all()
+	check(streamer.chunks.size() == 9 and streamer.is_done() and float(streamer.stats.max_job_ms) < 80.0, "地形 %d 块全搭完，最慢一件活 %.1f 毫秒" % [streamer.chunks.size(), streamer.stats.max_job_ms])
+	var water := main.world.find_child("CrownWater", true, false) as MeshInstance3D
+	check(water != null and absf(water.position.y - CrownLayout.RIVER_Y) < 0.01 and main.world.find_child("FarRiver", true, false) != null and main.world.find_child("FarTerrain", true, false) != null
+		and main.world.find_child("FarCity", true, false) != null, "河面在 %.1f 米；地图外的河、远岸；东边岛上越来越高的城和王宫的影子" % CrownLayout.RIVER_Y)
+	# 石桥：桥面站得住、两边石栏；桥门的门洞走得过，墙挡人
+	var bq := PhysicsRayQueryParameters3D.create(Vector3(-53.0, 20.0, 0.0), Vector3(-53.0, -20.0, 0.0), 1)
+	var bh: Dictionary = space.intersect_ray(bq)
+	var pq := PhysicsRayQueryParameters3D.create(Vector3(-53.0, CrownCity.bridge_y(-53.0) + 0.8, 0.0), Vector3(-53.0, CrownCity.bridge_y(-53.0) + 0.8, 6.0), 1)
+	check(not bh.is_empty() and absf(float(bh.position.y) - CrownCity.bridge_y(-53.0)) < 0.12 and not space.intersect_ray(pq).is_empty(),
+		"石桥当中桥面在 %.2f 米（站得住），两边石栏挡着" % (float(bh.position.y) if not bh.is_empty() else -99.0))
+	var gy := CrownLayout.height(-36.0, 0.0) + 1.0
+	var gq := PhysicsRayQueryParameters3D.create(Vector3(-46.0, gy, 0.0), Vector3(-34.0, gy, 0.0), 1)
+	var wq := PhysicsRayQueryParameters3D.create(Vector3(-46.0, gy, 20.0), Vector3(-34.0, gy, 20.0), 1)
+	check(space.intersect_ray(gq).is_empty() and not space.intersect_ray(wq).is_empty(), "桥门的门洞走得过去；旁边的城墙挡人")
+	var houses := CrownTown.houses()
+	var hs_ok := true
+	for h: Dictionary in houses:
+		for q: Vector2 in HarborTown.footprint(h):
+			if CrownLayout.street_d(q) < CrownLayout.STREET_HALF - 0.1 or CrownLayout.island_d(q) < 3.0 or CrownLayout.SQUARE.has_point(q):
+				hs_ok = false
+	check(houses.size() >= 60 and hs_ok, "斜街、小巷两边摆了 %d 栋窄房子，都不压在街、广场、石岸上" % houses.size())
+	var blocks: Array = main.world.find_children("CrownHouses_*", "Node3D", true, false)
+	check(blocks.size() >= 5 and blocks.all(func(b): return b.is_in_group("house") and b.get_node_or_null("Mesh") != null)
+		and ["CouncilHall", "BellTower", "CityWall", "StoneBridge", "Bakery", "MatildaInn"].all(func(n): return main.world.find_child(n, true, false) != null),
+		"房子按块合成网格（%d 块）；议事厅、钟楼、城墙和桥门、石桥、面包坊、玛蒂尔达的小酒馆都搭了" % blocks.size())
+	check(CrownTown.wash_lines().size() >= 6 and not main.world.find_children("Washing_*", "MeshInstance3D", true, false).is_empty(), "斜街上空 %d 道晾衣绳" % CrownTown.wash_lines().size())
+	var mesh: MeshInstance3D = blocks[0].get_node("Mesh")
+	check(mesh.mesh.get_surface_count() <= 12, "一块房子只有 %d 种材质（= 几次绘制）" % mesh.mesh.get_surface_count())
+	var cd := main.world.find_child("CouncilDoor", true, false) as Door
+	var md := main.world.find_child("MatildaDoor", true, false) as Door
+	var signs := ["BankSign", "GateSign"].all(func(n): return main.world.find_child(n, true, false) is RoadSign)
+	var notice := main.world.find_child("CouncilNotice", true, false) as Examine
+	check(cd != null and str(cd.interact(p).get("area", "")) == "council_hall" and md != null and str(md.interact(p).get("area", "")) == "matilda_inn"
+		and (main.world.find_child("BakeryDoor", true, false) as Door).locked and (main.world.find_child("BellDoor", true, false) as Door).locked and signs
+		and notice != null and str(notice.on_use.call(p).toast).contains("冬至日辰时") and GameState.has_flag("ch4_council_notice"),
+		"议事厅、玛蒂尔达的小酒馆进得去；面包坊、钟楼的门锁着；河西岸、桥门里的路牌；钟楼脚下冬议的告示")
+	var out_ok := true
+	for id: String in ["council_door", "matilda_door", "gate", "square"]:
+		var spv: Vector3 = CrownCity.spawn_points()[id][0]
+		var q := PhysicsShapeQueryParameters3D.new()
+		var cap := CapsuleShape3D.new()
+		cap.radius = 0.3
+		cap.height = 1.6
+		q.shape = cap
+		q.transform = Transform3D(Basis.IDENTITY, spv + Vector3(0, 1.0, 0))
+		q.collision_mask = 1
+		if not space.intersect_shape(q, 4).is_empty():
+			out_ok = false
+	check(out_ok, "门外、桥门里、广场的出生点都是空地，不卡在房子里")
+	var kq := PhysicsRayQueryParameters3D.create(Vector3(30.0, CrownLayout.height(30.0, -40.0) + 0.6, -40.0), Vector3(30.0, CrownLayout.height(30.0, -40.0) + 0.6, -70.0), 1)
+	check(CrownTown.kerbs().size() > 80 and not space.intersect_ray(kq).is_empty(), "岛南北两边石岸上沿一圈栏石（%d 段），走不下河" % CrownTown.kerbs().size())
+	var env: Environment = main.env
+	check(env.background_mode == Environment.BG_SKY and Daypart.preset("crown_city", "day").fog_end == Daypart.preset("harbor", "day").fog_end and Cold.COLD_AREAS.get("crown_city", 0.0) > 0.0,
+		"天空是阴云照片；时段预设用双钥港那一套；湿冷")
+	var spec := AreaMap.spec("crown_city")
+	var labels := []
+	for sh: Dictionary in spec.get("shapes", []):
+		if sh.has("label"):
+			labels.append(str(sh.label))
+	check(["灰鲸河", "石桥", "议事厅", "钟楼", "议事厅广场", "玛蒂尔达的小酒馆", "面包坊", "桥门"].all(func(l): return labels.has(l)), "本地地图：%s" % "、".join(labels))
+	var views_ok := Areas.views("crown_city").size() == CrownLayout.VIEW_NAMES.size()
+	for v: Array in Areas.views("crown_city"):
+		var vp: Vector3 = v[0]
+		if vp.y < CrownLayout.RIVER_Y + 2.0:
+			views_ok = false
+	check(views_ok, "%d 个固定机位" % CrownLayout.VIEW_NAMES.size())
+	await free_main(main)
+	# 两间室内
+	for area: String in HarborRooms.CROWN_AREAS:
+		check(Areas.known(area) and Areas.is_indoor(area) and Areas.chapter_of(area) == 4, "%s 登记了（室内、第四章）" % Areas.display_name(area))
+		GameState.pending_load = {"scene": area, "spawn": "front", "player": {}}
+		var rm := await make_area(area)
+		await physics(8)
+		var rp: FpController = rm.player
+		check(rp.is_on_floor() and rp.global_position.distance_to(HarborRooms.spawns(area).front[0]) < 0.4, "进了%s：站在门里头的地上" % Areas.display_name(area))
+		var exit := rm.world.find_child("Exit", true, false) as Door
+		var r := exit.interact(rp) if exit != null else {}
+		check(str(r.get("area", "")) == "crown_city" and Areas.spawn("crown_city", str(r.get("spawn", ""))) != null, "%s 的门通回冠城（%s）" % [Areas.display_name(area), r.get("spawn", "")])
+		var rs := AreaMap.spec(area)
+		check(rs.get("shapes", []).size() >= 3 and rs.exits.size() == 1 and str(rs.exits[0].to) == "crown_city", "%s 的本地地图：陈设、出口回冠城" % Areas.display_name(area))
+		var people_ok := true
+		for n in rm.world.find_children("Npc_*", "Npc", true, false):
+			if not await stands_clear(n):
+				people_ok = false
+		match area:
+			"council_hall":
+				var th := rm.world.find_child("Throne", true, false) as Examine
+				check(th != null and str(th.on_use.call(rp).toast).contains("凹槽") and GameState.has_flag("ch4_throne_seen") and rm.world.find_child("Npc_council_steward", true, false) != null and people_ok,
+					"议事厅：空王座（椅背顶上冠形的凹槽）、五张高背椅；差役站在空地上")
+			"matilda_inn":
+				var sg := rm.world.find_child("OldSign", true, false) as Examine
+				check(sg != null and str(sg.on_use.call(rp).toast).contains("倒钩鱼") and rm.world.find_child("Npc_matilda", true, false) != null and people_ok,
+					"玛蒂尔达的小酒馆：墙上霜渡镇「倒钩鱼」的旧招牌；玛蒂尔达在柜台后面")
+		await free_main(rm)
+	# 旅行：冠的事定了才走得了；到了是天亮
+	ch4_state({}, "way")
+	var r0 := Travel.check(4, "harbor_quay", "crown_city", true)
+	ch4_state({}, "to_city")
+	var r1 := Travel.check(4, "harbor_quay", "crown_city", true)
+	check(not r0.ok and str(r0.why).contains("冠的事定了") and r1.ok and str((r1.route as Dictionary).daypart) == "dawn" and Travel.check(4, "crown_city", "harbor_quay", true).ok
+		and not Travel.check(4, "keyhouse_street", "crown_city", true).ok and Travel.validate().is_empty(),
+		"坐行会的船上冠城：冠的事没定走不了（%s），定了就走，天亮到；回双钥港随时走" % r0.why)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_crownpeople() -> void:
+	# 冠城的人（7.6）：斜街上的人、排队买面包的、玛蒂尔达；冠在你手里时斜街上堵你的人
+	ch4_state({"ch4_crown_way": "bought"}, "to_city")
+	GameState.pending_load = {"scene": "crown_city", "spawn": "bridge", "player": {}}
+	var main := await make_area("crown_city")
+	await physics(6)
+	check(GameState.quest_stage("ch4_main") == "in_city", "到了冠城：主线到「找玛蒂尔达」")
+	var crowd: Array = main.world.find_children("Npc_*", "Npc", true, false)
+	var clear_ok := true
+	var bad := ""
+	for n in crowd:
+		if not await stands_clear(n):
+			clear_ok = false
+			bad = n.name
+	check(crowd.size() >= 16 and crowd.filter(func(n): return str(n.name).begins_with("Npc_queue")).size() == 7 and clear_ok and main.world.find_children("Npc_ambusher*", "Npc", true, false).is_empty(),
+		"城里 %d 个人都站在空地上（%s），面包坊门口排着七个人；冠不在你手里，斜街上没人堵你" % [crowd.size(), bad if bad != "" else "没有卡住的"])
+	await free_main(main)
+	# 玛蒂尔达：椅子、昨夜的酒 → 主线到 council
+	check(say_runner("matilda", ["冬议上谁坐哪张椅子？"], "crown") == "seats" and GameState.has_flag("ch4_seats_heard") and not CrownPeople.matilda_heard(), "玛蒂尔达说了冬议上谁坐哪张椅子")
+	check(say_runner("matilda", ["昨夜谁跟谁喝过酒？"], "crown") == "drinks" and CrownPeople.matilda_heard() and GameState.quest_stage("ch4_main") == "council", "又说了昨夜谁跟谁喝过酒：主线到「上议事厅」")
+	GameState.set_flag("valen_heir", "ivette")
+	var r := DialogueRunner.new()
+	r.start("crown", "matilda")
+	check(r.node_id == "again", "再找她：「椅子还是那五张」")
+	# 冠在你手里：斜街上堵你（三个；无旗者收编过的两个）
+	for ally: bool in [false, true]:
+		ch4_state({"ch4_crown_way": "stolen", "ch1_outlaws": "ally" if ally else "driven"}, "to_city")
+		GameState.add_item("iron_crown")
+		GameState.pending_load = {"scene": "crown_city", "spawn": "gate", "player": {}}
+		var m2 := await make_area("crown_city")
+		await physics(6)
+		var men: Array = m2.world.find_children("Npc_ambusher*", "Npc", true, false)
+		var grp := get_tree().get_nodes_in_group(Encounter.group_name("crown_ambush"))
+		var tr := m2.world.find_child("AmbushTrigger", true, false) as StreetTrigger
+		check(men.size() == (2 if ally else 3) and grp.size() == men.size() and tr != null and (m2.world.find_child("Npc_outlaw", true, false) != null) == ally,
+			"冠在你手里进冠城：斜街小巷口 %d 个蒙着脸的人（%s）" % [men.size(), "无旗者收编过的：巷子里有人拽回去一个、斜街上有个认得你的人" if ally else "三个"])
+		if not ally:
+			var p2: FpController = m2.player
+			p2.global_position = tr.global_position + Vector3(0, 0.1, 0)
+			await physics(6)
+			check(tr.fired and m2.dialogue.visible, "走到巷口前面那段斜街上：他们出来堵你（对话自己开了）")
+			m2.dialogue.close()
+		await free_main(m2)
+	check(say_runner("ambush", ["冠在冬议上等它的主人。你们的主人想要，叫他自己去议事厅开口。"], "crown") in ["talked", "no_talk"], "跟他们说（口才 15）：说走了或者没说动")
+	ch4_state({"ch4_crown_way": "stolen"}, "in_city")
+	GameState.add_item("iron_crown")
+	GameState.set_flag("ch4_ambush", "talked")
+	check(not CrownPeople.ambush_due(), "了结过的（说走了 / 打过了）不再堵你")
 	GameState.chapter = 0
 	GameState.pending_load = {}
 

@@ -59,6 +59,8 @@ const PRESETS := {
 
 ## 个别区域在通用预设上改几项（5.1a，D12）：高地是开阔的山谷和山脊，雾要远得多才看得见山（「远山一层层叠进雾里」）；
 ## 天空换成阴云照片（Highland.apply_sky），sky 是地平线 / 雾的颜色
+## 跟别的区域用同一套（冠城 7.6：同一条灰鲸河、同一片阴云，离海远一点——就用双钥港那一套）
+const AREA_ALIAS := {"crown_city": "harbor"}
 const AREA_PRESETS := {
 	## 双钥港（7.1）：河口、海边——雾从海上来，比平原近、颜色偏青灰；天压得很低，太阳只是云后面亮一点的一片；
 	## 黄昏的光淡橙、贴着海面；夜里海是黑的，月光偏冷，雾更近（金库之夜看得见的只有近处）
@@ -165,6 +167,9 @@ static func apply(main: Node, id: String) -> void:
 		Harbor.apply_sky(env, current, p.get("horizon", p.sky))      # 双钥港（7.1）：压得很低的海上阴云；潮位跟着时段
 		Harbor.set_tide(main.get("world") if main.get("world") != null else main)
 		sun.shadow_opacity = 0.55
+	if area == "crown_city":
+		CrownCity.apply_sky(env, current, p.get("horizon", p.sky))   # 冠城（7.6）：同一片阴云，河上的雾比海边淡
+		sun.shadow_opacity = 0.55
 	if area == "highland":
 		Highland.apply_sky(env, current, p.get("horizon", p.sky))
 		sun.shadow_opacity = 0.5                      # 阴天：影子淡（阴影距离边上那道直边也就不扎眼了，5.2b 截图）
@@ -177,7 +182,7 @@ static func apply(main: Node, id: String) -> void:
 ## 这个区域、这个时段的预设：通用的加上区域自己改的那几项（AREA_PRESETS）
 static func preset(area: String, id: String) -> Dictionary:
 	var p: Dictionary = PRESETS[id if valid(id) else "night"]
-	var over: Dictionary = AREA_PRESETS.get(area, {}).get(id if valid(id) else "night", {})
+	var over: Dictionary = AREA_PRESETS.get(AREA_ALIAS.get(area, area), {}).get(id if valid(id) else "night", {})
 	if over.is_empty():
 		return p
 	var out := p.duplicate()

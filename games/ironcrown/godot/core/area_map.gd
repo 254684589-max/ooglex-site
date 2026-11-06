@@ -71,8 +71,10 @@ static func spec(area: String) -> Dictionary:
 			return Plain.map_spec()
 		"harbor":
 			return Harbor.map_spec()
-		"key_hall", "key_vault", "guild_hall", "dock_tavern", "debt_prison":
+		"key_hall", "key_vault", "guild_hall", "dock_tavern", "debt_prison", "council_hall", "matilda_inn":
 			return HarborRooms.map_spec(area)
+		"crown_city":
+			return CrownCity.map_spec()
 		"waystation":
 			return Waystation.map_spec()
 		"beacon_tower":

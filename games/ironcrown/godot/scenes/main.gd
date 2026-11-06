@@ -298,8 +298,10 @@ func _ready() -> void:
 			t = Plain.build(world, Settings.reduced_motion)              # 金穗平原（6.1a，第三章）
 		"harbor":
 			t = Harbor.build(world, Settings.reduced_motion)             # 双钥港（7.1，第四章）
-		"key_hall", "key_vault", "guild_hall", "dock_tavern", "debt_prison":
-			t = HarborRooms.build(area, world, Settings.reduced_motion)  # 双钥港的室内（7.3）
+		"key_hall", "key_vault", "guild_hall", "dock_tavern", "debt_prison", "council_hall", "matilda_inn":
+			t = HarborRooms.build(area, world, Settings.reduced_motion)  # 双钥港的室内（7.3）、冠城的两间（7.6）
+		"crown_city":
+			t = CrownCity.build(world, Settings.reduced_motion)          # 冠城一角（7.6，第四章）
 		"waystation":
 			t = Waystation.build(world, Settings.reduced_motion)
 		"beacon_tower":
@@ -1179,10 +1181,12 @@ func _story_progress() -> void:
 		GameState.start_quest("ch3_main")                    # 第三章开场（6.2c）：从麦渡的渡口上岸
 		if Chapters.wip_note_of(3) != "" and hud:
 			hud.toast(Chapters.wip_note_of(3), 7.0)
-	if GameState.chapter == 4 and (area == "harbor" or area in HarborRooms.AREAS) and not GameState.quest_active("ch4_main") and not GameState.quest_done("ch4_main"):
+	if GameState.chapter == 4 and (area in ["harbor", "crown_city"] or area in HarborRooms.AREAS or area in HarborRooms.CROWN_AREAS) and not GameState.quest_active("ch4_main") and not GameState.quest_done("ch4_main"):
 		GameState.start_quest("ch4_main")                    # 第四章开场（7.4）：从双钥港的木栈码头上岸
 		if Chapters.wip_note_of(4) != "" and hud:
 			hud.toast(Chapters.wip_note_of(4), 7.0)
+	if GameState.chapter == 4 and (area == "crown_city" or area in HarborRooms.CROWN_AREAS):
+		CrownPeople.arrived()                               # 上了冠城（7.6）：主线 to_city → in_city
 	if GameState.chapter == 1 and area in ["marsh", "inn"] and GameState.quest_stage("ch1_main") in ["", "to_reedwharf"] and not GameState.quest_done("ch1_main"):
 		GameState.set_stage("ch1_main", "ask_reedwharf")
 	if GameState.chapter == 1 and area == "castle" and GameState.quest_stage("ch1_main") in ["", "to_reedwharf", "ask_reedwharf", "to_blackheron"] and not GameState.quest_done("ch1_main"):
@@ -1203,6 +1207,7 @@ func _ch3_sides_heard() -> void:
 	PlainPeople.sides_heard()
 	PlainPeople.evidence_settle()
 	HarborPeople.envoys_heard()                     # 第四章主线第 3 步（7.4）：三家的使者都开过价
+	CrownPeople.matilda_heard()                     # 第四章主线第 6 步（7.6）：玛蒂尔达说完了冬议上的椅子和昨夜的酒
 
 
 ## 区域名；连片地图上加你在的那一块：「鹭沼 · 芦栈村」（4.4）
@@ -1681,6 +1686,7 @@ func _fetch_area_pack() -> void:
 	Highland.clear_cache()
 	Plain.clear_cache()
 	Harbor.clear_cache()
+	CrownCity.clear_cache()
 	GameState.pending_load = {"scene": area if ok else "frostford", "player": {}}
 	if ok:
 		GameState.pending_load["player"] = {"pos": [player.global_position.x, player.global_position.y, player.global_position.z], "yaw": player.rotation.y, "pitch": player.pitch}

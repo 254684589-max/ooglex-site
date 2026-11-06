@@ -206,5 +206,13 @@
   "ch4_gate_open": {"desc": "钥楼背后那道铁栅水门开了（7.5：埃德里克的钥匙或撬锁）", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"},
   "ch4_redline": {"desc": "科妮莉亚说了河道图上那条红线：退潮时北潮沟哪段能落脚（7.5）", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"},
   "ch4_edric_key": {"desc": "埃德里克从行会的柜子里拿了水门的备用钥匙给你（7.5）", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"},
-  "ch4_thugs": {"desc": "序章勒索过塞拉斯的：码头上他的三个人怎么了结的（7.5）：paid 付了六十枚 / talked 说走了 / beaten 打了一架", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"}
+  "ch4_thugs": {"desc": "序章勒索过塞拉斯的：码头上他的三个人怎么了结的（7.5）：paid 付了六十枚 / talked 说走了 / beaten 打了一架", "set_in": "data/dialogue/harbor.json、world/harbor_town.gd、world/harbor_rooms.gd", "read_in": "7.6 起"},
+  "ch4_ambush": {"desc": "冠在你手里（换、偷）上了冠城：斜街上蒙着脸的人堵你（7.6）：talked 口才 15 说走了 / beaten 打了一架（无旗者收编过的少一个人）", "set_in": "data/dialogue/crown.json ambush；world/crown_people.gd（组 encounter:crown_ambush）", "read_in": "world/crown_people.gd ambush_due；第五章揭开是谁派来的"},
+  "ch4_matilda_met": {"desc": "在冠城斜街的小酒馆里见了玛蒂尔达（7.6）", "set_in": "data/dialogue/crown.json matilda", "read_in": "crown.json matilda start_if"},
+  "ch4_seats_heard": {"desc": "玛蒂尔达说了冬议上谁坐哪张椅子（7.6）", "set_in": "data/dialogue/crown.json matilda/seats", "read_in": "world/crown_people.gd matilda_heard（主线到 council）；7.8 冬议"},
+  "ch4_drinks_heard": {"desc": "玛蒂尔达说了昨夜谁跟谁喝过酒（7.6；灰斗篷的人往钥楼那边去了）", "set_in": "data/dialogue/crown.json matilda/drinks", "read_in": "world/crown_people.gd matilda_heard（主线到 council）；7.8 冬议"},
+  "ch4_council_notice": {"desc": "看过钟楼脚下冬议的告示（7.6）", "set_in": "world/crown_town.gd", "read_in": "7.8 冬议、章末回顾"},
+  "ch4_throne_seen": {"desc": "在议事厅里看过空王座（椅背上那个冠形的凹槽，7.6）", "set_in": "world/crown_rooms.gd", "read_in": "7.8 冬议"},
+  "ch4_throne_asked": {"desc": "问过议事厅的差役王座为什么空着（7.6）", "set_in": "data/dialogue/crown.json council_steward/throne", "read_in": "7.8 冬议"},
+  "ch4_old_sign": {"desc": "看过玛蒂尔达酒馆墙上「倒钩鱼」的旧招牌（7.6）", "set_in": "world/crown_rooms.gd", "read_in": "章末回顾"}
 }
