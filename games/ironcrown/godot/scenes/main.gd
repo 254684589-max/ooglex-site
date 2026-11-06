@@ -169,6 +169,18 @@ func _ready() -> void:
 				GameState.set_flag("ch4_vault_sneaky")
 			GameState.set_stage("ch4_main", "way")
 			GameState.daypart = "night"
+		if _query("council") in ["stolen", "bought"] and not Engine.has_meta("ic_council_param_done"):
+			Engine.set_meta("ic_council_param_done", true)    # 截图用（7.8）：?area=council_hall&council=stolen|bought 直接到冬议（偷的冠在你怀里 / 科尔温替塞弗林家带来）
+			GameState.chapter = 4
+			if not GameState.quest_active("ch4_main"):
+				GameState.start_quest("ch4_main")
+			GameState.set_flag("ch4_crown_way", _query("council"))
+			if _query("council") == "stolen":
+				GameState.add_item("iron_crown")
+			else:
+				GameState.set_flag("ch4_buyer", "severin")
+			GameState.set_stage("ch4_main", "council")
+			GameState.daypart = "day"
 		if _query("dawn") in ["lit", "out"] and not Engine.has_meta("ic_dawn_param_done"):
 			Engine.set_meta("ic_dawn_param_done", true)       # 截图用（5.8）：?dawn=lit|out 直接到第二夜过去的早上（劫下了粮 / 被打退了）
 			for f in ["matthias_met", "norbert_met", "norbert_day2"]:
@@ -462,6 +474,8 @@ func _ready() -> void:
 		show_ending.call_deferred("ch2")                 # 截图用（5.8b）：?ending=ch2 第二章的章末画面（回顾按当前旗标，配 ?well=all）
 	elif _query("ending") == "ch3" and area in ["scriptorium", "plain"] and arrived_by == "" and loaded_from == "":
 		show_ending.call_deferred("ch3")                 # 截图用（6.8b）：?ending=ch3 第三章的章末画面（回顾按当前旗标，配 ?mill=）
+	elif _query("ending") == "ch4" and area in ["council_hall", "crown_city"] and arrived_by == "" and loaded_from == "":
+		show_ending.call_deferred("ch4")                 # 截图用（7.8）：?ending=ch4 第四章的章末画面（回顾按当前旗标，配 ?council=）
 	if _query("map") == "1" and GameState.chapter >= 1 and not Engine.has_meta("ic_map_param_done") \
 			and (Areas.pack_chapter(area) == 0 or Chapters.content_ready(Areas.pack_chapter(area))):     # 章节包还没到（先铺平地等重新载入）时不开（5.2a）
 		Engine.set_meta("ic_map_param_done", true)     # 截图、冒烟用（4.2）：第一章起直接打开一次旅行地图（每次打开页面只开一次）
@@ -1210,6 +1224,7 @@ func _ch3_sides_heard() -> void:
 	CrownPeople.matilda_heard()                     # 第四章主线第 6 步（7.6）：玛蒂尔达说完了冬议上的椅子和昨夜的酒
 	if area == "harbor" and world != null:
 		HarborTown.refresh_lighthouse(world)        # 灯塔的火（7.7）：跟老蒂博说完当场点着
+	CrownPeople.council_settle()                    # 冬议（7.8）：当众拿出来的罪证
 
 
 ## 区域名；连片地图上加你在的那一块：「鹭沼 · 芦栈村」（4.4）
@@ -1568,6 +1583,8 @@ func _on_dialogue_closed() -> void:
 	GameState.pending_ending = ""
 	if ending == "ch3":
 		_ch3_bell()                                         # 守灵夜听完（6.8b）：先响晨钟，再出章末画面
+	elif ending == "ch4":
+		_ch4_bell()                                         # 冬议散了（7.8）：钟楼的黄昏钟，再出章末画面
 	elif ending != "":
 		show_ending.call_deferred(ending)
 	player.interactor.refresh()
@@ -1627,7 +1644,9 @@ func show_ending(id: String, choice := "") -> void:
 	hud.visible = false                 # 提示、按钮和触屏摇杆都压在结束画面底下会叠字（平板上「挡」「攻」叠在回顾上），先藏起来
 	touch_was_visible = touch.visible
 	touch.visible = false
-	if id == "ch3":
+	if id == "ch4":
+		ending_panel.open_chapter4(Settings.reduced_motion, 0)                                        # 第四章完（7.8）；第五章还没有
+	elif id == "ch3":
 		ending_panel.open_chapter3(Settings.reduced_motion, 4 if playable_chapter >= 4 else 0)       # 第三章完（6.8b）；第四章还没有（Chapters 里没登记就不出「继续」）
 	elif id == "ch2":
 		ending_panel.open_chapter2(Settings.reduced_motion, 3 if playable_chapter >= 3 else 0)       # 第二章完（5.8b）；第三章开放以前只有 ?preview=3 能继续（6.2c）
@@ -2297,6 +2316,27 @@ func _ch3_bell() -> void:
 			GameState.set_flag("ch3_done")
 			save_game("auto", true)
 			show_ending("ch3"))
+
+
+## 第四章完（7.8）：冬议散了，钟楼上的黄昏钟响起来，画面停在钟声里，再出「第五章 · 冬井　开发中」
+func _ch4_bell() -> void:
+	hud.say("（钟楼上的黄昏钟响了。一下，又一下。高窗外，冠城的屋顶一片一片暗下去）")
+	if Settings.sound:
+		if ch3_bell_player == null:
+			ch3_bell_player = AudioStreamPlayer.new()
+			ch3_bell_player.volume_db = -8.0
+			ch3_bell_player.max_polyphony = 3
+			ch3_bell_player.stream = Bell.make_stream()
+			add_child(ch3_bell_player)
+		for i in 3:
+			get_tree().create_timer(0.1 + i * 2.6).timeout.connect(func():
+				if is_instance_valid(ch3_bell_player):
+					ch3_bell_player.play())
+	get_tree().create_timer(ch3_end_after).timeout.connect(func():
+		if is_inside_tree() and not GameState.has_flag("ch4_done"):
+			GameState.set_flag("ch4_done")
+			save_game("auto", true)
+			show_ending("ch4"))
 
 
 func _on_well_reached() -> void:

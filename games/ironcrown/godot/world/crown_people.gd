@@ -168,11 +168,69 @@ static func room_people(area: String) -> Array:
 				["inn_drinker2", "喝酒的脚夫", Vector3(-2.0, 0, 1.5), 10.0, "", DRINKER_LINES.slice(1) + DRINKER_LINES.slice(0, 1)]] + (
 				[["milo_inn", "米洛", Vector3(0.6, 0, 1.6), -20.0, "", MILO_LINES]] if str(GameState.quest_stage("ch4_matilda")) == "back" or str(GameState.get_flag("ch4_matilda", "")) == "found" else [])
 		"council_hall":
-			return [["council_steward", "议事厅的差役", Vector3(5.6, 0, -0.9), 120.0, "council_steward", []]]
+			var out := [["council_steward", "议事厅的差役", Vector3(5.6, 0, -0.9), 120.0, "council_steward", []]]
+			if council_due():
+				out.append_array(council_people())
+			return out
 	return []
 
 
+# ---------------- 冬议（7.8） ----------------
+
+## 冬议开着：主线到了 council、第四章还没完
+static func council_due() -> bool:
+	return GameState.quest_stage("ch4_main") == "council" and not GameState.has_flag("ch4_done")
+
+
+## 谁念借据（STORY.md 7.4）：序章放走的是埃德里克，勒索过的是塞拉斯，借据还在你身上的是你自己，不然是瓦伦家的人
+static func debt_reader() -> String:
+	match str(GameState.get_flag("prologue_edric", "")):
+		"release":
+			return "edric"
+		"extort":
+			return "silas"
+	if GameState.has_item("debt_note"):
+		return "you"
+	return "valen"
+
+
+## 椅子前面站着的人：五家的家主（椅子是钉在地上的，人站在椅子前面）、大主祭在王座旁边、塞拉斯在科尔温身后；旁听席上的人在栏杆外
+static func council_people() -> Array:
+	var heir := "伊薇特" if str(GameState.get_flag("valen_heir", "")) == "ivette" else "阿尔里克"
+	var seat := {"severin": "贝尔特兰·塞弗林", "lomond": "伊莎贝拉·洛蒙德", "valen": heir, "caswell": "科尔温·卡斯韦尔", "erde": "戈兰·厄尔德"}
+	var out := []
+	for c: Array in CrownRooms.CHAIRS:
+		var cp := CrownRooms.chair_pos(float(c[1]))
+		var to := (Vector3(0, 0, -0.2) - cp).normalized()
+		var p := cp + to * 1.15
+		out.append(["council_" + str(c[0]), str(seat[c[0]]), Vector3(p.x, 0, p.z), rad_to_deg(atan2(-to.x, -to.z)), "council", []])
+	out.append(["council_lucien", "大主祭卢西安", Vector3(2.65, 0, -4.4), -160.0, "council", []])
+	var cw := CrownRooms.chair_pos(-30.0)
+	out.append(["council_silas", "塞拉斯", Vector3(cw.x - 1.0, 0, cw.z - 0.9), -60.0, "", ["（他靠着墙，手套搭在腕子上，一句话也不说）"]])
+	if str(GameState.get_flag("prologue_edric", "")) == "release":
+		out.append(["council_edric", "埃德里克", Vector3(-3.0, 0, 3.4), 10.0, "", ["（他攥着袄子的前襟，像揣着什么东西）……等一会儿。"]])
+	if str(GameState.get_flag("ch4_debtor", "")) != "":
+		out.append(["council_jost", "约斯特", Vector3(3.2, 0, 3.5), -10.0, "", ["（他挤在旁听席最前头）我来听听他们怎么说北边的粮。"]])
+	return out
+
+
+## 冬议开始以前：定下谁念借据（对话的条件只能看旗标）
+static func council_open() -> void:
+	if council_due():
+		GameState.set_flag("ch4_debt_reader", debt_reader())
+
+
+## 冬议散了（对话结束时 main 调）：当众拿出来的罪证记成 ch4_evidence_used
+static func council_settle() -> void:
+	var sv := GameState.has_flag("ch4_ev_severin")
+	var lm := GameState.has_flag("ch4_ev_lomond")
+	if sv or lm:
+		GameState.set_flag("ch4_evidence_used", "both" if sv and lm else ("severin" if sv else "lomond"))
+
+
 static func build_room(area: String, parent: Node3D) -> void:
+	if area == "council_hall" and council_due():
+		council_open()
 	for it: Array in room_people(area):
 		var n := Npc.make(str(it[1]), it[5], Color("5a5248"))
 		n.name = "Npc_" + str(it[0])
@@ -182,3 +240,9 @@ static func build_room(area: String, parent: Node3D) -> void:
 		n.position = it[2]
 		n.rotation.y = deg_to_rad(float(it[3]))
 		parent.add_child(n)
+	if area == "council_hall" and council_due():                       # 走到栏杆跟前，冬议就开始了
+		var lead := parent.get_node_or_null("Npc_council_caswell") as Node3D
+		var tr := StreetTrigger.make(Vector3(14.0, 3.0, 1.2), "crown", "council", lead)
+		tr.name = "CouncilTrigger"
+		tr.position = Vector3(0, 0, 3.0)
+		parent.add_child(tr)

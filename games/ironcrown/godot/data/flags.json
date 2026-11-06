@@ -222,5 +222,12 @@
   "ch4_debtor": {"desc": "债牢里的约斯特怎么出来的（7.7）：paid 替他还了四十二枚 / pressed 拿老王的担保压科尔温（口才 14）/ broken 夜里撬了牢门（潜行 14）", "set_in": "data/dialogue/harbor.json jost、colwin/jost_yes；world/harbor_rooms.gd", "read_in": "world/harbor_people.gd（出来了牢里就没人）；冬议上他站在旁听席里（7.8）"},
   "ch4_jost_pressed": {"desc": "拿老王的担保跟科尔温说过约斯特的事（一次）", "set_in": "data/dialogue/harbor.json colwin/jost_*", "read_in": "harbor.json colwin 选项条件"},
   "ch4_matilda": {"desc": "玛蒂尔达的人（7.7）：found 找到了米洛", "set_in": "data/dialogue/crown.json matilda/found", "read_in": "world/crown_people.gd；冬议（7.8）、章末回顾"},
-  "ch4_regent_visitor": {"desc": "米洛看见谁昨夜去过摄政的宅子：lucien 大主祭卢西安（没挂旗的车停在后门）", "set_in": "data/dialogue/crown.json matilda/found", "read_in": "冬议（7.8）"}
+  "ch4_regent_visitor": {"desc": "米洛看见谁昨夜去过摄政的宅子：lucien 大主祭卢西安（没挂旗的车停在后门）", "set_in": "data/dialogue/crown.json matilda/found", "read_in": "冬议（7.8）"},
+  "crown_holder": {"desc": "冬议上铁冠交给了谁（7.8）：severin / lomond（赎给洛蒙德家、科尔温照账交）/ valen / church（大主祭）/ caswell（回钥楼）/ kept（自己留着，只在换、偷的路上）", "set_in": "data/dialogue/crown.json council/crown", "read_in": "quest/chapter4.gd recap；第五章"},
+  "ch4_evidence_used": {"desc": "冬议上当众拿出来的罪证（7.8）：severin 摄政的信 / lomond 粮仓账本 / both", "set_in": "world/crown_people.gd council_settle（看 ch4_ev_severin、ch4_ev_lomond）", "read_in": "quest/chapter4.gd recap；第五章"},
+  "ch4_ev_severin": {"desc": "冬议上拿出了摄政的信（塞弗林家闭嘴，−10）", "set_in": "data/dialogue/crown.json council/ev_severin", "read_in": "crown.json council 选项条件；world/crown_people.gd council_settle"},
+  "ch4_ev_lomond": {"desc": "冬议上拿出了粮仓账本（洛蒙德家闭嘴，−10）", "set_in": "data/dialogue/crown.json council/ev_lomond", "read_in": "crown.json council 选项条件；world/crown_people.gd council_settle"},
+  "ch4_debt_reader": {"desc": "冬议上谁念序章那张借据（7.8）：edric 放走的 / silas 勒索过的 / you 借据还在你身上 / valen 瓦伦家的人", "set_in": "world/crown_people.gd council_open", "read_in": "data/dialogue/crown.json council 选项条件；quest/chapter4.gd recap"},
+  "ch4_note_read": {"desc": "借据在冬议上被念出来了（7.8）", "set_in": "data/dialogue/crown.json council/silence", "read_in": "第五章"},
+  "ch4_done": {"desc": "第四章完（7.8）：冬议散了、黄昏钟响过", "set_in": "scenes/main.gd _ch4_bell", "read_in": "crown.json council start_if；world/crown_people.gd council_due；章末"}
 }

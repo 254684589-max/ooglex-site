@@ -10,7 +10,7 @@ signal closed
 signal restart_requested
 signal continue_requested(chapter: int)
 
-const ENDINGS := ["prologue", "ch3"]          # 对话里能触发的结局（ch3：伊格纳兹说完守灵夜，6.8b；先响晨钟再出画面，main._ch3_bell）
+const ENDINGS := ["prologue", "ch3", "ch4"]          # 对话里能触发的结局（ch3：伊格纳兹说完守灵夜，6.8b；先响晨钟再出画面，main._ch3_bell）
 ## 抉择 → 这一夜的回顾
 const RECAP := {
 	"deliver": "你把埃德里克和借据交回了瓦伦家。维克托会感激你，埃德里克不会原谅你；塞拉斯空着手回了双钥港。",
@@ -121,6 +121,12 @@ func open_chapter2(reduced_motion := false, next := 0) -> void:
 func open_chapter3(reduced_motion := false, next := 0) -> void:
 	choice = "ch3"
 	_show("第三章「粮与铁」完", "第四章 · 双钥港的账", "在晨钟里再站一会儿", Chapter3.recap(), Chapter3.hook(), reduced_motion, next)
+
+
+## 第四章完（7.8）：「第四章「双钥港的账」完 / 第五章 · 冬井 / 开发中」，回顾和钩子由 Chapter4 按旗标写
+func open_chapter4(reduced_motion := false, next := 0) -> void:
+	choice = "ch4"
+	_show("第四章「双钥港的账」完", "第五章 · 冬井", "在钟声里再站一会儿", Chapter4.recap(), Chapter4.hook(), reduced_motion, next)
 
 
 func _show(head: String, title_text: String, back_text: String, recap_text: String, seal_text: String, reduced_motion: bool, next: int) -> void:

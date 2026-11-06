@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -10343,6 +10343,95 @@ func test_ch4side() -> void:
 		"玛蒂尔达：昨夜大主祭卢西安的车停在摄政宅子的后门；米洛回了酒馆")
 	GameState.chapter = 0
 	GameState.pending_load = {}
+
+
+func test_ch4council() -> void:
+	# 冬议与章末（7.8）：多人在场的对话、罪证当众拿出来、铁冠交给谁、借据被念出来、黄昏钟、「第五章 · 冬井」
+	ch4_state({"ch4_crown_way": "stolen", "ch4_vault": "talked", "prologue_edric": "release", "valen_heir": "ivette", "ch2_fire": "lit", "ch4_debtor": "paid", "ch4_regent_visitor": "lucien", "ch3_vial_heard": true}, "council")
+	GameState.add_item("iron_crown")
+	GameState.add_item("regent_letter")
+	GameState.pending_load = {"scene": "council_hall", "spawn": "front", "player": {}}
+	var main := await make_area("council_hall")
+	await physics(8)
+	var people: Array = main.world.find_children("Npc_council_*", "Npc", true, false)
+	var clear_ok := true
+	var bad := ""
+	for n in people:
+		if not await stands_clear(n):
+			clear_ok = false
+			bad = n.name
+	var names := people.map(func(n): return str(n.display_name))
+	check(people.size() == 10 and clear_ok and names.has("贝尔特兰·塞弗林") and names.has("伊薇特") and names.has("戈兰·厄尔德") and names.has("大主祭卢西安") and names.has("埃德里克") and names.has("约斯特"),
+		"冬议：五张椅子前站着五家的人、王座旁边是大主祭、科尔温身后是塞拉斯；旁听席上埃德里克、约斯特；差役（%d 人，%s）" % [people.size(), bad if bad != "" else "都站在空地上"])
+	check(str(GameState.get_flag("ch4_debt_reader", "")) == "edric", "序章放走了埃德里克：借据由他念")
+	var tr := main.world.find_child("CouncilTrigger", true, false) as StreetTrigger
+	main.player.global_position = tr.global_position + Vector3(0, 0.1, 0)
+	await physics(6)
+	check(tr.fired and main.dialogue.visible, "走到栏杆跟前：冬议开始了（对话自己开）")
+	main.dialogue.close()
+	var r := DialogueRunner.new()
+	r.start("crown", "council")
+	r.choose(0)
+	check(r.text().contains("北边的火还亮着"), "第十九烽的火亮着：戈兰·厄尔德替你说话")
+	r.choose(0)
+	r.choose(0)
+	check(r.text().contains("北境替王国守了三十二年烽燧"), "伊薇特当家：瓦伦家这一句")
+	r.choose(0)
+	check(r.text().contains("冠是偷出来的"), "偷的：科尔温当众念「冠是偷出来的」")
+	await free_main(main)
+	var picks := ["（……）", "（……）", "（……）", "（……）", "（拿出摄政的信）「老王最后一个冬天的药，照旧由砧山送去。」——这是摄政的字。", "（……）"]
+	check(say_runner("council", picks, "crown") == "crown" and GameState.has_flag("ch4_ev_severin") and not GameState.has_item("regent_letter"), "当众拿出摄政的信：塞弗林家不说话了")
+	var r2 := DialogueRunner.new()
+	r2.start("crown", "council")
+	for k in 4:
+		r2.choose(0)
+	var opts := r2.options().map(func(o): return str(o.text))
+	check(not opts.has("（把铁匣放在贝尔特兰面前）交给塞弗林家。") and opts.has("（把铁匣递给大主祭）它该回到坠星的地方。") and opts.has("（把铁匣揣回怀里）冠留在我这儿。"), "闭了嘴的塞弗林家拿不到冠；能交给瓦伦家、大主祭、钥楼，或者自己留着")
+	GameState.set_flag("ch4_ev_severin", false)
+	GameState.flags.erase("ch4_ev_severin")
+	GameState.add_item("regent_letter")
+	picks.append_array(["（把铁匣递给大主祭）它该回到坠星的地方。", "（议事厅快散的时候，有人站了起来）", "（……）", "（……）"])
+	check(say_runner("council", picks, "crown") == "" and str(GameState.get_flag("crown_holder", "")) == "church" and not GameState.has_item("iron_crown") and GameState.quest_done("ch4_main")
+		and GameState.pending_ending == "ch4" and GameState.pending_daypart == "dusk" and GameState.has_flag("ch4_note_read"), "交给大主祭；埃德里克念借据；主线完、入黄昏、出章末")
+	CrownPeople.council_settle()
+	check(str(GameState.get_flag("ch4_evidence_used", "")) == "severin", "当众拿出来的罪证记下了（ch4_evidence_used = severin）")
+	# 章末画面
+	GameState.pending_ending = ""
+	GameState.pending_daypart = ""
+	GameState.pending_load = {"scene": "council_hall", "spawn": "front", "player": {}}
+	main = await make_area("council_hall")
+	await physics(4)
+	check(not main.world.find_children("Npc_council_*", "Npc", true, false).is_empty(), "黄昏钟响以前，冬议的人还在")
+	main.ch3_end_after = 0.3
+	main._ch4_bell()
+	await seconds(0.8)
+	var ep: EndingPanel = main.ending_panel
+	check(GameState.has_flag("ch4_done") and ep.visible and ep.title.text == "第五章 · 冬井" and ep.header.text.contains("双钥港的账") and ep.recap.text.contains("大主祭卢西安") and ep.recap.text.contains("埃德里克")
+		and ep.recap.text.contains("约斯特") and ep.seal.text.contains("大主祭的车") and ep.seal.text.contains("誓瓶") and not ep.continue_btn.visible,
+		"黄昏钟以后：「第四章「双钥港的账」完 / 第五章 · 冬井」，回顾按旗标写，钩子接冬井；第五章还没有，不出「继续」")
+	ep.close()
+	await free_main(main)
+	check(CrownPeople.room_people("council_hall").size() == 1, "第四章完了：议事厅里只剩差役")
+	# 赎的：科尔温按账交；拿出那一家的罪证，冠回钥楼
+	ch4_state({"ch4_crown_way": "bought", "ch4_buyer": "north", "prologue_edric": "deliver"}, "council")
+	CrownPeople.council_open()
+	check(str(GameState.get_flag("ch4_debt_reader", "")) == "valen" and say_runner("council", ["（……）", "（……）", "（……）", "（……）", "（看着科尔温把铁匣交出去）", "（议事厅快散的时候，有人站了起来）"], "crown") == "note_valen"
+		and str(GameState.get_flag("crown_holder", "")) == "valen", "替北境赎的：科尔温把冠交给瓦伦家；借据由瓦伦家的人念")
+	ch4_state({"ch4_crown_way": "bought", "ch4_buyer": "severin"}, "council")
+	GameState.add_item("regent_letter")
+	check(say_runner("council", ["（……）", "（……）", "（……）", "（……）", "（拿出摄政的信）「老王最后一个冬天的药，照旧由砧山送去。」——这是摄政的字。", "（……）", "（看着科尔温）"], "crown") == "hand_back"
+		and str(GameState.get_flag("crown_holder", "")) == "caswell", "替塞弗林家赎的、却当众拿出摄政的信：科尔温「账平了，人不平」，冠回钥楼")
+	# 换的、借据在身上：自己留着冠、自己念借据
+	ch4_state({"ch4_crown_way": "traded", "ch4_traded": "ledger"}, "council")
+	GameState.add_item("iron_crown")
+	GameState.add_item("debt_note")
+	CrownPeople.council_open()
+	check(str(GameState.get_flag("ch4_debt_reader", "")) == "you" and say_runner("council", ["（……）", "（……）", "（……）", "（……）", "（把铁匣揣回怀里）冠留在我这儿。", "（站起来，从怀里拿出那张借据）"], "crown") == "note_you"
+		and str(GameState.get_flag("crown_holder", "")) == "kept" and GameState.has_item("iron_crown"), "冠留在自己怀里；借据还在你身上：你自己站起来念")
+	GameState.chapter = 0
+	GameState.pending_load = {}
+	GameState.pending_ending = ""
+	GameState.pending_daypart = ""
 
 
 func test_highland() -> void:

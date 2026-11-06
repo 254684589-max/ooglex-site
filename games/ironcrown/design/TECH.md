@@ -1120,6 +1120,15 @@ godot/
 - **玛蒂尔达的人**（`ch4_matilda`）：`CrownPeople.talkers()` 放面包师（面包坊门东边），米洛只在 `bakery` / `lane` 时缩在第三条小巷尽头；`back` / `found` 以后他在酒馆里（`room_people`）。
 - **测试**：`ch4side` 组（摆渡、礁石上站得住、接任务、科尔温没说动、盐仓被看见、交油点灯、塔顶光变亮、黄昏坐船进潮沟要锁、没亮下不去、上冠城记 dark 和沉船；约斯特认出补名的人、压科尔温、付钱、白天撬不了、夜里撬开；玛蒂尔达托付、面包师、米洛站位、米洛回来、大主祭）。
 
+### 4.90 冬议与章末（路线图 7.8，2026-11-06）
+
+- **人**：`CrownPeople.council_due()`（主线 council、没有 `ch4_done`）时 `room_people("council_hall")` 多放五家的人（站在各自椅子前 1.15 米、脸朝屋子当中；节点名 `Npc_council_*`，不用 `Npc_ivette` 一类——作息表按那些编号删人）、大主祭、塞拉斯、旁听席（埃德里克、约斯特按旗标）；`build_room` 先 `council_open()` 定 `ch4_debt_reader`，再放一个 `StreetTrigger`（栏杆前一条 14 × 1.2 米）。
+- **多人在场的对话**：沿用一个说话人（`speaker = 冬议`），每个节点的台词里写「名字：……」，按旗标的部分拆成一串节点（每个节点自己的 `text_if`），一个「（……）」往下走——不用组合爆炸。冠那一步的选项按 `ch4_crown_way`、`ch4_buyer`、`has_item`、`ch4_ev_*` 互斥出现；借据那一步按 `ch4_debt_reader` 出一个选项。最后一个节点 `quest_done`、`daypart dusk`、`ending ch4`。
+- **罪证**：对话只能设旗标，`ch4_ev_severin` / `ch4_ev_lomond` 两个分开记；对话结束时 `council_settle()` 合成 `ch4_evidence_used`。
+- **章末**：`main._ch4_bell()`（同第三章的晨钟：`hud.say`、三声 `Bell.make_stream`、`ch3_end_after` 秒后设 `ch4_done`、自动存档、`show_ending("ch4")`）；`EndingPanel.open_chapter4`（回顾、钩子在 `quest/chapter4.gd`；第五章没登记，不出「继续」）。
+- **截图参数**：`?area=council_hall&council=stolen|bought`（直接到冬议）、`?ending=ch4`。
+- **测试**：`ch4council` 组（十个人站在空地上、谁念借据、走到栏杆跟前自己开、戈兰 / 伊薇特 / 偷的三句、当众拿出信、闭嘴的拿不到冠、交给大主祭一路到章末、`ch4_evidence_used`、黄昏钟和章末画面、第四章完以后只剩差役、赎给北境、赎给塞弗林却拿出信、换的自己留着自己念）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
