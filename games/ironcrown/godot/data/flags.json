@@ -236,5 +236,8 @@
   "ch5_wardens": {"desc": "档案馆里守卷的修士（8.1）：let 没拦 / talked 口才 14 说开了 / beaten 打了一架", "set_in": "world/crown_people.gd wardens_settle；crown.json simeon；fight 效果", "read_in": "crown.json lucien_archive start_if；world/crown_people.gd room_people"},
   "ch5_archive": {"desc": "读过封誓残卷（8.1）", "set_in": "data/dialogue/crown.json lucien_archive/scroll", "read_in": "world/crown_rooms.gd 铁箱；第五章主线"},
   "ch5_ambush_known": {"desc": "大主祭认了：斜街上蒙着脸的是教会的人（8.1）", "set_in": "data/dialogue/crown.json lucien_archive/ambush", "read_in": "第五章章末"},
-  "ch5_grate_seen": {"desc": "看过档案馆北墙那道锁着的铁栅门（冠形的凹槽，8.1）", "set_in": "world/crown_rooms.gd", "read_in": "第五章章末"}
+  "ch5_grate_seen": {"desc": "看过档案馆北墙那道锁着的铁栅门（冠形的凹槽，8.1）", "set_in": "world/crown_rooms.gd", "read_in": "第五章章末"},
+  "ch5_companion": {"desc": "第五章跟你北上的人（8.2，按 crown_holder）：young_bertrand / isabella / ivette / alric / lucien / none", "set_in": "world/winter5.gd arrived", "read_in": "冬井底、封誓（8.3–8.4）；结局"},
+  "ch5_vial": {"desc": "空誓瓶怎么到手的（8.2）：norbert 诺伯特在塔顶给的 / ashes 在他小屋的炉灰里找到的", "set_in": "data/dialogue/winter.json norbert5/vial；world/winter5.gd hearth_vial", "read_in": "winter.json norbert5_well；封誓（8.4）"},
+  "ch5_lid_open": {"desc": "掀开了冬井井口的石盖（8.2）", "set_in": "world/winter5.gd lid", "read_in": "冬井底（8.3）"}
 }

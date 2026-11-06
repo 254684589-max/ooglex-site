@@ -232,7 +232,7 @@ func _place_buttons() -> void:
 	var s := canvas.custom_minimum_size
 	for id in place_btns:
 		var b: Button = place_btns[id]
-		var pos: Array = Travel.place(id).get("pos", [0.5, 0.5])
+		var pos: Array = Travel.pos_of(id, Travel.region_of_chapter(chapter))
 		var sz := b.get_combined_minimum_size()
 		var at := Vector2(float(pos[0]) * s.x - sz.x * 0.5, float(pos[1]) * s.y + 14.0)
 		at.x = clampf(at.x, 4.0, s.x - sz.x - 4.0)
@@ -552,5 +552,5 @@ class MapCanvas extends Control:
 		draw_string(font, n + Vector2(-fs * 0.5, 32), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
 
 	func _pos(id: String) -> Vector2:
-		var p: Array = Travel.place(id).get("pos", [0.5, 0.5])
+		var p: Array = Travel.pos_of(id, Travel.region_of_chapter(map.chapter))
 		return Vector2(float(p[0]), float(p[1])) * size

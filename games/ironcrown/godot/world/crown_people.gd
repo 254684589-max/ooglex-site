@@ -27,6 +27,7 @@ static func ch5_begin() -> bool:
 		if not GameState.has_item("iron_crown"):
 			GameState.add_item("iron_crown")
 	GameState.start_quest("ch5_main")
+	GameState.chapter = maxi(GameState.chapter, 5)       # 旅行地图翻到第五章那一页（北上）
 	return true
 
 

@@ -1,0 +1,18 @@
+{
+  "_说明": "第五章「冬井」北上以后的人（路线图 8.2 起；STORY.md 第八节）：诺伯特——第十九烽的火亮着在塔顶火盆边（norbert5），灭了一个人先去了井边（norbert5_well）；他把三十五年前那只空誓瓶交给你（oath_vial，ch5_vial），主线 vial → well。",
+  "norbert5": {"speaker": "诺伯特", "start": "greet",
+    "start_if": [{"if": [{"has_item": "oath_vial"}], "node": "again"}],
+    "nodes": {
+      "greet": {"text": "（他坐在火盆边，火亮着。他没回头）……你回来了。我数着日子，等了三天。冠城那边的钟，是不是敲过了？", "options": [{"text": "敲过了。冬天没有退。", "next": "vial"}, {"text": "钟楼底下有一卷残卷：「持冠者以血封瓶，瓶置冬井，留名于冰。」", "if": [{"flag": "ch5_archive"}], "next": "scroll"}]},
+      "scroll": {"text": "（他的手停在火盆上方，停了很久）……留名于冰。原来是这一句。主祭那一夜说，那一步早就不用做了。（他转过身来）他说的是「不用」，不是「不能」。", "options": [{"text": "那只誓瓶还在你手里？", "next": "vial"}]},
+      "vial": {"text": "（他从怀里摸出一只灰白的小陶瓶，瓶口封着一圈老蜡，蜡上压着一道冠形的印）三十五年前我捧着它走出去，走到山脊上，回头看了一眼，没往井边去。它一直是空的。（他把瓶子放在你手心里）拿去。这一回，别让它空着回来。", "do": [{"give_item": "oath_vial"}, {"set": "ch5_vial", "value": "norbert"}, {"quest": "ch5_main", "stage": "well"}], "options": [{"text": "你跟我去井边？", "next": "come"}]},
+      "come": {"text": "（他看了一眼北边的山脊）我在井边等你。三十五年了，我总得走完那一段路。", "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（他往火盆里添了一块柴）去吧。我随后就到井边。", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "norbert5_well": {"speaker": "诺伯特", "start": "greet",
+    "nodes": {
+      "greet": {"text": "（他站在那一圈人外面，背对着你，肩上落满了雪）……火灭了以后，我一个人在塔上坐不住。三十五年，我头一回一个人走到这儿来。", "text_if": [{"if": [{"has_item": "oath_vial"}], "text": "（他回头看了一眼你手里那只小陶瓶）你在炉灰里找到它了。……我本来想自己把它放下去。可我不是持冠的人。"}], "options": [{"text": "那只空誓瓶呢？", "if": [{"not_flag": "ch5_vial"}], "next": "where"}, {"text": "冠在北边了。", "next": "crown"}, {"text": "告辞。", "end": true}]},
+      "where": {"text": "在塔上我那间小屋里，小铁炉的炉灰底下。（他没有回头）我把它埋起来了。我怕我拿着它，又会在山脊上回头。", "options": [{"text": "告辞。", "end": true}]},
+      "crown": {"text": "（他看着井口那半块石盖）那就掀开它。我替你看着上面这一圈。", "options": [{"text": "告辞。", "end": true}]}
+    }}
+}

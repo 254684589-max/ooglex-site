@@ -51,13 +51,24 @@ static func places(chapter: int) -> Array:
 	var ps: Dictionary = data().get("places", {})
 	var page := region_of_chapter(chapter)
 	for id in ps:
-		if int(ps[id].get("chapter", 1)) <= chapter and str(ps[id].get("region", "west")) == page:
+		if int(ps[id].get("chapter", 1)) <= chapter and (str(ps[id].get("region", "west")) == page or (ps[id].get("also", {}) as Dictionary).has(page)):
 			out.append(str(id))
 	return out
 
 
+## 地点在某一页上的位置（also：第五章北上时，冠城也画在北境北部那一页的南边，8.2）
+static func pos_of(id: String, page: String) -> Array:
+	var p := place(id)
+	var also: Dictionary = p.get("also", {})
+	if also.has(page) and str(p.get("region", "west")) != page:
+		return (also[page] as Dictionary).get("pos", [0.5, 0.5])
+	return p.get("pos", [0.5, 0.5])
+
+
 ## 这一章用地图的哪一页
 static func region_of_chapter(chapter: int) -> String:
+	if chapter >= 5:
+		return "north"                                # 第五章（8.2）：北上回到烽燧线
 	if chapter >= 4:
 		return "coast"
 	if chapter >= 3:

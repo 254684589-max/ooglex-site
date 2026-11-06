@@ -169,6 +169,22 @@ func _ready() -> void:
 				GameState.set_flag("ch4_vault_sneaky")
 			GameState.set_stage("ch4_main", "way")
 			GameState.daypart = "night"
+		if _query("ch5") in ["north", "well"] and not Engine.has_meta("ic_ch5_param_done"):
+			Engine.set_meta("ic_ch5_param_done", true)        # 截图用（8.2）：?area=highland&ch5=north 刚到高地 / well 誓瓶在手、去井边（配 &fire=lit|out、&holder=valen…）
+			GameState.chapter = 5
+			GameState.set_flag("ch4_done")
+			if _query("holder") != "":
+				GameState.set_flag("crown_holder", _query("holder"))
+			if _query("fire") in ["lit", "out"]:
+				GameState.set_flag("ch2_fire", _query("fire"))
+			CrownPeople.ch5_begin()
+			GameState.set_flag("ch5_archive")
+			GameState.set_stage("ch5_main", "north")
+			if _query("ch5") == "well":
+				GameState.add_item("oath_vial")
+				GameState.set_flag("ch5_vial", "norbert")
+				GameState.set_stage("ch5_main", "well")
+				GameState.daypart = "night"
 		if _query("ch5") in ["1", "archive"] and not Engine.has_meta("ic_ch5_param_done"):
 			Engine.set_meta("ic_ch5_param_done", true)        # 截图用（8.1）：?ch5=1 第四章刚完（冠在你手里）；?ch5=archive 已经跟大主祭下了钟楼
 			GameState.chapter = 5
@@ -354,6 +370,7 @@ func _ready() -> void:
 		ConvoyAmbush.setup(world)                       # 第二夜 · 劫粮（5.7a）：主线「设伏」、还没打过，在伏击段摆好；走到伏击点开打
 		ConvoyEscort.setup(world)                       # 第二夜 · 护粮（5.7b）：主线「护车」、还没走过，三辆车在伏击段下头；到了几秒以后动身
 		WinterWell.setup(world)                         # 白寂边缘的冬井（5.8b）：井一直在；主线「冬井」起井边站着一圈长眠的人、诺伯特在山脊背后等你
+		Winter5.setup(world)                            # 第五章（8.2）：塔顶或井边的诺伯特、井边更大的一圈、同行的人、井口的石盖
 	if area == "plain":
 		MillBattle.setup(world)                         # 磨坊之战（6.7b）：抉择定了、夜里、还没打过，摆好；到了几秒开打
 	if area == "marsh":
@@ -1210,6 +1227,10 @@ func _story_progress() -> void:
 			hud.toast(Chapters.wip_note_of(4), 7.0)
 	if GameState.chapter == 4 and (area == "crown_city" or area in HarborRooms.CROWN_AREAS):
 		CrownPeople.arrived()                               # 上了冠城（7.6）：主线 to_city → in_city
+	if area == "highland":
+		var note := Winter5.arrived()                       # 第五章（8.2）：北上到了余火高地
+		if note != "" and hud:
+			hud.toast(note, 6.0)
 	if (area == "crown_city" or area in HarborRooms.CROWN_AREAS) and CrownPeople.ch5_begin():
 		if Chapters.wip_note_of(5) != "" and hud:
 			hud.toast(Chapters.wip_note_of(5), 7.0)          # 第五章开场（8.1）：冬议散了

@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -10501,6 +10501,63 @@ func test_ch5archive() -> void:
 	CrownPeople.wardens_settle()
 	check(str(GameState.get_flag("ch5_wardens", "")) == "let", "冠交给了教会的：打过也不拦")
 	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch5north() -> void:
+	# 第五章（8.2）：北上——旅行地图、余火高地上的诺伯特和誓瓶、井边更大的一圈、同行的人、井口的石盖
+	ch4_state({"ch4_done": true, "crown_holder": "valen", "valen_heir": "ivette", "ch2_fire": "lit"})
+	CrownPeople.ch5_begin()
+	check(GameState.chapter == 5 and Travel.region_of_chapter(5) == "north" and Travel.places(5).has("crown_city") and Travel.places(5).has("yangji") and Travel.places(5).has("beacon19")
+		and Travel.pos_of("crown_city", "north") == [0.5, 0.94] and Travel.validate().is_empty(), "第五章的旅行地图翻到北境北部：冠城画在南边、羊脊村、第十九烽")
+	var r0 := Travel.check(5, "crown_city", "yangji", true)
+	GameState.set_stage("ch5_main", "north")
+	var r1 := Travel.check(5, "crown_city", "yangji", true)
+	check(not r0.ok and str(r0.why).contains("残卷") and r1.ok and str((r1.route as Dictionary).daypart) == "dusk", "残卷没读走不了；读了坐船换马北上，到了是黄昏")
+	GameState.daypart = "dusk"
+	GameState.pending_load = {"scene": "highland", "spawn": "village", "player": {}}
+	var main := await make_area("highland")
+	await physics(8)
+	check(GameState.quest_stage("ch5_main") == "vial" and str(GameState.get_flag("ch5_companion", "")) == "ivette" and Winter5.active(), "到了余火高地：主线到「找诺伯特拿誓瓶」；伊薇特跟你来了")
+	var nb := main.world.find_child("Npc_norbert5", true, false) as Npc
+	var lid := main.world.find_child("WellLid", true, false) as Examine
+	var comp := main.world.find_child("Npc_companion", true, false) as Npc
+	var outer := main.world.find_child("WellRingOuter", true, false)
+	check(nb != null and nb.dialogue_id == "norbert5" and nb.position.y > HighlandLayout.TOWER_H - 0.5 and main.world.find_children("Npc_norbert", "", true, false).is_empty()
+		and comp != null and comp.display_name == "伊薇特" and outer != null and outer.get_child_count() >= 18 and main.world.find_child("WellRing", true, false) != null,
+		"火亮着：诺伯特在塔顶火盆边（第二章那个不放）；井边第二章那一圈外面又站了一圈（%d 人）；伊薇特先到了井边" % (outer.get_child_count() if outer else 0))
+	check(str(lid.on_use.call(main.player).toast).contains("诺伯特"), "誓瓶还没拿：石盖掀不开（先去找诺伯特）")
+	check(say_runner("norbert5", ["钟楼底下有一卷残卷：「持冠者以血封瓶，瓶置冬井，留名于冰。」", "那只誓瓶还在你手里？", "你跟我去井边？"], "winter") == "come" and GameState.has_item("oath_vial")
+		and str(GameState.get_flag("ch5_vial", "")) == "norbert" and GameState.quest_stage("ch5_main") == "well", "诺伯特把三十五年前那只空誓瓶交给你：主线到「去冬井」")
+	var lr: Dictionary = lid.on_use.call(main.player)
+	check(GameState.has_flag("ch5_lid_open") and GameState.quest_stage("ch5_main") == "descend" and str(lr.get("toast", "")).contains("石阶"), "冠在伊薇特手里、誓瓶在你手里：掀开石盖，井壁上一道石阶往下")
+	await free_main(main)
+	# 火灭了：诺伯特先去了井边；誓瓶在塔里小屋的炉灰里
+	ch4_state({"ch4_done": true, "crown_holder": "kept", "ch2_fire": "out"})
+	CrownPeople.ch5_begin()
+	GameState.set_stage("ch5_main", "north")
+	GameState.pending_load = {"scene": "highland", "spawn": "village", "player": {}}
+	main = await make_area("highland")
+	await physics(6)
+	var nw := main.world.find_child("Npc_norbert5", true, false) as Npc
+	check(nw != null and nw.dialogue_id == "norbert5_well" and nw.global_position.distance_to(WinterWell.ground(HighlandLayout.WELL)) < 14.0 and main.world.find_child("Npc_companion", true, false) == null
+		and str(GameState.get_flag("ch5_companion", "")) == "none" and GameState.has_item("iron_crown"), "火灭了：诺伯特一个人先到了井边；冠在你手里，没有人跟你")
+	check(say_runner("norbert5_well", ["那只空誓瓶呢？"], "winter") == "where", "他说瓶埋在塔上小屋的炉灰底下")
+	await free_main(main)
+	GameState.pending_load = {"scene": "beacon_tower", "spawn": "front", "player": {}}
+	main = await make_area("beacon_tower")
+	await physics(4)
+	var ash := main.world.find_child("HearthAsh", true, false) as Examine
+	check(ash != null and main.world.find_child("Npc_norbert_room", true, false) == null and str(ash.on_use.call(main.player).toast).contains("得到：空誓瓶") and GameState.has_item("oath_vial")
+		and str(GameState.get_flag("ch5_vial", "")) == "ashes" and GameState.quest_stage("ch5_main") == "well", "塔上小屋的炉灰里摸到空誓瓶（小屋里没有诺伯特）")
+	await free_main(main)
+	# 冠回了钥楼：到了高地，科尔温的人把冠借给你
+	ch4_state({"ch4_done": true, "crown_holder": "caswell"})
+	CrownPeople.ch5_begin()
+	GameState.set_stage("ch5_main", "north")
+	check(Winter5.arrived().contains("借你一冬") and GameState.has_item("iron_crown") and Winter5.crown_here(), "冠回了钥楼的：科尔温的人把冠借给你（利息另算）")
+	GameState.chapter = 0
+	GameState.daypart = "day"
 	GameState.pending_load = {}
 
 
