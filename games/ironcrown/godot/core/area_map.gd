@@ -69,6 +69,8 @@ static func spec(area: String) -> Dictionary:
 			return Highland.map_spec()
 		"plain":
 			return Plain.map_spec()
+		"harbor":
+			return Harbor.map_spec()
 		"waystation":
 			return Waystation.map_spec()
 		"beacon_tower":

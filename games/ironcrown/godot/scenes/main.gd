@@ -285,6 +285,8 @@ func _ready() -> void:
 			t = Highland.build(world, Settings.reduced_motion)
 		"plain":
 			t = Plain.build(world, Settings.reduced_motion)              # 金穗平原（6.1a，第三章）
+		"harbor":
+			t = Harbor.build(world, Settings.reduced_motion)             # 双钥港（7.1，第四章）
 		"waystation":
 			t = Waystation.build(world, Settings.reduced_motion)
 		"beacon_tower":
@@ -1660,6 +1662,7 @@ func _fetch_area_pack() -> void:
 	var ok := await ensure_chapter(n)
 	Highland.clear_cache()
 	Plain.clear_cache()
+	Harbor.clear_cache()
 	GameState.pending_load = {"scene": area if ok else "frostford", "player": {}}
 	if ok:
 		GameState.pending_load["player"] = {"pos": [player.global_position.x, player.global_position.y, player.global_position.z], "yaw": player.rotation.y, "pitch": player.pitch}

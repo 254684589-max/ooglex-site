@@ -260,6 +260,9 @@ class MapCanvas extends Control:
 		if Travel.region_of_chapter(map.chapter) == "south":
 			_draw_south(s, font)
 			return
+		if Travel.region_of_chapter(map.chapter) == "coast":
+			_draw_coast(s, font)
+			return
 		# 鹭沼：一片淡绿，里面一行行短横线是芦苇
 		var poly := PackedVector2Array()
 		for p in MARSH_SHAPE:
@@ -476,6 +479,74 @@ class MapCanvas extends Control:
 					draw_line(c + Vector2(12, 4), c + Vector2(12, -12), col, 1.5)
 					draw_rect(Rect2(c + Vector2(12, -12), Vector2(7, 4)), Color("8a2a22"))
 		var n := Vector2(s.x * 0.62, 30.0)
+		draw_line(n + Vector2(0, 14), n + Vector2(0, -10), INK, 2.0)
+		draw_colored_polygon(PackedVector2Array([n + Vector2(0, -16), n + Vector2(-5, -6), n + Vector2(5, -6)]), INK)
+		draw_string(font, n + Vector2(-fs * 0.5, 32), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
+
+	## 河口（7.1，第四章）：灰鲸河从北边（冠城那边）流下来，散成几股流进南边的海；西岸是双钥港（一格格的房子），东岸一道沙嘴伸进海里、尽头是灯塔；
+	## 海上一道道短横线是浪
+	func _draw_coast(s: Vector2, font: Font) -> void:
+		var fs := maxi(int(s.x / 28.0), 13)
+		var sea := PackedVector2Array()
+		for p in [Vector2(0.0, 0.62), Vector2(0.2, 0.6), Vector2(0.4, 0.66), Vector2(0.55, 0.62), Vector2(0.64, 0.7), Vector2(0.8, 0.6), Vector2(1.0, 0.56), Vector2(1.0, 1.0), Vector2(0.0, 1.0)]:
+			sea.append(_to(p))
+		draw_colored_polygon(sea, Color(0.44, 0.54, 0.62, 0.35))
+		var wave := Color(0.3, 0.42, 0.52, 0.45)
+		var y := 0.72
+		while y < 0.97:                                    # 浪：一道道短横线
+			var x := 0.06 + fmod(y * 7.0, 0.1)
+			while x < 0.96:
+				draw_line(_to(Vector2(x, y)), _to(Vector2(x + 0.035, y)), wave, 1.4)
+				x += 0.11
+			y += 0.06
+		var river := PackedVector2Array()
+		for p in [Vector2(0.34, 0.0), Vector2(0.38, 0.12), Vector2(0.44, 0.26), Vector2(0.5, 0.4), Vector2(0.55, 0.52), Vector2(0.6, 0.64)]:
+			river.append(_to(p))
+		draw_polyline(river, WATER, maxf(s.x / 60.0, 6.0), true)
+		var ry := 0.14
+		for ch in "灰鲸河":
+			draw_string(font, _to(Vector2(0.4, ry)), ch, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("4f6578"))
+			ry += 0.05
+		var spit := PackedVector2Array()                   # 东岸的沙嘴
+		for p in [Vector2(0.86, 0.46), Vector2(0.8, 0.6), Vector2(0.72, 0.78)]:
+			spit.append(_to(p))
+		draw_polyline(spit, Color(0.72, 0.62, 0.42, 0.8), maxf(s.x / 50.0, 6.0), true)
+		var town := Color(0.29, 0.23, 0.16, 0.28)          # 城：西岸一格格的房子
+		for k in 26:
+			var c := Vector2(0.22 + fmod(k * 0.37, 0.26), 0.3 + fmod(k * 0.23, 0.26))
+			if c.x > 0.48 + (c.y - 0.3) * 0.3:
+				continue
+			draw_rect(Rect2(_to(c), Vector2(s.x * 0.025, s.y * 0.02)), town)
+		draw_string(font, _to(Vector2(0.08, 0.92)), "海", HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 4, Color("4f6578"))
+		draw_string(font, _to(Vector2(0.06, 0.12)), "灰鲸河入海口", HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 4, INK_SOFT)
+		draw_string(font, _to(Vector2(0.44, 0.03)), "往冠城（逆流一天）", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK_SOFT)
+		for r in Travel.data().get("routes", []):
+			var a := str(r.get("from", ""))
+			var b := str(r.get("to", ""))
+			if a > b or not a in map.place_btns or not b in map.place_btns:
+				continue
+			draw_dashed_line(_pos(a), _pos(b), ROAD, 2.5, 9.0)
+		for id in map.place_btns:
+			var c := _pos(id)
+			var col := INK if Travel.built(id) else Color(0.29, 0.23, 0.16, 0.45)
+			if id == map.selected:
+				draw_circle(c, 17.0, Color(0.72, 0.59, 0.31, 0.35))
+			if id == map.here:
+				draw_arc(c, 15.0, 0.0, TAU, 32, HERE, 3.0, true)
+			match str(Travel.place(id).get("icon", "")):
+				"port":                                    # 码头：一条栈桥和一条船
+					draw_rect(Rect2(c + Vector2(-10, -2), Vector2(20, 4)), col)
+					draw_colored_polygon(PackedVector2Array([c + Vector2(-8, -6), c + Vector2(8, -6), c + Vector2(5, -2), c + Vector2(-5, -2)]), col)
+					draw_line(c + Vector2(0, -6), c + Vector2(0, -16), col, 1.5)
+				"lighthouse":
+					draw_colored_polygon(PackedVector2Array([c + Vector2(-5, 4), c + Vector2(5, 4), c + Vector2(3, -12), c + Vector2(-3, -12)]), col)
+					draw_circle(c + Vector2(0, -15), 4.0, Color("c8a24a") if Travel.built(id) else col)
+				"city":                                    # 城：一圈墙、一座钟楼
+					draw_rect(Rect2(c + Vector2(-11, -6), Vector2(22, 10)), col)
+					draw_rect(Rect2(c + Vector2(-3, -16), Vector2(6, 12)), col)
+					for k in 4:
+						draw_rect(Rect2(c + Vector2(-11 + k * 6, -9), Vector2(3, 3)), col)
+		var n := Vector2(s.x * 0.9, 30.0)
 		draw_line(n + Vector2(0, 14), n + Vector2(0, -10), INK, 2.0)
 		draw_colored_polygon(PackedVector2Array([n + Vector2(0, -16), n + Vector2(-5, -6), n + Vector2(5, -6)]), INK)
 		draw_string(font, n + Vector2(-fs * 0.5, 32), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)

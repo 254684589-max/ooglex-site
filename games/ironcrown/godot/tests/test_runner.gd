@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9583,6 +9583,122 @@ func test_ch3vigil() -> void:
 	check(Chapters.wip_note_of(3).contains("守灵夜和章末") and not Chapters.wip_note_of(3).contains("还没做"), "第三章进场的提示：主线做到章末了")
 	GameState.chapter = 0
 	GameState.daypart = "day"
+	GameState.pending_load = {}
+
+
+func test_harbor() -> void:
+	# 双钥港地图底座（7.1）：河口、泥滩、潮沟、沙嘴、海；潮汐；第四章章节包；旅行地图「河口」一页
+	check(Areas.known("harbor") and Areas.display_name("harbor") == "双钥港" and Areas.pack_chapter("harbor") == 4 and Chapters.known(4) and Chapters.pack_of(4) == "ch4"
+		and Chapters.LIST[4].spawn == "quay" and Chapters.wip_of(4) != "" and Chapters.PLAYABLE == 2,
+		"双钥港登记了：内容在第四章章节包（ch4）里、从木栈码头上岸；第四章还没对玩家打开、标着制作中")
+	check(Harbor.textures_ready() and ResourceLoader.exists(Harbor.FIELD_PATH) and ResourceLoader.exists(Harbor.PAINT_PATH), "第四章的天空照片、预先算好的高度场都在 chapters/ch4/")
+	var tex_ok := true
+	for layer: String in Harbor.LAYERS.values():
+		for kind in ["diff", "nor_gl"]:
+			if not ResourceLoader.exists(Harbor.TEX_DIR % [layer, kind]):
+				tex_ok = false
+	check(tex_ok, "地面五层贴图（泥雪地、铺石、泥滩、沙、卵石）各有颜色和法线")
+	Harbor._field = PackedFloat32Array()
+	Harbor.ensure_field()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 71
+	var worst := 0.0
+	var paint_worst := 0.0
+	for k in 300:
+		var i := rng.randi_range(0, HarborLayout.NX - 1)
+		var j := rng.randi_range(0, HarborLayout.NZ - 1)
+		var x := HarborLayout.BOUNDS.position.x + i * HarborLayout.STEP
+		var z := HarborLayout.BOUNDS.position.y + j * HarborLayout.STEP
+		worst = maxf(worst, absf(Harbor._field[j * HarborLayout.NX + i] - HarborLayout.height(x, z)))
+		var m := HarborLayout.masks(x, z)
+		var c := Harbor._paint[j * HarborLayout.NX + i]
+		paint_worst = maxf(paint_worst, maxf(absf(c.r - m.x), maxf(absf(c.g - m.y), absf(c.b - m.z))))
+	check(worst < 0.01 and paint_worst < 0.01 and Harbor.field_ms < 200.0, "高度场、地面颜色图和布局一致（最大差 %.4f 米 / %.4f；不一致就跑 tests/gen_harbor_field.gd）；读文件 %.0f 毫秒" % [worst, paint_worst, Harbor.field_ms])
+	# 城在台地上、高过涨潮；泥滩在涨潮以下、退潮以上；潮沟底退潮露出来、涨潮盖住；河道和海比深水线深
+	var town := HarborLayout.height(-40.0, -20.0)
+	var flats := HarborLayout.height(-40.0, 66.0)
+	var canal := HarborLayout.height(-30.0, -47.8)
+	var river := HarborLayout.height(HarborLayout.river_x(-20.0), -20.0)
+	var sea := HarborLayout.height(-40.0, 105.0)
+	var spit := HarborLayout.height(80.0, 62.0)
+	check(town > Harbor.TIDE.day + 2.0 and flats < Harbor.TIDE.day and flats > Harbor.TIDE.night and canal < Harbor.TIDE.day - 0.8 and canal > Harbor.TIDE.night
+		and river < HarborLayout.DEEP_Y and sea < HarborLayout.DEEP_Y and spit > Harbor.TIDE.day + 1.0,
+		"城 %.1f 米高过涨潮；泥滩 %.1f、潮沟底 %.1f 在涨潮（%.1f）以下、退潮（%.1f）以上；河道 %.1f、海 %.1f 是深水；沙嘴 %.1f 露在水上" % [town, flats, canal, Harbor.TIDE.day, Harbor.TIDE.night, river, sea, spit])
+	var sp_ok := true
+	for id: String in HarborLayout.SPAWN_XZ:
+		var xz: Vector2 = HarborLayout.SPAWN_XZ[id][0]
+		if HarborLayout.height(xz.x, xz.y) < Harbor.TIDE.day + 1.5:
+			sp_ok = false
+	check(sp_ok and HarborLayout.SPAWN_XZ.has("quay"), "%d 个出生点都在岸上、高过涨潮" % HarborLayout.SPAWN_XZ.size())
+	# 潮汐：白天涨、夜里退
+	Daypart.current = "day"
+	var hi := Harbor.tide()
+	Daypart.current = "night"
+	var lo := Harbor.tide()
+	check(hi > lo + 1.2 and Harbor.low_tide(), "潮位：白天 %.2f 米、夜里 %.2f 米（夜里退潮，潮沟底露出来）" % [hi, lo])
+	Daypart.current = "day"
+	check(not Harbor.low_tide() and HarborLayout.surface_at(Vector3(-40.0, flats, 66.0)) == "shallows", "白天涨潮：泥滩盖在水下，蹚着走（浅水）")
+	Daypart.current = "night"
+	check(HarborLayout.surface_at(Vector3(-40.0, flats, 66.0)) == "mud" and HarborLayout.surface_at(Vector3(-40.0, town, -20.0)) == "" and Surface.mult("shallows") < Surface.mult("mud") and not Surface.can_run("shallows"),
+		"夜里退潮：泥滩露出来是泥（走得慢）；城里的地是普通的；浅水比泥还慢、不能跑")
+	Daypart.current = "day"
+	# 深水边的墙：河道、海走不进去
+	var faces := Harbor.deep_wall_faces()
+	check(faces.size() > 600 and faces.size() % 3 == 0, "深水边一圈看不见的墙：%d 个三角形" % (faces.size() / 3))
+	GameState.new_game(710)
+	GameState.daypart = "day"
+	GameState.chapter = 4
+	var main := await make_area("harbor")
+	var space := main.get_world_3d().direct_space_state
+	var col_worst := 0.0
+	for k in 60:
+		var x := rng.randf_range(-120.0, 120.0)
+		var z := rng.randf_range(-100.0, 100.0)
+		var rq := PhysicsRayQueryParameters3D.create(Vector3(x, 100.0, z), Vector3(x, -50.0, z), 1)
+		var hit: Dictionary = space.intersect_ray(rq)
+		col_worst = maxf(col_worst, absf((float(hit.position.y) if not hit.is_empty() else -999.0) - Harbor.height_at(x, z)))
+	check(col_worst < 0.05, "碰撞（高度图）和地形一致（60 个点最大差 %.3f 米）" % col_worst)
+	var wq := PhysicsRayQueryParameters3D.create(Vector3(-40.0, 0.0, 60.0), Vector3(-40.0, 0.0, 110.0), FpController.LAYER_BOUNDARY)
+	var wh: Dictionary = space.intersect_ray(wq)
+	check(not wh.is_empty() and float(wh.position.z) > 70.0 and float(wh.position.z) < 104.0, "从泥滩往南走到深水边就有墙（z = %.1f）" % (float(wh.position.z) if not wh.is_empty() else -1.0))
+	var rq2 := PhysicsRayQueryParameters3D.create(Vector3(HarborLayout.river_x(-60.0) - 30.0, 0.0, -60.0), Vector3(HarborLayout.river_x(-60.0), 0.0, -60.0), FpController.LAYER_BOUNDARY)
+	var rh: Dictionary = space.intersect_ray(rq2)
+	var rq3 := PhysicsRayQueryParameters3D.create(Vector3(HarborLayout.river_x(-60.0) - 30.0, 2.6, -60.0), Vector3(HarborLayout.river_x(-60.0), 2.6, -60.0), FpController.LAYER_BOUNDARY)
+	check(not rh.is_empty() and space.intersect_ray(rq3).is_empty(), "码头石岸下面、河边深水那儿有墙；码头面那么高的地方没有（以后的栈桥上走得过去）")
+	await physics(10)
+	var p: FpController = main.player
+	var sp: Vector3 = Harbor.spawn_points().quay[0]
+	check(p.is_on_floor() and p.global_position.distance_to(sp) < 0.4, "新开进双钥港：站在木栈码头（%s）" % p.global_position)
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	check(st.chunks.size() == 20 and st.is_done() and float(st.stats.max_job_ms) < 60.0, "地形 %d 块全搭完，最慢一块 %.1f 毫秒" % [st.chunks.size(), st.stats.max_job_ms])
+	var water := main.world.find_child("HarborWater", true, false) as MeshInstance3D
+	check(water != null and main.world.find_child("FarSea", true, false) != null and main.world.find_child("FarTerrain", true, false) != null and absf(water.position.y - Harbor.TIDE.day) < 0.01,
+		"有水面（河、潮沟、泥滩、海一整片）、地图外的海和远岸；白天水面在涨潮的高度")
+	main.set_daypart("night", false)
+	await seconds(1.6)
+	check(absf(water.position.y - Harbor.TIDE.night) < 0.01 and Harbor.low_tide(), "入夜：水面退到退潮的高度（%.2f 米）" % water.position.y)
+	main.set_daypart("day", false)
+	await seconds(1.6)
+	var views_ok := Areas.views("harbor").size() == HarborLayout.VIEW_NAMES.size()
+	for v: Array in Areas.views("harbor"):
+		var vp: Vector3 = v[0]
+		if absf(vp.y - 1.7 - Harbor.height_at(vp.x, vp.z)) > 0.05 or Harbor.height_at(vp.x, vp.z) < Harbor.TIDE.day + 1.0:
+			views_ok = false
+	check(views_ok, "%d 个固定机位都在岸上、地面上方 1.7 米" % HarborLayout.VIEW_NAMES.size())
+	var env: Environment = main.env
+	check(env.background_mode == Environment.BG_SKY and env.sky != null and Daypart.preset("harbor", "day").fog_end > 0.0 and Cold.COLD_AREAS.get("harbor", 0.0) > 0.0 and Cold.COLD_AREAS.harbor < Cold.COLD_AREAS.highland,
+		"天空是海上的阴云照片；双钥港有自己的时段预设；湿冷，没有高地冷")
+	var spec := AreaMap.spec("harbor")
+	var labels := []
+	for sh: Dictionary in spec.get("shapes", []):
+		if sh.has("label"):
+			labels.append(str(sh.label))
+	check(labels.has("灰鲸河") and labels.has("钥楼") and labels.has("泥滩") and labels.has("灯塔") and spec.get("zones", []).size() == 4, "本地地图：灰鲸河、潮沟、海、钥楼、泥滩、灯塔（%s）" % "、".join(labels))
+	await free_main(main)
+	check(Travel.validate().is_empty() and Travel.region_title(4) == "河口" and Travel.places(4) == ["harbor_quay", "keyhouse_street", "lighthouse", "crown_city"] and Travel.built("harbor_quay") and not Travel.built("crown_city")
+		and Travel.region_of_chapter(3) == "south", "旅行地图第四章翻到「河口」：木栈码头、钥楼街能去，灯塔、冠城还没做好")
+	GameState.chapter = 0
 	GameState.pending_load = {}
 
 

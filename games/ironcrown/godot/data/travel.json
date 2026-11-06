@@ -20,7 +20,15 @@
     "abbey": {"name": "坠星院", "area": "plain", "spawn": "abbey", "chapter": 3, "region": "south", "pos": [0.6, 0.8], "icon": "abbey",
       "blurb": "南边矮丘顶上星铁教会的修道院：钟楼、回廊、施粥的门房。修道院吃的是洛蒙德家的粮。", "depart_at": "门房外的路牌"},
     "camp": {"name": "塞弗林营地", "area": "plain", "spawn": "camp", "chapter": 3, "region": "south", "pos": [0.86, 0.14], "icon": "camp",
-      "blurb": "平原东北角、砧山下来的路口：帐篷、熔炉车、红底铁砧托冠的旗。四辆大车空着排在路边，等着装粮。", "depart_at": "营地口的路牌"}
+      "blurb": "平原东北角、砧山下来的路口：帐篷、熔炉车、红底铁砧托冠的旗。四辆大车空着排在路边，等着装粮。", "depart_at": "营地口的路牌"},
+    "harbor_quay": {"name": "双钥港 · 木栈码头", "area": "harbor", "spawn": "quay", "chapter": 4, "region": "coast", "pos": [0.56, 0.42], "icon": "port",
+      "blurb": "灰鲸河散成几股流进海的地方。沿河一溜木栈码头，从上游下来的船都在这儿靠岸；退了潮，城南边露出大片泥滩。", "depart_at": "码头上的路牌"},
+    "keyhouse_street": {"name": "钥楼街", "area": "harbor", "spawn": "keyhouse", "chapter": 4, "region": "coast", "pos": [0.42, 0.33], "icon": "port",
+      "blurb": "北潮沟北边一排石砌的商行和钱庄，最高的一栋是卡斯韦尔家的钥楼，门楣上蓝底双钥交叉。", "depart_at": "钥楼前的路牌"},
+    "lighthouse": {"name": "沙嘴灯塔", "area": "", "spawn": "", "chapter": 4, "region": "coast", "pos": [0.7, 0.8], "icon": "lighthouse",
+      "blurb": "东岸一道沙嘴伸进海里，尽头一块礁石上是灯塔。这个冬天它时亮时灭。", "pending": "灯塔还没搭好（路线图 7.2）"},
+    "crown_city": {"name": "冠城", "area": "", "spawn": "", "chapter": 4, "region": "coast", "pos": [0.36, 0.06], "icon": "city",
+      "blurb": "灰鲸河中游的岛城，王都。冬至那天，摄政会议要在议事厅里清账。", "pending": "冠城还没做好（路线图 7.6）"}
   },
   "routes": [
     {"from": "frostford", "to": "reedwharf", "text": "出镇往西，沿着沼地边上的路走大半天", "daypart": "day"},
@@ -38,6 +46,8 @@
     {"from": "manor", "to": "camp", "text": "往东北，砧山下来的路口", "daypart": ""},
     {"from": "camp", "to": "manor", "text": "沿大车道回庄园", "daypart": ""},
     {"from": "abbey", "to": "mill", "text": "下丘往北，沿河到磨坊", "daypart": ""},
-    {"from": "mill", "to": "abbey", "text": "沿河往南，上矮丘", "daypart": ""}
+    {"from": "mill", "to": "abbey", "text": "沿河往南，上矮丘", "daypart": ""},
+    {"from": "harbor_quay", "to": "keyhouse_street", "text": "沿码头街往北，过北潮沟就是钥楼街", "daypart": ""},
+    {"from": "keyhouse_street", "to": "harbor_quay", "text": "沿钥楼街往东，到河边的码头", "daypart": ""}
   ]
 }

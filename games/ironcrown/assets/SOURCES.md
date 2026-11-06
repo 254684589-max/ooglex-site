@@ -78,6 +78,19 @@
 
 营地里的马（四匹，披着红马衣）、帐篷、熔炉车、大车、木桩、铁砧托冠的旗都是代码搭的（`godot/world/plain_camp.gd`、`godot/world/decor.gd`），不用外部模型。
 
+2026-11-06 第四章「双钥港」（路线图 7.1，D12）新增四套地面贴图和一张天空照片，同样来自 Poly Haven（CC0 1.0），**放在第四章章节包里**（`godot/chapters/ch4/`，进第四章才下载，主包不变大）。
+贴图只取颜色（diff）和 OpenGL 法线（nor_gl）两张 1K JPG，导入时生成 mipmap；地形着色器按世界坐标贴（`shaders/harbor_ground.gdshader`）。城里踩成泥雪的地沿用第三章那套 snow_03（同一个文件复制进第四章章节包：两章的包各自独立下载）：
+
+| 用途 | Poly Haven 资源 | 链接 | 作者 | 下载日期 |
+|---|---|---|---|---|
+| 铺石的街、码头边；码头石岸和潮沟两壁（竖着投，像石头砌的墙） | cobblestone_floor_08 | https://polyhaven.com/a/cobblestone_floor_08 | Rob Tuytel | 2026-11-06 |
+| 退潮露出来的泥滩、潮沟底、河床 | brown_mud_03 | https://polyhaven.com/a/brown_mud_03 | Rob Tuytel | 2026-11-06 |
+| 沙嘴、东岸的海滩 | coast_sand_01 | https://polyhaven.com/a/coast_sand_01 | Rob Tuytel | 2026-11-06 |
+| 潮线上一道卵石 | coast_sand_rocks_02 | https://polyhaven.com/a/coast_sand_rocks_02 | Rob Tuytel | 2026-11-06 |
+| 天空：压得很低的海上阴云（HDRI「Overcast Soil (Pure Sky)」的色调映射 JPG，只取上半球、缩成 2048 × 512 `chapters/ch4/sky/sea_cloud_sky.jpg`；第二章高地用的是 kloofendal_overcast_puresky、第三章是 kloofendal_28d_misty_puresky，三章的天各不一样） | overcast_soil_puresky | https://polyhaven.com/a/overcast_soil_puresky | Sergej Majboroda（拍摄）、Jarod Guest（天空处理） | 2026-11-06 |
+
+水面（`shaders/harbor_water.gdshader`）、潮沟、沙嘴、灯塔那块礁石的地形都是代码算的（`godot/world/harbor_layout.gd`），不用外部素材。
+
 看过没用的：rock_face、rock_face_03（偏棕、偏暖，不像北方的灰岩）、lichen_rock（太暗）、snow_field / passendorf_snow 等带地面的 HDRI（照片里有树林、房子、远处的地平线，和我们的地形对不上，只取天空的「pure sky」那一版）。
 
 ## 人物与动作（Quaternius，CC0；D4 = B，阶段 A.1）

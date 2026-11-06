@@ -18,6 +18,9 @@ const LIST := {
 	## 第三章（6.1a 起）：平原的贴图、天空照片在章节包 ch3 里；还没对玩家打开（PLAYABLE 仍是 2，?preview=3 或 ?area=plain 能看）
 	3: {"name": "第三章 · 粮与铁", "pack": "ch3", "probe": "res://chapters/ch3/sky/misty_sky.jpg", "area": "plain", "spawn": "dock", "daypart": "day",
 		"wip": "制作中", "wip_note": "第三章还在制作中：现在能到麦渡、坠星院、洛蒙德庄园、水磨坊和塞弗林营地，主线、三条支线和磨坊之战都做完了（一直到守灵夜和章末），还在打磨。"},
+	## 第四章（7.1 起）：双钥港的贴图、天空照片、高度场在章节包 ch4 里；还没对玩家打开（?preview=4 或 ?area=harbor 能看）
+	4: {"name": "第四章 · 双钥港的账", "pack": "ch4", "probe": "res://chapters/ch4/sky/sea_cloud_sky.jpg", "area": "harbor", "spawn": "quay", "daypart": "day",
+		"wip": "制作中", "wip_note": "第四章还在制作中：现在只有双钥港的地形、河口、泥滩、潮沟、海和天空（潮水白天涨、夜里退），城、人和故事还没做。"},
 }
 
 

@@ -8,9 +8,9 @@ extends RefCounted
 
 const PATH := "res://data/travel.json"
 const META := "ic_travel"
-const ICONS := ["town", "village", "castle", "beacon", "abbey", "mill", "camp"]
+const ICONS := ["town", "village", "castle", "beacon", "abbey", "mill", "camp", "port", "lighthouse", "city"]
 ## 地图的哪一页（5.2a）：第一章是北境西部（霜渡镇、鹭沼），第二章是北境北部（余火高地、烽燧线），第三章起是南部（金穗平原，6.2a）
-const REGIONS := {"west": "北境西部", "north": "北境北部", "south": "南部"}
+const REGIONS := {"west": "北境西部", "north": "北境北部", "south": "南部", "coast": "河口"}      # 河口：第四章（7.1），灰鲸河入海口的双钥港，往北逆流上冠城
 const DEPART_RADIUS := 6.0        # 离出发点（路牌）多近按 M 打开地图也能出发（第一章开场站在宅邸门口，离路牌 4.7 米）
 
 
@@ -58,6 +58,8 @@ static func places(chapter: int) -> Array:
 
 ## 这一章用地图的哪一页
 static func region_of_chapter(chapter: int) -> String:
+	if chapter >= 4:
+		return "coast"
 	if chapter >= 3:
 		return "south"
 	return "north" if chapter >= 2 else "west"
