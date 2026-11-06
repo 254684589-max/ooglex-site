@@ -182,5 +182,18 @@
   "ch4_board_read": {"desc": "看过钥楼大厅里清账的黑板（7.3）：四家的数，瓦伦家那一栏擦过又写过，最底下「王室——未结」", "set_in": "world/harbor_rooms.gd key_hall", "read_in": "7.4 起的对话"},
   "ch4_crown_seen": {"desc": "在钥楼金库里看见了那只星铁包角、封蜡上压着星铁冠印的铁匣（7.3）", "set_in": "world/harbor_rooms.gd key_vault", "read_in": "7.5"},
   "ch4_tide_read": {"desc": "看过渡工行会会馆的潮汐表（7.3）：子时退到底、寅时回涨——金库之夜什么时候走北潮沟", "set_in": "world/harbor_rooms.gd guild_hall", "read_in": "7.5"},
-  "ch4_debts_read": {"desc": "看过债牢看门的账（7.3）：约斯特欠运粮船的船钱，担保人是王室", "set_in": "world/harbor_rooms.gd debt_prison", "read_in": "7.7 支线「债牢里的人」"}
+  "ch4_debts_read": {"desc": "看过债牢看门的账（7.3）：约斯特欠运粮船的船钱，担保人是王室", "set_in": "world/harbor_rooms.gd debt_prison", "read_in": "7.7 支线「债牢里的人」"},
+  "ch4_colwin_met": {"desc": "在钥楼见了科尔温（7.4）：铁冠是老王押的，冬至清账，谁还清账冠跟谁走；主线到 envoys", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
+  "ch4_note_shown": {"desc": "把序章的借据给科尔温看过（7.4）：他认得，是那一大笔里的一张，让你留着", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
+  "ch4_silas_met": {"desc": "在钥楼和塞拉斯说过话（7.4；序章怎么待他他就怎么待你）", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
+  "ch4_maud_met": {"desc": "和金库管事莫德说过话（7.4）", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
+  "ch4_maud_night": {"desc": "莫德说出了三年前送冠进金库的那一夜（7.4，听过守灵夜的才问得出）", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
+  "ch4_cornelia_met": {"desc": "和渡工行会的港口头领科妮莉亚说过话（7.4）", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
+  "ch4_guild_kin": {"desc": "渡工之子：科妮莉亚认出了你爹（7.4；行会 +5，以后不收钱、告诉你退潮走哪段，7.5）", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
+  "ch4_envoy_lomond": {"desc": "洛蒙德家的管家塞缪尔开过价（7.4）：两年的粮、南境的磨坊作保，要冬议上一个位子", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
+  "ch4_samuel_ledger": {"desc": "拿粮仓账本给塞缪尔看过（7.4）", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
+  "ch4_envoy_severin": {"desc": "塞弗林家的奥迪隆开过价（7.4）：砧山北坑十年的铁，冠戴在摄政的孙子头上", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
+  "ch4_odilon_letter": {"desc": "告诉奥迪隆摄政的信在你手里（7.4）：他要你冬议以前别让它见光", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
+  "ch4_envoy_north": {"desc": "北境的人开过价（7.4）：阿尔里克当家的是军士赫尔曼，伊薇特当家的是厄尔德家的罗薇娜", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"},
+  "ch4_edric_met": {"desc": "在渡工行会会馆见了埃德里克（7.4，只有序章放走他的）：借据在他身上，冬至那天他要念出来", "set_in": "data/dialogue/harbor.json", "read_in": "7.5 起"}
 }

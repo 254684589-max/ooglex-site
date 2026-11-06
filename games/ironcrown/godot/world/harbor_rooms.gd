@@ -252,6 +252,7 @@ static func build(area: String, parent: Node3D, reduced_motion := false) -> Tran
 			_debt_prison(parent, reduced_motion)
 	_colliders(parent, area)
 	_exit(parent, area)
+	HarborPeople.build_room(area, parent)            # 屋里的人（7.4）
 	var s: Array = spawns(area).front
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
 

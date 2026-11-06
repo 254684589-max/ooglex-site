@@ -1168,6 +1168,10 @@ func _story_progress() -> void:
 		GameState.start_quest("ch3_main")                    # 第三章开场（6.2c）：从麦渡的渡口上岸
 		if Chapters.wip_note_of(3) != "" and hud:
 			hud.toast(Chapters.wip_note_of(3), 7.0)
+	if GameState.chapter == 4 and (area == "harbor" or area in HarborRooms.AREAS) and not GameState.quest_active("ch4_main") and not GameState.quest_done("ch4_main"):
+		GameState.start_quest("ch4_main")                    # 第四章开场（7.4）：从双钥港的木栈码头上岸
+		if Chapters.wip_note_of(4) != "" and hud:
+			hud.toast(Chapters.wip_note_of(4), 7.0)
 	if GameState.chapter == 1 and area in ["marsh", "inn"] and GameState.quest_stage("ch1_main") in ["", "to_reedwharf"] and not GameState.quest_done("ch1_main"):
 		GameState.set_stage("ch1_main", "ask_reedwharf")
 	if GameState.chapter == 1 and area == "castle" and GameState.quest_stage("ch1_main") in ["", "to_reedwharf", "ask_reedwharf", "to_blackheron"] and not GameState.quest_done("ch1_main"):
@@ -1187,6 +1191,7 @@ func _heirs_heard() -> void:
 func _ch3_sides_heard() -> void:
 	PlainPeople.sides_heard()
 	PlainPeople.evidence_settle()
+	HarborPeople.envoys_heard()                     # 第四章主线第 3 步（7.4）：三家的使者都开过价
 
 
 ## 区域名；连片地图上加你在的那一块：「鹭沼 · 芦栈村」（4.4）

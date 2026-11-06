@@ -66,6 +66,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	hb._far()
 	HarborTown.interactables(p_parent)               # 双钥港的城（7.2）：门、路牌、钥楼门口的告示（同步：一进场就看得见、推得开）
 	HarborTown.ships(p_parent)                       # 河口停着的两条船（跟着潮位上下）
+	HarborPeople.build(p_parent)                     # 城里的人（7.4）：码头、鱼市、钥楼街上只说一句的
 	for n in p_parent.get_children():                # 门、路牌远了不画（同平原，6.7a）
 		if n is Door or n is RoadSign:
 			Plain._cut_far(n, Plain.DETAIL_FAR)

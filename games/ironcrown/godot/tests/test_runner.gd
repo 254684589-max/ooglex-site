@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9822,6 +9822,106 @@ func test_harborrooms() -> void:
 			out_ok = false
 	check(out_ok, "从屋里出来站的四个地方（门外）都是空地，不卡在房子里")
 	await free_main(hm)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func ch4_state(flags := {}, stage := "") -> void:
+	GameState.new_game(740)
+	GameState.chapter = 4
+	GameState.daypart = "day"
+	for k in flags:
+		GameState.set_flag(k, flags[k])
+	if stage != "":
+		GameState.start_quest("ch4_main")
+		GameState.set_stage("ch4_main", stage)
+
+
+func test_ch4people() -> void:
+	# 双钥港的人与开场白（7.4）
+	var r := DialogueRunner.new()
+	check(r.start("harbor", "colwin"), "双钥港的对话文件读得出来（逐条校验在 dialogue 组，读 data/dialogue 下所有文件）")
+	# 一进双钥港：主线开场、城里的人都站在空地上
+	ch4_state()
+	GameState.pending_load = {"scene": "harbor", "spawn": "quay", "player": {}}
+	var main := await make_area("harbor")
+	await frames(3)
+	check(GameState.quest_stage("ch4_main") == "to_keyhouse", "第四章开场：从木栈码头上岸，主线「去钥楼街见科尔温」")
+	var crowd: Array = main.world.find_children("Npc_*", "Npc", true, false)
+	var clear_ok := true
+	for n: Npc in crowd:
+		if not await stands_clear(n):
+			clear_ok = false
+			print("  卡住：", n.name, " ", n.global_position)
+	check(crowd.size() >= 12 and clear_ok, "城里 %d 个人（码头、鱼市、钥楼街），都站在空地上" % crowd.size())
+	await free_main(main)
+	# 钥楼大厅里的人；北境派谁来看伊薇特 / 阿尔里克
+	for heir: String in ["alric", "ivette"]:
+		ch4_state({"valen_heir": heir}, "to_keyhouse")
+		GameState.pending_load = {"scene": "key_hall", "spawn": "front", "player": {}}
+		main = await make_area("key_hall")
+		await frames(3)
+		var envoy := "Npc_north_envoy"
+		var names := ["Npc_colwin", "Npc_silas", "Npc_maud", envoy]
+		var en := main.world.find_child(envoy, true, false) as Npc
+		check(en != null and en.dialogue_id == ("rowena" if heir == "ivette" else "herman"), "北境的使者：%s 当家派的是%s" % [heir, "罗薇娜" if heir == "ivette" else "赫尔曼"])
+		var ok := true
+		for nm: String in names:
+			var n := main.world.find_child(nm, true, false) as Npc
+			if n == null or not await stands_clear(n) or n.dialogue_area != "harbor":
+				ok = false
+				print("  卡住：", nm, " ", n.position if n else "没有", " ", main.world.find_children("Npc_*", "", true, false).map(func(x): return x.name))
+		check(ok, "钥楼大厅：科尔温、塞拉斯、莫德，长凳上北境的人（%s 当家），都站得住" % heir)
+		await free_main(main)
+	for area: String in ["guild_hall", "dock_tavern", "debt_prison"]:
+		ch4_state({"prologue_edric": "release"}, "envoys")
+		GameState.pending_load = {"scene": area, "spawn": "front", "player": {}}
+		main = await make_area(area)
+		await frames(3)
+		var ppl: Array = main.world.find_children("Npc_*", "Npc", true, false)
+		var ok2 := not ppl.is_empty()
+		for n: Npc in ppl:
+			if not await stands_clear(n):
+				ok2 = false
+				print("  卡住：", n.name, " ", n.position)
+		check(ok2 and (area != "guild_hall" or main.world.find_child("Npc_edric", true, false) != null) and (area != "dock_tavern" or main.world.find_child("Npc_odilon", true, false) != null),
+			"%s：%d 个人都站得住（会馆里有埃德里克——序章放走的；酒馆里有奥迪隆）" % [HarborRooms.display_name(area), ppl.size()])
+		await free_main(main)
+	ch4_state({"prologue_edric": "deliver"}, "envoys")
+	check(HarborPeople.room_people("guild_hall").all(func(x): return str(x[0]) != "edric"), "序章没放走埃德里克的：会馆里没有他")
+	# 科尔温：铁冠是押的、冬至清账；主线到 envoys
+	ch4_state({}, "to_keyhouse")
+	check(say_runner("colwin", ["我来问铁冠的事。", "押的？押了什么？", "这些债，谁来还？"], "harbor") == "clear" and GameState.quest_stage("ch4_main") == "envoys" and GameState.has_flag("ch4_colwin_met"),
+		"科尔温：铁冠在金库里、是老王押的，冬至那天谁还清账冠跟谁走；主线到「三家的使者」")
+	ch4_state({"prologue_edric": "extort"}, "to_keyhouse")
+	GameState.add_item("debt_note")
+	check(say_runner("colwin", [], "harbor") == "greet_extort" and say_runner("colwin", ["我来问铁冠的事。", "押的？押了什么？", "（拿出借据）霜渡镇这张，也是其中一张。"], "harbor") == "note" and GameState.has_flag("ch4_note_shown"),
+		"序章勒索过的：科尔温先提那一百二十枚银币；手里有借据的给他看，他认得（是那一大笔里的一张）")
+	for pe: Array in [["extort", "greet_extort"], ["release", "greet_release"], ["deliver", "greet_deliver"], ["", "greet"]]:
+		ch4_state({"prologue_edric": pe[0]} if pe[0] != "" else {}, "envoys")
+		check(say_runner("silas", [], "harbor") == pe[1], "塞拉斯按序章怎么待他开口：%s → %s" % [pe[0] if pe[0] != "" else "（没有序章）", pe[1]])
+	# 三家的使者：都开过价 → way
+	ch4_state({"valen_heir": "ivette", "ch2_fire": "lit"}, "envoys")
+	GameState.add_item("regent_letter")
+	check(say_runner("samuel", ["洛蒙德家开什么价？", "我想想。"], "harbor") == "" and GameState.has_flag("ch4_envoy_lomond"), "洛蒙德家的管家塞缪尔开价：两年的粮、南境的磨坊作保，要冬议上一个位子")
+	check(say_runner("odilon", ["塞弗林家开什么价？", "我手里有一封摄政的信。"], "harbor") == "letter" and GameState.has_flag("ch4_envoy_severin") and GameState.has_flag("ch4_odilon_letter"),
+		"奥迪隆开价：砧山北坑十年的铁、冠戴在摄政的孙子头上；手里有摄政的信的，他要你冬议以前别让它见光")
+	check(not HarborPeople.envoys_heard() and GameState.quest_stage("ch4_main") == "envoys", "还差北境的人：主线不动")
+	var rw := DialogueRunner.new()
+	rw.start("harbor", "rowena")
+	check(str(rw.text()).contains("第十九烽的火还亮着"), "罗薇娜（伊薇特当家）：第十九烽的火还亮着——你送上去的粮")
+	check(say_runner("rowena", ["北境开什么价？", "我想想。"], "harbor") == "" and HarborPeople.envoys_heard() and GameState.quest_stage("ch4_main") == "way", "三家都开过价：主线到「怎么把冠弄出来」")
+	# 渡工之子：科妮莉亚认出你爹；莫德说出那一夜（听过守灵夜的）
+	ch4_state({"origin": "boatman"}, "envoys")
+	var fr := GameState.get_rep("ferrymen")
+	check(say_runner("cornelia", [], "harbor") == "greet_kin" and GameState.has_flag("ch4_guild_kin") and GameState.get_rep("ferrymen") == fr + 5, "渡工之子：科妮莉亚认出你爹（行会 +5）")
+	ch4_state({}, "envoys")
+	var mr := DialogueRunner.new()
+	mr.start("harbor", "maud")
+	var has_night := mr.options().any(func(o): return str(o.text).contains("三年前"))
+	ch4_state({"ch3_vigil": true}, "envoys")
+	check(not has_night and say_runner("maud", ["三年前送冠进来的那一夜，你在吗？"], "harbor") == "night" and GameState.has_flag("ch4_maud_night"), "听过守灵夜的才问得出：莫德说出三年前送冠进金库的那一夜")
+	check(Chapters.wip_note_of(4).contains("三家的使者"), "第四章进场的提示：做到见科尔温和三家的使者")
 	GameState.chapter = 0
 	GameState.pending_load = {}
 
