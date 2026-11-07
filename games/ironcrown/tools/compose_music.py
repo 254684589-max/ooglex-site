@@ -11,6 +11,11 @@
   marsh  鹭沼：E 弗里吉亚调式，空五度持续音 + 带气声的木笛片段 + 芦苇沙沙声
   keep   黑鹭堡（庭院与堡内各处）：D 小调，弦垫和弦 + 低鼓 + 拨弦低音
   battle 军阵试验场：G 小调，战鼓 + 低音铜管般的固定音型
+2026-11-07 补三首（所有者反馈「第三章起没有背景音乐」）：
+  plain  金穗平原（第三章，白天）：G 混合利底亚调式，6/8 拍，田野里的拨弦持续音 + 木笛，收成里带着饥荒的一点苦
+  harbor 双钥港与冠城（第四章）：A 多利亚调式，慢，低音弦垫 + 港口钟声般的高音拨弦 + 潮水一涨一落的噪声
+  well   北上与冬井（第五章）：B 爱奥利亚调式，很慢，高而薄的弦垫 + 冰一样的稀疏拨弦 + 冷风
+只写其中几首：python3 compose_music.py 输出目录 plain harbor well（照样按顺序把每首都算一遍，随机数不变，其余几首和原来的文件一字不差）
 """
 import os
 import subprocess
@@ -306,7 +311,89 @@ def battle() -> np.ndarray:
     return tr.finish(0.25, 1.8)
 
 
-PIECES = {"town": town, "night": night, "marsh": marsh, "keep": keep, "battle": battle}
+def wash(dur: float, period: float) -> np.ndarray:
+    """潮水：低通噪声，一涨一落（period 秒一轮）"""
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    x = lowpass(RNG.normal(0, 1, n), 1200)
+    swell = 0.5 - 0.5 * np.cos(2 * np.pi * t / period)
+    return x * swell ** 1.5
+
+
+def wind(dur: float) -> np.ndarray:
+    """冷风：高一点的带通噪声，忽强忽弱"""
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    x = lowpass(RNG.normal(0, 1, n), 5000) - lowpass(RNG.normal(0, 1, n), 1400)
+    gust = 0.55 + 0.45 * np.sin(2 * np.pi * t / 7.7) * np.sin(2 * np.pi * t / 3.1 + 0.6)
+    return x * np.clip(gust, 0, 1) ** 2
+
+
+def plain() -> np.ndarray:
+    """G 混合利底亚，6/8 拍（附点四分 = 52），24 小节：G–D 的空五度拨弦持续音、G–F–C–G 的弦垫、木笛"""
+    beat = 60 / 52 / 3                                       # 八分音符
+    bar = beat * 6
+    tr = Track(bar * 24)
+    chords = [["G2", "D3", "B3"], ["F2", "C3", "A3"], ["C3", "G3", "E4"], ["G2", "D3", "B3"]]
+    for b in range(24):
+        t0 = b * bar
+        tr.add(pad([hz(n) for n in chords[(b // 2) % 4]], bar * 1.05, 750), t0, 0.32)
+        for k, nt in enumerate(["G2", "D3", "G3", "D3", "B3", "D3"]):
+            if (b // 2) % 4 == 1:
+                nt = {"G2": "F2", "D3": "C3", "G3": "F3", "B3": "A3"}[nt]
+            elif (b // 2) % 4 == 2:
+                nt = {"G2": "C3", "D3": "G3", "G3": "C4", "B3": "E4"}[nt]
+            tr.add(pluck(hz(nt), beat * 3.0, 0.35), t0 + k * beat, 0.24 if k else 0.36)
+    melody = [
+        [(0, "D5", 3), (3, "B4", 2), (5, "A4", 1)], [(0, "G4", 4), (4, "A4", 2)], [(0, "F4", 3), (3, "G4", 1), (4, "A4", 2)], [(0, "C5", 6)],
+        [(0, "B4", 2), (2, "A4", 1), (3, "G4", 3)], [(0, "E4", 3), (3, "F4", 3)], [(0, "G4", 2), (2, "A4", 2), (4, "B4", 2)], [(0, "G4", 6)],
+    ]
+    for start in (4, 14):
+        for i, notes in enumerate(melody):
+            for st, nt, ln in notes:
+                tr.add(flute(hz(nt), ln * beat * 1.05, 0.1), (start + i) * bar + st * beat, 0.3)
+    return tr.finish(0.38, 2.4)
+
+
+def harbor() -> np.ndarray:
+    """A 多利亚，60 拍每分，16 小节：低音弦垫 Am–G–D–Am、港口钟一样的高音拨弦、潮水（8 秒一涨一落）"""
+    beat = 1.0
+    bar = beat * 4
+    tr = Track(bar * 16)
+    tr.add(wash(bar * 16, 8.0), 0, 0.07)
+    chords = [["A2", "E3", "C4"], ["G2", "D3", "B3"], ["D3", "A3", "F#4"], ["A2", "E3", "C4"]]
+    bass = ["A1", "G1", "D2", "A1"]
+    for b in range(16):
+        k = b % 4
+        tr.add(pad([hz(n) for n in chords[k]], bar * 1.04, 650), b * bar, 0.48)
+        tr.add(pluck(hz(bass[k]), bar * 0.95, 0.15), b * bar, 0.4)
+    bells = [(1, 0, "E5"), (1, 2.5, "A5"), (3, 1, "D5"), (5, 0, "C5"), (5, 3, "E5"), (7, 2, "B4"), (9, 0, "E5"), (9, 1.5, "F#5"), (11, 2, "A5"), (13, 0, "G5"), (13, 3, "E5"), (15, 1, "A4")]
+    for b, st, nt in bells:
+        tr.add(pluck(hz(nt), 3.5, 0.75), b * bar + st * beat, 0.2)
+    line = [(0, "E4", 2), (2, "D4", 1), (3, "C4", 1), (4, "B3", 2), (6, "C4", 2), (8, "D4", 3), (11, "E4", 1), (12, "A3", 4),
+            (16, "C4", 1), (17, "D4", 1), (18, "E4", 2), (20, "F#4", 3), (23, "E4", 1), (24, "D4", 2), (26, "C4", 2), (28, "A3", 4)]
+    for st, nt, ln in line:
+        tr.add(flute(hz(nt), ln * beat, 0.1), 8 * bar + st * beat, 0.2)
+    return tr.finish(0.5, 3.0)
+
+
+def well() -> np.ndarray:
+    """B 爱奥利亚，44 拍每分，12 小节：B 的低持续音、高而薄的弦垫、冰一样稀疏的拨弦、冷风"""
+    beat = 60 / 44
+    bar = beat * 4
+    tr = Track(bar * 12)
+    tr.add(drone(hz("B1"), bar * 12), 0, 0.15)
+    tr.add(wind(bar * 12), 0, 0.06)
+    pads = [["B3", "F#4", "D5"], ["G3", "D4", "B4"], ["A3", "E4", "C#5"], ["F#3", "C#4", "A4"]]
+    for b in range(0, 12, 2):
+        tr.add(pad([hz(n) for n in pads[(b // 2) % 4]], bar * 2.1, 1500), b * bar, 0.3)
+    ice = [(0, 1, "F#5"), (1, 3, "B5"), (2, 2, "D6"), (4, 0, "C#6"), (5, 2, "F#5"), (7, 1, "A5"), (8, 3, "B5"), (10, 0, "E6"), (11, 2, "F#5")]
+    for b, st, nt in ice:
+        tr.add(pluck(hz(nt), 4.0, 0.85), b * bar + st * beat, 0.16)
+    return tr.finish(0.62, 4.0)
+
+
+PIECES = {"town": town, "night": night, "marsh": marsh, "keep": keep, "battle": battle, "plain": plain, "harbor": harbor, "well": well}
 
 
 def encode(st: np.ndarray, path: str) -> None:
@@ -324,9 +411,12 @@ def encode(st: np.ndarray, path: str) -> None:
 
 def main() -> None:
     out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "..", "godot", "assets", "music")
+    only = set(sys.argv[2:])
     os.makedirs(out, exist_ok=True)
     for name, fn in PIECES.items():
-        st = fn()
+        st = fn()                     # 每首都算（共用一个随机数发生器：跳过前面的会改变后面几首）
+        if only and name not in only:
+            continue
         path = os.path.join(out, name + ".ogg")
         encode(st, path)
         print("%s  %.1f 秒  %d KB" % (name, len(st) / SR, os.path.getsize(path) // 1024))
