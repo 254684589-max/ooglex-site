@@ -29,7 +29,10 @@ extends RefCounted
 ##   causeway_open  第一章堤道夜战开打以前（你走到守点、main.start_battle）：高处看堤道和村子那头连成一线的火把 → 你身后的人；演完开打
 ##                  （攻方的兵开打以后才摆上去，所以不拍他们的脸）。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open"]
+##   tide_rising    第二章第一夜潮水上来（FirstTide.tide_started）：营地这边往南看，坡上的人影一个接一个走上来 → 迎着它们，光着脚、闭着眼 →
+##                  火把那一排背后，它们碰到火就拐开；演的时候潮水照样在走。
+
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising"]
 
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
@@ -84,6 +87,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "well_bottom"
 		"causeway_open":
 			return main.world != null and main.area == "marsh"
+		"tide_rising":
+			return main.world != null and main.area == "highland"
 	return false
 
 
@@ -109,7 +114,27 @@ static func shots(main: Node, id: String) -> Array:
 			return oath_failed(main)
 		"causeway_open":
 			return causeway_open(main)
+		"tide_rising":
+			return tide_rising(main)
 	return []
+
+
+## 第一夜潮水（2-3）：长眠者从南边山坡（FirstTide.ROUTE_CAMP 第一个点）往北朝营地走，营地前一排插火把的木桩（SPOT_CENTER 两边）
+static func tide_rising(main: Node) -> Array:
+	var p: FpController = main.player
+	var g := func(v: Vector2, up: float) -> Vector3: return WinterWell.ground(v) + Vector3(0, up, 0)
+	var src: Vector2 = FirstTide.ROUTE_CAMP[0]
+	var mid: Vector2 = (src + FirstTide.SPOT_CENTER) * 0.5
+	var spot: Vector2 = FirstTide.SPOT_CENTER
+	return [
+		{"from": [g.call(spot + Vector2(3.0, -6.0), 5.5), g.call(src, 1.0)], "to": [g.call(spot + Vector2(1.5, -3.0), 4.0), g.call(src + (spot - src) * 0.2, 1.0)], "dur": 6.0, "fov": 46.0, "music": "battle", "exposure": 1.3,
+			"lines": [[0.6, "", "第一夜。南边的山坡上，有人影一个接一个走上来。"]],
+			"on_start": func(): p.set_third_person(true)},
+		{"from": [g.call(mid + Vector2(1.2, 0.0), 1.3), g.call(src + (spot - src) * 0.25, 1.5)], "to": [g.call(mid + Vector2(1.0, -1.5), 1.35), g.call(src + (spot - src) * 0.3, 1.5)], "dur": 5.0, "fov": 40.0, "cut": true, "exposure": 1.3,
+			"lines": [[0.5, "", "光着脚，闭着眼睛，不出一点声音。"]]},
+		{"from": [g.call(spot + Vector2(-1.0, -3.0), 1.7), g.call(spot + (src - spot) * 0.4, 1.0)], "to": [g.call(spot + Vector2(-0.6, -2.2), 1.6), g.call(spot + (src - spot) * 0.4, 1.0)], "dur": 5.0, "fov": 48.0, "cut": true, "exposure": 1.3,
+			"lines": [[0.5, "", "碰到火，它们就拐开。火要是灭了——"]]},
+	]
 
 
 ## 堤道夜战开场（1-2）：堤道沿 MarshLayout.cw3(t) 走，t 小的那头是村子（攻方列在 WAVE1_T），守点在 HOLD_T（断口 45.5 / 石拱 75）

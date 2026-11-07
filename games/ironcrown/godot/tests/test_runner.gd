@@ -13290,5 +13290,23 @@ func test_cutscene() -> void:
 	await frames(2)
 	check(cbt.started and CutScenes.before_battle(main) == "", "演完（跳过也算）：开打；不再演")
 	await free_main(main)
+	# 第一夜潮水（2-3）：潮水一上来就演，演的时候潮水照样在走
+	GameState.new_game(560)
+	GameState.chapter = 2
+	GameState.daypart = "night"
+	GameState.set_stage("ch2_main", "light_line")
+	GameState.set_flag("matthias_met")
+	GameState.set_flag("norbert_met")
+	main = await make_area("highland")
+	await frames(3)
+	var ftd: FirstTide = main.first_tide
+	check(ftd != null and CutScenes.shots(main, "tide_rising").size() == 3, "第一夜：能演「潮水上来」（三个镜头）")
+	ftd.start_tide()
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "tide_rising" and ftd.state == FirstTide.TIDE and GameState.quest_stage("ch2_main") == "tide", "潮水上来：先演过场，潮水照样在走")
+	main.cutscene.skip()
+	await frames(2)
+	check(main.cutscene == null and ftd.state == FirstTide.TIDE and GameState.has_flag("cut_tide_rising"), "跳过以后接着守夜；只演一次")
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 

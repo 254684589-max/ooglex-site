@@ -2325,6 +2325,8 @@ func _first_tide_tick() -> void:
 
 func _on_tide_started() -> void:
 	GameState.set_stage("ch2_main", "tide")
+	if not GameState.has_flag("cut_tide_rising"):
+		play_cutscene("tide_rising")                         # 第一夜潮水（C.5 过场 2-3）：演的时候潮水照样在走
 	hud.toast("南边坡下，一串白影子在往上走。光着脚，不出一点声音。", 4.5)
 	print("IC_TIDE start count=%d lit=%d" % [FirstTide.COUNT, first_tide.lit_spots()])
 
