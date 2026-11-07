@@ -13497,5 +13497,23 @@ func test_cutscene() -> void:
 	await frames(2)
 	check(GameState.has_flag("cut_harbor_first") and CutScenes.on_enter(main) == "", "只演一次")
 	await free_main(main)
+	# 残卷（5-1）：西缪让开以后第一次和大主祭说话以前演，演完从「打开铁箱」接着说
+	ch4_state({"ch4_done": true, "crown_holder": "kept"})
+	CrownPeople.ch5_begin()
+	GameState.set_flag("ch5_wardens", "let")
+	GameState.set_stage("ch5_main", "to_archive")
+	GameState.pending_load = {"scene": "church_archive", "spawn": "front", "player": {}}
+	main = await make_area("church_archive")
+	await frames(3)
+	var luc := main.world.find_child("Npc_lucien_archive", true, false) as Npc
+	check(luc != null and CutScenes.before_dialogue("lucien_archive").get("cut", "") == "archive_open", "第一次找大主祭：先演「残卷」")
+	main._on_interacted(luc.interact(main.player))
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "archive_open" and not main.dialogue.visible and main.world.find_child("CutArchiveLights", true, false) != null, "演着：对话还没开，补了暖光")
+	main.cutscene.skip()
+	await frames(3)
+	check(main.dialogue.visible and main.dialogue.runner.node_id == "greet" and main.world.find_child("CutArchiveLights", true, false) == null, "演完：大主祭打开铁箱（greet）；补光拿掉")
+	main.dialogue.close()
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 

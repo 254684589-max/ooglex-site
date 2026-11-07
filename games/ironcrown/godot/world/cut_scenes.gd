@@ -32,7 +32,7 @@ extends RefCounted
 ##   tide_rising    第二章第一夜潮水上来（FirstTide.tide_started）：营地这边往南看，坡上的人影一个接一个走上来 → 迎着它们，光着脚、闭着眼 →
 ##                  火把那一排背后，它们碰到火就拐开；演的时候潮水照样在走。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first", "first_sleeper", "beacon_line", "ambush_open", "harbor_first"]
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first", "first_sleeper", "beacon_line", "ambush_open", "harbor_first", "archive_open"]
 
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
@@ -67,6 +67,8 @@ static func on_enter(main: Variant) -> String:
 
 ## 这段对话开始前要不要先演一段过场：{cut, after: Callable（演完做的事）, node: 演完从对话哪一句接着说}；不用就 {}
 static func before_dialogue(dialogue_id: String) -> Dictionary:
+	if dialogue_id == "lucien_archive" and GameState.has_flag("ch5_wardens") and not GameState.has_flag("ch5_archive") and not GameState.has_flag("cut_archive_open"):
+		return {"cut": "archive_open", "node": "", "after": func(): pass}
 	if dialogue_id == "council" and CrownPeople.council_due() and not GameState.has_flag("cut_council_open"):
 		return {"cut": "council_open", "node": "", "after": func(): pass}
 	if dialogue_id == "osric" and GameState.quest_stage("ch1_main") in ["dawn_held", "dawn_lost"] and not GameState.has_flag("ch1_osric_farewell") and not GameState.has_flag("cut_osric_dawn"):
@@ -123,6 +125,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "highland" and main.world.get_node_or_null("ConvoyAmbush") != null
 		"harbor_first":
 			return main.world != null and main.area == "harbor"
+		"archive_open":
+			return main.world != null and main.area == "church_archive"
 	return false
 
 
@@ -170,6 +174,8 @@ static func shots(main: Node, id: String) -> Array:
 			return ambush_open(main)
 		"harbor_first":
 			return harbor_first(main)
+		"archive_open":
+			return archive_open(main)
 	return []
 
 
@@ -504,6 +510,36 @@ static func harbor_first(main: Node) -> Array:
 			"lines": [[0.5, "", "卡斯韦尔家的钥楼。半个王国的借据，锁在它底下。"]]},
 		{"from": [g.call(lh + Vector2(-40.0, -36.0), 14.0), g.call(lh, 6.0)], "to": [g.call(lh + Vector2(-32.0, -28.0), 11.0), g.call(lh, 6.0)], "dur": 6.0, "fov": 48.0, "cut": true,
 			"lines": [[0.5, "", "退潮的时候，泥滩一直露到灯塔脚下。"], [3.0, "", "这座城里，什么都有个价。"]]},
+	]
+
+
+## 残卷（5-1）：钟楼底下的教会档案馆（10 × 12 米，两排卷宗架中间一条道，抄经桌在南边 z = 1.8，烧黑的铁箱 CrownRooms.ARCHIVE_CHEST，北墙铁栅门）；
+## 西缪让开以后第一次和大主祭说话以前演，演完他打开铁箱、递残卷（对话里）
+static func archive_open(main: Node) -> Array:
+	var p: FpController = main.player
+	var ch: Vector3 = CrownRooms.ARCHIVE_CHEST
+	var gr: Vector3 = CrownRooms.ARCHIVE_GRATE
+	var lights := Node3D.new()                                             # 档案馆里只有一盏壁灯和桌上两支蜡烛：过场里补两盏暖光（cut_prop，演完拿掉）
+	lights.name = "CutArchiveLights"
+	lights.add_to_group("cut_prop")
+	for at: Vector3 in [Vector3(0.0, 2.6, 0.5), ch + Vector3(-0.6, 1.4, 0.9)]:
+		var l := OmniLight3D.new()
+		l.light_color = Color("ffbe78")
+		l.light_energy = 1.3
+		l.omni_range = 7.0
+		l.position = at
+		lights.add_child(l)
+	return [
+		{"from": [Vector3(0.0, 1.7, 5.2), Vector3(0.0, 1.4, -6.0)], "to": [Vector3(0.0, 1.6, 2.6), Vector3(0.0, 1.3, -6.0)], "dur": 6.5, "fov": 48.0, "music": "well", "exposure": 1.6,
+			"lines": [[0.6, "", "钟楼底下。卷宗一排挨着一排，四百年没有人翻过。"]],
+			"on_start": func():
+				p.set_third_person(false)
+				if lights.get_parent() == null:
+					main.world.add_child(lights)},
+		{"from": [ch + Vector3(-1.4, 1.4, 1.6), ch + Vector3(0, 0.6, 0)], "to": [ch + Vector3(-0.9, 1.15, 1.1), ch + Vector3(0, 0.6, 0)], "dur": 5.0, "fov": 40.0, "cut": true, "exposure": 1.6,
+			"lines": [[0.5, "", "一只烧黑的铁箱，锁扣却是新的。"]]},
+		{"from": [gr + Vector3(1.2, 1.5, 2.6), gr + Vector3(0, 1.2, 0)], "to": [gr + Vector3(0.6, 1.4, 1.8), gr + Vector3(0, 1.1, -1.0)], "dur": 5.0, "fov": 44.0, "cut": true, "exposure": 1.6,
+			"lines": [[0.5, "", "教会烧过的东西，没有烧完。"]]},
 	]
 
 
