@@ -13324,5 +13324,39 @@ func test_cutscene() -> void:
 	var rs := CutScenes.shots(main, "mill_open")
 	check(rs.size() == 3 and str(rs[2].lines[0][2]).contains("奥迪隆"), "跟塞弗林家：第三个镜头换成东门外的麦茬里")
 	await free_main(main)
+	# 金库之夜（4-2）：打开铁笼拿到冠的那一下演；演完才出提示，冠这个道具拿掉
+	var vflags := {"ch4_colwin_met": true, "ch4_envoy_severin": true, "ch4_envoy_lomond": true, "ch4_envoy_north": true, "ch4_vault_entered": true, "ch4_vault_sneaky": true, "ch4_maud_keys": true}
+	ch4_state(vflags, "way")
+	GameState.daypart = "night"
+	GameState.pending_load = {"scene": "key_vault", "spawn": "gate", "player": {}}
+	main = await make_area("key_vault")
+	await physics(4)
+	check(CutScenes.shots(main, "vault_crown").size() == 3, "金库之夜：能演「铁冠露面」（三个镜头）")
+	main._on_interacted(HarborRooms.crown_box())
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "vault_crown" and GameState.has_item("iron_crown") and Music.track == "harbor" and main.world.get_node_or_null("CutVaultProps") != null, "拿到冠：先演过场（冠已经在包里了）")
+	await seconds(5.6)
+	var vc := main.world.find_child("CutCrown", true, false) as Node3D
+	check(vc != null and vc.visible, "第二个镜头：匣盖掀开，冠露出来")
+	main.cutscene.skip()
+	await frames(3)
+	check(main.cutscene == null and main.hud.toast_label.text.contains("得到：铁冠") and GameState.has_flag("cut_vault_crown"), "演完：出「得到：铁冠」的提示；只演一次")
+	await frames(2)
+	check(main.world.get_node_or_null("CutVaultProps") == null, "演完：冠这个道具拿掉了")
+	await free_main(main)
+	ch4_state(vflags.merged({"ch3_vigil": true}), "way")
+	GameState.set_flag("ch4_maud_keys", false)
+	GameState.daypart = "night"
+	GameState.pending_load = {"scene": "key_vault", "spawn": "gate", "player": {}}
+	main = await make_area("key_vault")
+	await physics(4)
+	GameState.set_flag("ch4_vault", "talked")
+	GameState.add_item("iron_crown")
+	main._on_dialogue_closed()
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "vault_crown", "莫德自己开的铁笼（talked）：说完话也演")
+	main.cutscene.skip()
+	await frames(2)
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 

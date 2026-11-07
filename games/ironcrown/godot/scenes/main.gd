@@ -1530,6 +1530,15 @@ func _on_target_changed(target: Interactable) -> void:
 func _on_interacted(r: Dictionary) -> void:
 	if r.is_empty():
 		return
+	if r.has("cutscene") and not GameState.has_flag("cut_" + str(r.cutscene)) and play_cutscene(str(r.cutscene)):    # 先演一段过场（C.5：金库之夜拿到冠……），演完再给提示
+		var rest := r.duplicate()
+		rest.erase("cutscene")
+		cutscene.finished.connect(func(_skipped: bool):
+			var props := world.get_node_or_null("CutVaultProps") if world else null
+			if props:
+				props.queue_free()
+			_on_interacted(rest), CONNECT_ONE_SHOT)
+		return
 	if r.has("toast"):
 		hud.toast(r.toast)
 	if r.has("speech"):
@@ -1712,6 +1721,8 @@ func _on_dialogue_closed() -> void:
 	_ch3_sides_heard()
 	if area == "sickroom":
 		Sickroom.wake(world)                                # 黄昏家主醒了（4.8a）
+	if area == "key_vault" and GameState.has_item("iron_crown") and str(GameState.get_flag("ch4_vault", "")) == "talked" and not GameState.has_flag("cut_vault_crown"):
+		_on_interacted({"cutscene": "vault_crown"})         # 莫德自己开的铁笼（7.5 talked）：同样演「金库之夜」（C.5 4-2）
 	var heir := str(GameState.get_flag("valen_heir", ""))
 	if heir != "" and heir != heir_seen:
 		heir_seen = heir

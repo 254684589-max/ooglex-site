@@ -32,7 +32,7 @@ extends RefCounted
 ##   tide_rising    第二章第一夜潮水上来（FirstTide.tide_started）：营地这边往南看，坡上的人影一个接一个走上来 → 迎着它们，光着脚、闭着眼 →
 ##                  火把那一排背后，它们碰到火就拐开；演的时候潮水照样在走。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open"]
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown"]
 
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
@@ -93,6 +93,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "highland"
 		"mill_open":
 			return main.world != null and main.area == "plain" and main.world.get_node_or_null("MillBattle") != null
+		"vault_crown":
+			return main.world != null and main.area == "key_vault"
 	return false
 
 
@@ -122,6 +124,8 @@ static func shots(main: Node, id: String) -> Array:
 			return tide_rising(main)
 		"mill_open":
 			return mill_open(main)
+		"vault_crown":
+			return vault_crown(main)
 	return []
 
 
@@ -148,6 +152,45 @@ static func mill_open(main: Node) -> Array:
 		shots.append({"from": [g.call(PlainMill.EAST_GATE + Vector2(2.5, 1.2), 2.4), g.call(east, 1.0)], "to": [g.call(PlainMill.EAST_GATE + Vector2(6.0, 0.8), 1.9), g.call(east, 1.0)], "dur": 5.0, "fov": 46.0, "cut": true, "exposure": 1.6,
 			"lines": [[0.5, "", "东门外，第一拨人伏在麦茬里，刀背映着火光。"], [2.8, "", "今夜，粮仓不能丢。"]]})
 	return shots
+
+
+## 金库之夜（4-2）：铁冠第一次露面。金库 11 × 7 米，铁匣在北墙正中的石台上（HarborRooms.CROWN_BOX），罩着铁笼（前面一排铁条在 z = 台 + 0.62）
+## 拿到冠的那一下演（HarborRooms.crown_box 返回 cutscene）；冠和星铁那点冷光放在 CutVaultProps 底下，演完 main 拿掉
+static func vault_crown(main: Node) -> Array:
+	var p: FpController = main.player
+	var cb: Vector3 = HarborRooms.CROWN_BOX
+	var lid := cb + Vector3(0, 1.27, 0)
+	var props := Node3D.new()
+	props.name = "CutVaultProps"
+	var crown := _crown()
+	props.add_child(crown)
+	crown.position = lid
+	crown.visible = false
+	var glow := OmniLight3D.new()
+	glow.name = "CutStarGlow"
+	glow.light_color = Color(0.6, 0.78, 1.0)
+	glow.light_energy = 0.0
+	glow.omni_range = 1.2
+	glow.position = lid + Vector3(0, 0.12, 0.25)
+	props.add_child(glow)
+	var maud := main.world.find_child("Npc_maud_vault", true, false) as Node3D
+	var wide_at: Vector3 = maud.global_position + Vector3(0, 1.3, 0) if maud else cb + Vector3(0, 1.2, 0)
+	return [
+		{"from": [cb + Vector3(0.6, 1.55, 1.6), cb + Vector3(0, 1.1, 0.0)], "to": [cb + Vector3(0.3, 1.4, 1.05), cb + Vector3(0, 1.1, 0.0)], "dur": 5.0, "fov": 40.0, "music": "harbor", "exposure": 1.2,
+			"lines": [[0.5, "", "最小的那把钥匙，在锁眼里转了半圈。铁笼的门往外荡开。"]],
+			"on_start": func():
+				p.set_third_person(false)
+				if props.get_parent() == null:
+					main.world.add_child(props)},
+		{"from": [lid + Vector3(0.0, 0.42, 0.55), lid + Vector3(0, 0.03, 0)], "to": [lid + Vector3(0.0, 0.3, 0.36), lid + Vector3(0, 0.03, 0)], "dur": 6.5, "fov": 34.0, "cut": true, "exposure": 1.25,
+			"lines": [[0.4, "", "匣盖掀开。一圈暗色的铁，没有宝石，也没有金子。"], [3.6, "", "冠底下嵌着一块星铁，冷得像冬井里的水。"]],
+			"on_start": func():
+				crown.visible = true
+				var tw := glow.create_tween()
+				tw.tween_property(glow, "light_energy", 0.9, 2.5)},
+		{"from": [Vector3(0.0, 1.9, 3.0), wide_at], "to": [Vector3(0.0, 1.75, 2.2), cb + Vector3(0, 1.1, 0)], "dur": 5.5, "fov": 50.0, "cut": true, "exposure": 1.45,
+			"lines": [[0.5, "", "王国为它争了三十五年。"], [2.8, "", "它就躺在一只铁匣里，在一间放借据的屋子底下。"]]},
+	]
 
 
 static func tide_rising(main: Node) -> Array:
