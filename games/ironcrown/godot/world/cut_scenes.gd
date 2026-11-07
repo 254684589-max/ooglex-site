@@ -32,7 +32,7 @@ extends RefCounted
 ##   tide_rising    第二章第一夜潮水上来（FirstTide.tide_started）：营地这边往南看，坡上的人影一个接一个走上来 → 迎着它们，光着脚、闭着眼 →
 ##                  火把那一排背后，它们碰到火就拐开；演的时候潮水照样在走。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first", "first_sleeper"]
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first", "first_sleeper", "beacon_line"]
 
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
@@ -54,6 +54,8 @@ static func on_enter(main: Variant) -> String:
 		return "ending_film"
 	if a == "castle" and GameState.chapter == 1 and not GameState.has_flag("cut_castle_first") and not GameState.has_flag("ch1_hold"):
 		return "castle_first"
+	if a == "highland" and GameState.chapter == 2 and not GameState.has_flag("cut_beacon_line") and GameState.quest_stage("ch2_main") in ["", "ask_yangji"]:
+		return "beacon_line"
 	if a == "well_bottom" and GameState.chapter == 5 and not GameState.has_flag("ch5_ritual") and not GameState.has_flag("cut_well_descend"):
 		return "well_descend"
 	return ""
@@ -111,6 +113,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "castle"
 		"first_sleeper":
 			return main.world != null and main.area == "marsh" and main.sleeper != null and is_instance_valid(main.sleeper)
+		"beacon_line":
+			return main.world != null and main.area == "highland"
 	return false
 
 
@@ -152,6 +156,8 @@ static func shots(main: Node, id: String) -> Array:
 			return castle_first(main)
 		"first_sleeper":
 			return first_sleeper(main)
+		"beacon_line":
+			return beacon_line(main)
 	return []
 
 
@@ -432,6 +438,24 @@ static func first_sleeper(main: Node) -> Array:
 			"lines": [[0.5, "", "叫不醒，拦不住。你挡在前面，他就绕过去。"]]},
 		{"from": [turn + Vector3(1.6, 2.4, 3.0), turn + Vector3(0, 1.0, -30.0)], "to": [turn + Vector3(1.2, 3.4, 1.0), turn + Vector3(0, 1.5, -40.0)], "dur": 6.0, "fov": 50.0, "cut": true,
 			"lines": [[0.5, "", "他拐上去泥炭场的木板路，一直往北，"], [3.0, "", "走进北边的芦苇里。"]]},
+	]
+
+
+## 烽燧线全景（2-1）：第二章第一次到余火高地。羊脊村在南（HighlandLayout.VILLAGE），盘山路往北上到第十九烽（BEACON19），山脊往西是第十八烽（BEACON18），再往北是白寂边缘
+static func beacon_line(main: Node) -> Array:
+	var p: FpController = main.player
+	var g := func(v: Vector2, up: float) -> Vector3: return WinterWell.ground(v) + Vector3(0, up, 0)
+	var vil: Vector2 = HighlandLayout.VILLAGE
+	var b19: Vector2 = HighlandLayout.BEACON19
+	var b18: Vector2 = HighlandLayout.BEACON18
+	return [
+		{"from": [g.call(vil + Vector2(-6.0, 40.0), 26.0), g.call(vil, 0.0)], "to": [g.call(vil + Vector2(-2.0, 24.0), 20.0), g.call(b19, 8.0)], "dur": 7.5, "fov": 52.0, "music": "night",
+			"lines": [[0.6, "", "北境，余火高地。羊脊村的炊烟，是这条路上最后的人烟。"], [4.0, "", "盘山路往北，一直通到山脊上。"]],
+			"on_start": func(): p.set_third_person(true)},
+		{"from": [g.call(Vector2(-40.0, -20.0), 30.0), g.call(b18, 8.0)], "to": [g.call(Vector2(-20.0, -24.0), 30.0), g.call(b19, 8.0)], "dur": 7.5, "fov": 50.0, "cut": true,
+			"lines": [[0.5, "", "山脊上，一座烽燧接着一座，从前夜夜点着火。"], [3.8, "", "现在大半都黑着。"]]},
+		{"from": [g.call(b19 + Vector2(-14.0, 22.0), 6.0), g.call(b19, 9.0)], "to": [g.call(b19 + Vector2(-10.0, 16.0), 5.0), g.call(b19, 11.0)], "dur": 6.0, "fov": 46.0, "cut": true,
+			"lines": [[0.5, "", "最近的那一座，叫断角烽。"], [3.0, "", "再往北，就是白寂。"]]},
 	]
 
 
