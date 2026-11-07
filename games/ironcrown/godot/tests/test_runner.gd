@@ -13264,18 +13264,53 @@ func test_cutscene() -> void:
 	await frames(2)
 	check(CutScenes.shots(main, "oath_sealed").size() == 4 and CutScenes.shots(main, "oath_failed").size() == 2, "封上了四个镜头、断了两个")
 	main.ch3_end_after = 0.3
+	OathRitual.settle("sealed")
 	main._on_oath_finished("sealed")
 	await frames(2)
 	check(main.cutscene != null and main.cutscene.id == "oath_sealed" and not GameState.has_flag("ch5_done"), "封上了：先演过场，还没结局")
 	await seconds(6.2)
 	var lbl := main.world.find_child("CutOathName", true, false) as Label3D
 	check(lbl != null and lbl.text == "誓剑" and lbl.modulate.a > 0.1, "冰壁上的名字浮出来了（%s）" % (lbl.text if lbl else "没有"))
+	var rq := [0]
+	main.reload_requested.connect(func(): rq[0] += 1)
 	main.cutscene.skip()
-	await seconds(0.8)
-	check(GameState.has_flag("ch5_done") and main.ending_panel.visible, "演完：结局画面")
+	await seconds(1.2)
+	check(rq[0] == 1 and str(GameState.pending_load.get("scene", "")) == "plain" and str(GameState.pending_load.get("daypart", "")) == "day" and GameState.has_flag("ch5_film") and not GameState.has_flag("ch5_done"),
+		"演完：去演结局影片（你留了名 = 无冠之春：金穗平原的白天），还没出结局画面")
+	var pl := GameState.pending_load.duplicate()
+	await free_main(main)
+	# 结局影片（5-5）：到了就演，演完出结局画面
+	GameState.pending_load = pl
+	main = await make_area("plain")
+	check(CutScenes.on_enter(main) == "ending_film" and CutScenes.shots(main, "ending_film").size() == 3, "到了金穗平原：演「结局影片」（三个镜头）")
+	await seconds(1.4)
+	check(main.cutscene != null and main.cutscene.id == "ending_film" and not main.ending_panel.visible, "进来一会儿就演")
+	main.cutscene.skip()
+	await seconds(0.6)
+	check(GameState.has_flag("ch5_done") and GameState.has_flag("cut_ending_film") and main.ending_panel.visible, "演完：结局画面")
 	main.ending_panel.close()
 	get_tree().paused = false
 	await free_main(main)
+	for ek: String in ["new_king", "long_winter"]:
+		GameState.new_game(1)
+		GameState.chapter = 5
+		GameState.set_flag("ending", ek)
+		GameState.set_flag("ch5_film")
+		var est := CutScenes.ending_stage()
+		GameState.pending_load = {"scene": est[0], "spawn": est[1], "daypart": est[2], "player": {}}
+		main = await make_area(str(est[0]))
+		await seconds(1.4)
+		check(main.cutscene != null and main.cutscene.id == "ending_film" and CutScenes.shots(main, "ending_film").size() == 3 and str(est[0]) == {"new_king": "council_hall", "long_winter": "highland"}[ek],
+			"%s：在 %s 演结局影片" % [ek, str(est[0])])
+		if ek == "new_king":
+			await seconds(0.5)
+			check(main.world.find_child("CutCrown", true, false) != null, "新王：王座椅背的凹槽里放着铁冠")
+		main.cutscene.skip()
+		await seconds(0.6)
+		check(main.ending_panel.visible and main.world.find_child("CutCrown", true, false) == null, "演完：结局画面；冠这个道具拿掉了")
+		main.ending_panel.close()
+		get_tree().paused = false
+		await free_main(main)
 	# 堤道夜战开场（1-2）：走到守点先演过场，演完才开打
 	causeway_state("arch")
 	main = await make_causeway()

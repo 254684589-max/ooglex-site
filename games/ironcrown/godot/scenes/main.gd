@@ -714,6 +714,11 @@ func _auto_cutscene(id: String, wait := 2.0) -> void:
 	await get_tree().create_timer(wait).timeout
 	if not play_cutscene(id):
 		print("IC_CUTSCENE unavailable id=%s" % id)
+		if id == "ending_film" and GameState.has_flag("ch5_film"):
+			_the_end()
+		return
+	if id == "ending_film" and GameState.has_flag("ch5_film"):
+		cutscene.finished.connect(func(_s: bool): _the_end(), CONNECT_ONE_SHOT)      # 结局影片演完（跳过也算）：出结局画面
 
 
 var cutscene: Cutscene = null
@@ -2541,14 +2546,31 @@ func _on_oath_finished(result: String) -> void:
 
 
 ## 全作完（8.5）：主线「冬井」完、第五章完，自动存档，过 ch3_end_after 秒出结局画面
+## 结局影片（C.5 5-5）：先按结局去一个地方（CutScenes.ending_stage），到了演完再出结局画面（_the_end）
 func _finale() -> void:
-	get_tree().create_timer(ch3_end_after).timeout.connect(func():
-		if is_inside_tree() and not GameState.has_flag("ch5_done"):
-			GameState.set_flag("ch5_done")
-			if GameState.quest_active("ch5_main"):
-				GameState.complete_quest("ch5_main")
-			save_game("auto", true)
-			show_ending("final"))
+	get_tree().create_timer(ch3_end_after).timeout.connect(_finale_go)
+
+
+func _finale_go() -> void:
+	if not is_inside_tree() or GameState.has_flag("ch5_done"):
+		return
+	var st := CutScenes.ending_stage()
+	if not Engine.get_meta("ic_skip_film", false) and not GameState.has_flag("cut_ending_film"):
+		GameState.set_flag("ch5_film")
+		if await travel(str(st[0]), str(st[1]), str(st[2])):
+			return
+		GameState.set_flag("ch5_film", false)
+	_the_end()
+
+
+func _the_end() -> void:
+	if GameState.has_flag("ch5_done"):
+		return
+	GameState.set_flag("ch5_done")
+	if GameState.quest_active("ch5_main"):
+		GameState.complete_quest("ch5_main")
+	save_game("auto", true)
+	show_ending("final")
 
 
 ## 第四章完（7.8）：冬议散了，钟楼上的黄昏钟响起来，画面停在钟声里，再出「第五章 · 冬井　开发中」

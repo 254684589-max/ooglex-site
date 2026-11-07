@@ -32,7 +32,7 @@ extends RefCounted
 ##   tide_rising    第二章第一夜潮水上来（FirstTide.tide_started）：营地这边往南看，坡上的人影一个接一个走上来 → 迎着它们，光着脚、闭着眼 →
 ##                  火把那一排背后，它们碰到火就拐开；演的时候潮水照样在走。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend"]
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film"]
 
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
@@ -50,6 +50,8 @@ static func on_enter(main: Variant) -> String:
 	if a == "ferry" and GameState.chapter == 0 and not GameState.has_flag("offer_parley") and not GameState.has_flag("offer_left") \
 			and not GameState.has_flag("prologue_edric") and not GameState.has_flag("cut_ferry_standoff"):
 		return "ferry_standoff"
+	if GameState.has_flag("ch5_film") and not GameState.has_flag("ch5_done") and not GameState.has_flag("cut_ending_film") and a == str(ending_stage()[0]):
+		return "ending_film"
 	if a == "well_bottom" and GameState.chapter == 5 and not GameState.has_flag("ch5_ritual") and not GameState.has_flag("cut_well_descend"):
 		return "well_descend"
 	return ""
@@ -99,6 +101,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "key_vault"
 		"well_descend":
 			return main.world != null and main.area == "well_bottom"
+		"ending_film":
+			return main.world != null and main.area == str(ending_stage()[0])
 	return false
 
 
@@ -132,6 +136,8 @@ static func shots(main: Node, id: String) -> Array:
 			return vault_crown(main)
 		"well_descend":
 			return well_descend(main)
+		"ending_film":
+			return ending_film(main)
 	return []
 
 
@@ -227,6 +233,78 @@ static func well_descend(main: Node) -> Array:
 					main.world.add_child(rim)
 				rim.global_position = al + Vector3(0.6, 2.8, 1.4)            # 差不多在镜头上方：黑亮的星铁朝着镜头那几面才反得出光
 				rim.create_tween().tween_property(rim, "light_energy", 3.0, 2.0)},
+	]
+
+
+## 结局影片（5-5）：封誓演完以后，按结局去一个地方演（main._finale 先 travel 过去，到了 on_enter 演，演完出结局画面）
+## new_king：冠城议事厅，王座椅背的凹槽里放着铁冠；crownless_spring：金穗平原的白天；long_winter：冬井边的夜里
+static func ending_kind() -> String:
+	var e := str(GameState.get_flag("ending", ""))
+	return e if e in ["new_king", "crownless_spring", "long_winter"] else "long_winter"
+
+
+## [区域, 出生点, 时段]
+static func ending_stage() -> Array:
+	match ending_kind():
+		"new_king":
+			return ["council_hall", "front", "dawn"]
+		"crownless_spring":
+			return ["plain", "mill", "day"]
+	return ["highland", "well", "night"]
+
+
+static func ending_film(main: Node) -> Array:
+	var p: FpController = main.player
+	var hide_me := func(): p.set_third_person(false)
+	match ending_kind():
+		"new_king":
+			var t := CrownRooms.THRONE
+			var notch := t + Vector3(0, 3.45, -0.49)
+			var crown := _crown()
+			crown.add_to_group("cut_prop")
+			var sun := OmniLight3D.new()
+			sun.add_to_group("cut_prop")
+			sun.light_color = Color("ffd9a0")
+			sun.light_energy = 1.4
+			sun.omni_range = 6.0
+			return [
+				{"from": [t + Vector3(0, 3.4, 8.6), t + Vector3(0, 1.2, 0.5)], "to": [t + Vector3(0, 2.8, 6.6), t + Vector3(0, 1.2, 0.3)], "dur": 6.0, "fov": 50.0, "music": "keep", "exposure": 1.3,
+					"lines": [[0.6, "", "冬至过后的第一个早晨，冠城的钟响了。"]],
+					"on_start": func():
+						hide_me.call()
+						if crown.get_parent() == null:
+							main.world.add_child(crown)
+							main.world.add_child(sun)
+						crown.global_position = notch + Vector3(0, -0.02, 0)
+						crown.scale = Vector3.ONE * 1.6
+						sun.global_position = notch + Vector3(0.8, 1.0, 1.6)},
+				{"from": [notch + Vector3(0.7, -0.25, 1.0), notch + Vector3(0, 0.03, 0)], "to": [notch + Vector3(0.35, -0.12, 0.6), notch + Vector3(0, 0.03, 0)], "dur": 5.5, "fov": 34.0, "cut": true, "exposure": 1.3,
+					"lines": [[0.5, "", "椅背顶上那个冠形的凹槽，这一回没有空着。"]]},
+				{"from": [t + Vector3(-2.5, 2.0, 4.0), t + Vector3(0, 2.2, 0)], "to": [t + Vector3(-3.5, 4.5, 7.5), t + Vector3(0, 1.8, 0)], "dur": 7.0, "fov": 48.0, "cut": true, "exposure": 1.3,
+					"lines": [[0.5, "", "%s戴上了铁冠。" % Chapter5.heir_name()], [3.4, "", "北边烽燧线上的火，一座接一座，又点起来了。"]]},
+			]
+		"crownless_spring":
+			var g := func(v: Vector2, up: float) -> Vector3: return MillBattle.p3(v) + Vector3(0, up, 0)
+			return [
+				{"from": [g.call(Vector2(-12.0, 34.0), 22.0), g.call(Vector2(28.0, -24.0), 0.0)], "to": [g.call(Vector2(-6.0, 24.0), 17.0), g.call(Vector2(32.0, -34.0), 2.0)], "dur": 7.0, "fov": 52.0, "music": "plain", "exposure": 1.0,
+					"lines": [[0.6, "", "那个冬天，终于过去了。"], [3.6, "", "冠城的王座还空着。"]],
+					"on_start": hide_me},
+				{"from": [g.call(Vector2(-26.0, 46.0), 15.0), g.call(Vector2(-54.0, 16.0), 0.0)], "to": [g.call(Vector2(-29.0, 42.0), 12.0), g.call(Vector2(-55.0, 14.0), 0.0)], "dur": 5.5, "fov": 46.0, "cut": true, "exposure": 1.0,
+					"lines": [[0.5, "", "麦渡的人照样下地。没有王，地也照样要种。"]]},
+				{"from": [g.call(Vector2(40.0, -42.0), 1.8), g.call(Vector2(46.0, -150.0), 6.0)], "to": [g.call(Vector2(41.0, -50.0), 3.5), g.call(Vector2(46.0, -150.0), 12.0)], "dur": 7.0, "fov": 50.0, "cut": true, "exposure": 1.0,
+					"lines": [[0.5, "", "北边冰壁上多了一个名字。"], [3.4, "", "铁冠，从此只是一圈铁。"]]},
+			]
+	var w: Vector2 = HighlandLayout.WELL
+	var gw := func(v: Vector2, up: float) -> Vector3: return WinterWell.ground(v) + Vector3(0, up, 0)
+	var vil := Vector2(6.0, 112.0)
+	return [
+		{"from": [gw.call(w + Vector2(12.0, 20.0), 14.0), gw.call(w, 0.0)], "to": [gw.call(w + Vector2(8.0, 14.0), 10.0), gw.call(w, 0.5)], "dur": 7.0, "fov": 50.0, "music": "well", "exposure": 1.5,
+			"lines": [[0.6, "", "火盆一个接一个暗下去。"], [3.4, "", "冬天没有走。"]],
+			"on_start": hide_me},
+		{"from": [gw.call(w + Vector2(2.6, 2.4), 1.5), gw.call(w, 0.3)], "to": [gw.call(w + Vector2(1.8, 1.7), 1.3), gw.call(w, 0.2)], "dur": 6.0, "fov": 42.0, "cut": true, "exposure": 1.5,
+			"lines": [[0.5, "", "井底那面冰壁上，还是一大片空着的冰。"]]},
+		{"from": [gw.call(vil + Vector2(0, 26.0), 9.0), gw.call(vil + Vector2(0, -6.0), 2.0)], "to": [gw.call(vil + Vector2(0, 20.0), 7.0), gw.call(vil + Vector2(0, -10.0), 2.0)], "dur": 7.0, "fov": 50.0, "cut": true, "exposure": 1.5,
+			"lines": [[0.5, "", "开春以前，羊脊村的人往南搬了。"], [3.4, "", "王国一年比一年冷，等着下一个走到井边的人。"]]},
 	]
 
 
