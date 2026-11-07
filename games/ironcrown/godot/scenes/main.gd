@@ -478,6 +478,7 @@ func _ready() -> void:
 	_place_chapter_content()
 	yaw0 = player.yaw_deg()
 	_build_ui()
+	hud.tracker.refresh()                         # 左上角的任务追踪（C.2）
 	var q := _query("q")
 	apply_quality(q if q in Look.TIERS else (Settings.quality if Settings.quality in Look.TIERS else Look.default_tier()))
 	print("IC_READY renderer=%s web=%s scene=%s touch=%s quality=%s size=%s" % [
@@ -1595,6 +1596,8 @@ func _on_quest_closed() -> void:
 
 ## 任务事件 → 屏幕上方的短提示（文字 + 符号）
 func _on_quest_event(kind: String, id: String) -> void:
+	if hud and hud.tracker:
+		hud.tracker.refresh()                     # 左上角的任务追踪（C.2）
 	var qd := GameState.quest_data()
 	var text := ""
 	match kind:
@@ -2579,6 +2582,8 @@ func _clear_fog_at(pos: Vector3) -> void:
 
 
 func _process(delta: float) -> void:
+	if hud and hud.tracker and hud.visible and player and world:              # 任务目标的标记和距离（C.2）
+		hud.tracker.update_marker(world, player.camera, player.global_position, area, delta)
 	combat_music_check -= delta
 	if combat_music_check <= 0.0:                     # 战斗配乐（M.1）：每 0.25 秒看一次在不在打
 		combat_music_check = 0.25

@@ -58,7 +58,8 @@ signal level_up(new_level: int)
 signal rep_changed(faction: String, delta: int, value: int)
 var seed_value := 0
 var checks := {}          # 检定编号 → 是否成功（已经掷过的）
-var quests := {}          # 任务编号 → {stage, done}
+var quests := {}          # 任务编号 → {stage, done, log（走过的步骤，C.2）}
+var last_quest := ""      # 最近接到 / 推进的任务（C.2：没有主线在做时，左上角跟这一条）
 var clues: Array = []     # 得到的线索编号（按得到的先后）
 var inventory: Array = [] # 物品编号（同一物品可以有多个；2.6 起装备中的物品也在这里）
 var equipped := {}        # 部位 → 物品编号（2.6）
@@ -95,6 +96,7 @@ func new_game(seed_override := -1) -> void:
 	pending_daypart = ""          # 上一局对话里没换完的时段不带进新的一局（5.9 全流程测试查出来：前面的测试留下「夜」，新一局第一次关对话就天黑了）
 	checks.clear()
 	quests.clear()
+	last_quest = ""
 	clues.clear()
 	inventory.clear()
 	inventory.append_array(START_ITEMS)
@@ -387,6 +389,7 @@ func start_quest(id: String, stage := "") -> void:
 	if q.is_empty() or quests.has(id):
 		return
 	quests[id] = {"stage": stage if stage != "" else str(q.first), "done": false}
+	last_quest = id
 	quest_event.emit("started", id)
 	_auto_advance(id)
 
@@ -397,7 +400,11 @@ func set_stage(id: String, stage: String) -> void:
 		return
 	if quests[id].done or quests[id].stage == stage:
 		return
+	var log: Array = quests[id].get("log", [])
+	log.append(str(quests[id].stage))                  # 走过的步骤（C.2 左上角的任务追踪打勾用）
+	quests[id]["log"] = log
 	quests[id].stage = stage
+	last_quest = id
 	quest_event.emit("advanced", id)
 	_auto_advance(id)
 
@@ -625,7 +632,7 @@ static func rep_tier(v: int) -> String:
 ## 游戏状态 → 可以写成 JSON 的字典
 func to_dict() -> Dictionary:
 	return {
-		"seed": seed_value, "flags": flags.duplicate(true), "checks": checks.duplicate(), "quests": quests.duplicate(true), "clues": clues.duplicate(),
+		"seed": seed_value, "flags": flags.duplicate(true), "checks": checks.duplicate(), "quests": quests.duplicate(true), "last_quest": last_quest, "clues": clues.duplicate(),
 		"inventory": inventory.duplicate(), "equipped": equipped.duplicate(), "silver": silver, "looted": looted.duplicate(true),
 		"picked": picked.duplicate(), "dead": dead.duplicate(true), "yielded": yielded.duplicate(true), "playtime": playtime, "tips": tips_seen.duplicate(),
 		"attributes": {"strength": strength, "agility": agility, "constitution": constitution, "wits": wits},
@@ -648,7 +655,8 @@ func from_dict(d: Dictionary) -> void:
 	quests = {}
 	for q in d.get("quests", {}):
 		var v: Dictionary = d.quests[q]
-		quests[q] = {"stage": str(v.get("stage", "")), "done": bool(v.get("done", false))}
+		quests[q] = {"stage": str(v.get("stage", "")), "done": bool(v.get("done", false)), "log": Array(v.get("log", [])).map(func(x): return str(x))}     # log：C.2 以前的存档没有
+	last_quest = str(d.get("last_quest", ""))
 	clues = Array(d.get("clues", [])).map(func(x): return str(x))
 	if d.has("inventory"):
 		inventory = Array(d.inventory).map(func(x): return str(x))

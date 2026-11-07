@@ -39,10 +39,17 @@ static func ground(p: Vector2) -> float:
 	return PlainLayout.height(p.x, p.y)
 
 
+## 指挥帐门口的兵（2026-11-07 所有者反馈「找不到人物对话」）：站在门帘外头靠右，告诉你征粮官在帐子里
+const TENT_GUARD_LINES := ["征粮官在帐子里头。进去吧，门帘朝着路这边。", "（他朝帐门偏了偏头）大人在里面看地图。"]
+static func door_guard_at() -> Vector2:
+	var pc := PlainCamp.at(PlainCamp.PAVILION[0], PlainCamp.PAVILION[1])
+	return pc + PlainCamp.SIDE * (float(PlainCamp.PAVILION[2]) + 0.9) + PlainCamp.ALONG * 1.6
+
+
 ## 奥迪隆站在指挥帐里桌子朝门那一边（桌子让开中柱、他让开门口那条道），面朝门帘
 static func odilon_at() -> Array:
 	var pc := PlainCamp.at(PlainCamp.PAVILION[0], PlainCamp.PAVILION[1])
-	var p := pc + PlainCamp.SIDE * 0.4 - PlainCamp.ALONG * 1.25
+	var p := pc + (PlainCamp.SIDE * 0.4 - PlainCamp.ALONG * 1.25) * PlainCamp.PAV_K
 	return [p, PlainCamp.YAW_ALONG - 90.0]
 
 
@@ -56,6 +63,7 @@ static func build(parent: Node3D) -> void:
 		["mill_guard1", "磨坊的护院", (MILL_GUARDS[0] as Array)[0], float((MILL_GUARDS[0] as Array)[1]), "2e4a32", "", MILL_GUARD_LINES],
 		["mill_guard2", "磨坊的护院", (MILL_GUARDS[1] as Array)[0], float((MILL_GUARDS[1] as Array)[1]), "2e4a32", "", MILL_GUARD_LINES.slice(1)],
 		["boatman", "渡口的船夫", BOATMAN[0], float(BOATMAN[1]), "4a4a44", "boatman", []],
+		["tent_guard", "帐门口的兵", door_guard_at(), PlainCamp.YAW_ALONG - 90.0, "6a2a26", "", TENT_GUARD_LINES],
 		["camp_smith", "跟车的铁匠", PlainCamp.at(PlainCamp.FORGE[0], PlainCamp.FORGE[1] + 2.2), PlainCamp.YAW_ALONG + 90.0, "3a2e24", "", SMITH_LINES],
 	]
 	if str(GameState.get_flag("ch3_apprentice", "")) == "":                                  # 支线「熔炉车上的学徒」（6.5）：放走了、交出去了就不在了

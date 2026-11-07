@@ -21,10 +21,12 @@ const FIELD := Color("8e1f1c")               # 塞弗林家：红底铁砧托冠
 const CHARGE := Color("c4c8cc")              # 铁砧：铁灰
 const CROWN := Color("c8a440")               # 冠：金
 
-## 指挥帐：[u, v, 半径]；门朝路（东南）
-const PAVILION := [3.0, -11.0, 3.1]
-const PAV_WALL := 1.7
-const PAV_PEAK := 3.9
+## 指挥帐：[u, v, 半径]；门朝路（东南）。2026-11-07 所有者反馈「建筑物太小人物无法进出、找不到人物对话」：
+## 原来半径 3.1、帐墙 1.7 米（檐口垂边再往下 0.32，门比人还矮），放大成半径 4.4、帐墙 2.5、顶 5.4；里头的桌子、床、箱子、奥迪隆按 PAV_K 一起往外挪
+const PAVILION := [3.0, -11.0, 4.4]
+const PAV_WALL := 2.5
+const PAV_PEAK := 5.4
+const PAV_K := 4.4 / 3.1
 ## 人字帐篷：[u, v, 门朝哪边（1 = 东南、-1 = 西北，门对着路）]
 const TENTS := [[-9.0, 7.8, -1], [-3.5, 8.2, -1], [2.0, 7.8, -1], [7.5, 8.2, -1], [-13.0, -10.5, 1], [-7.0, -15.5, 1]]
 const TENT_W := 2.4
@@ -176,9 +178,9 @@ static func _pav_furniture() -> Array:
 	var back := Vector3(SIDE.x, 0, SIDE.y) * signf(float(PAVILION[1]))      # 门的反方向（帐子后头）
 	var yaw := deg_to_rad(YAW_ALONG)
 	var along := Vector3(ALONG.x, 0, ALONG.y)
-	return [[back * 0.9 - along * 1.25 + Vector3(0, 0.4, 0), Vector3(1.5, 0.8, 0.85), yaw],            # 桌子（摊着地图；让开中柱）
-		[back * 2.15 + Vector3(0, 0.25, 0), Vector3(1.9, 0.5, 0.75), yaw],              # 行军床
-		[back * 1.2 + Vector3(ALONG.x, 0, ALONG.y) * 1.9 + Vector3(0, 0.3, 0), Vector3(0.9, 0.6, 0.55), yaw]]   # 箱子（6.5 摄政的信就在里头）
+	return [[(back * 0.9 - along * 1.25) * PAV_K + Vector3(0, 0.4, 0), Vector3(1.5, 0.8, 0.85), yaw],            # 桌子（摊着地图；让开中柱）
+		[back * 2.15 * PAV_K + Vector3(0, 0.25, 0), Vector3(1.9, 0.5, 0.75), yaw],              # 行军床
+		[(back * 1.2 + Vector3(ALONG.x, 0, ALONG.y) * 1.9) * PAV_K + Vector3(0, 0.3, 0), Vector3(0.9, 0.6, 0.55), yaw]]   # 箱子（6.5 摄政的信就在里头）
 
 
 static func _tent_basis(t: Array) -> Basis:
@@ -362,7 +364,7 @@ static func pavilion(root: Node3D, reduced_motion := false) -> void:
 	kit.box("timber", cp + Vector3(0, 0.0, 0), Vector3(0.9, 0.6, 0.55), tb, 0.9, 0.6)                                        # 箱子
 	kit.box("iron", cp + Vector3(0, 0.0, 0), Vector3(0.92, 0.08, 0.57), tb)
 	kit.box("iron", cp + Vector3(0, 0.25, 0), Vector3(0.92, 0.06, 0.57), tb)
-	var lamp := c + Vector3(0, 2.15, 0) + (Vector3(SIDE.x, 0, SIDE.y) * 0.09)                                               # 中柱上挂的油灯
+	var lamp := c + Vector3(0, 2.9, 0) + (Vector3(SIDE.x, 0, SIDE.y) * 0.09)                                               # 中柱上挂的油灯
 	kit.cylinder("iron", lamp + Vector3(0, 0.25, 0), lamp + Vector3(0, 0.05, 0), 0.01, 0.01, 3)
 	kit.box("iron", lamp, Vector3(0.16, 0.2, 0.16), Basis.IDENTITY, 0.9, 0.9)
 	kit.box("flame", lamp, Vector3(0.1, 0.13, 0.1))
@@ -375,7 +377,7 @@ static func pavilion(root: Node3D, reduced_motion := false) -> void:
 	l.name = "PavilionLamp"
 	l.light_color = Color("ffb060")
 	l.base = 1.1
-	l.omni_range = 4.2
+	l.omni_range = 5.5
 	l.flicker = not reduced_motion
 	l.position = lamp + Vector3(0, -0.1, 0)
 	l.add_to_group("light_source")
