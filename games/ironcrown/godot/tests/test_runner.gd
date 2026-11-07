@@ -13472,5 +13472,18 @@ func test_cutscene() -> void:
 	await frames(2)
 	check(GameState.has_flag("cut_beacon_line") and CutScenes.on_enter(main) == "", "只演一次")
 	await free_main(main)
+	# 劫粮伏击开场（2-2）：走到伏击点先演，演完才开打、才提示命令
+	_ambush_game("head", 601)
+	main = await make_area("highland")
+	await frames(3)
+	var abt: Battle = main.battle
+	check(CutScenes.before_battle(main) == "ambush_open" and CutScenes.shots(main, "ambush_open").size() == 3, "劫粮开打以前演「劫粮伏击开场」（三个镜头）")
+	main.player.global_position = ConvoyAmbush.leg_point(ConvoyAmbush.POST_T.head) + Vector3(0, 0.3, 0)
+	await physics(4)
+	check(main.cutscene != null and main.cutscene.id == "ambush_open" and not abt.started and not main.hud.toast_label.text.contains("动手"), "走到伏击点：先演过场，还没开打")
+	main.cutscene.skip()
+	await frames(3)
+	check(abt.started and main.hud.toast_label.text.contains("动手") and CutScenes.before_battle(main) == "", "演完：开打、提示命令；不再演")
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 

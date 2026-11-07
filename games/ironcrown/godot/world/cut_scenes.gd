@@ -32,13 +32,15 @@ extends RefCounted
 ##   tide_rising    第二章第一夜潮水上来（FirstTide.tide_started）：营地这边往南看，坡上的人影一个接一个走上来 → 迎着它们，光着脚、闭着眼 →
 ##                  火把那一排背后，它们碰到火就拐开；演的时候潮水照样在走。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first", "first_sleeper", "beacon_line"]
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first", "first_sleeper", "beacon_line", "ambush_open"]
 
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
 static func before_battle(main: Node) -> String:
 	if str(main.area) == "marsh" and CausewayBattle.due() and not GameState.has_flag("cut_causeway_open"):
 		return "causeway_open"
+	if str(main.area) == "highland" and main.world != null and main.world.get_node_or_null("ConvoyAmbush") != null and not GameState.has_flag("cut_ambush_open"):
+		return "ambush_open"
 	if str(main.area) == "plain" and main.world != null and main.world.get_node_or_null("MillBattle") != null and not GameState.has_flag("cut_mill_open"):
 		return "mill_open"
 	return ""
@@ -115,6 +117,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "marsh" and main.sleeper != null and is_instance_valid(main.sleeper)
 		"beacon_line":
 			return main.world != null and main.area == "highland"
+		"ambush_open":
+			return main.world != null and main.area == "highland" and main.world.get_node_or_null("ConvoyAmbush") != null
 	return false
 
 
@@ -158,6 +162,8 @@ static func shots(main: Node, id: String) -> Array:
 			return first_sleeper(main)
 		"beacon_line":
 			return beacon_line(main)
+		"ambush_open":
+			return ambush_open(main)
 	return []
 
 
@@ -456,6 +462,25 @@ static func beacon_line(main: Node) -> Array:
 			"lines": [[0.5, "", "山脊上，一座烽燧接着一座，从前夜夜点着火。"], [3.8, "", "现在大半都黑着。"]]},
 		{"from": [g.call(b19 + Vector2(-14.0, 22.0), 6.0), g.call(b19, 9.0)], "to": [g.call(b19 + Vector2(-10.0, 16.0), 5.0), g.call(b19, 11.0)], "dur": 6.0, "fov": 46.0, "cut": true,
 			"lines": [[0.5, "", "最近的那一座，叫断角烽。"], [3.0, "", "再往北，就是白寂。"]]},
+	]
+
+
+## 劫粮伏击开场（2-2）：第二夜，粮车沿盘山路的伏击段上来（ConvoyAmbush.leg_point(t, 偏)：t 大的那头往山脊，偏 > 0 是下坡一侧），你伏在车头前的枯松后（head）或车尾后的弯道上（tail）
+static func ambush_open(main: Node) -> Array:
+	var p: FpController = main.player
+	var L := func(t: float, off: float, up: float) -> Vector3: return ConvoyAmbush.leg_point(t, off) + Vector3(0, up, 0)
+	var head := ConvoyAmbush.ambush() == "head"
+	var mid: float = ConvoyAmbush.CART_T[2]
+	var post: float = ConvoyAmbush.POST_T[ConvoyAmbush.ambush()]
+	var toward := mid - post
+	return [
+		{"from": [L.call(mid + 22.0, -14.0, 12.0), L.call(mid, 0.0, 0.0)], "to": [L.call(mid + 14.0, -11.0, 9.0), L.call(mid - 4.0, 0.0, 0.0)], "dur": 7.0, "fov": 50.0, "music": "battle", "exposure": 1.5,
+			"lines": [[0.6, "", "天黑透了。粮车点着火把，一辆接一辆爬上盘山路。"], [3.8, "", "车上的粮要运出北境。烽燧上的人，等不起了。"]],
+			"on_start": func(): p.set_third_person(true)},
+		{"from": [L.call(post - signf(toward) * 3.0, -2.5, 1.3), L.call(mid, 0.0, 1.0)], "to": [L.call(post - signf(toward) * 1.5, -2.0, 1.1), L.call(mid, 0.0, 1.0)], "dur": 5.5, "fov": 44.0, "cut": true, "exposure": 1.5,
+			"lines": [[0.5, "", "锯倒的枯松横在路上。马蒂亚斯的人伏在石头后面，一声不出。" if head else "你们伏在车尾后面的弯道上。马蒂亚斯的人一声不出。"]]},
+		{"from": [L.call(mid + 1.5, 3.5, 1.7), L.call(mid, 0.0, 1.2)], "to": [L.call(mid + 0.5, 2.8, 1.6), L.call(mid - 1.5, 0.0, 1.2)], "dur": 5.0, "fov": 44.0, "cut": true, "exposure": 1.5,
+			"lines": [[0.5, "", "押车的是洛蒙德家的兵，十几个人，有两个背着弓。"]]},
 	]
 
 

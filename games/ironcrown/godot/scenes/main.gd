@@ -2171,6 +2171,9 @@ func _begin_battle() -> void:
 	if area == "plain" and world.get_node_or_null("MillBattle") != null and GameState.has_flag("cut_mill_open") and not Engine.get_meta("ic_skip_film", false):
 		_mill_go()                                      # 演完过场才开打的：这时候再提示
 		return
+	if area == "highland" and world.get_node_or_null("ConvoyAmbush") != null and GameState.has_flag("cut_ambush_open") and not Engine.get_meta("ic_skip_film", false):
+		_ambush_go()
+		return
 	hud.toast("◆ 开打！", 2.0)
 
 
@@ -2422,12 +2425,18 @@ func _ambush_tick() -> void:
 		Engine.set_meta("ic_arrive_note", "天黑透了。粮车点着火把出了村，往盘山路上来。马蒂亚斯的十个人跟着你，伏在%s。" % ("车头前那棵锯倒的枯松后面" if ConvoyAmbush.ambush() == "head" else "车尾后面的弯道上"))
 		travel("highland", "ambush", "night")
 		return
-	if ca and battle and is_instance_valid(battle) and not battle.started and (ConvoyAmbush.at_post(player.global_position) or _query("cwskip").is_valid_float()):
-		start_battle()
-		if _query("cwskip").is_valid_float():         # 截图用：开打并快进到第 N 秒（同堤道夜战）
-			Engine.time_scale = 8.0
-			Engine.max_physics_steps_per_frame = 64
-		hud.toast("◆ 动手！按 1 让他们跟着你、3 冲锋（触屏「令」）。潮水来了就拿火把把它们往押车兵那边引。", 5.0)
+	if ca and battle and is_instance_valid(battle) and not battle.started and cutscene == null and (ConvoyAmbush.at_post(player.global_position) or _query("cwskip").is_valid_float()):
+		start_battle()                                  # 第一次先演「劫粮伏击开场」（C.5 2-2），演完 _begin_battle 才开打
+		if battle.started:
+			_ambush_go()
+
+
+## 劫粮真开打了：提示命令；截图用的快进
+func _ambush_go() -> void:
+	if _query("cwskip").is_valid_float():         # 截图用：开打并快进到第 N 秒（同堤道夜战）
+		Engine.time_scale = 8.0
+		Engine.max_physics_steps_per_frame = 64
+	hud.toast("◆ 动手！按 1 让他们跟着你、3 冲锋（触屏「令」）。潮水来了就拿火把把它们往押车兵那边引。", 5.0)
 
 
 ## 出身三选一以前的存档（O.1）：读进来时问一次（暂停着），选了加上开局的那些，接着玩
