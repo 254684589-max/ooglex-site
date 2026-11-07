@@ -469,6 +469,8 @@ func _ready() -> void:
 			player.global_transform = st
 	_prime_chunks()
 	spawn = player.global_position
+	if _query("slow").is_valid_float():
+		Engine.time_scale = clampf(float(_query("slow")), 0.02, 1.0)     # 截图用（C.1）：?slow=0.08 让刀光、火星慢下来，截得到
 	if _query("preview").is_valid_int() and int(_query("preview")) >= 1:
 		playable_chapter = maxi(playable_chapter, mini(int(_query("preview")), Chapters.LIST.size() - 1))   # ?preview=2：第二章还没开放也能从第一章章末进（5.1a）
 	elif _query("preview") == "0":
@@ -729,6 +731,7 @@ func _fog_end() -> float:
 ## 中 = 原分辨率、月光阴影（1 段）、泛光；高 = 再加 2 倍抗锯齿、阴影 2 段
 func apply_quality(tier: String) -> void:
 	quality = tier
+	CombatFx.low = tier == "low"                                # 战斗特效（C.1）：低画质粒子减半
 	SleeperCrowd.near_max = {"low": 3, "medium": 5}.get(tier, SleeperCrowd.NEAR_MAX)   # 长眠者群近处的真人模型（5.4b 实测：一个约 8 次绘制调用）
 	PlantedTorch.max_lights = 0 if tier == "low" else 1       # 插在地上的火把，最新几支带实时光源（5.4b；每多一盏，照到的地块都要多画一遍：中档插五支、四十个长眠者时 418 → 见 TEST_REPORT）
 	if pause_menu:
@@ -903,6 +906,7 @@ func _build_ui() -> void:
 	hud.melee = player.melee
 	hud.bars_top = touch_mode               # 触屏上左下角是摇杆，体力条放到左上
 	player.melee.swung.connect(func(k: String): print("IC_ATTACK kind=%s stamina=%.0f" % [k, player.melee.stamina]))
+	player.melee.swung.connect(_swing_fx)
 	player.melee.hit.connect(_on_hit)
 	player.melee.guarded.connect(_on_guarded)
 	player.melee.damaged.connect(_on_damaged)
@@ -1093,6 +1097,23 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 ## 命中（2.4）：准星闪一下 ×，日志给冒烟测试
+## 挥砍（C.1）：「呼」的一声，剑和钝器再出一道刀光（轻击在起手之后、挥出的那一段里走过去）
+func _swing_fx(k: String) -> void:
+	var m := player.melee
+	var sk := m.weapon_skill()
+	Sfx.play(Sfx.swing_name(sk, k))
+	var tm: Dictionary = Melee.TIMING.get(k, Melee.TIMING.light)
+	var sp := maxf(m.speed, 0.1)
+	CombatFx.slash_player(player, k, m.combo, sk, (0.0 if k == "heavy" else float(tm.wind)) / sp, float(tm.strike) / sp + 0.06)
+
+
+## 自己挨打 / 格挡时眼前那一下（C.1）：声音不衰减，火星在眼前 0.7 米（剑和对方兵器碰上的地方）
+func _guard_fx(kind: String) -> void:
+	var fwd := player.aim_forward()
+	var at := player.aim_origin() + fwd * 0.7 - Vector3(0, 0.1, 0)
+	CombatFx.impact(player.get_parent(), at, fwd, kind)
+
+
 func _on_hit(target: Node, info: Dictionary) -> void:
 	hud.hit_marker(info.kind == "heavy")
 	print("IC_HIT target=%s dmg=%d kind=%s" % [target.get("display_name"), info.damage, info.kind])
@@ -1100,6 +1121,17 @@ func _on_hit(target: Node, info: Dictionary) -> void:
 
 ## 格挡结果（2.5）：屏幕上方短提示（文字 + 符号）
 func _on_guarded(result: String, info: Dictionary) -> void:
+	var bare := player.melee.unarmed()
+	match result:
+		"perfect":
+			Sfx.play("hit_fist" if bare else "perfect")
+			_guard_fx("dust" if bare else "perfect")
+		"block":
+			Sfx.play("hit_fist" if bare else "clang")
+			_guard_fx("dust" if bare else "metal")
+		"guard_break":
+			Sfx.play("guard_break")
+			_guard_fx("break")
 	match result:
 		"perfect":
 			hud.toast("◆ 完美格挡！对方失衡", 1.2)
@@ -1112,6 +1144,7 @@ func _on_guarded(result: String, info: Dictionary) -> void:
 
 func _on_damaged(amount: int, _info: Dictionary) -> void:
 	hud.hurt_flash()
+	Sfx.play("hurt")
 	print("IC_PLAYER_HIT dmg=%d hp=%d" % [amount, player.melee.health])
 
 

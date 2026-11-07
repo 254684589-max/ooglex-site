@@ -1160,6 +1160,14 @@ godot/
 - **什么时候出**：封誓结束（`main._on_oath_finished` → `_finale()`）或者不封了（对话效果 `{"ending": "final"}` → `_finale()`）：等 `ch3_end_after` 秒，设 `ch5_done`、主线「冬井」完、自动存档、`show_ending("final")`。
 - **测试**：`ch5end` 组（新王的正文和回顾、结局画面、别的章末照旧「开发中」、无冠之春三种和长冬、不封了直接出）。
 
+### 4.96 战斗特效与音效（路线图 C.1，2026-11-07）
+
+- **音效**：`core/sfx.gd`，自动加载 `Sfx`（排在 `Music` 后面）。`LEVEL` 表登记 13 声和各自的音量；`stream_of(name)` 合成并缓存（`_tone` 指数衰减正弦、`_noise` 低通噪声、`_whoosh` 状态变量带通扫频），`_ready` 把名字排进队列、`_process` 一帧合成一声。`play(name, at)`：`Settings.sound` 关了不放；`at` 是世界坐标时按离相机距离 −20·log10(1 + d/4) dB、超过 `MAX_DIST` 28 米不放；同一声 `GAP` 30 毫秒内不重复；10 个 `AudioStreamPlayer` 轮流用、都走 `Master`（不在运行时加总线：网页上会让主总线断开扬声器，见 4.24 的音乐）。`swing_name(skill, kind)`、`hit_name(skill, kind)` 按武器挑声音。
+- **特效**：`combat/combat_fx.gd`（`class_name CombatFx`，节点自己 `_process` 倒计时删掉）。`slash_player / slash_enemy / slash`：刀光是一条带 UV 的弧（`arc_mesh` 水平一圈、`crescent_mesh` 正对着相机的月牙），材质 `shaders/slash.gdshader`（不受光、叠加、不写深度；`progress` 0 → 1.4 让亮的刀头走过去）；`impact(parent, at, out, kind)`：一次性 `CPUParticles3D`（共用两种材质：叠加的火星压在最上层、普通混合的血 / 灰 / 木屑）+ 可选的叠加闪光（径向渐变贴图）。`what` 记类型（同名兄弟节点会被引擎改名）。`MAX_ALIVE` 14、`low`（`main.apply_quality` 设）粒子减半。
+- **接在哪**：`main._swing_fx`（`melee.swung`：声音 + 刀光，轻击等起手 `TIMING.wind / speed` 后才出）、`main._on_guarded`（完美 / 挡住 / 破防，空手挡是拳头声和灰）、`main._on_damaged`（`hurt`）、`Enemy._swing_fx`（windup → strike，16 米内出声、14 米内出刀光，弓不出）、`Enemy._hit_fx`（`take_hit` 里 `fx` 为真时：挡住是「铛」和火星、打中按出手一方的兵器）、`TrainingDummy.take_hit`（木头声、木屑）。
+- **截图**：`?slow=0.02–1` 改 `Engine.time_scale`（网页软件渲染一帧要几百毫秒，0.2 秒的刀光截不到）。
+- **测试**：`fx` 组（13 声的长度与音量、按武器挑声音、开关和距离、轻击的刀光延迟和走动、木桩木屑、连击镜像和重击竖劈、拳头突刺没刀光、格挡 / 完美 / 挨打、敌人溅血 / 格挡 / 出招、远处不出、上限、低画质减半）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
