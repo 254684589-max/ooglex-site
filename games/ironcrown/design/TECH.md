@@ -1168,6 +1168,17 @@ godot/
 - **截图**：`?slow=0.02–1` 改 `Engine.time_scale`（网页软件渲染一帧要几百毫秒，0.2 秒的刀光截不到）。
 - **测试**：`fx` 组（13 声的长度与音量、按武器挑声音、开关和距离、轻击的刀光延迟和走动、木桩木屑、连击镜像和重击竖劈、拳头突刺没刀光、格挡 / 完美 / 挨打、敌人溅血 / 格挡 / 出招、远处不出、上限、低画质减半）。
 
+### 4.97 任务指引与体验修正（路线图 C.2，2026-11-07）
+
+- **跟踪哪条**：`QuestGuide.tracked()`——进行中的主线里章节号最大的（`chN_` 前缀、`edric_missing` 算序章）；没有就 `GameState.last_quest`（`start_quest` / `set_stage` 时记），再没有就随便一条进行中的。
+- **步骤**：`GameState.quests[id].log` 是走过的步骤（`set_stage` 时把旧的那一步追加进去；接任务时就是空数组，存档往返才对得上）；`QuestGuide.steps(id, keep_done)` = 最近 keep_done 步打勾（只留说明的第一句）+ 现在这一步。
+- **目标**：`QuestGuide.target(world, from, id, area)`——先查 `data/quest_targets.json`（任务 → 步骤 → `{"area", "at": [x, y, z], "label"}`）；没有就在场景里找 `Interactable`，名字（两个字以上、不是「门」「路牌」这类）出现在这一步说明里的、看得见的，取最近的；都没有而说明里提到了别的区域名，返回 `{"elsewhere": 区域名}`。
+- **画**：`ui/quest_tracker.gd`（`QuestTracker`，HUD 的子节点，跟 HUD 一起藏）。`refresh()` 在 `main._on_quest_event` 和进场时调；`update_marker()` 在 `main._process` 每帧调，`RETARGET` 0.5 秒重找一次目标；目标头顶 2.3 米投到屏幕上，在视野框里就画在那儿，否则（含在身后）沿屏幕中心到投影点的方向贴到视野框边上、画一个箭头。距离只算水平距离。
+- **音乐**：`music.json` 加 `plain`、`harbor`、`well` 三首和第三到第五章 15 个区域；`compose_music.py 目录 名字…` 只写其中几首（照样按顺序算每一首，共用的随机数发生器不变）。新曲的 `.ogg.import` 要 `loop=true`。
+- **指挥帐**：`PlainCamp.PAVILION` 半径 4.4、`PAV_WALL` 2.5、`PAV_PEAK` 5.4，帐里的东西和奥迪隆的位置乘 `PAV_K`；`PlainPeople.door_guard_at()` 帐门口的兵。
+- **截图参数**：`?quest=ch3_main:sides` 让一条任务直接走到某一步。
+- **测试**：`guide` 组；`music` 组查每个剧情区域都有曲子；营地测试查帐子尺寸、走得进去、门口的兵没卡住。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

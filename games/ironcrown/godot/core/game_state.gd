@@ -388,7 +388,7 @@ func start_quest(id: String, stage := "") -> void:
 	var q: Dictionary = quest_data().quests.get(id, {})
 	if q.is_empty() or quests.has(id):
 		return
-	quests[id] = {"stage": stage if stage != "" else str(q.first), "done": false}
+	quests[id] = {"stage": stage if stage != "" else str(q.first), "done": false, "log": []}
 	last_quest = id
 	quest_event.emit("started", id)
 	_auto_advance(id)
