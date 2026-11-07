@@ -11,7 +11,7 @@ var current_group := ""
 
 func _ready() -> void:
 	var dog := Timer.new()
-	dog.wait_time = 1200.0                      # 整个测试跑多久算卡死（2026-10-26：加了火把、第一夜潮水以后全量超过 600 秒）
+	dog.wait_time = 1800.0                      # 整个测试跑多久算卡死（2026-10-26：加了火把、第一夜潮水以后全量超过 600 秒；2026-11-07 C.5 加了 24 段过场的测试，全量贴着 1200 秒，放到 1800）
 	dog.one_shot = true
 	dog.timeout.connect(func():
 		print("WATCHDOG TIMEOUT in group: ", current_group)
