@@ -2498,6 +2498,9 @@ func _ch3_bell() -> void:
 
 ## 封誓完了（8.4）：封上了、断了；过一会儿出结局画面（8.5）
 func _on_oath_finished(result: String) -> void:
+	if play_cutscene("oath_sealed" if result == "sealed" else "oath_failed"):     # 封誓（C.5 过场 5-4）：演完出结局
+		cutscene.finished.connect(func(_s: bool): _finale(), CONNECT_ONE_SHOT)
+		return
 	if result == "sealed":
 		hud.say("（最后一滴血落进誓瓶。冰壁上那一大片空着的冰里，慢慢浮出一个名字。井口上那一圈人站住了——一个，接一个，转过身，往南走）")
 	else:

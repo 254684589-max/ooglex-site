@@ -13251,5 +13251,30 @@ func test_cutscene() -> void:
 	main.cutscene.skip()
 	await frames(2)
 	await free_main(main)
+	# 封誓（5-4）：封上了——冰壁上浮出留名的人的名字；断了——火盆暗下去；演完都接结局
+	GameState.new_game(1)
+	GameState.chapter = 5
+	GameState.set_flag("oath_taker", "norbert")
+	check(CutScenes.oath_name() == "诺伯特", "诺伯特留名：冰壁上浮出「诺伯特」")
+	GameState.set_flag("oath_taker", "you")
+	check(CutScenes.oath_name() == "誓剑", "你留名（你没有名字）：浮出「誓剑」")
+	GameState.set_stage("ch5_main", "oath")
+	GameState.pending_load = {"scene": "well_bottom", "player": {}}
+	main = await make_area("well_bottom")
+	await frames(2)
+	check(CutScenes.shots(main, "oath_sealed").size() == 4 and CutScenes.shots(main, "oath_failed").size() == 2, "封上了四个镜头、断了两个")
+	main.ch3_end_after = 0.3
+	main._on_oath_finished("sealed")
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "oath_sealed" and not GameState.has_flag("ch5_done"), "封上了：先演过场，还没结局")
+	await seconds(6.2)
+	var lbl := main.world.find_child("CutOathName", true, false) as Label3D
+	check(lbl != null and lbl.text == "誓剑" and lbl.modulate.a > 0.1, "冰壁上的名字浮出来了（%s）" % (lbl.text if lbl else "没有"))
+	main.cutscene.skip()
+	await seconds(0.8)
+	check(GameState.has_flag("ch5_done") and main.ending_panel.visible, "演完：结局画面")
+	main.ending_panel.close()
+	get_tree().paused = false
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 

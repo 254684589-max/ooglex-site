@@ -22,7 +22,11 @@ extends RefCounted
 ##   council_open   第四章冬议开始以前（第一次和议事厅里的人说话时）：门口看进去，五把椅子围着空王座 → 王座椅背上积灰的冠形凹槽 →
 ##                  一张一张扫过五家的人；之后冬议的对话照原样（谁念借据按序章的旗标）。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open"]
+##   oath_sealed    第五章封誓封上了（OathRitual.finished → sealed）：石台上誓瓶里最后一滴血 → 西边冰壁那一大片空着的冰里慢慢浮出一个名字
+##                  （留名的人：继承人 / 大主祭卢西安 / 诺伯特 / 你——你没有名字，浮出来的是「誓剑」） → 星铁暗下去 → 抬头看井口，长眠者转身往南；之后结局。
+##   oath_failed    封誓断了：火盆一个接一个暗下去 → 长眠的人围住石台；之后结局（长冬）。
+
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed"]
 
 
 ## 进一个区域时要不要先演一段（main 进场时调，每段只演一次：播的时候记旗标 cut_<编号>）
@@ -66,6 +70,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "scriptorium"
 		"council_open":
 			return main.world != null and main.area == "council_hall"
+		"oath_sealed", "oath_failed":
+			return main.world != null and main.area == "well_bottom"
 	return false
 
 
@@ -85,7 +91,69 @@ static func shots(main: Node, id: String) -> Array:
 			return wake_memory(main)
 		"council_open":
 			return council_open(main)
+		"oath_sealed":
+			return oath_sealed(main)
+		"oath_failed":
+			return oath_failed(main)
 	return []
+
+
+## 留名的人在冰壁上的名字
+static func oath_name() -> String:
+	match str(GameState.get_flag("oath_taker", "")):
+		"heir":
+			return Chapter5.heir_name()
+		"lucien":
+			return "卢西安"
+		"norbert":
+			return "诺伯特"
+	return "誓剑"
+
+
+## 封上了（5-4）：冬井底 14 × 12 米，星铁在北半边（WellRooms.STAR），石台在它前面（ALTAR），刻名字的冰壁在西墙（x = -7）
+static func oath_sealed(main: Node) -> Array:
+	var p: FpController = main.player
+	var a: Vector3 = WellRooms.ALTAR
+	var st: Vector3 = WellRooms.STAR
+	var name_at := Vector3(-6.85, 1.15, -1.6)
+	var label := Label3D.new()
+	label.name = "CutOathName"
+	label.text = oath_name()
+	label.font_size = 96
+	label.pixel_size = 0.004
+	label.modulate = Color(0.75, 0.88, 1.0, 0.0)
+	label.outline_size = 0
+	label.rotation_degrees.y = 90.0                                   # 刻在西墙上、朝着屋里
+	var show_name := func():
+		if label.get_parent() == null:
+			main.world.add_child(label)
+		label.global_position = name_at
+		var tw := label.create_tween()
+		tw.tween_property(label, "modulate:a", 0.95, 3.5)
+	return [
+		{"from": [a + Vector3(0.9, 1.35, 1.1), a + Vector3(0, 0.75, 0)], "to": [a + Vector3(0.55, 1.15, 0.7), a + Vector3(0, 0.75, 0)], "dur": 5.0, "fov": 34.0, "music": "well",
+			"lines": [[0.5, "", "最后一滴血落进誓瓶。"]],
+			"on_start": func(): p.set_third_person(true)},
+		{"from": [name_at + Vector3(3.6, 0.3, 1.6), name_at], "to": [name_at + Vector3(2.4, 0.15, 0.9), name_at], "dur": 6.5, "fov": 38.0, "cut": true,
+			"lines": [[0.6, "", "冰壁上那一大片空着的冰里，慢慢浮出一个名字。"]],
+			"on_start": show_name},
+		{"from": [st + Vector3(-1.8, 1.4, 3.2), st + Vector3(0, 1.6, 0)], "to": [st + Vector3(-1.2, 1.2, 2.4), st + Vector3(0, 1.4, 0)], "dur": 5.0, "fov": 44.0, "cut": true, "exposure": 1.1,
+			"lines": [[0.5, "", "星铁上的光一点一点暗了下去。"]]},
+		{"from": [Vector3(4.8, 3.4, 5.0), Vector3(-1.6, 1.0, -1.6)], "to": [Vector3(5.4, 4.6, 5.4), Vector3(-1.8, 1.0, -1.8)], "dur": 6.0, "fov": 52.0, "cut": true,      # 石阶口看整个井底（往上看井口是黑的）
+			"lines": [[0.5, "", "井口上那一圈人站住了——一个，接一个，转过身，往南走。"]]},
+	]
+
+
+## 封誓断了：火盆一个接一个暗下去，长眠的人围住石台
+static func oath_failed(main: Node) -> Array:
+	var a: Vector3 = WellRooms.ALTAR
+	var b0: Vector3 = WellRooms.BRAZIERS[0]
+	return [
+		{"from": [b0 + Vector3(2.0, 1.8, 2.4), b0 + Vector3(0, 0.9, 0)], "to": [b0 + Vector3(1.4, 1.5, 1.6), b0 + Vector3(0, 0.9, 0)], "dur": 5.0, "fov": 40.0, "music": "well", "exposure": 0.8,
+			"lines": [[0.5, "", "火盆一个接一个暗了下去。"]]},
+		{"from": [a + Vector3(0, 5.5, 4.5), a + Vector3(0, 0.5, 0)], "to": [a + Vector3(0, 7.5, 6.5), a + Vector3(0, 0.4, 0)], "dur": 6.5, "fov": 46.0, "cut": true, "exposure": 0.8,
+			"lines": [[0.5, "", "长眠的人走下石阶，围住了石台。誓瓶还是空的。"]]},
+	]
 
 
 ## 冬议开场（4-3）：王座在北头（CrownRooms.THRONE），五把椅子在它前面一段弧上（半径 CHAIR_R），人站在椅子前面；门在南边
