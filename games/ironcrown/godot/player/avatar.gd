@@ -25,6 +25,7 @@ var cape: Cape
 var gear: Gear
 var weapon_mesh: MeshInstance3D
 var model := ""
+var style := ""                   # 剑的样式（C.3，SwordKit）
 var face_deg := 0.0               # 身体相对镜头方向的偏转（度，右为正）：斜走、侧着走时腿朝移动方向
 var reversed := false             # 正在倒着走（动作倒放）
 var _state := -1
@@ -76,9 +77,10 @@ func _on_visibility_changed() -> void:
 
 
 func _set_model(m: String) -> void:
-	if m == model and weapon_mesh != null:
+	if m == model and weapon_mesh != null and (m != "sword" or style == GameState.sword_style):
 		return
 	model = m
+	style = GameState.sword_style
 	if weapon_mesh:
 		weapon_mesh.get_parent().remove_child(weapon_mesh)
 		weapon_mesh.queue_free()
@@ -90,11 +92,11 @@ func _set_model(m: String) -> void:
 	steel.vertex_color_use_as_albedo = true
 	if m == "club":
 		kit.cylinder("wood", Vector3(0, -0.05, 0), Vector3(0, 0.62, 0), 0.026, 0.045, 6)
-	else:
-		kit.box("steel", Vector3(0, 0.42, 0), Vector3(0.045, 0.62, 0.01))
-		kit.box("wood", Vector3(0, 0.08, 0), Vector3(0.18, 0.025, 0.03))
-		kit.box("wood", Vector3(0, -0.01, 0), Vector3(0.032, 0.16, 0.032))
-	weapon_mesh = kit.build({"steel": steel, "wood": Look.mat("timber")})
+		weapon_mesh = kit.build({"steel": steel, "wood": Look.mat("timber")})
+	else:                                                    # 剑（C.3）：和第一人称同一把（SwordKit，「角色」面板里挑的样式）
+		weapon_mesh = MeshInstance3D.new()
+		weapon_mesh.mesh = SwordKit.mesh(style)
+		weapon_mesh.material_override = SwordKit.material(0.08)
 	character.grip.add_child(weapon_mesh)
 
 
