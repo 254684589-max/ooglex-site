@@ -700,7 +700,10 @@ func _query(key: String) -> String:
 
 ## 本机命令行带了「key=value」参数（录过场视频用），网址参数那一套也照样认
 static func _native_params() -> bool:
-	return OS.get_cmdline_user_args().any(func(a: String): return a.contains("="))
+	for a in OS.get_cmdline_user_args():
+		if a.contains("="):
+			return true
+	return false
 
 
 # ---------------- 过场（C.5） ----------------
