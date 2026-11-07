@@ -2,7 +2,7 @@ class_name Cutscene
 extends Node
 ## 过场演出（路线图 C.5；所有者 2026-11-07 问「如何加入影之刃零和《燕云十六声》那种游戏剧情」→「做过场系统，先做一个小样」）。
 ## 关键剧情不只是对话框：镜头自己运镜（每个镜头从一个机位缓缓移到另一个机位、可以推拉焦距），上下黑边、底部字幕（谁说的、说什么），
-## 镜头之间淡入淡出或者直接切；人物说话时做说话的动作；随时可以跳过（Esc、E、点右上角「跳过」）。
+## 镜头之间淡入淡出或者直接切；人物说话时做说话的动作；随时可以跳过（空格、Esc、E、点右上角「跳过」）。
 ## 只学手法，不搬别的游戏的剧情和画面（WORLD.md 第九节原创红线）。
 ##
 ## 镜头脚本（Array，每个镜头一个字典）：
@@ -89,7 +89,7 @@ func _ready() -> void:
 	box.add_child(text_label)
 	skip_btn = Button.new()
 	skip_btn.name = "Skip"
-	skip_btn.text = "跳过"                         # 不带箭头：网页的字体子集里没有 ▸（冒烟截图里是个方框）
+	skip_btn.text = "跳过" if DisplayServer.is_touchscreen_available() else "空格 跳过"     # 电脑上提示空格能跳过；不带箭头（网页字体子集里没有 ▸）
 	skip_btn.focus_mode = Control.FOCUS_NONE
 	skip_btn.flat = true
 	skip_btn.add_theme_color_override("font_color", Color(0.85, 0.82, 0.74, 0.75))
@@ -223,7 +223,9 @@ func _process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if done:
 		return
-	if event.is_action_pressed("pause") or event.is_action_pressed("interact"):
+	var space := event is InputEventKey and (event as InputEventKey).pressed and not (event as InputEventKey).echo \
+		and ((event as InputEventKey).physical_keycode == KEY_SPACE or (event as InputEventKey).keycode == KEY_SPACE)
+	if space or event.is_action_pressed("pause") or event.is_action_pressed("interact"):      # 空格（所有者 2026-11-07「按长方条键盘就可以跳过」）、Esc、E
 		get_viewport().set_input_as_handled()
 		skip()
 

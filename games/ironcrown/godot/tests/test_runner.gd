@@ -13155,8 +13155,13 @@ func test_cutscene() -> void:
 	check(cs != null and cs.id == "norbert_vial" and cs.shots.size() == 5 and Music.track == "well" and not main.dialogue.visible, "先演过场（五个镜头、冬井的配乐），对话框还没出")
 	await seconds(6.0)
 	check(cs != null and is_instance_valid(cs) and cs.index >= 1 and nb.talking and cs.speaker_label.text == "诺伯特", "第二个镜头：诺伯特边比划边说")
-	cs.skip()
+	var sp := InputEventKey.new()
+	sp.keycode = KEY_SPACE
+	sp.physical_keycode = KEY_SPACE
+	sp.pressed = true
+	Input.parse_input_event(sp)                          # 按空格跳过（所有者 2026-11-07「按长方条键盘就可以执行」）
 	await frames(3)
+	check(main.cutscene == null and (not is_instance_valid(cs) or cs.done), "按空格：跳过过场")
 	check(GameState.has_item("oath_vial") and GameState.quest_stage("ch5_main") == "well" and str(GameState.get_flag("ch5_vial", "")) == "norbert" and GameState.has_flag("ch5_cut_vial"),
 		"演完（跳过也算）：誓瓶给你了、主线到「去冬井」")
 	check(main.dialogue.visible and main.dialogue.runner.node_id == "come", "对话从「我在井边等你」那一句接着说，过场里说过的不再说")
