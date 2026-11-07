@@ -32,7 +32,7 @@ extends RefCounted
 ##   tide_rising    第二章第一夜潮水上来（FirstTide.tide_started）：营地这边往南看，坡上的人影一个接一个走上来 → 迎着它们，光着脚、闭着眼 →
 ##                  火把那一排背后，它们碰到火就拐开；演的时候潮水照样在走。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first", "first_sleeper", "beacon_line", "ambush_open", "harbor_first", "archive_open"]
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first", "first_sleeper", "beacon_line", "ambush_open", "harbor_first", "archive_open", "plain_first"]
 
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
@@ -60,6 +60,8 @@ static func on_enter(main: Variant) -> String:
 		return "beacon_line"
 	if a == "harbor" and GameState.chapter == 4 and not GameState.has_flag("cut_harbor_first") and not GameState.has_flag("ch4_colwin_met"):
 		return "harbor_first"
+	if a == "plain" and GameState.chapter == 3 and not GameState.has_flag("cut_plain_first") and GameState.quest_stage("ch3_main") in ["", "to_abbey"]:
+		return "plain_first"
 	if a == "well_bottom" and GameState.chapter == 5 and not GameState.has_flag("ch5_ritual") and not GameState.has_flag("cut_well_descend"):
 		return "well_descend"
 	return ""
@@ -127,6 +129,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "harbor"
 		"archive_open":
 			return main.world != null and main.area == "church_archive"
+		"plain_first":
+			return main.world != null and main.area == "plain"
 	return false
 
 
@@ -176,6 +180,8 @@ static func shots(main: Node, id: String) -> Array:
 			return harbor_first(main)
 		"archive_open":
 			return archive_open(main)
+		"plain_first":
+			return plain_first(main)
 	return []
 
 
@@ -540,6 +546,21 @@ static func archive_open(main: Node) -> Array:
 			"lines": [[0.5, "", "一只烧黑的铁箱，锁扣却是新的。"]]},
 		{"from": [gr + Vector3(1.2, 1.5, 2.6), gr + Vector3(0, 1.2, 0)], "to": [gr + Vector3(0.6, 1.4, 1.8), gr + Vector3(0, 1.1, -1.0)], "dur": 5.0, "fov": 44.0, "cut": true, "exposure": 1.6,
 			"lines": [[0.5, "", "教会烧过的东西，没有烧完。"]]},
+	]
+
+
+## 金穗平原（3-1）：第三章渡口上岸。麦河从北往南，麦渡村在西（PlainLayout.VILLAGE），水磨坊贴着东岸（MILL），洛蒙德庄园在东边缓坡上（MANOR），坠星院在南（abbey 出生点一带）
+static func plain_first(main: Node) -> Array:
+	var p: FpController = main.player
+	var g := func(v: Vector2, up: float) -> Vector3: return MillBattle.p3(v) + Vector3(0, up, 0)
+	return [
+		{"from": [g.call(Vector2(-30.0, 70.0), 20.0), g.call(Vector2(10.0, -10.0), 0.0)], "to": [g.call(Vector2(-26.0, 58.0), 16.0), g.call(Vector2(18.0, -20.0), 0.0)], "dur": 7.0, "fov": 52.0, "music": "plain",
+			"lines": [[0.6, "", "金穗平原。王国的粮仓，一眼望不到头的麦茬地。"], [3.8, "", "今年的麦子收进了仓，却没有一车运出去。"]],
+			"on_start": func(): p.set_third_person(true)},
+		{"from": [g.call(PlainLayout.MILL + Vector2(-16.0, 22.0), 9.0), g.call(PlainLayout.MILL, 2.0)], "to": [g.call(PlainLayout.MILL + Vector2(-10.0, 18.0), 7.0), g.call(PlainLayout.MILL + Vector2(6.0, -6.0), 2.0)], "dur": 5.5, "fov": 48.0, "cut": true,
+			"lines": [[0.5, "", "河边的水磨坊，三座粮仓都上了锁。"]]},
+		{"from": [g.call(PlainLayout.MANOR + Vector2(-40.0, 26.0), 14.0), g.call(PlainLayout.MANOR, 4.0)], "to": [g.call(PlainLayout.MANOR + Vector2(-32.0, 20.0), 11.0), g.call(PlainLayout.MANOR, 4.0)], "dur": 6.0, "fov": 46.0, "cut": true,
+			"lines": [[0.5, "", "钥匙在东边坡上的洛蒙德庄园里。"]]},
 	]
 
 

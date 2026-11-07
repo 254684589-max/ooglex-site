@@ -13515,5 +13515,17 @@ func test_cutscene() -> void:
 	check(main.dialogue.visible and main.dialogue.runner.node_id == "greet" and main.world.find_child("CutArchiveLights", true, false) == null, "演完：大主祭打开铁箱（greet）；补光拿掉")
 	main.dialogue.close()
 	await free_main(main)
+	# 金穗平原（3-1）：第三章渡口上岸就演，只演一次
+	GameState.new_game(8)
+	GameState.chapter = 3
+	GameState.pending_load = {"scene": "plain", "spawn": "dock", "player": {}}
+	main = await make_area("plain")
+	check(CutScenes.on_enter(main) == "plain_first" and CutScenes.shots(main, "plain_first").size() == 3, "第三章渡口上岸：演「金穗平原」（三个镜头）")
+	await seconds(1.4)
+	check(main.cutscene != null and main.cutscene.id == "plain_first", "上岸一会儿就演")
+	main.cutscene.skip()
+	await frames(2)
+	check(GameState.has_flag("cut_plain_first") and CutScenes.on_enter(main) == "", "只演一次")
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 
