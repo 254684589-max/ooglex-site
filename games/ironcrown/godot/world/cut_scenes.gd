@@ -19,7 +19,10 @@ extends RefCounted
 ##   wake_memory    第三章，伊格纳兹说完守灵夜那一夜（对话关上、晨钟响以前）：跪在墙下的他 → 回忆（褪色）：烛光里的铁冠、
 ##                  老王亲手把它交出去、第二天说是被偷了 → 回到现在，窗外天快亮了；演完接晨钟和章末。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory"]
+##   council_open   第四章冬议开始以前（第一次和议事厅里的人说话时）：门口看进去，五把椅子围着空王座 → 王座椅背上积灰的冠形凹槽 →
+##                  一张一张扫过五家的人；之后冬议的对话照原样（谁念借据按序章的旗标）。
+
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open"]
 
 
 ## 进一个区域时要不要先演一段（main 进场时调，每段只演一次：播的时候记旗标 cut_<编号>）
@@ -33,6 +36,8 @@ static func on_enter(main: Variant) -> String:
 
 ## 这段对话开始前要不要先演一段过场：{cut, after: Callable（演完做的事）, node: 演完从对话哪一句接着说}；不用就 {}
 static func before_dialogue(dialogue_id: String) -> Dictionary:
+	if dialogue_id == "council" and CrownPeople.council_due() and not GameState.has_flag("cut_council_open"):
+		return {"cut": "council_open", "node": "", "after": func(): pass}
 	if dialogue_id == "osric" and GameState.quest_stage("ch1_main") in ["dawn_held", "dawn_lost"] and not GameState.has_flag("ch1_osric_farewell") and not GameState.has_flag("cut_osric_dawn"):
 		return {"cut": "osric_dawn", "node": "", "after": func(): pass}
 	if dialogue_id == "norbert5" and GameState.quest_stage("ch5_main") == "vial" and not GameState.has_item("oath_vial") and not GameState.has_flag("ch5_cut_vial"):
@@ -59,6 +64,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "highland" and main.world.find_child("WinterWell", true, false) != null
 		"wake_memory":
 			return main.world != null and main.area == "scriptorium"
+		"council_open":
+			return main.world != null and main.area == "council_hall"
 	return false
 
 
@@ -76,7 +83,32 @@ static func shots(main: Node, id: String) -> Array:
 			return well_ring(main)
 		"wake_memory":
 			return wake_memory(main)
+		"council_open":
+			return council_open(main)
 	return []
+
+
+## 冬议开场（4-3）：王座在北头（CrownRooms.THRONE），五把椅子在它前面一段弧上（半径 CHAIR_R），人站在椅子前面；门在南边
+static func council_open(main: Node) -> Array:
+	var p: FpController = main.player
+	var t := CrownRooms.THRONE
+	var heads: Array = []
+	for c: Array in CrownRooms.CHAIRS:
+		var n := main.world.find_child("Npc_council_" + str(c[0]), true, false) as Node3D
+		if n:
+			heads.append(n.global_position + Vector3(0, 1.6, 0))
+	if heads.is_empty():
+		heads = [t + Vector3(-3, 1.6, 2), t + Vector3(3, 1.6, 2)]
+	var mid := t + Vector3(0, 1.55, 3.4)
+	return [
+		{"from": [t + Vector3(0, 3.4, 8.6), t + Vector3(0, 1.2, 0.5)], "to": [t + Vector3(0, 2.8, 6.6), t + Vector3(0, 1.2, 0.3)], "dur": 6.0, "fov": 50.0, "music": "keep",
+			"lines": [[0.6, "", "冬至。冠城的议事厅里，五把椅子围着一张空着的王座。"]],
+			"on_start": func(): p.set_third_person(false)},
+		{"from": [t + Vector3(0.7, 3.2, 1.3), t + Vector3(0, 3.45, -0.49)], "to": [t + Vector3(0.4, 3.35, 0.75), t + Vector3(0, 3.45, -0.49)], "dur": 5.0, "fov": 34.0, "cut": true,      # 凹槽在椅背顶上（CrownRooms：台阶 0.6 米 + 2.85）
+			"lines": [[0.5, "", "椅背顶上那个冠形的凹槽，三年没擦过，落着一层薄灰。"]]},
+		{"from": [mid, heads[0]], "to": [mid, heads[-1]], "dur": 7.5, "fov": 42.0, "cut": true,
+			"lines": [[0.5, "", "五家的人都到了。"], [3.4, "", "今天要清的，是这个王国欠下的账。"]]},
+	]
 
 
 ## 守灵夜的回忆（3-3）：抄经室 9 × 4.8 米，伊格纳兹跪在东墙（刻满划痕）下；回忆的几个镜头在窗下那张抄经桌上——一块黑布、一支蜡烛、一顶铁冠

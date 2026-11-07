@@ -13238,5 +13238,18 @@ func test_cutscene() -> void:
 	main.ending_panel.close()
 	get_tree().paused = false
 	await free_main(main)
+	# 冬议开场（4-3）：冬议开始以前第一次和议事厅里的人说话，先演；演完冬议的对话照原样
+	ch4_state({})
+	GameState.set_stage("ch4_main", "council")
+	var cb := CutScenes.before_dialogue("council")
+	check(str(cb.get("cut", "")) == "council_open", "冬议要开了：先演「冬议开场」")
+	GameState.pending_load = {"scene": "council_hall", "player": {}}
+	main = await make_area("council_hall")
+	await frames(2)
+	check(CutScenes.available(main, "council_open") and CutScenes.shots(main, "council_open").size() == 3, "议事厅里能演：三个镜头")
+	check(main.play_cutscene("council_open") and Music.track == "keep" and CutScenes.before_dialogue("council").is_empty(), "演过就不再演")
+	main.cutscene.skip()
+	await frames(2)
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 
