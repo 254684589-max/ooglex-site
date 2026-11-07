@@ -32,7 +32,7 @@ extends RefCounted
 ##   tide_rising    第二章第一夜潮水上来（FirstTide.tide_started）：营地这边往南看，坡上的人影一个接一个走上来 → 迎着它们，光着脚、闭着眼 →
 ##                  火把那一排背后，它们碰到火就拐开；演的时候潮水照样在走。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first", "first_sleeper", "beacon_line", "ambush_open", "harbor_first", "archive_open", "plain_first"]
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first", "first_sleeper", "beacon_line", "ambush_open", "harbor_first", "archive_open", "plain_first", "dawn_bell", "dusk_bell"]
 
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
@@ -131,6 +131,10 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "church_archive"
 		"plain_first":
 			return main.world != null and main.area == "plain"
+		"dawn_bell":
+			return main.world != null and main.area == "scriptorium"
+		"dusk_bell":
+			return main.world != null and main.area == "council_hall"
 	return false
 
 
@@ -182,6 +186,10 @@ static func shots(main: Node, id: String) -> Array:
 			return archive_open(main)
 		"plain_first":
 			return plain_first(main)
+		"dawn_bell":
+			return dawn_bell(main)
+		"dusk_bell":
+			return dusk_bell(main)
 	return []
 
 
@@ -561,6 +569,33 @@ static func plain_first(main: Node) -> Array:
 			"lines": [[0.5, "", "河边的水磨坊，三座粮仓都上了锁。"]]},
 		{"from": [g.call(PlainLayout.MANOR + Vector2(-40.0, 26.0), 14.0), g.call(PlainLayout.MANOR, 4.0)], "to": [g.call(PlainLayout.MANOR + Vector2(-32.0, 20.0), 11.0), g.call(PlainLayout.MANOR, 4.0)], "dur": 6.0, "fov": 46.0, "cut": true,
 			"lines": [[0.5, "", "钥匙在东边坡上的洛蒙德庄园里。"]]},
+	]
+
+
+## 晨钟（3-4）：守灵夜的回忆演完、第三章章末以前，抄经室里钟声落下来（钟声 main._ring_bells 照常响）
+static func dawn_bell(main: Node) -> Array:
+	var p: FpController = main.player
+	var ig: Vector3 = Scriptorium.IGNAZ[0]
+	var win := Vector3(Scriptorium.WIN_X, Scriptorium.WIN_Y + 0.6, -2.4)
+	return [
+		{"from": [Vector3(-1.4, 1.3, 1.4), win], "to": [Vector3(-1.0, 1.25, 1.0), win + Vector3(0, 0.2, 0)], "dur": 5.0, "fov": 44.0, "music": "night", "exposure": 1.5,
+			"lines": [[0.5, "", "钟声从钟楼上落下来，一下，又一下。"]],
+			"on_start": func(): p.set_third_person(false)},
+		{"from": [ig + Vector3(-2.0, 1.3, 0.9), ig + Vector3(0.3, 0.9, 0)], "to": [ig + Vector3(-1.5, 1.2, 0.6), ig + Vector3(0.4, 0.9, 0)], "dur": 5.0, "fov": 42.0, "cut": true, "exposure": 1.3,
+			"lines": [[0.5, "", "他没有回头。手指停在最后一道划痕上。"]]},
+	]
+
+
+## 黄昏钟（4-4）：冬议散了、第四章章末以前，议事厅里人走空了（钟声 main._ring_bells 照常响）
+static func dusk_bell(main: Node) -> Array:
+	var p: FpController = main.player
+	var t := CrownRooms.THRONE
+	return [
+		{"from": [t + Vector3(-1.5, 2.4, 7.5), t + Vector3(0, 1.2, 0)], "to": [t + Vector3(-0.5, 2.0, 5.5), t + Vector3(0, 1.4, 0)], "dur": 6.0, "fov": 48.0, "music": "keep", "exposure": 0.9,
+			"lines": [[0.5, "", "冬议散了。五把椅子一张一张空下来。"]],
+			"on_start": func(): p.set_third_person(false)},
+		{"from": [t + Vector3(0.7, 3.2, 1.3), t + Vector3(0, 3.45, -0.49)], "to": [t + Vector3(0.4, 3.35, 0.75), t + Vector3(0, 3.45, -0.49)], "dur": 5.0, "fov": 34.0, "cut": true, "exposure": 0.85,
+			"lines": [[0.5, "", "钟楼上的黄昏钟响了。椅背顶上那个凹槽，还空着。"]]},
 	]
 
 

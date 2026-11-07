@@ -13233,8 +13233,11 @@ func test_cutscene() -> void:
 	check(main.cutscene != null and main.cutscene.memory_rect.visible and main.world.find_child("CutCrown", true, false) != null, "回忆的镜头：画面褪色，桌上一顶铁冠")
 	main.ch3_end_after = 0.3
 	main.cutscene.skip()
-	await seconds(0.8)
-	check(GameState.has_flag("ch3_done") and main.ending_panel.visible, "演完：晨钟、第三章章末")
+	await frames(3)
+	check(main.cutscene != null and main.cutscene.id == "dawn_bell" and CutScenes.shots(main, "dawn_bell").size() == 2 and not GameState.has_flag("ch3_done"), "回忆演完：晨钟响，演「晨钟」（两个镜头），章末还没出")
+	main.cutscene.skip()
+	await seconds(1.9)
+	check(GameState.has_flag("ch3_done") and main.ending_panel.visible, "演完：第三章章末")
 	main.ending_panel.close()
 	get_tree().paused = false
 	await free_main(main)
@@ -13514,6 +13517,20 @@ func test_cutscene() -> void:
 	await frames(3)
 	check(main.dialogue.visible and main.dialogue.runner.node_id == "greet" and main.world.find_child("CutArchiveLights", true, false) == null, "演完：大主祭打开铁箱（greet）；补光拿掉")
 	main.dialogue.close()
+	await free_main(main)
+	# 黄昏钟（4-4）：冬议散了，钟声里演议事厅空下来，演完第四章章末
+	ch4_state({})
+	GameState.pending_load = {"scene": "council_hall", "spawn": "front", "player": {}}
+	main = await make_area("council_hall")
+	await frames(3)
+	main._ch4_bell()
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "dusk_bell" and CutScenes.shots(main, "dusk_bell").size() == 2 and not GameState.has_flag("ch4_done"), "冬议散了：演「黄昏钟」（两个镜头），章末还没出")
+	main.cutscene.skip()
+	await seconds(1.9)
+	check(GameState.has_flag("ch4_done") and main.ending_panel.visible, "演完：第四章章末")
+	main.ending_panel.close()
+	get_tree().paused = false
 	await free_main(main)
 	# 金穗平原（3-1）：第三章渡口上岸就演，只演一次
 	GameState.new_game(8)

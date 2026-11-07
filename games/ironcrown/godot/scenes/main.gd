@@ -2532,23 +2532,36 @@ func _well_tick() -> void:
 
 ## 守灵夜听完（6.8b；STORY.md 6.5 第 9 步「画面停在修道院钟楼的晨钟里」）：钟楼上敲了三下晨钟，然后第三章完
 func _ch3_bell() -> void:
+	_ring_bells(2.2)
+	if play_cutscene("dawn_bell"):                         # 晨钟（C.5 3-4）：钟声里演一小段，演完再出章末画面
+		cutscene.finished.connect(func(_s: bool): _ch3_after(1.5), CONNECT_ONE_SHOT)
+		return
+	_ch3_after(ch3_end_after)
+
+
+func _ch3_after(wait: float) -> void:
 	hud.say("（钟声从钟楼上落下来，一下，又一下。隔着那扇高窗，看得见平原上的雪亮了）")
-	if Settings.sound:
-		if ch3_bell_player == null:
-			ch3_bell_player = AudioStreamPlayer.new()
-			ch3_bell_player.volume_db = -8.0
-			ch3_bell_player.max_polyphony = 3
-			ch3_bell_player.stream = Bell.make_stream()
-			add_child(ch3_bell_player)
-		for i in 3:
-			get_tree().create_timer(0.1 + i * 2.2).timeout.connect(func():
-				if is_instance_valid(ch3_bell_player):
-					ch3_bell_player.play())
-	get_tree().create_timer(ch3_end_after).timeout.connect(func():
+	get_tree().create_timer(wait).timeout.connect(func():
 		if is_inside_tree() and not GameState.has_flag("ch3_done"):
 			GameState.set_flag("ch3_done")
 			save_game("auto", true)
 			show_ending("ch3"))
+
+
+## 钟楼的钟响三下（第三章晨钟、第四章黄昏钟）
+func _ring_bells(gap: float) -> void:
+	if not Settings.sound:
+		return
+	if ch3_bell_player == null:
+		ch3_bell_player = AudioStreamPlayer.new()
+		ch3_bell_player.volume_db = -8.0
+		ch3_bell_player.max_polyphony = 3
+		ch3_bell_player.stream = Bell.make_stream()
+		add_child(ch3_bell_player)
+	for i in 3:
+		get_tree().create_timer(0.1 + i * gap).timeout.connect(func():
+			if is_instance_valid(ch3_bell_player):
+				ch3_bell_player.play())
 
 
 ## 封誓完了（8.4）：封上了、断了；过一会儿出结局画面（8.5）
@@ -2593,19 +2606,16 @@ func _the_end() -> void:
 
 ## 第四章完（7.8）：冬议散了，钟楼上的黄昏钟响起来，画面停在钟声里，再出「第五章 · 冬井　开发中」
 func _ch4_bell() -> void:
+	_ring_bells(2.6)
+	if play_cutscene("dusk_bell"):                         # 黄昏钟（C.5 4-4）：钟声里演一小段，演完再出章末画面
+		cutscene.finished.connect(func(_s: bool): _ch4_after(1.5), CONNECT_ONE_SHOT)
+		return
+	_ch4_after(ch3_end_after)
+
+
+func _ch4_after(wait: float) -> void:
 	hud.say("（钟楼上的黄昏钟响了。一下，又一下。高窗外，冠城的屋顶一片一片暗下去）")
-	if Settings.sound:
-		if ch3_bell_player == null:
-			ch3_bell_player = AudioStreamPlayer.new()
-			ch3_bell_player.volume_db = -8.0
-			ch3_bell_player.max_polyphony = 3
-			ch3_bell_player.stream = Bell.make_stream()
-			add_child(ch3_bell_player)
-		for i in 3:
-			get_tree().create_timer(0.1 + i * 2.6).timeout.connect(func():
-				if is_instance_valid(ch3_bell_player):
-					ch3_bell_player.play())
-	get_tree().create_timer(ch3_end_after).timeout.connect(func():
+	get_tree().create_timer(wait).timeout.connect(func():
 		if is_inside_tree() and not GameState.has_flag("ch4_done"):
 			GameState.set_flag("ch4_done")
 			save_game("auto", true)
