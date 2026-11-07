@@ -2151,6 +2151,9 @@ func _begin_battle() -> void:
 		return
 	save_game("auto", true)
 	battle.start()
+	if area == "plain" and world.get_node_or_null("MillBattle") != null and GameState.has_flag("cut_mill_open") and not Engine.get_meta("ic_skip_film", false):
+		_mill_go()                                      # 演完过场才开打的：这时候再提示
+		return
 	hud.toast("◆ 开打！", 2.0)
 
 
@@ -2360,12 +2363,19 @@ func _mill_tick() -> void:
 		var sp: Array = PlainLayout.spawn_points()["mill_raid" if MillBattle.raiding() else "mill_night"]
 		player.global_position = sp[0]
 		player.rotation.y = deg_to_rad(float(sp[1]))
-	if mb and mb.ready_to_start():
-		start_battle()
-		hud.toast("◆ 他们来了！按 1 让小队跟着你、2 原地坚守、3 冲锋、4 去准星指的地方（触屏「令」）。%s" % ("别让六个人冲进粮仓那片。" if not MillBattle.raiding() else "冲进粮仓那片院子！"), 5.0)
-		if _query("cwskip").is_valid_float():         # 截图用（同堤道夜战）：快进到开打后第 N 秒
-			Engine.time_scale = 8.0
-			Engine.max_physics_steps_per_frame = 64
+	if mb and mb.ready_to_start() and cutscene == null:
+		start_battle()                                  # 第一次先演「磨坊之战开场」（C.5 3-2），演完 _begin_battle 才开打
+		if not battle.started:
+			return
+		_mill_go()
+
+
+## 磨坊之战真开打了：提示命令；截图用的快进
+func _mill_go() -> void:
+	hud.toast("◆ 他们来了！按 1 让小队跟着你、2 原地坚守、3 冲锋、4 去准星指的地方（触屏「令」）。%s" % ("别让六个人冲进粮仓那片。" if not MillBattle.raiding() else "冲进粮仓那片院子！"), 5.0)
+	if _query("cwskip").is_valid_float():         # 截图用（同堤道夜战）：快进到开打后第 N 秒
+		Engine.time_scale = 8.0
+		Engine.max_physics_steps_per_frame = 64
 
 
 ## 第二夜 · 劫粮（5.7a，world/convoy_ambush.gd）：主线到「设伏」时天黑透、粮车出村——把你放到伏击段（重新载入高地，摆好那场仗）；走到伏击点开打

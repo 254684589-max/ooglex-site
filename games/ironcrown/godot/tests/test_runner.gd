@@ -13308,5 +13308,21 @@ func test_cutscene() -> void:
 	await frames(2)
 	check(main.cutscene == null and ftd.state == FirstTide.TIDE and GameState.has_flag("cut_tide_rising"), "跳过以后接着守夜；只演一次")
 	await free_main(main)
+	# 磨坊之战开场（3-2）：到了几秒，先演过场再开打；演完才提示命令
+	mill_state("lomond")
+	main = await make_mill("mill_night")
+	var mbt: Battle = main.battle
+	check(CutScenes.before_battle(main) == "mill_open" and CutScenes.shots(main, "mill_open").size() == 3, "磨坊之战开打以前演「磨坊之战开场」（三个镜头）")
+	await seconds(MillBattle.START_AFTER + 0.5)
+	check(main.cutscene != null and main.cutscene.id == "mill_open" and not mbt.started and Music.track == "battle" and not main.hud.toast_label.text.contains("粮仓"), "到了几秒：先演过场，还没开打、还没提示")
+	main.cutscene.skip()
+	await frames(3)
+	check(mbt.started and main.hud.toast_label.text.contains("粮仓") and CutScenes.before_battle(main) == "", "演完：开打、提示命令；不再演")
+	await free_main(main)
+	mill_state("severin")
+	main = await make_mill("mill_raid")
+	var rs := CutScenes.shots(main, "mill_open")
+	check(rs.size() == 3 and str(rs[2].lines[0][2]).contains("奥迪隆"), "跟塞弗林家：第三个镜头换成东门外的麦茬里")
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 

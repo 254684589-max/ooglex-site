@@ -32,13 +32,15 @@ extends RefCounted
 ##   tide_rising    第二章第一夜潮水上来（FirstTide.tide_started）：营地这边往南看，坡上的人影一个接一个走上来 → 迎着它们，光着脚、闭着眼 →
 ##                  火把那一排背后，它们碰到火就拐开；演的时候潮水照样在走。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising"]
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open"]
 
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
 static func before_battle(main: Node) -> String:
 	if str(main.area) == "marsh" and CausewayBattle.due() and not GameState.has_flag("cut_causeway_open"):
 		return "causeway_open"
+	if str(main.area) == "plain" and main.world != null and main.world.get_node_or_null("MillBattle") != null and not GameState.has_flag("cut_mill_open"):
+		return "mill_open"
 	return ""
 
 
@@ -89,6 +91,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "marsh"
 		"tide_rising":
 			return main.world != null and main.area == "highland"
+		"mill_open":
+			return main.world != null and main.area == "plain" and main.world.get_node_or_null("MillBattle") != null
 	return false
 
 
@@ -116,10 +120,36 @@ static func shots(main: Node, id: String) -> Array:
 			return causeway_open(main)
 		"tide_rising":
 			return tide_rising(main)
+		"mill_open":
+			return mill_open(main)
 	return []
 
 
 ## 第一夜潮水（2-3）：长眠者从南边山坡（FirstTide.ROUTE_CAMP 第一个点）往北朝营地走，营地前一排插火把的木桩（SPOT_CENTER 两边）
+## 磨坊之战开场（3-2）：院子 PlainMill.RECT（x 12–44、z -38 到 -2），东门外麦茬地是第一拨（MillBattle.WAVE1_AT），北边远处是背景大军（FAR_BLOCKS）
+static func mill_open(main: Node) -> Array:
+	var p: FpController = main.player
+	var g := func(v: Vector2, up: float) -> Vector3: return MillBattle.p3(v) + Vector3(0, up, 0)
+	var far: Vector2 = (MillBattle.FAR_BLOCKS[1] as Array)[0]
+	var east: Vector2 = MillBattle.WAVE1_AT
+	var breach: Vector2 = PlainMill.BREACH
+	var raid := MillBattle.raiding()
+	var shots := [
+		{"from": [g.call(Vector2(6.0, 8.0), 16.0), g.call(Vector2(30.0, -24.0), 0.0)], "to": [g.call(Vector2(10.0, 2.0), 13.0), g.call(Vector2(34.0, -40.0), 2.0)], "dur": 7.0, "fov": 50.0, "music": "battle", "exposure": 1.5,
+			"lines": [[0.6, "", "入夜。麦渡的水磨坊，院墙上一支一支点起火把。"], [3.8, "", "三座粮仓里的麦子，够一个村子吃过这个冬天。"]],
+			"on_start": func(): p.set_third_person(true)},
+		{"from": [g.call(breach + Vector2(-1.5, 3.0), 2.2), g.call(far, 6.0)], "to": [g.call(breach + Vector2(-0.5, 1.0), 2.0), g.call(far, 4.0)], "dur": 6.0, "fov": 44.0, "cut": true, "exposure": 1.6,
+			"lines": [[0.5, "", "北边的麦茬地上，塞弗林家的大营亮成一片。"], [3.2, "", "几百支火把，一动不动，像在等什么。"]]},
+	]
+	if raid:
+		shots.append({"from": [g.call(east + Vector2(6.0, 2.5), 2.6), g.call(PlainMill.EAST_GATE, 2.0)], "to": [g.call(east + Vector2(3.5, 1.5), 2.3), g.call(PlainMill.EAST_GATE, 2.0)], "dur": 5.0, "fov": 46.0, "cut": true, "exposure": 1.6,
+			"lines": [[0.5, "", "你伏在东门外的麦茬里，身边是奥迪隆的第一拨。"], [2.8, "", "院墙后面，有人在往门上顶木头。"]]})
+	else:
+		shots.append({"from": [g.call(PlainMill.EAST_GATE + Vector2(2.5, 1.2), 2.4), g.call(east, 1.0)], "to": [g.call(PlainMill.EAST_GATE + Vector2(6.0, 0.8), 1.9), g.call(east, 1.0)], "dur": 5.0, "fov": 46.0, "cut": true, "exposure": 1.6,
+			"lines": [[0.5, "", "东门外，第一拨人伏在麦茬里，刀背映着火光。"], [2.8, "", "今夜，粮仓不能丢。"]]})
+	return shots
+
+
 static func tide_rising(main: Node) -> Array:
 	var p: FpController = main.player
 	var g := func(v: Vector2, up: float) -> Vector3: return WinterWell.ground(v) + Vector3(0, up, 0)
