@@ -489,6 +489,8 @@ func _ready() -> void:
 	apply_quality(q if q in Look.TIERS else (Settings.quality if Settings.quality in Look.TIERS else Look.default_tier()))
 	if _query("cutscene") in CutScenes.IDS:
 		_auto_cutscene.call_deferred(_query("cutscene"))         # 截图 / 录视频用（C.5）：?cutscene=norbert_vial 进场两秒后播
+	elif CutScenes.on_enter(self) != "":
+		_auto_cutscene.call_deferred(CutScenes.on_enter(self), 1.0)          # 进区域时演的过场（C.5：渡口对峙……），每段只演一次
 	print("IC_READY renderer=%s web=%s scene=%s touch=%s quality=%s size=%s" % [
 		ProjectSettings.get_setting("rendering/renderer/rendering_method"), OS.has_feature("web"),
 		scene_name(), touch_mode, quality, get_viewport().get_visible_rect().size])
@@ -708,8 +710,8 @@ static func _native_params() -> bool:
 
 # ---------------- 过场（C.5） ----------------
 
-func _auto_cutscene(id: String) -> void:
-	await get_tree().create_timer(2.0).timeout
+func _auto_cutscene(id: String, wait := 2.0) -> void:
+	await get_tree().create_timer(wait).timeout
 	if not play_cutscene(id):
 		print("IC_CUTSCENE unavailable id=%s" % id)
 
@@ -734,6 +736,7 @@ func play_cutscene(id: String) -> bool:
 	player.set_process_unhandled_input(false)
 	if touch:
 		touch.visible = false
+	GameState.set_flag("cut_" + id)                  # 每段只演一次（存档里记着）
 	cutscene = Cutscene.play(world, id, sh, player.camera)
 	cutscene.finished.connect(func(_skipped: bool):
 		cutscene = null

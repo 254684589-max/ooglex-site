@@ -13163,5 +13163,21 @@ func test_cutscene() -> void:
 	check(CutScenes.before_dialogue("norbert5").is_empty(), "演过一次就不再演")
 	main.dialogue.close()
 	await free_main(main)
+	# 渡口对峙（0-2）：序章第一次到渡口先演，演一次就记旗标；和奥弗说过话、做完抉择、第一章都不演
+	GameState.new_game(1)
+	GameState.pending_load = {"scene": "ferry", "player": {}}
+	main = await make_area("ferry")
+	await frames(2)
+	check(CutScenes.on_enter(main) == "ferry_standoff" and CutScenes.available(main, "ferry_standoff") and CutScenes.shots(main, "ferry_standoff").size() == 4, "序章第一次到渡口：演「渡口对峙」（四个镜头）")
+	check(main.play_cutscene("ferry_standoff") and GameState.has_flag("cut_ferry_standoff") and CutScenes.on_enter(main) == "", "演过就记下，不再演")
+	main.cutscene.skip()
+	await frames(2)
+	await free_main(main)
+	GameState.new_game(1)
+	GameState.set_flag("offer_parley")
+	check(CutScenes.on_enter({"area": "ferry"}) == "", "已经和奥弗说上话了：不演")
+	GameState.new_game(1)
+	GameState.chapter = 1
+	check(CutScenes.on_enter({"area": "ferry"}) == "", "第一章回渡口：不演")
 	Engine.set_meta("ic_skip_film", true)
 

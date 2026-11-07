@@ -7,7 +7,19 @@ extends RefCounted
 ##   norbert_vial   第五章北上，第十九烽塔顶：诺伯特把三十五年前那只空誓瓶交给你（第一次和他说话时演，台词同 winter.json norbert5，
 ##                  演完给誓瓶、主线到 well，再从对话的 come 那一句接着说）。
 
-const IDS := ["prologue", "norbert_vial"]
+##   ferry_standoff 序章到渡口（第一次走下来、还没和奥弗搭上话）：雾里的河 → 码头尽头埃德里克和塞拉斯在交易 → 芦苇里走出一伙人，
+##                  领头的摘下灰皮手套 → 回到你走下坡的视角；演完你自己走过去，奥弗那句「又来一个」照旧在对话里说。
+
+const IDS := ["prologue", "norbert_vial", "ferry_standoff"]
+
+
+## 进一个区域时要不要先演一段（main 进场时调，每段只演一次：播的时候记旗标 cut_<编号>）
+static func on_enter(main: Variant) -> String:
+	var a := str(main.area)
+	if a == "ferry" and GameState.chapter == 0 and not GameState.has_flag("offer_parley") and not GameState.has_flag("offer_left") \
+			and not GameState.has_flag("prologue_edric") and not GameState.has_flag("cut_ferry_standoff"):
+		return "ferry_standoff"
+	return ""
 
 
 ## 这段对话开始前要不要先演一段过场：{cut, after: Callable（演完做的事）, node: 演完从对话哪一句接着说}；不用就 {}
@@ -28,6 +40,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "frostford"
 		"norbert_vial":
 			return main.world != null and main.world.find_child("Npc_norbert5", true, false) != null
+		"ferry_standoff":
+			return main.world != null and main.area == "ferry"
 	return false
 
 
@@ -37,7 +51,27 @@ static func shots(main: Node, id: String) -> Array:
 			return prologue(main)
 		"norbert_vial":
 			return norbert_vial(main)
+		"ferry_standoff":
+			return ferry_standoff(main)
 	return []
+
+
+## 渡口对峙（0-2）：码头沿南北向伸进河里（Ferry.PIER_X0..X1，尽头 z = 14），奥弗站在码头根上（2.1, 2.4）面朝岸上，两个手下在岸上左右；
+## 你从北头的坡上下来（z ≈ -26.5）
+static func ferry_standoff(main: Node) -> Array:
+	var p: FpController = main.player
+	var d := Ferry.DECK_Y
+	return [
+		{"from": [Vector3(12.5, 3.4, -11.0), Vector3(2.5, 0.6, 9.0)], "to": [Vector3(10.0, 2.7, -5.5), Vector3(2.5, 0.8, 10.0)], "dur": 5.5, "fov": 50.0, "music": "battle",
+			"lines": [[0.6, "", "渡口。灰鲸河上起了雾，渡船拴在码头尽头。"]],
+			"on_start": func(): p.set_third_person(true)},
+		{"from": [Vector3(5.6, d + 1.7, 7.4), Vector3(2.3, d + 1.45, 11.0)], "to": [Vector3(4.6, d + 1.65, 8.3), Vector3(2.3, d + 1.5, 11.0)], "dur": 6.0, "fov": 42.0, "cut": true, "exposure": 0.9,
+			"lines": [[0.4, "塞拉斯", "东西都带来了？天一亮就开船。"], [3.2, "埃德里克", "……就这一张。别让我父亲知道。"]]},
+		{"from": [Vector3(2.6, d + 1.0, 5.2), Vector3(2.1, d + 1.6, 2.4)], "to": [Vector3(2.4, d + 1.4, 4.0), Vector3(2.1, d + 1.62, 2.4)], "dur": 5.0, "fov": 38.0, "cut": true,
+			"lines": [[0.5, "", "芦苇里走出来一伙人。领头的高个子，左手戴着一只磨亮了的灰皮手套。"]]},
+		{"from": [Vector3(0.8, 2.2, -13.5), Vector3(2.0, 1.1, 1.5)], "to": [Vector3(1.0, 2.0, -8.5), Vector3(2.0, 1.2, 1.5)], "dur": 4.5, "fov": 46.0, "cut": true,
+			"lines": [[0.3, "", "他们也看见你了。"]]},
+	]
 
 
 ## 开场：夜空 → 屋顶 → 街灯 → 宅邸门口的你。霜渡镇的主街南北走向（南门 z ≈ 11，宅邸在北头 z ≈ -46），你站在宅邸门口（0, -44.3）面朝南
