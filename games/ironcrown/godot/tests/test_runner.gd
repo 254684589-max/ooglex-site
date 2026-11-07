@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -7279,7 +7279,14 @@ func test_music() -> void:
 		var s := load(str(tracks[id])) as AudioStreamOggVorbis
 		if s == null or s.get_length() < 30.0 or s.get_length() > 120.0:
 			bad.append(id)
-	check(tracks.size() == 5 and bad.is_empty(), "五首曲子都能读、长度 30–120 秒（%s）" % str(bad))
+	check(tracks.size() == 8 and bad.is_empty(), "八首曲子都能读、长度 30–120 秒（%s）" % str(bad))
+	var silent := []
+	for a: String in Areas.NAMES.keys():
+		if a not in ["test_range", "arena"] and Music.track_for(a, "day") == "":
+			silent.append(a)
+	check(silent.is_empty() and Music.track_for("plain", "day") == "plain" and Music.track_for("harbor", "dusk") == "harbor" and Music.track_for("crown_city", "day") == "harbor"
+		and Music.track_for("well_bottom", "night") == "well" and Music.track_for("plain", "night") == "night",
+		"每个剧情区域都有曲子（第三章起原来没有，所有者 2026-11-07 反馈）：金穗平原、双钥港与冠城、冬井各一首新曲（没有的：%s）" % str(silent))
 	var unknown := []
 	for a in Music.data.get("areas", {}):
 		var v: Variant = Music.data.areas[a]
@@ -8921,10 +8928,12 @@ func test_camp() -> void:
 	p.velocity = Vector3.ZERO
 	await physics(6)
 	Input.action_press("move_forward")
-	await seconds(1.6)
+	await seconds(2.4)
 	Input.action_release("move_forward")
 	var din := Vector2(p.global_position.x, p.global_position.z).distance_to(pc)
 	check(din < float(PlainCamp.PAVILION[2]) - 0.6, "从门帘那儿走得进指挥帐（离帐中心 %.1f 米）" % din)
+	check(float(PlainCamp.PAVILION[2]) >= 4.0 and PlainCamp.PAV_WALL - 0.32 > 2.0 and PlainCamp.PAV_PEAK > 5.0,
+		"指挥帐放大了（所有者 2026-11-07「建筑物太小人物无法进出」）：半径 %.1f 米，门口垂边下还有 %.2f 米高（人 1.8 米）" % [float(PlainCamp.PAVILION[2]), PlainCamp.PAV_WALL - 0.32])
 	# 从帐篷背后走不进指挥帐（墙挡着）
 	var back := pc - door_dir * (float(PlainCamp.PAVILION[2]) + 1.6)
 	p.global_position = Vector3(back.x, PlainLayout.height(back.x, back.y) + 0.3, back.y)
@@ -8975,7 +8984,7 @@ func test_ch3sides() -> void:
 	GameState.pending_load = {"scene": "plain", "spawn": "camp", "player": {}}
 	var main := await make_area("plain")
 	await frames(3)
-	var names := ["Npc_bain", "Npc_odilon", "Npc_sentry1", "Npc_sentry2", "Npc_camp_smith"]
+	var names := ["Npc_bain", "Npc_odilon", "Npc_sentry1", "Npc_sentry2", "Npc_camp_smith", "Npc_tent_guard"]
 	var stuck := []
 	for nm in names:
 		var n := main.world.find_child(nm, true, false) as Npc
@@ -12893,5 +12902,50 @@ func test_fx() -> void:
 	Settings.sound = was
 	e.queue_free()
 	far.queue_free()
+	await free_main(main)
+
+
+func test_guide() -> void:
+	# 任务指引（C.2，所有者 2026-11-07）：左上角任务追踪（做完的打勾、现在这一步「进行中」）、目标标记和距离（500 → 200 → 50 米）
+	GameState.new_game(1)
+	check(QuestGuide.distance_text(612.0) == "600 米" and QuestGuide.distance_text(234.0) == "230 米" and QuestGuide.distance_text(52.0) == "50 米" and QuestGuide.distance_text(3.0) == "就在附近",
+		"距离写法：600 米、230 米、50 米，5 米以内「就在附近」")
+	GameState.start_quest("ch1_wedding")
+	GameState.start_quest("ch2_main")
+	check(QuestGuide.tracked() == "ch2_main", "有主线在做：跟主线（不跟支线）")
+	GameState.set_stage("ch2_main", "dawn_after")
+	GameState.set_stage("ch2_main", "to_well")
+	var st := QuestGuide.steps("ch2_main")
+	check(st.size() == 3 and st[0][1] and st[1][1] and not st[2][1] and str(st[2][0]).contains("诺伯特"), "步骤：最近两步打勾、现在这一步进行中（%d 条）" % st.size())
+	var saved := GameState.to_dict()
+	GameState.new_game(2)
+	GameState.from_dict(saved)
+	check((GameState.quests.ch2_main.log as Array).size() >= 2 and GameState.last_quest == "ch2_main", "走过的步骤存档、读档后还在")
+	var main := await make_main(true)
+	var p: FpController = main.player
+	var tr: QuestTracker = main.hud.tracker
+	check(tr.panel.visible and tr.title.text.contains(QuestGuide.title_of("ch2_main")) and tr.lines.size() == 3 and tr.lines[0].text.begins_with("✓") and tr.lines[2].text.begins_with("▶ 进行中"),
+		"左上角：任务名、两条打勾、一条进行中")
+	var nb := Npc.make("诺伯特", ["……"])
+	main.world.add_child(nb)
+	var fwd := p.aim_forward()
+	fwd.y = 0.0
+	fwd = fwd.normalized()
+	nb.global_position = p.global_position + fwd * 30.0
+	await frames(3)
+	tr.retarget_left = 0.0
+	await frames(2)
+	check(tr.marker.visible and tr.marker_text.contains("诺伯特") and tr.marker_text.contains("30 米") and not tr.arrow.visible, "说明里提到诺伯特：他头顶出「◆ 诺伯特 · 30 米」（%s）" % tr.marker_text)
+	nb.global_position = p.global_position - fwd * 12.0
+	await frames(3)
+	check(tr.marker.visible and tr.arrow.visible and tr.marker_text.contains("10 米"), "他在身后：屏幕边上一个箭头指过去（%s）" % tr.marker_text)
+	nb.queue_free()
+	await frames(2)
+	tr.retarget_left = 0.0
+	await frames(2)
+	check(not tr.marker.visible or tr.marker_text.contains("在"), "这一带找不到他：不乱指")
+	GameState.complete_quest("ch2_main")
+	await frames(2)
+	check(tr.quest_id == "ch1_wedding" and tr.panel.visible, "主线做完了：跟最近的支线")
 	await free_main(main)
 

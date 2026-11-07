@@ -1,11 +1,14 @@
 {
-  "_说明": "背景音乐（路线图 M.1）：tracks = 曲目编号 → 文件（都是 tools/compose_music.py 代码作曲合成的原创曲，见 assets/SOURCES.md）；areas = 区域 → 曲目，写成字符串就是不分时段，写成对象就是按时段（dawn / day / dusk / night，\"*\" 是其余时段）。没写的区域（测试场、训练场）不放音乐。打起来（酒馆打架、桦林伏击、渡口对峙、营地……）一律换「battle」，打完 4 秒换回来（core/music.gd set_fighting）。病房（家主昏睡）用安静的「night」，不用带鼓点的「keep」（核对配乐与剧本，2026-10-17）。换成别的授权曲目时，只改 tracks 里的文件，或者加新曲目再改 areas。",
+  "_说明": "背景音乐（路线图 M.1）：tracks = 曲目编号 → 文件（都是 tools/compose_music.py 代码作曲合成的原创曲，见 assets/SOURCES.md）；areas = 区域 → 曲目，写成字符串就是不分时段，写成对象就是按时段（dawn / day / dusk / night，\"*\" 是其余时段）。没写的区域（测试场、训练场）不放音乐。2026-11-07 所有者反馈「第三章起没有背景音乐」：补了第三到第五章的区域和三首新曲（plain 金穗平原、harbor 双钥港与冠城、well 钟楼底下和冬井；第五章北上回到余火高地，照旧 night）。打起来（酒馆打架、桦林伏击、渡口对峙、营地……）一律换「battle」，打完 4 秒换回来（core/music.gd set_fighting）。病房（家主昏睡）用安静的「night」，不用带鼓点的「keep」（核对配乐与剧本，2026-10-17）。换成别的授权曲目时，只改 tracks 里的文件，或者加新曲目再改 areas。",
   "tracks": {
     "town": "res://assets/music/town.ogg",
     "night": "res://assets/music/night.ogg",
     "marsh": "res://assets/music/marsh.ogg",
     "keep": "res://assets/music/keep.ogg",
-    "battle": "res://assets/music/battle.ogg"
+    "battle": "res://assets/music/battle.ogg",
+    "plain": "res://assets/music/plain.ogg",
+    "harbor": "res://assets/music/harbor.ogg",
+    "well": "res://assets/music/well.ogg"
   },
   "areas": {
     "frostford": {"night": "night", "*": "town"},
@@ -21,6 +24,21 @@
     "sickroom": "night",
     "barracks": "keep",
     "counting": "keep",
-    "battle": "battle", "highland": "night", "waystation": "town", "beacon_tower": "night"
+    "battle": "battle", "highland": "night", "waystation": "town", "beacon_tower": "night",
+    "plain": {"night": "night", "*": "plain"},
+    "scriptorium": "night",
+    "manor_hall": "keep",
+    "mill_inside": "plain",
+    "harbor": {"night": "night", "*": "harbor"},
+    "key_hall": "harbor",
+    "key_vault": "harbor",
+    "guild_hall": "harbor",
+    "dock_tavern": "town",
+    "debt_prison": "night",
+    "crown_city": {"night": "night", "*": "harbor"},
+    "council_hall": "keep",
+    "matilda_inn": "town",
+    "church_archive": "well",
+    "well_bottom": "well"
   }
 }

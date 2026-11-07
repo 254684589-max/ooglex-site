@@ -224,6 +224,10 @@ func _ready() -> void:
 			GameState.set_stage("ch2_main", "rob_ready")
 			Chapter2.dawn()
 			GameState.daypart = "dawn"
+		if _query("quest").contains(":") and not Engine.has_meta("ic_quest_param_done"):
+			Engine.set_meta("ic_quest_param_done", true)      # 截图用（C.2）：?quest=ch3_main:sides 直接让这条任务走到这一步（看左上角的任务追踪和目标标记）
+			var qs := _query("quest").split(":")
+			GameState.set_stage(qs[0], qs[1])
 		if _query("well") in ["1", "all"] and not Engine.has_meta("ic_well_param_done"):
 			Engine.set_meta("ic_well_param_done", true)       # 截图用（5.8b）：?well=1 直接到诺伯特说完、要带你去看冬井（劫下了粮、火亮着）；=all 圈里认得的脸都有（芦栈村的托宾、妮尔和她父亲、第十八烽的三个守塔人）
 			for f in ["matthias_met", "norbert_met", "norbert_day2", "norbert_dawn"]:
@@ -478,6 +482,7 @@ func _ready() -> void:
 	_place_chapter_content()
 	yaw0 = player.yaw_deg()
 	_build_ui()
+	hud.tracker.refresh()                         # 左上角的任务追踪（C.2）
 	var q := _query("q")
 	apply_quality(q if q in Look.TIERS else (Settings.quality if Settings.quality in Look.TIERS else Look.default_tier()))
 	print("IC_READY renderer=%s web=%s scene=%s touch=%s quality=%s size=%s" % [
@@ -1595,6 +1600,8 @@ func _on_quest_closed() -> void:
 
 ## 任务事件 → 屏幕上方的短提示（文字 + 符号）
 func _on_quest_event(kind: String, id: String) -> void:
+	if hud and hud.tracker:
+		hud.tracker.refresh()                     # 左上角的任务追踪（C.2）
 	var qd := GameState.quest_data()
 	var text := ""
 	match kind:
@@ -2579,6 +2586,8 @@ func _clear_fog_at(pos: Vector3) -> void:
 
 
 func _process(delta: float) -> void:
+	if hud and hud.tracker and hud.visible and player and world:              # 任务目标的标记和距离（C.2）
+		hud.tracker.update_marker(world, player.camera, player.global_position, area, delta)
 	combat_music_check -= delta
 	if combat_music_check <= 0.0:                     # 战斗配乐（M.1）：每 0.25 秒看一次在不在打
 		combat_music_check = 0.25

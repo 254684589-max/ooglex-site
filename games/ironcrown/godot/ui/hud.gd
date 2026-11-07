@@ -16,6 +16,7 @@ const TITLE_FS_SMALL := 15     # 3.11：右上角五个按钮时，手机竖屏�
 const BTN_MIN := Vector2(44, 44)      # 右上角按钮最小 44 × 44（触屏点得准；都在触屏层放行的顶部 56 像素以内）
 
 var title_label: Label
+var tracker: QuestTracker      # 左上角的任务追踪和目标标记（C.2）
 var hint_label: Label
 var menu_btn: Button
 var quest_btn: Button
@@ -53,6 +54,9 @@ const ROW := 34.0             # 生命条与体力条的行距
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tracker = QuestTracker.new()
+	tracker.name = "QuestTracker"
+	add_child(tracker)
 	title_label = Label.new()
 	title_label.text = TITLE
 	title_label.position = Vector2(16, 12)
@@ -328,6 +332,9 @@ func _layout() -> void:
 		title_label.text = TITLE_SHORT
 		if title_label.get_minimum_size().x + 24.0 > char_btn.position.x:
 			title_label.add_theme_font_size_override("font_size", TITLE_FS_SMALL)
+	if tracker:
+		tracker.size = size
+		tracker.place(title_label.position.y + title_label.get_minimum_size().y + 6.0, size.x < 700.0)
 	var w := minf(size.x - 32.0, 760.0)
 	for l in [prompt_label, toast_label]:
 		l.size = Vector2(w, 0)
