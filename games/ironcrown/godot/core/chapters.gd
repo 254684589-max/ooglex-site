@@ -8,22 +8,20 @@ extends RefCounted
 ## 做到第几章能玩了：第一章的开场（4.3）做好以后是 1，序章结束画面出「继续：第一章」（main.playable_chapter 可在测试和 ?preview=1 里改）。
 ## 芦栈村（4.4a 起）走得到了，村里有人、能进客栈、能打听三条消息（4.4b）；黑鹭堡里面（4.5）还在开发中：堡门锁着、写明还在开发中
 ## 2026-10-24 所有者说「『继续：第二章』放出来」：第二章还在做（5.3c 起的人和故事没做），先放出来能逛——LIST 里 wip 不为空的章节，章末按钮和进场时都说一句「制作中」
-const PLAYABLE := 2
+## 2026-11-07 所有者选了「第三到第五章对玩家开放」：五章都做到了章末（第五章到三种结局），PLAYABLE = 5，三章都不再标「制作中」
+const PLAYABLE := 5
 ## daypart：这一章开头的时段（4.2，Daypart）——序章一直是夜；第一章从霜渡镇的清晨开始（STORY.md 4.5 第 1 步）
 const LIST := {
 	0: {"name": "序章 · 霜渡镇之夜", "pack": "", "probe": "", "area": "frostford", "spawn": "manor", "daypart": "night"},
 	1: {"name": "第一章 · 黑鹭堡", "pack": "ch1", "probe": "res://chapters/ch1/road_sign.tscn", "area": "frostford", "spawn": "ch1_dawn", "daypart": "dawn"},
 	## 第二章（5.1a 起）：高地的贴图、天空照片在章节包 ch2 里；2026-10-24 起对玩家打开（制作中，能逛）；5.8b 做到章末，不再标「制作中」
 	2: {"name": "第二章 · 熄灭的烽燧", "pack": "ch2", "probe": "res://chapters/ch2/sky/overcast_sky.jpg", "area": "highland", "spawn": "village", "daypart": "day"},
-	## 第三章（6.1a 起）：平原的贴图、天空照片在章节包 ch3 里；还没对玩家打开（PLAYABLE 仍是 2，?preview=3 或 ?area=plain 能看）
-	3: {"name": "第三章 · 粮与铁", "pack": "ch3", "probe": "res://chapters/ch3/sky/misty_sky.jpg", "area": "plain", "spawn": "dock", "daypart": "day",
-		"wip": "制作中", "wip_note": "第三章还在制作中：现在能到麦渡、坠星院、洛蒙德庄园、水磨坊和塞弗林营地，主线、三条支线和磨坊之战都做完了（一直到守灵夜和章末），还在打磨。"},
-	## 第四章（7.1 起）：双钥港的贴图、天空照片、高度场在章节包 ch4 里；还没对玩家打开（?preview=4 或 ?area=harbor 能看）
-	4: {"name": "第四章 · 双钥港的账", "pack": "ch4", "probe": "res://chapters/ch4/sky/sea_cloud_sky.jpg", "area": "harbor", "spawn": "quay", "daypart": "day",
-		"wip": "制作中", "wip_note": "第四章还在制作中：双钥港、冠城、主线（一直到冬议和章末）和三条支线都做完了，还在打磨。"},
-	## 第五章（8.1 起）：冠城那几处在第四章的包里，北上的余火高地在第二章的包里（到了再下）；还没对玩家打开（?preview=5 能从第四章章末进）
-	5: {"name": "第五章 · 冬井", "pack": "ch4", "probe": "res://chapters/ch4/sky/sea_cloud_sky.jpg", "area": "crown_city", "spawn": "bell_door", "daypart": "day",
-		"wip": "制作中", "wip_note": "第五章还在制作中：钟楼底下、北上、冬井底、封誓和三种结局都做完了，还在打磨。"},
+	## 第三章（6.1a 起）：平原的贴图、天空照片在章节包 ch3 里；2026-11-07 起对玩家打开
+	3: {"name": "第三章 · 粮与铁", "pack": "ch3", "probe": "res://chapters/ch3/sky/misty_sky.jpg", "area": "plain", "spawn": "dock", "daypart": "day"},
+	## 第四章（7.1 起）：双钥港的贴图、天空照片、高度场在章节包 ch4 里；2026-11-07 起对玩家打开
+	4: {"name": "第四章 · 双钥港的账", "pack": "ch4", "probe": "res://chapters/ch4/sky/sea_cloud_sky.jpg", "area": "harbor", "spawn": "quay", "daypart": "day"},
+	## 第五章（8.1 起）：冠城那几处在第四章的包里，北上的余火高地在第二章的包里（到了再下）；2026-11-07 起对玩家打开
+	5: {"name": "第五章 · 冬井", "pack": "ch4", "probe": "res://chapters/ch4/sky/sea_cloud_sky.jpg", "area": "crown_city", "spawn": "bell_door", "daypart": "day"},
 }
 
 

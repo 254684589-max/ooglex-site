@@ -3742,7 +3742,7 @@ func test_ending() -> void:
 		find_button(main.dialogue, "（收下旧书）").pressed.emit()
 		await frames(4)
 		check(GameState.has_item("old_book") and GameState.has_flag("prologue_done") and GameState.quest_done("edric_missing"), "[%s] 收下旧书：主线「雾里的少爷」完成" % choice)
-		check(main.ending_panel.visible and get_tree().paused and main.ending_panel.title.text == "第一章 · 黑鹭堡" and main.ending_panel.sub.text == "开发中", "[%s] 结束画面：「第一章 · 黑鹭堡　开发中」，游戏暂停" % choice)
+		check(main.ending_panel.visible and get_tree().paused and main.ending_panel.title.text == "第一章 · 黑鹭堡" and not main.ending_panel.sub.visible and main.ending_panel.continue_btn.visible, "[%s] 结束画面：「第一章 · 黑鹭堡」，下一章能玩、不写「开发中」，游戏暂停" % choice)
 		check(main.ending_panel.recap.text.contains(str(b[4])) and main.ending_panel.seal.text.contains("黑鹭堡"), "[%s] 回顾按抉择写（%s）" % [choice, main.ending_panel.recap.text.left(16)])
 		var rect: Rect2 = main.ending_panel.box.get_global_rect()
 		check(rect.size.x <= main.hud.size.x, "[%s] 结束画面不超出画面宽度" % choice)
@@ -8338,8 +8338,8 @@ func test_looks() -> void:
 
 ## 5.1a 余火高地地图底座：高度场、碰撞、分块、天空、风雪、章节包与第二章的入口
 func test_plain() -> void:
-	check(Areas.known("plain") and Areas.display_name("plain") == "金穗平原" and Areas.pack_chapter("plain") == 3 and Chapters.known(3) and Chapters.pack_of(3) == "ch3" and Chapters.PLAYABLE == 2 and Chapters.wip_of(3) != "",
-		"金穗平原登记了：内容在第三章章节包（ch3）里；第三章还没对玩家打开（PLAYABLE = %d、标着制作中）" % Chapters.PLAYABLE)
+	check(Areas.known("plain") and Areas.display_name("plain") == "金穗平原" and Areas.pack_chapter("plain") == 3 and Chapters.known(3) and Chapters.pack_of(3) == "ch3" and Chapters.PLAYABLE >= 3 and Chapters.wip_of(3) == "",
+		"金穗平原登记了：内容在第三章章节包（ch3）里；第三章对玩家打开了、不标制作中（PLAYABLE = %d）" % Chapters.PLAYABLE)
 	check(Plain.textures_ready() and ResourceLoader.exists(Plain.FIELD_PATH) and ResourceLoader.exists(Plain.PAINT_PATH), "第三章的贴图、天空照片、预先算好的高度场都在 chapters/ch3/")
 	var tex_ok := true
 	for layer: String in Plain.LAYERS.values():
@@ -8679,8 +8679,8 @@ func test_ch3open() -> void:
 	main.playable_chapter = 3
 	main.show_ending("ch2")
 	await frames(2)
-	check(main.ending_panel.next_chapter == 3 and main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text.contains("粮与铁") and main.ending_panel.continue_btn.text.contains("制作中"),
-		"预览第三章：第二章章末多一行「%s」" % main.ending_panel.continue_btn.text)
+	check(main.ending_panel.next_chapter == 3 and main.ending_panel.continue_btn.visible and main.ending_panel.continue_btn.text.contains("粮与铁") and not main.ending_panel.continue_btn.text.contains("制作中") and not main.ending_panel.sub.visible,
+		"第三章开放了：第二章章末多一行「%s」" % main.ending_panel.continue_btn.text)
 	var reloaded := [false]
 	main.reload_requested.connect(func(): reloaded[0] = true)
 	main.start_chapter(3)
@@ -9564,9 +9564,9 @@ func test_ch3vigil() -> void:
 	check(not GameState.has_flag("ch3_done") and not main.ending_panel.visible, "说完了：先响晨钟（章末画面还没出）")
 	await seconds(1.0)
 	var ep: EndingPanel = main.ending_panel
-	check(GameState.has_flag("ch3_done") and ep.visible and ep.header.text == "第三章「粮与铁」完" and ep.title.text == "第四章 · 双钥港的账" and ep.sub.text == "开发中"
-		and not ep.continue_btn.visible and not Saves.read_slot("auto").is_empty() and get_tree().paused,
-		"晨钟以后章末：「第三章「粮与铁」完 / 第四章 · 双钥港的账 / 开发中」，没有「继续」（第四章还没有），自动存档")
+	check(GameState.has_flag("ch3_done") and ep.visible and ep.header.text == "第三章「粮与铁」完" and ep.title.text == "第四章 · 双钥港的账" and not ep.sub.visible
+		and ep.continue_btn.visible and ep.next_chapter == 4 and not Saves.read_slot("auto").is_empty() and get_tree().paused,
+		"晨钟以后章末：「第三章「粮与铁」完 / 第四章 · 双钥港的账」，有「继续」（2026-11-07 第四章开放），自动存档")
 	check(ep.recap.text.contains("撬开了粮仓") and ep.recap.text.contains("护院撤回了庄园") and ep.recap.text.contains("水渠") and ep.recap.text.contains("守到了天亮")
 		and ep.recap.text.contains("奥迪隆倒在") and ep.recap.text.contains("念了洛蒙德家的粮仓账本") and ep.recap.text.contains("伊达站出来作证") and ep.recap.text.contains("立住了勺子") and ep.recap.text.contains("学徒顺着河溜走了"),
 		"回顾按旗标写：开仓、护院撤走、水渠、守到天亮、奥迪隆、念账本、伊达、粥、学徒")
@@ -9580,7 +9580,7 @@ func test_ch3vigil() -> void:
 	var rc := Chapter3.recap()
 	check(rc.contains("跟着奥迪隆的兵") and rc.contains("抢下了磨坊") and rc.contains("让开了") and rc.contains("摄政的信还在你手里") and rc.contains("交还给了奥迪隆") and rc.contains("门洞外等了一个上午")
 		and not Chapter3.hook().contains("誓瓶"), "跟塞弗林家、留着信、交还学徒、院长说不动的回顾；没听到誓瓶的钩子不提誓瓶")
-	check(Chapters.wip_note_of(3).contains("守灵夜和章末") and not Chapters.wip_note_of(3).contains("还没做"), "第三章进场的提示：主线做到章末了")
+	check(Chapters.wip_note_of(3) == "", "第三章开放了：进场不再提示「制作中」")
 	GameState.chapter = 0
 	GameState.daypart = "day"
 	GameState.pending_load = {}
@@ -9589,8 +9589,8 @@ func test_ch3vigil() -> void:
 func test_harbor() -> void:
 	# 双钥港地图底座（7.1）：河口、泥滩、潮沟、沙嘴、海；潮汐；第四章章节包；旅行地图「河口」一页
 	check(Areas.known("harbor") and Areas.display_name("harbor") == "双钥港" and Areas.pack_chapter("harbor") == 4 and Chapters.known(4) and Chapters.pack_of(4) == "ch4"
-		and Chapters.LIST[4].spawn == "quay" and Chapters.wip_of(4) != "" and Chapters.PLAYABLE == 2,
-		"双钥港登记了：内容在第四章章节包（ch4）里、从木栈码头上岸；第四章还没对玩家打开、标着制作中")
+		and Chapters.LIST[4].spawn == "quay" and Chapters.wip_of(4) == "" and Chapters.PLAYABLE >= 4,
+		"双钥港登记了：内容在第四章章节包（ch4）里、从木栈码头上岸；第四章对玩家打开了、不标制作中")
 	check(Harbor.textures_ready() and ResourceLoader.exists(Harbor.FIELD_PATH) and ResourceLoader.exists(Harbor.PAINT_PATH), "第四章的天空照片、预先算好的高度场都在 chapters/ch4/")
 	var tex_ok := true
 	for layer: String in Harbor.LAYERS.values():
@@ -9921,7 +9921,7 @@ func test_ch4people() -> void:
 	var has_night := mr.options().any(func(o): return str(o.text).contains("三年前"))
 	ch4_state({"ch3_vigil": true}, "envoys")
 	check(not has_night and say_runner("maud", ["三年前送冠进来的那一夜，你在吗？"], "harbor") == "night" and GameState.has_flag("ch4_maud_night"), "听过守灵夜的才问得出：莫德说出三年前送冠进金库的那一夜")
-	check(Chapters.wip_note_of(4).contains("冬议") and Chapters.wip_note_of(4).contains("三条支线"), "第四章进场的提示：做到冬议和章末、三条支线（7.8）")
+	check(Chapters.wip_note_of(4) == "", "第四章开放了：进场不再提示「制作中」")
 	GameState.chapter = 0
 	GameState.pending_load = {}
 
@@ -10407,8 +10407,8 @@ func test_ch4council() -> void:
 	await seconds(0.8)
 	var ep: EndingPanel = main.ending_panel
 	check(GameState.has_flag("ch4_done") and ep.visible and ep.title.text == "第五章 · 冬井" and ep.header.text.contains("双钥港的账") and ep.recap.text.contains("大主祭卢西安") and ep.recap.text.contains("埃德里克")
-		and ep.recap.text.contains("约斯特") and ep.seal.text.contains("大主祭的车") and ep.seal.text.contains("誓瓶") and not ep.continue_btn.visible,
-		"黄昏钟以后：「第四章「双钥港的账」完 / 第五章 · 冬井」，回顾按旗标写，钩子接冬井；第五章还没有，不出「继续」")
+		and ep.recap.text.contains("约斯特") and ep.seal.text.contains("大主祭的车") and ep.seal.text.contains("誓瓶") and ep.continue_btn.visible and ep.next_chapter == 5,
+		"黄昏钟以后：「第四章「双钥港的账」完 / 第五章 · 冬井」，回顾按旗标写，钩子接冬井；第五章开放了，有「继续」")
 	ep.close()
 	await free_main(main)
 	check(CrownPeople.room_people("council_hall").size() == 1, "第四章完了：议事厅里只剩差役")
@@ -10436,7 +10436,7 @@ func test_ch4council() -> void:
 
 func test_ch5archive() -> void:
 	# 第五章（8.1）：钟楼底下的教会档案馆、守卷的修士、封誓残卷
-	check(Chapters.known(5) and Chapters.name_of(5) == "第五章 · 冬井" and Chapters.pack_of(5) == "ch4" and Chapters.wip_of(5) != "" and Areas.known("church_archive") and Areas.is_indoor("church_archive") and Areas.chapter_of("church_archive") == 5,
+	check(Chapters.known(5) and Chapters.name_of(5) == "第五章 · 冬井" and Chapters.pack_of(5) == "ch4" and Chapters.wip_of(5) == "" and Areas.known("church_archive") and Areas.is_indoor("church_archive") and Areas.chapter_of("church_archive") == 5,
 		"第五章登记了（冠城那几处在第四章的包里）；钟楼底下的档案馆是室内")
 	ch4_state({"ch4_done": true, "crown_holder": "valen", "valen_heir": "ivette", "ch4_regent_visitor": "lucien", "ch4_ambush": "talked"})
 	GameState.pending_load = {"scene": "crown_city", "spawn": "bell_door", "player": {}}
@@ -10709,7 +10709,7 @@ func test_ch5end() -> void:
 
 
 func test_highland() -> void:
-	check(Areas.known("highland") and Areas.pack_chapter("highland") == 2 and Chapters.known(2) and Chapters.pack_of(2) == "ch2" and Chapters.PLAYABLE == 2 and Chapters.wip_of(2) == "",
+	check(Areas.known("highland") and Areas.pack_chapter("highland") == 2 and Chapters.known(2) and Chapters.pack_of(2) == "ch2" and Chapters.PLAYABLE >= 2 and Chapters.wip_of(2) == "",
 		"余火高地登记了：内容在第二章章节包（ch2）里；第二章对玩家打开了、做到章末不再标「制作中」（PLAYABLE = %d）" % Chapters.PLAYABLE)
 	check(Highland.textures_ready() and ResourceLoader.exists(Highland.FIELD_PATH) and ResourceLoader.exists(Highland.PAINT_PATH), "第二章的贴图、天空照片、预先算好的高度场都在 chapters/ch2/")
 	# 预先算好的高度场和布局对得上（布局改了忘了重新生成会在这里报）
@@ -11918,8 +11918,8 @@ func test_well() -> void:
 	await seconds(main.well_end_after + 0.6)
 	var ep: EndingPanel = main.ending_panel
 	check(GameState.has_flag("ch2_done") and GameState.quest_stage("ch2_main") == "ch2_end" and ep.visible and ep.title.text == "第三章 · 粮与铁"
-		and ep.header.text.contains("熄灭的烽燧") and not ep.continue_btn.visible and not Saves.read_slot("auto").is_empty(),
-		"过一会儿章末：「第二章「熄灭的烽燧」完 / 第三章 · 粮与铁 / 开发中」，没有「继续」（第三章还没有），自动存档")
+		and ep.header.text.contains("熄灭的烽燧") and ep.continue_btn.visible and ep.next_chapter == 3 and not Saves.read_slot("auto").is_empty(),
+		"过一会儿章末：「第二章「熄灭的烽燧」完 / 第三章 · 粮与铁」，有「继续」（2026-11-07 第三章开放），自动存档")
 	check(ep.recap.text.contains("劫下了洛蒙德家的五车粮") and ep.recap.text.contains("第十八烽") and ep.recap.text.contains("妮尔往北去了") and ep.recap.text.contains("火还亮着"),
 		"回顾按旗标写：第一夜、第十八烽、劫下五车、火、妮尔")
 	check(ep.seal.text.contains("冬井") and ep.seal.text.contains("芦栈村那个人") and ep.seal.text.contains("妮尔也在"), "钩子：封誓少做的一步、冬井边那一圈人、认得的脸")
