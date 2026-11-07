@@ -34,6 +34,22 @@ extends RefCounted
 
 const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first", "first_sleeper", "beacon_line", "ambush_open", "harbor_first", "archive_open", "plain_first", "dawn_bell", "dusk_bell"]
 
+## 镜头脚本里先搭好的道具和灯（铁冠、补光、特写台……）：都记在这里。镜头还没演到就跳过了、或者只是数了数镜头（测试），
+## 它们从没进过场景树——过场演完和 main 退出时 free_orphans() 把这些没进树的放掉（进了树的由 cut_prop 组 / 场景自己管）
+static var _made: Array = []
+
+
+static func _keep(n: Node) -> Node:
+	_made.append(n)
+	return n
+
+
+static func free_orphans() -> void:
+	for n in _made:
+		if is_instance_valid(n) and not (n as Node).is_inside_tree():
+			(n as Node).free()
+	_made.clear()
+
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
 static func before_battle(main: Node) -> String:
@@ -224,7 +240,7 @@ static func vault_crown(main: Node) -> Array:
 	var p: FpController = main.player
 	var cb: Vector3 = HarborRooms.CROWN_BOX
 	var lid := cb + Vector3(0, 1.27, 0)
-	var props := Node3D.new()
+	var props: Node3D = _keep(Node3D.new())
 	props.name = "CutVaultProps"
 	props.add_to_group("cut_prop")
 	var crown := _crown()
@@ -264,7 +280,7 @@ static func well_descend(main: Node) -> Array:
 	var st: Vector3 = WellRooms.STAR
 	var al: Vector3 = WellRooms.ALTAR
 	var wx := -6.67
-	var rim := OmniLight3D.new()                                          # 星铁那个镜头的一道冷光（cut_prop：演完拿掉）
+	var rim: OmniLight3D = _keep(OmniLight3D.new())                                          # 星铁那个镜头的一道冷光（cut_prop：演完拿掉）
 	rim.name = "CutStarRim"
 	rim.add_to_group("cut_prop")
 	rim.light_color = Color(0.7, 0.85, 1.0)
@@ -312,9 +328,9 @@ static func ending_film(main: Node) -> Array:
 		"new_king":
 			var t := CrownRooms.THRONE
 			var notch := t + Vector3(0, 3.45, -0.49)
-			var crown := _crown()
+			var crown: Node3D = _keep(_crown())
 			crown.add_to_group("cut_prop")
-			var sun := OmniLight3D.new()
+			var sun: OmniLight3D = _keep(OmniLight3D.new())
 			sun.add_to_group("cut_prop")
 			sun.light_color = Color("ffd9a0")
 			sun.light_energy = 1.4
@@ -422,7 +438,7 @@ static func _seal_stage() -> Node3D:
 
 static func royal_seal(main: Node) -> Array:
 	var p: FpController = main.player
-	var st := _seal_stage()
+	var st: Node3D = _keep(_seal_stage())
 	var o := SEAL_STAGE
 	return [
 		{"from": [o + Vector3(-0.12, 0.3, 0.26), o + Vector3(-0.02, 0.0, 0.0)], "to": [o + Vector3(0.1, 0.24, 0.2), o + Vector3(0.03, 0.0, 0.02)], "dur": 6.0, "fov": 40.0, "music": "night", "exposure": 0.9,
@@ -533,7 +549,7 @@ static func archive_open(main: Node) -> Array:
 	var p: FpController = main.player
 	var ch: Vector3 = CrownRooms.ARCHIVE_CHEST
 	var gr: Vector3 = CrownRooms.ARCHIVE_GRATE
-	var lights := Node3D.new()                                             # 档案馆里只有一盏壁灯和桌上两支蜡烛：过场里补两盏暖光（cut_prop，演完拿掉）
+	var lights: Node3D = _keep(Node3D.new())                                             # 档案馆里只有一盏壁灯和桌上两支蜡烛：过场里补两盏暖光（cut_prop，演完拿掉）
 	lights.name = "CutArchiveLights"
 	lights.add_to_group("cut_prop")
 	for at: Vector3 in [Vector3(0.0, 2.6, 0.5), ch + Vector3(-0.6, 1.4, 0.9)]:
@@ -648,7 +664,7 @@ static func oath_sealed(main: Node) -> Array:
 	var a: Vector3 = WellRooms.ALTAR
 	var st: Vector3 = WellRooms.STAR
 	var name_at := Vector3(-6.85, 1.15, -1.6)
-	var label := Label3D.new()
+	var label: Label3D = _keep(Label3D.new())
 	label.name = "CutOathName"
 	label.text = oath_name()
 	label.font_size = 96
@@ -717,13 +733,13 @@ static func wake_memory(main: Node) -> Array:
 	var ig: Vector3 = Scriptorium.IGNAZ[0]
 	var desk: Vector3 = Scriptorium.DESKS[1]
 	var top := desk + Vector3(0, 0.8, 0)
-	var crown := _crown()
-	var candle := OmniLight3D.new()
+	var crown: Node3D = _keep(_crown())
+	var candle: OmniLight3D = _keep(OmniLight3D.new())
 	candle.name = "CutCandle"
 	candle.light_color = Color("ffb060")
 	candle.light_energy = 1.6
 	candle.omni_range = 2.2
-	var cloth := MeshInstance3D.new()
+	var cloth: MeshInstance3D = _keep(MeshInstance3D.new())
 	cloth.name = "CutCloth"
 	var cm := BoxMesh.new()
 	cm.size = Vector3(0.9, 0.01, 0.6)
@@ -885,7 +901,7 @@ static func norbert_vial(main: Node) -> Array:
 	# 你站在他对面（火盆的另一侧偏一点），面朝他
 	var you: Vector3 = L.call(0.9, 0.0, 0.9)
 	var p: FpController = main.player
-	var vial := _vial()
+	var vial: Node3D = _keep(_vial())
 	return [
 		{"from": [L.call(20.0, -1.0, 18.0), L.call(0.0, 1.0, 0.0)], "to": [L.call(12.0, 2.5, 11.0), L.call(0.0, 1.2, -0.3)], "dur": 5.0, "fov": 42.0, "music": "well",
 			"lines": [[0.8, "", "第十九烽 · 塔顶"]],

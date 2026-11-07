@@ -710,6 +710,10 @@ static func _native_params() -> bool:
 
 # ---------------- 过场（C.5） ----------------
 
+func _exit_tree() -> void:
+	CutScenes.free_orphans()                             # 数过镜头（测试）、换区域时还没演的过场：搭好没用上的道具放掉
+
+
 func _auto_cutscene(id: String, wait := 2.0) -> void:
 	await get_tree().create_timer(wait).timeout
 	if not play_cutscene(id):
@@ -749,6 +753,7 @@ func play_cutscene(id: String) -> bool:
 		cutscene = null
 		for n in get_tree().get_nodes_in_group("cut_prop"):        # 过场里临时搭的道具、补光：演完（跳过也算）拿掉
 			n.queue_free()
+		CutScenes.free_orphans()                                   # 镜头还没演到就跳过了的：那些道具没进过场景，直接放掉
 		for l in labels:
 			if is_instance_valid(l):
 				(l as Label3D).visible = true
