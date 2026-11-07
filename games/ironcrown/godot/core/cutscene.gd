@@ -89,7 +89,7 @@ func _ready() -> void:
 	box.add_child(text_label)
 	skip_btn = Button.new()
 	skip_btn.name = "Skip"
-	skip_btn.text = "跳过 ▸"
+	skip_btn.text = "跳过"                         # 不带箭头：网页的字体子集里没有 ▸（冒烟截图里是个方框）
 	skip_btn.focus_mode = Control.FOCUS_NONE
 	skip_btn.flat = true
 	skip_btn.add_theme_color_override("font_color", Color(0.85, 0.82, 0.74, 0.75))
