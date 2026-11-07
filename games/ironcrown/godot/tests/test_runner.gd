@@ -13424,5 +13424,17 @@ func test_cutscene() -> void:
 	main.ending_panel.close()
 	get_tree().paused = false
 	await free_main(main)
+	# 初见黑鹭堡（1-1）：第一章第一次进堡门就演，只演一次
+	GameState.new_game(4)
+	GameState.chapter = 1
+	GameState.pending_load = {"scene": "castle", "spawn": "gate", "player": {}}
+	main = await make_area("castle")
+	check(CutScenes.on_enter(main) == "castle_first" and CutScenes.shots(main, "castle_first").size() == 3, "第一章第一次进堡：演「初见黑鹭堡」（三个镜头）")
+	await seconds(1.4)
+	check(main.cutscene != null and main.cutscene.id == "castle_first" and Music.track == "keep", "进来一会儿就演")
+	main.cutscene.skip()
+	await frames(2)
+	check(GameState.has_flag("cut_castle_first") and CutScenes.on_enter(main) == "", "只演一次")
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 

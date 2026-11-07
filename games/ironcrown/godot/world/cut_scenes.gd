@@ -32,7 +32,7 @@ extends RefCounted
 ##   tide_rising    第二章第一夜潮水上来（FirstTide.tide_started）：营地这边往南看，坡上的人影一个接一个走上来 → 迎着它们，光着脚、闭着眼 →
 ##                  火把那一排背后，它们碰到火就拐开；演的时候潮水照样在走。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal"]
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first"]
 
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
@@ -52,6 +52,8 @@ static func on_enter(main: Variant) -> String:
 		return "ferry_standoff"
 	if GameState.has_flag("ch5_film") and not GameState.has_flag("ch5_done") and not GameState.has_flag("cut_ending_film") and a == str(ending_stage()[0]):
 		return "ending_film"
+	if a == "castle" and GameState.chapter == 1 and not GameState.has_flag("cut_castle_first") and not GameState.has_flag("ch1_hold"):
+		return "castle_first"
 	if a == "well_bottom" and GameState.chapter == 5 and not GameState.has_flag("ch5_ritual") and not GameState.has_flag("cut_well_descend"):
 		return "well_descend"
 	return ""
@@ -105,6 +107,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == str(ending_stage()[0])
 		"royal_seal":
 			return main.world != null
+		"castle_first":
+			return main.world != null and main.area == "castle"
 	return false
 
 
@@ -142,6 +146,8 @@ static func shots(main: Node, id: String) -> Array:
 			return ending_film(main)
 		"royal_seal":
 			return royal_seal(main)
+		"castle_first":
+			return castle_first(main)
 	return []
 
 
@@ -386,6 +392,21 @@ static func royal_seal(main: Node) -> Array:
 				st.global_position = o},
 		{"from": [o + Vector3(1.0, 0.24, 0.2), o + Vector3(1.0, 0.0, 0.0)], "to": [o + Vector3(1.0, 0.13, 0.1), o + Vector3(1.0, 0.0, 0.0)], "dur": 6.5, "fov": 34.0, "cut": true, "exposure": 0.9,
 			"lines": [[0.5, "", "翻过来，背面还压着一枚印——一顶星铁冠。"], [3.4, "", "王室的印鉴。老王生前，亲手担保过这笔债。"]]},
+	]
+
+
+## 初见黑鹭堡（1-1）：第一章第一次进堡门。庭院 36 × 40 米、墙高 8 米，主楼在北（Castle.KEEP），堡门在南（z = 20）
+static func castle_first(main: Node) -> Array:
+	var p: FpController = main.player
+	var keep: Vector3 = Castle.KEEP[0]
+	return [
+		{"from": [Vector3(-7.0, 11.0, 24.0), keep + Vector3(0, 4.0, 0)], "to": [Vector3(-3.5, 8.5, 17.0), keep + Vector3(0, 3.0, 0)], "dur": 7.0, "fov": 50.0, "music": "keep",
+			"lines": [[0.6, "", "黑鹭堡。鹭沼北岸的一圈石墙，瓦伦家世世代代守在这里。"], [3.8, "", "墙里头，家主病着，两位继承人都在等他开口。"]],
+			"on_start": func(): p.set_third_person(true)},
+		{"from": [Vector3(-1.6, 1.7, -2.5), Vector3(0, 1.6, -9.4)], "to": [Vector3(-0.9, 1.65, -4.2), Vector3(0, 1.5, -9.4)], "dur": 5.0, "fov": 46.0, "cut": true,
+			"lines": [[0.5, "", "火盆守着大厅的门。家主躺在东边的塔楼里，一天比一天轻了。"]]},
+		{"from": [Vector3(5.5, 1.7, 15.5), Vector3(0, 1.4, 17.5)], "to": [Vector3(4.5, 1.6, 13.5), Vector3(0, 1.5, 17.5)], "dur": 5.0, "fov": 46.0, "cut": true,
+			"lines": [[0.5, "", "堡门里头，每一双眼睛都在看你这个外人。"]]},
 	]
 
 
