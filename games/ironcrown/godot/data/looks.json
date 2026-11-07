@@ -135,6 +135,8 @@
     "管家塞缪尔": {"preset": "noble", "tint": {"MI_Peasant": "#4a4238"}, "hair": ["Hair_SimpleParted"], "hair_color": "#7a746a", "pose": "fold_arms"},
     "老贝恩": {"preset": "commoner_dark", "tint": {"MI_Peasant": "#6a6052"}, "hair": ["Hair_Buzzed", "Hair_Beard"], "hair_color": "#9a968c", "pose": "idle"},
     "奥迪隆": {"preset": "noble", "tint": {"MI_Peasant": "#8a3a34"}, "hair": ["Hair_SimpleParted"], "hair_color": "#141010", "pose": "drink", "prop": "cup"},
+    "帐门口的兵": {"preset": "guard", "tint": {"MI_Ranger": "#8a4a44"}, "hair": ["Hair_SimpleParted"], "hair_color": "#3a2a1a", "pose": "idle_armed"},
+    "麦渡的佃农": {"preset": "commoner", "tint": {"MI_Peasant": "#5a5046"}, "hair": ["Hair_Buzzed"], "hair_color": "#3a2a1a", "pose": "idle"},
     "塞弗林家的哨兵": {"preset": "guard", "tint": {"MI_Ranger": "#8a4a44"}, "hair": ["Hair_Buzzed"], "hair_color": "#2a2018", "pose": "idle_armed"},
     "伊达": {"preset": "woman", "tint": {"MI_Peasant": "#5a544a"}, "hair": ["Hair_Long"], "hair_color": "#4a3828", "pose": "fold_arms"},
     "渡口的船夫": {"preset": "commoner_dark", "hair": ["Hair_Buzzed", "Hair_Beard"], "hair_color": "#5a5046", "pose": "kneel_fix"},

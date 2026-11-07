@@ -187,8 +187,8 @@
       "ready": {"text": "（他在给手下分火把）天黑就点。北墙那道缺口，我放了四个人。", "options": [{"text": "告辞。", "end": true}]},
       "enemy": {"text": "（他的手按在枪杆上，指节发白）我听说了，你去砧山路口喝过酒。（他往后退了一步，挡在门洞当中）今晚别让我在这儿看见你。", "options": [{"text": "告辞。", "end": true}]},
       "block": {"text": "（他看见了你身后那些拿着撬棍的佃农，枪尖放了下来）……你要开仓。", "options": [{"text": "开了仓，佃农跟你们一起守；不开，今晚他们就站到塞弗林家那边去。", "check": {"id": "captain_aside_speech", "skill": "speech", "dc": 14, "pass": "aside", "fail": "refuse"}}, {"text": "让开。", "next": "refuse"}]},
-      "aside": {"text": "（他看看你，又看看那些佃农——瘦得跟柴火一样，手里攥着撬棍）……我没看见。（他把枪往肩上一扛，背过身去）开了仓，今晚就都给我守着。谁先跑，我先捅谁。", "do": [{"set": "ch3_captain_aside"}], "options": [{"text": "告辞。", "end": true}]},
-      "refuse": {"text": "（他没动）你撬吧。我拦不住这么多人。（他把枪横过来）可女家主问起来，我只说一句话：护院撤回庄园了。磨坊——你们自己守。", "options": [{"text": "告辞。", "end": true}]},
+      "aside": {"text": "（他看看你，又看看那些佃农——瘦得跟柴火一样，手里攥着撬棍）……我没看见。（他把枪往肩上一扛，背过身去）开了仓，今晚就都给我守着。谁先跑，我先捅谁。", "do": [{"set": "ch3_captain_aside"}, {"set": "ch3_captain_tried"}], "options": [{"text": "告辞。", "end": true}]},
+      "refuse": {"text": "（他没动）你撬吧。我拦不住这么多人。（他把枪横过来）可女家主问起来，我只说一句话：护院撤回庄园了。磨坊——你们自己守。\n（粮仓在院子东边。第一座仓的门朝北，撬棍插得进门缝）", "do": [{"set": "ch3_captain_tried"}], "options": [{"text": "告辞。", "end": true}]},
       "aside_again": {"text": "（他背对着粮仓站着，像是真的什么都没看见）天黑就点火把。", "options": [{"text": "告辞。", "end": true}]},
       "after_open": {"text": "（他看着佃农一袋一袋往车上扛，一句话没说）", "options": [{"text": "告辞。", "end": true}]}
     }}

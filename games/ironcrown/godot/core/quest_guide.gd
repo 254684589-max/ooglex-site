@@ -53,7 +53,12 @@ static func title_of(id: String) -> String:
 
 
 static func objective(id: String, stage: String) -> String:
-	return str(GameState.quest_data().get("quests", {}).get(id, {}).get("stages", {}).get(stage, {}).get("objective", ""))
+	var st: Dictionary = GameState.quest_data().get("quests", {}).get(id, {}).get("stages", {}).get(stage, {})
+	if GameState.quest_stage(id) == stage:
+		for o: Dictionary in st.get("objective_if", []):                 # 同一步里做完了一半，说明跟着变（2026-11-07：开仓那一步，护院头目说过以后指向粮仓的门）
+			if GameState.has_flag(str(o.get("flag", ""))):
+				return str(o.get("text", ""))
+	return str(st.get("objective", ""))
 
 
 ## 步骤：[[文字, 做完了没有], …]，最后一条是现在这一步
@@ -93,12 +98,14 @@ static func target(world: Node, from: Vector3, id: String, area: String) -> Dict
 	var text := objective(id, stage)
 	var best: Node3D = null
 	var best_d := INF
+	var best_len := 0
 	for n in world.find_children("*", "Interactable", true, false):
 		var nm := str((n as Interactable).display_name)
 		if nm.length() < 2 or nm in SKIP_NAMES or not text.contains(nm) or not (n as Node3D).is_visible_in_tree():
 			continue
 		var d := (n as Node3D).global_position.distance_to(from)
-		if d < best_d:
+		if nm.length() > best_len or (nm.length() == best_len and d < best_d):   # 名字更具体的优先（「第一座粮仓的门」胜过「粮仓的门」），一样具体的取近的
+			best_len = nm.length()
 			best_d = d
 			best = n
 	if best:

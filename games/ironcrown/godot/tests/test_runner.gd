@@ -25,7 +25,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords", "minimap", "cutscene"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords", "minimap", "cutscene", "dread"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -9213,6 +9213,43 @@ func test_ch3choice() -> void:
 			stuck.append(nm)
 	check(stuck.is_empty() and main.world.find_child("GranaryPry", true, false) != null, "护院头目在南门里、两个护院在北墙缺口，都没卡住；粮仓门边能撬（卡住的：%s）" % str(stuck))
 	await free_main(main)
+	# 开仓那一步（2026-11-07 所有者反馈：护院头目说不动以后不知道下一步、老贝恩没跟来）
+	fresh.call()
+	say_runner("bain", ["天黑以前，先开仓。粮分了，人跟我守磨坊。"], "plain")
+	GameState.pending_load = {"scene": "plain", "spawn": "mill", "player": {}}
+	main = await make_area("plain")
+	await frames(3)
+	var gb := main.world.find_child("Npc_bain", true, false) as Npc
+	var tens: Array = main.world.find_children("Npc_tenant*", "Npc", true, false)
+	var tstuck := []
+	for n in tens + [gb]:
+		if n == null or not await stands_clear(n):
+			tstuck.append(n.name if n else "bain")
+	check(gb != null and Vector2(gb.global_position.x, gb.global_position.z).distance_to(PlainPeople.BAIN_GATE[0]) < 1.0 and tens.size() == 3 and tstuck.is_empty(),
+		"开仓那一步：老贝恩带着三个佃农等在磨坊南门外，都没卡住（卡住的：%s）" % str(tstuck))
+	var cpt := main.world.find_child("Npc_captain", true, false) as Npc
+	var tg := QuestGuide.target(main.world, main.player.global_position, "ch3_main", "plain")
+	check(tg.get("node") == cpt or tg.get("node") == gb, "还没跟护院头目说：指引指着南门那边（%s）" % str(tg.get("label", "")))
+	GameState.checks["captain_aside_speech"] = false
+	check(say_runner("captain", ["开了仓，佃农跟你们一起守；不开，今晚他们就站到塞弗林家那边去。"], "plain") == "refuse" and GameState.has_flag("ch3_captain_tried")
+		and QuestGuide.objective("ch3_main", "open_granary").contains("粮仓的门"), "没说动护院头目：任务说明改成「撬开东边第一座粮仓的门」")
+	tg = QuestGuide.target(main.world, main.player.global_position, "ch3_main", "plain")
+	check(tg.get("node") == main.world.find_child("GranaryPry", true, false), "指引改指粮仓的门（%s）" % str(tg.get("label", "")))
+	main._on_interacted(PlainPeople.pry_granary())
+	check(GameState.quest_stage("ch3_main") == "to_mill_tenants" and GameState.has_flag("ch3_guards_left"), "撬开：仓开了，护院撤走，主线到「天黑以前到磨坊」")
+	await free_main(main)
+	GameState.pending_load = {"scene": "plain", "spawn": "mill", "player": {}}
+	main = await make_area("plain")
+	await frames(3)
+	gb = main.world.find_child("Npc_bain", true, false) as Npc
+	tens = main.world.find_children("Npc_tenant*", "Npc", true, false)
+	tstuck = []
+	for n in tens + [gb]:
+		if n == null or not await stands_clear(n):
+			tstuck.append(n.name if n else "bain")
+	check(gb != null and Vector2(gb.global_position.x, gb.global_position.z).distance_to(PlainPeople.BAIN_GRANARY[0]) < 1.0 and tens.size() == 3 and tstuck.is_empty(),
+		"仓开了以后：老贝恩和佃农守在第一座仓门口，都没卡住（卡住的：%s）" % str(tstuck))
+	await free_main(main)
 	GameState.chapter = 0
 	GameState.pending_load = {}
 
@@ -12654,6 +12691,70 @@ func test_beaconpeople() -> void:
 
 
 ## 5.4a 长眠者群：跟着路线走、互相让开、人越多越快、绕开火、推倒踩过挡路的人、走完就没了
+
+## 长眠者更恐怖（2026-11-07 所有者「长眠者做的不恐怖，能再恐怖些吗」）：形象、头垂着、光脚、呼吸和脚步、脚下的雾、火把压暗、一起转头
+func test_dread() -> void:
+	var spec := SleeperCrowd.chill(Looks.spec_of({"preset": "commoner", "hair": ["Hair_Buzzed"], "hair_color": "#3a2a1a"}))
+	var tint: Dictionary = spec.look.tint
+	check(bool(spec.look.get("slump", false)) and tint.MI_Peasant == SleeperCrowd.LINEN_TINT and tint.MI_Superhero_Male == SleeperCrowd.SKIN_TINT and tint.MI_Eyes == SleeperCrowd.EYE_TINT
+		and (tint.MI_Hair_1 as Color).b > Color("#3a2a1a").b + 0.2, "长眠者的样子：脏麻衣、发青的皮肤、深陷的眼窝、头发结霜、头垂着")
+	var cm := CharacterModel.new()
+	cm.parts = spec.parts
+	cm.look = spec.look
+	get_tree().root.add_child(cm)
+	await frames(2)
+	var slump := cm.skeleton.get_node_or_null("SleeperSlump") as SleeperSlump if cm.loaded else null
+	var feet: Array = cm.scene_root.find_children("*_Feet", "MeshInstance3D", true, false) if cm.loaded else []
+	check(slump != null and not feet.is_empty() and feet.all(func(f): return f.material_override != null), "真人模型：挂上「头垂下去」，靴子换成光脚")
+	if slump:
+		var hi := cm.skeleton.find_bone("Head")
+		cm.play_loop("walk", 0.62)
+		await frames(3)
+		var y1 := cm.skeleton.get_bone_global_pose(hi).basis.z
+		check(hi >= 0 and y1.y < -0.15, "头往前垂（脸朝下 %.2f）" % y1.y)
+	cm.queue_free()
+	var mesh := SleeperCrowd.figure_mesh()
+	check(mesh.get_surface_count() == 4, "远处的人形：麻衣、皮肤、头发、眼窝四种材质（%d）" % mesh.get_surface_count())
+	var st := SleeperHum.synth(true)
+	check(st.loop_mode == AudioStreamWAV.LOOP_FORWARD and st.loop_end == int(SleeperHum.CYCLE * SleeperHum.RATE) and st.data.size() == st.loop_end * 2, "呼吸和脚步：一段 %.1f 秒能循环的声音" % SleeperHum.CYCLE)
+	var route := [Vector2(0, 0), Vector2(0, -40)]
+	var c := SleeperCrowd.make(route, 12, 4.0)
+	c.near_enabled = false
+	get_tree().root.add_child(c)
+	var torch := PlantedTorch.new()
+	get_tree().root.add_child(torch)
+	torch.global_position = Vector3(1.0, 0, -2.0)
+	var cam := Camera3D.new()
+	get_tree().root.add_child(cam)
+	cam.global_position = Vector3(2.0, 1.6, -3.0)
+	cam.current = true
+	await physics(3)
+	await frames(2)
+	check(c.mist != null and c.mist.multimesh.instance_count == 12, "脚下每人一片贴地的薄雾（一次画完）")
+	check(c._near_d < 8.0 and c.hum != null, "离最近的长眠者 %.1f 米：呼吸声跟着距离" % c._near_d)
+	check(torch.dim < 0.9, "人群走近，插在地上的火把暗下去（%.2f）" % torch.dim)
+	var old := Settings.sound
+	Settings.sound = true
+	await frames(2)
+	check(c.hum.playing and c.hum.volume_db > SleeperHum.QUIET_DB + 10.0, "走近了听得见（%.1f dB）" % c.hum.volume_db)
+	cam.global_position = Vector3(200, 1.6, 200)
+	cam.current = true
+	await physics(3)
+	await frames(3)
+	check(not c.hum.playing, "走远了就停（%.0f 米）" % c._near_d)
+	Settings.sound = old
+	c.queue_free()
+	await frames(2)
+	check(is_equal_approx(torch.dim, 1.0), "人群不在了：火把还原")
+	torch.queue_free()
+	cam.queue_free()
+	SleeperSlump.glance_at = SleeperSlump.now()
+	await seconds(SleeperSlump.GLANCE_TURN + 0.2)
+	var lv := SleeperSlump.glance_level()
+	await seconds(SleeperSlump.GLANCE_HOLD + SleeperSlump.GLANCE_TURN + 0.2)
+	check(lv > 0.95 and SleeperSlump.glance_level() == 0.0, "一起转头：转过来停一会儿，再转回去（大家用同一个时钟）")
+	SleeperSlump.glance_at = -1000.0
+
 func test_sleepercrowd() -> void:
 	var route := [Vector2(0, 0), Vector2(0, -40), Vector2(10, -70)]
 	var c := SleeperCrowd.make(route, 24, 5.0)
