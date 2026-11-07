@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -12947,5 +12947,66 @@ func test_guide() -> void:
 	GameState.complete_quest("ch2_main")
 	await frames(2)
 	check(tr.quest_id == "ch1_wedding" and tr.panel.visible, "主线做完了：跟最近的支线")
+	await free_main(main)
+
+
+func test_swords() -> void:
+	# 主角的剑（C.3，所有者 2026-11-07「所有剑保留，让玩家自行选择，一开始先设定一把剑」）：四种样式、开局武装剑、「角色」面板里换、第一人称和第三人称一起换、存档里有
+	var bad := []
+	var sizes := {}
+	for d: String in SwordKit.DESIGNS:
+		var m := SwordKit.mesh(d)
+		var bb := m.get_aabb()
+		sizes[d] = bb.size.y
+		if m.get_surface_count() != 1 or bb.size.y < 0.8 or bb.size.y > 1.25 or bb.size.x > 0.32 or bb.position.y > -0.05 or SwordKit.NAMES.get(d, "") == "" or SwordKit.DESCS.get(d, "") == "":
+			bad.append(d)
+	check(bad.is_empty() and SwordKit.DESIGNS.size() == 4 and float(sizes.longsword) > float(sizes.arming) and float(sizes.falchion) < float(sizes.arming),
+		"四种剑都搭得出来、有名字和说明，长短对（手半剑最长、弯刀最短）：%s" % str(sizes))
+	check(SwordKit.mesh("arming") == SwordKit.mesh("arming") and SwordKit.mesh("nope") == SwordKit.mesh(SwordKit.DEFAULT), "网格做一次就缓存；不认识的样式当武装剑")
+	GameState.new_game(1)
+	check(GameState.sword_style == "arming", "开局是武装剑")
+	var main := await make_main(true)
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	m.press(); m.release()
+	await melee_tick(0.5)
+	var v: WeaponView = m.view
+	check(v.mesh_node.mesh == SwordKit.mesh("arming"), "第一人称手里是武装剑")
+	main.open_character()
+	await frames(2)
+	var cp: CharacterPanel = main.char_panel
+	var grid := cp.find_child("SwordStyles", true, false)
+	var ab := cp.find_child("Sword_arming", true, false) as Button
+	var lb := cp.find_child("Sword_longsword", true, false) as Button
+	check(grid != null and grid.get_child_count() == 4 and ab.disabled and ab.text.contains("正在用") and not lb.disabled, "「角色」面板里四把剑，正在用的写「正在用」")
+	lb.pressed.emit()
+	await frames(2)
+	lb = cp.find_child("Sword_longsword", true, false) as Button
+	check(GameState.sword_style == "longsword" and v.mesh_node.mesh == SwordKit.mesh("longsword") and lb.disabled and lb.text.contains("正在用"), "点手半剑：手里马上换成手半剑")
+	var tip: Vector3 = v.to_global(Vector3(0, 0.95, 0))
+	check(p.camera.is_position_in_frustum(v.global_position), "手半剑握柄在画面里（剑尖 %s 画面里）" % ("也在" if p.camera.is_position_in_frustum(tip) else "伸出"))
+	cp.close()
+	get_tree().paused = false
+	await frames(2)
+	var saved := GameState.to_dict()
+	GameState.new_game(2)
+	check(GameState.sword_style == "arming", "新开一局回到武装剑")
+	GameState.from_dict(saved)
+	check(GameState.sword_style == "longsword", "存档里记着手半剑，读回来还是")
+	var old := saved.duplicate(true)
+	old.erase("sword_style")
+	GameState.from_dict(old)
+	check(GameState.sword_style == "arming", "以前的存档没有这一项：武装剑")
+	GameState.set_sword_style("messer")
+	Settings.set_value("third_person", true)
+	await frames(6)
+	var av: PlayerAvatar = p.avatar
+	for i in 60:
+		await frames(2)
+		if av.weapon_mesh != null and av.style == "messer":
+			break
+	check(av.weapon_mesh != null and av.weapon_mesh.mesh == SwordKit.mesh("messer"), "第三人称人物手里也是同一把（北境长刀）")
+	Settings.set_value("third_person", false)
+	GameState.set_sword_style("arming")
 	await free_main(main)
 

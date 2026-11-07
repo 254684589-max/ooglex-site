@@ -224,6 +224,8 @@ func _ready() -> void:
 			GameState.set_stage("ch2_main", "rob_ready")
 			Chapter2.dawn()
 			GameState.daypart = "dawn"
+		if _query("sword") in SwordKit.DESIGNS:
+			GameState.set_sword_style(_query("sword"))          # 截图用（C.3）：?sword=longsword 换剑的样式
 		if _query("quest").contains(":") and not Engine.has_meta("ic_quest_param_done"):
 			Engine.set_meta("ic_quest_param_done", true)      # 截图用（C.2）：?quest=ch3_main:sides 直接让这条任务走到这一步（看左上角的任务追踪和目标标记）
 			var qs := _query("quest").split(":")

@@ -63,6 +63,8 @@ func refresh() -> void:
 		box.add_child(row)
 	UiKit.label(box, "生命上限 %d · 体力上限 %d · 负重上限 %.0f 斤 · 护甲 %d" % [GameState.health_max(), GameState.stamina_max(), GameState.carry_limit(), GameState.armor_total()], true, 14)
 	box.add_child(HSeparator.new())
+	_sword_styles()
+	box.add_child(HSeparator.new())
 	UiKit.label(box, "技能（用什么涨什么）", true)
 	UiKit.label(box, "方框是升到下一级的进度，10 格满了技能 +1；后面的数字是已攒的进度 / 升级需要的进度", true, 14)
 	for s in GameState.SKILL_NAMES:
@@ -80,6 +82,32 @@ func refresh() -> void:
 		var v := GameState.get_rep(fid)
 		UiKit.label(box, "%s　%s（%+d）　%s" % [pd.factions[fid].name, GameState.rep_tier(v), v, _rep_bar(v)])
 	_fit()
+
+
+## 剑的样式（C.3）：四把都能用，点一下就换（只换外观，伤害照旧）；正在用的那把写「◆ 正在用」，不只靠颜色
+func _sword_styles() -> void:
+	UiKit.label(box, "剑的样式（只换外观，伤害、手感照旧）", true)
+	var grid := GridContainer.new()
+	grid.name = "SwordStyles"
+	grid.columns = 2 if get_viewport_rect().size.x >= 560.0 else 1
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 6)
+	box.add_child(grid)
+	for d: String in SwordKit.DESIGNS:
+		var b := Button.new()
+		b.name = "Sword_" + d
+		var on := GameState.sword_style == d
+		b.text = ("◆ %s（正在用）" if on else "◇ %s") % SwordKit.NAMES[d]
+		b.tooltip_text = SwordKit.DESCS[d]
+		b.custom_minimum_size = Vector2(220, 40)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b.disabled = on
+		b.pressed.connect(func():
+			GameState.set_sword_style(d)
+			print("IC_SWORD style=%s" % d)
+			refresh())
+		grid.add_child(b)
+	UiKit.label(box, SwordKit.DESCS[GameState.sword_style], true, 14)
 
 
 ## 进度条后面的数字：「1.5/5」（打木桩只算半次，所以会有小数）；练满了写「已满」

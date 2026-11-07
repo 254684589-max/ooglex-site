@@ -54,11 +54,13 @@ var kick := Vector3.ZERO          # 命中时的小回弹（位置偏移，逐�
 var model := ""
 var model_hidden := false
 var mesh_node: MeshInstance3D
+var style := ""                   # 剑的样式（C.3，SwordKit）：换了样式 set_model 要重新搭
 var off_node: MeshInstance3D      # 拳头时的左拳
 var off_raise := 0.0              # 左拳举起的程度：0 = 护在胸前，1 = 举到面前（格挡）
 
 
 func _ready() -> void:
+	GameState.sword_style_changed.connect(func(): set_model(model))
 	if model == "":
 		set_model("sword")
 	set_pose(POSES.lowered)
@@ -67,9 +69,10 @@ func _ready() -> void:
 
 ## 换外观：sword（剑身、护手、握柄、剑首）/ club（裹铁皮的木棍）（2.6）/ fists（两只拳头，3.3）
 func set_model(m: String) -> void:
-	if m == model and mesh_node:
+	if m == model and mesh_node and (m != "sword" or style == GameState.sword_style):
 		return
 	model = m
+	style = GameState.sword_style
 	for n in [mesh_node, off_node]:
 		if n:
 			remove_child(n)
@@ -86,12 +89,6 @@ func set_model(m: String) -> void:
 		kit.cylinder("leather", Vector3(0, -0.12, 0), Vector3(0, 0.08, 0), 0.022, 0.022, 6)
 		kit.cylinder("wood", Vector3(0, 0.08, 0), Vector3(0, 0.62, 0), 0.026, 0.045, 6)
 		kit.cylinder("iron", Vector3(0, 0.48, 0), Vector3(0, 0.62, 0), 0.05, 0.05, 6)
-	else:
-		kit.box("steel", Vector3(0, 0.09 + BLADE_LEN * 0.5, 0), Vector3(0.045, BLADE_LEN, 0.008))
-		kit.box("steel", Vector3(0, 0.09 + BLADE_LEN + 0.025, 0), Vector3(0.02, 0.05, 0.006))      # 剑尖收窄
-		kit.box("iron", Vector3(0, 0.08, 0), Vector3(0.20, 0.025, 0.03))                          # 护手
-		kit.box("leather", Vector3(0, -0.02, 0), Vector3(0.032, 0.18, 0.032))                     # 握柄
-		kit.box("iron", Vector3(0, -0.125, 0), Vector3(0.05, 0.04, 0.05))                         # 剑首
 	var steel := StandardMaterial3D.new()
 	steel.albedo_color = Color("b4bcc6")
 	steel.metallic = 0.35
@@ -121,7 +118,12 @@ func set_model(m: String) -> void:
 		mat.emission_enabled = true
 		mat.emission = mat.albedo_color
 		mat.emission_energy_multiplier = 0.12
-	mesh_node = kit.build({"steel": steel, "iron": iron, "leather": leather, "wood": wood, "skin": skin, "knuckle": knuckle, "sleeve": sleeve})
+	if m == "sword":                                         # 剑（C.3）：代码建模的四种样式，玩家在「角色」面板里挑
+		mesh_node = MeshInstance3D.new()
+		mesh_node.mesh = SwordKit.mesh(style)
+		mesh_node.material_override = SwordKit.material(0.22)
+	else:
+		mesh_node = kit.build({"steel": steel, "iron": iron, "leather": leather, "wood": wood, "skin": skin, "knuckle": knuckle, "sleeve": sleeve})
 	mesh_node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mesh_node.name = "Model"
 	add_child(mesh_node)

@@ -1179,6 +1179,13 @@ godot/
 - **截图参数**：`?quest=ch3_main:sides` 让一条任务直接走到某一步。
 - **测试**：`guide` 组；`music` 组查每个剧情区域都有曲子；营地测试查帐子尺寸、走得进去、门口的兵没卡住。
 
+### 4.98 主角的剑（路线图 C.3，2026-11-07）
+
+- `combat/sword_kit.gd`（`SwordKit`）：`DESIGNS`（arming / longsword / falchion / messer）、`NAMES`、`DESCS`、`DEFAULT`；`mesh(design)` 搭一次缓存；`material(glow)` 共用的 `ShaderMaterial`。剑身 `_blade` 按截面放样（双刃 12 点带血槽、单刃 7 点刀背在 -X），最后一段剑尖按 `(1-k)^0.75` 收拢；护手 `_bar` / `_curved_bar`、握柄 `_grip`（缠绳一圈一道起伏，0 = 木片夹柄加铆钉）、剑首 `_disk` / `_pear` / `_box`。坐标同原来的剑：护手 y = 0.075，剑尖朝 +Y。
+- `shaders/sword.gdshader`：顶点色红 = 钢、绿 = 铁、蓝 = 握柄；金属度 0.45（夜里不黑）、`glow` 自发光（第一人称 0.22、第三人称 0.08）。
+- `GameState.sword_style` / `set_sword_style()` / `sword_style_changed`；`to_dict` / `from_dict` 带 `sword_style`。`WeaponView.set_model` 和 `PlayerAvatar._set_model` 记着 `style`，样式变了就重搭。
+- UI：`CharacterPanel._sword_styles()`（`SwordStyles` 网格，宽屏两列、窄屏一列）。截图参数 `?sword=`。测试：`swords` 组。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

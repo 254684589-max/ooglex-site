@@ -59,6 +59,8 @@ signal rep_changed(faction: String, delta: int, value: int)
 var seed_value := 0
 var checks := {}          # 检定编号 → 是否成功（已经掷过的）
 var quests := {}          # 任务编号 → {stage, done, log（走过的步骤，C.2）}
+signal sword_style_changed
+var sword_style := "arming"   # 主角的剑长什么样（C.3：武装剑 / 手半剑 / 法尔钦弯刀 / 北境长刀，「角色」面板里换；只是外观）
 var last_quest := ""      # 最近接到 / 推进的任务（C.2：没有主线在做时，左上角跟这一条）
 var clues: Array = []     # 得到的线索编号（按得到的先后）
 var inventory: Array = [] # 物品编号（同一物品可以有多个；2.6 起装备中的物品也在这里）
@@ -97,6 +99,7 @@ func new_game(seed_override := -1) -> void:
 	checks.clear()
 	quests.clear()
 	last_quest = ""
+	sword_style = SwordKit.DEFAULT
 	clues.clear()
 	inventory.clear()
 	inventory.append_array(START_ITEMS)
@@ -632,7 +635,7 @@ static func rep_tier(v: int) -> String:
 ## 游戏状态 → 可以写成 JSON 的字典
 func to_dict() -> Dictionary:
 	return {
-		"seed": seed_value, "flags": flags.duplicate(true), "checks": checks.duplicate(), "quests": quests.duplicate(true), "last_quest": last_quest, "clues": clues.duplicate(),
+		"seed": seed_value, "flags": flags.duplicate(true), "checks": checks.duplicate(), "quests": quests.duplicate(true), "last_quest": last_quest, "sword_style": sword_style, "clues": clues.duplicate(),
 		"inventory": inventory.duplicate(), "equipped": equipped.duplicate(), "silver": silver, "looted": looted.duplicate(true),
 		"picked": picked.duplicate(), "dead": dead.duplicate(true), "yielded": yielded.duplicate(true), "playtime": playtime, "tips": tips_seen.duplicate(),
 		"attributes": {"strength": strength, "agility": agility, "constitution": constitution, "wits": wits},
@@ -657,6 +660,8 @@ func from_dict(d: Dictionary) -> void:
 		var v: Dictionary = d.quests[q]
 		quests[q] = {"stage": str(v.get("stage", "")), "done": bool(v.get("done", false)), "log": Array(v.get("log", [])).map(func(x): return str(x))}     # log：C.2 以前的存档没有
 	last_quest = str(d.get("last_quest", ""))
+	sword_style = str(d.get("sword_style", SwordKit.DEFAULT)) if str(d.get("sword_style", "")) in SwordKit.DESIGNS else SwordKit.DEFAULT     # C.3 以前的存档没有：武装剑
+	sword_style_changed.emit()
 	clues = Array(d.get("clues", [])).map(func(x): return str(x))
 	if d.has("inventory"):
 		inventory = Array(d.inventory).map(func(x): return str(x))
@@ -694,3 +699,11 @@ func from_dict(d: Dictionary) -> void:
 	for f in d.get("rep", {}):
 		rep[f] = int(d.rep[f])
 	inventory_changed.emit()
+
+
+## 换剑的样式（C.3）
+func set_sword_style(design: String) -> void:
+	if design in SwordKit.DESIGNS and design != sword_style:
+		sword_style = design
+		sword_style_changed.emit()
+
