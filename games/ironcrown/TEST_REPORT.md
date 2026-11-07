@@ -2,6 +2,18 @@
 
 每一步的实际命令与结果，最新的在上面。
 
+## 2026-11-07 · 上线：第三到第五章对玩家开放（所有者说「上线」）
+
+- 部署构建：`tools/build_web.sh play`，play/ 换成 `ic-1c95fd6a.*`（111.7 MB），全量测试 ALL 2737 CHECKS PASSED。
+- 对构建好的 play/ 跑冒烟：desk 1280×720、tab 768×1024、phone 360×740 三档全部 PASS，溢出 0px、报错 0（启动 4.8s / 4.7s / 4.3s）。
+- 合并到 main 并推送，触发「Deploy Protected Ooglex Pages」。
+
+## 2026-11-07 · 第三到第五章对玩家开放
+
+- 改动：`Chapters.PLAYABLE` 2 → 5，第三到第五章去掉「制作中」；章末画面下一章能玩时不写「开发中」；`ch1_end`、`ch2_end` 任务目标更新。
+- 改了 12 处旧断言（原来断言第三 / 四 / 五章还没开放），改成断言已开放：第二、三、四章章末有「继续」、`next_chapter` 指向下一章、按钮不带「制作中」、副标题藏起来；没开放的情形（`playable_chapter` 调小、`open_chapter4(…, 0)`）仍断言没有「继续」、写「开发中」。
+- 全量测试：ALL 2737 CHECKS PASSED。2026-11-07 上线。
+
 ## 2026-11-07 · 上线 6.3c–8.5（所有者说「跑完测试后全部上线」）
 
 - 部署构建：`tools/build_web.sh play`，play/ 换成 `ic-f632d4fa.*`（共 111.7 MB），全量测试 ALL 2737 CHECKS PASSED。
