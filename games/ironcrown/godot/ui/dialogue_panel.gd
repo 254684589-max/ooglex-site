@@ -54,8 +54,8 @@ func _ready() -> void:
 	hide()
 
 
-func open(area: String, dialogue_id: String) -> bool:
-	if not runner.start(area, dialogue_id):
+func open(area: String, dialogue_id: String, at_node := "") -> bool:
+	if not runner.start(area, dialogue_id, at_node):
 		return false
 	show()
 	_refresh()

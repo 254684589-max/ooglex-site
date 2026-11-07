@@ -121,7 +121,7 @@ func _ready() -> void:
 	tip_queue = GameState.pending_tips.duplicate() if pending.has("spawn") else []    # 从门走进来：没轮到的教学提示接着排
 	GameState.pending_tips = []
 	GameState.pending_goto = {}                     # 上一个场景没走成的「带你去别处」不带过来（审查）
-	if OS.has_feature("web"):
+	if OS.has_feature("web") or _native_params():
 		Soldier.models_on = _query("models") != "0"      # 基准测试比较用（B.6）：?models=0 兵还是占位胶囊
 		if _query("test") == "1":
 			use_test_range = true
@@ -487,6 +487,10 @@ func _ready() -> void:
 	hud.tracker.refresh()                         # 左上角的任务追踪（C.2）
 	var q := _query("q")
 	apply_quality(q if q in Look.TIERS else (Settings.quality if Settings.quality in Look.TIERS else Look.default_tier()))
+	if _query("cutscene") in CutScenes.IDS:
+		_auto_cutscene.call_deferred(_query("cutscene"))         # 截图 / 录视频用（C.5）：?cutscene=norbert_vial 进场两秒后播
+	elif CutScenes.on_enter(self) != "":
+		_auto_cutscene.call_deferred(CutScenes.on_enter(self), 1.0)          # 进区域时演的过场（C.5：渡口对峙……），每段只演一次
 	print("IC_READY renderer=%s web=%s scene=%s touch=%s quality=%s size=%s" % [
 		ProjectSettings.get_setting("rendering/renderer/rendering_method"), OS.has_feature("web"),
 		scene_name(), touch_mode, quality, get_viewport().get_visible_rect().size])
@@ -689,8 +693,77 @@ func scene_name() -> String:
 
 func _query(key: String) -> String:
 	if not OS.has_feature("web"):
+		for arg in OS.get_cmdline_user_args():                 # 本机用 Godot 录视频时（--write-movie）：命令行「-- key=value」当网址参数（C.5）
+			if arg.begins_with(key + "="):
+				return arg.substr(key.length() + 1)
 		return ""
 	return str(JavaScriptBridge.eval("(new URLSearchParams(window.location.search)).get('%s') || ''" % key, true))
+
+
+## 本机命令行带了「key=value」参数（录过场视频用），网址参数那一套也照样认
+static func _native_params() -> bool:
+	for a in OS.get_cmdline_user_args():
+		if a.contains("="):
+			return true
+	return false
+
+
+# ---------------- 过场（C.5） ----------------
+
+func _exit_tree() -> void:
+	CutScenes.free_orphans()                             # 数过镜头（测试）、换区域时还没演的过场：搭好没用上的道具放掉
+
+
+func _auto_cutscene(id: String, wait := 2.0) -> void:
+	await get_tree().create_timer(wait).timeout
+	if not play_cutscene(id):
+		print("IC_CUTSCENE unavailable id=%s" % id)
+		if id == "ending_film" and GameState.has_flag("ch5_film"):
+			_the_end()
+		return
+	if id == "ending_film" and GameState.has_flag("ch5_film"):
+		cutscene.finished.connect(func(_s: bool): _the_end(), CONNECT_ONE_SHOT)      # 结局影片演完（跳过也算）：出结局画面
+
+
+var cutscene: Cutscene = null
+
+## 播一段过场：玩家不能动、HUD 藏起来；播完（或跳过）还原
+func play_cutscene(id: String) -> bool:
+	if Engine.get_meta("ic_skip_film", false):
+		return false                                     # 自动化测试：过场只在 cutscene 组里测，别的组照原来的流程走
+	if cutscene != null or not CutScenes.available(self, id):
+		return false
+	var sh := CutScenes.shots(self, id)
+	if sh.is_empty():
+		return false
+	var tp_was := Settings.third_person
+	var labels: Array = []
+	for l in world.find_children("*", "Label3D", true, false):       # 头顶的名字牌、飘字：过场里不露出来
+		if (l as Label3D).visible:
+			(l as Label3D).visible = false
+			labels.append(l)
+	hud.visible = false
+	player.set_physics_process(false)
+	player.set_process_unhandled_input(false)
+	if touch:
+		touch.visible = false
+	GameState.set_flag("cut_" + id)                  # 每段只演一次（存档里记着）
+	cutscene = Cutscene.play(world, id, sh, player.camera)
+	cutscene.finished.connect(func(_skipped: bool):
+		cutscene = null
+		for n in get_tree().get_nodes_in_group("cut_prop"):        # 过场里临时搭的道具、补光：演完（跳过也算）拿掉
+			n.queue_free()
+		CutScenes.free_orphans()                                   # 镜头还没演到就跳过了的：那些道具没进过场景，直接放掉
+		for l in labels:
+			if is_instance_valid(l):
+				(l as Label3D).visible = true
+		player.set_third_person(tp_was)
+		player.set_physics_process(true)
+		player.set_process_unhandled_input(true)
+		hud.visible = true
+		if touch:
+			touch.visible = touch_mode)
+	return true
 
 
 ## 从固定机位开始（Frostford.VIEWS；截图与冒烟测试用）
@@ -1469,6 +1542,12 @@ func _on_target_changed(target: Interactable) -> void:
 func _on_interacted(r: Dictionary) -> void:
 	if r.is_empty():
 		return
+	if r.has("cutscene") and not GameState.has_flag("cut_" + str(r.cutscene)) and play_cutscene(str(r.cutscene)):    # 先演一段过场（C.5：金库之夜拿到冠……），演完再给提示
+		var rest := r.duplicate()
+		rest.erase("cutscene")
+		cutscene.finished.connect(func(_skipped: bool):
+			_on_interacted(rest), CONNECT_ONE_SHOT)
+		return
 	if r.has("toast"):
 		hud.toast(r.toast)
 	if r.has("speech"):
@@ -1479,6 +1558,13 @@ func _on_interacted(r: Dictionary) -> void:
 		if brawl_active() or encounter_active():
 			hud.toast("先把这一架打完。", 1.5)
 			print("IC_INTERACT kind=busy name=%s" % r.get("name", ""))
+			return
+		var before := CutScenes.before_dialogue(str(r.id))          # 有些对话先演一段过场（C.5），演完从后面接着说
+		if not before.is_empty() and play_cutscene(str(before.cut)):
+			var rr := r
+			cutscene.finished.connect(func(_skipped: bool):
+				(before.after as Callable).call()
+				open_dialogue(rr.area, rr.id, rr.get("npc"), str(before.get("node", ""))), CONNECT_ONE_SHOT)
 			return
 		open_dialogue(r.area, r.id, r.get("npc"))
 	if r.get("kind") == "loot":
@@ -1494,8 +1580,8 @@ func _on_interacted(r: Dictionary) -> void:
 
 
 ## 打开对话（2.1）：镜头平滑转向说话人，游戏暂停，鼠标放出来点选项
-func open_dialogue(area: String, id: String, npc: Node3D = null) -> void:
-	if not dialogue.open(area, id):
+func open_dialogue(area: String, id: String, npc: Node3D = null, at_node := "") -> void:
+	if not dialogue.open(area, id, at_node):
 		return
 	dialogue_npc = npc
 	if npc is Npc:
@@ -1644,6 +1730,8 @@ func _on_dialogue_closed() -> void:
 	_ch3_sides_heard()
 	if area == "sickroom":
 		Sickroom.wake(world)                                # 黄昏家主醒了（4.8a）
+	if area == "key_vault" and GameState.has_item("iron_crown") and str(GameState.get_flag("ch4_vault", "")) == "talked" and not GameState.has_flag("cut_vault_crown"):
+		_on_interacted({"cutscene": "vault_crown"})         # 莫德自己开的铁笼（7.5 talked）：同样演「金库之夜」（C.5 4-2）
 	var heir := str(GameState.get_flag("valen_heir", ""))
 	if heir != "" and heir != heir_seen:
 		heir_seen = heir
@@ -1685,11 +1773,16 @@ func _on_dialogue_closed() -> void:
 	var ending := GameState.pending_ending
 	GameState.pending_ending = ""
 	if ending == "ch3":
-		_ch3_bell()                                         # 守灵夜听完（6.8b）：先响晨钟，再出章末画面
+		if play_cutscene("wake_memory"):                    # 守灵夜的回忆（C.5 过场 3-3）：演完再响晨钟
+			cutscene.finished.connect(func(_s: bool): _ch3_bell(), CONNECT_ONE_SHOT)
+		else:
+			_ch3_bell()                                     # 守灵夜听完（6.8b）：先响晨钟，再出章末画面
 	elif ending == "ch4":
 		_ch4_bell()                                         # 冬议散了（7.8）：钟楼的黄昏钟，再出章末画面
 	elif ending == "final":
 		_finale()                                           # 不封了（8.5）：直接是长冬
+	elif ending == "prologue" and play_cutscene("royal_seal"):
+		cutscene.finished.connect(func(_s: bool): show_ending("prologue"), CONNECT_ONE_SHOT)    # 序章尾声（C.5 0-3）：借据背面的王室印鉴，演完出结局画面
 	elif ending != "":
 		show_ending.call_deferred(ending)
 	player.interactor.refresh()
@@ -2066,10 +2159,26 @@ func start_encounter(id: String, win: String, value: Variant = true) -> void:
 
 ## 开打（B.3）：先自动存档（GDD 6.4「开战前自动存档，玩家倒下就读档」），再让两边动起来
 func start_battle() -> void:
+	if battle == null or not is_instance_valid(battle) or battle.started or cutscene != null:
+		return
+	var bc := CutScenes.before_battle(self)                 # 开打以前的过场（C.5：堤道夜战、磨坊之战……）：演完再开打
+	if bc != "" and play_cutscene(bc):
+		cutscene.finished.connect(func(_s: bool): _begin_battle(), CONNECT_ONE_SHOT)
+		return
+	_begin_battle()
+
+
+func _begin_battle() -> void:
 	if battle == null or not is_instance_valid(battle) or battle.started:
 		return
 	save_game("auto", true)
 	battle.start()
+	if area == "plain" and world.get_node_or_null("MillBattle") != null and GameState.has_flag("cut_mill_open") and not Engine.get_meta("ic_skip_film", false):
+		_mill_go()                                      # 演完过场才开打的：这时候再提示
+		return
+	if area == "highland" and world.get_node_or_null("ConvoyAmbush") != null and GameState.has_flag("cut_ambush_open") and not Engine.get_meta("ic_skip_film", false):
+		_ambush_go()
+		return
 	hud.toast("◆ 开打！", 2.0)
 
 
@@ -2151,12 +2260,19 @@ func _on_battle_ended(winner: String) -> void:
 ## 长眠者第一次露面（4.10b）：他从你身边走过去；有人说「又一个」；过一会儿第一章完
 func _sleeper_seen() -> void:
 	sleeper.wake_walk()
+	if play_cutscene("first_sleeper"):                     # 第一个长眠者（C.5 1-4）：演的时候他照样往北走；演完再接后面的
+		cutscene.finished.connect(func(_s: bool): _sleeper_after(Sleeper.CHAPTER_END_AFTER * 0.5), CONNECT_ONE_SHOT)
+		return
+	_sleeper_after(Sleeper.CHAPTER_END_AFTER)
+
+
+func _sleeper_after(end_after: float) -> void:
 	var nm := str(Sleeper.who()[1])
 	hud.toast("「%s？」……眼睛闭着，从你身边走了过去。叫不醒。" % nm, 5.0)
 	get_tree().create_timer(5.0).timeout.connect(func():
 		if is_inside_tree() and area == "marsh":
 			hud.toast("客栈门口有人看着他的背影，低声说了一句：「又一个。」", 5.0))
-	get_tree().create_timer(Sleeper.CHAPTER_END_AFTER).timeout.connect(func():
+	get_tree().create_timer(end_after).timeout.connect(func():
 		if is_inside_tree() and area == "marsh" and not GameState.has_flag("ch1_done"):
 			GameState.set_flag("ch1_done")
 			if GameState.quest_active("ch1_main"):
@@ -2244,6 +2360,8 @@ func _first_tide_tick() -> void:
 
 func _on_tide_started() -> void:
 	GameState.set_stage("ch2_main", "tide")
+	if not GameState.has_flag("cut_tide_rising"):
+		play_cutscene("tide_rising")                         # 第一夜潮水（C.5 过场 2-3）：演的时候潮水照样在走
 	hud.toast("南边坡下，一串白影子在往上走。光着脚，不出一点声音。", 4.5)
 	print("IC_TIDE start count=%d lit=%d" % [FirstTide.COUNT, first_tide.lit_spots()])
 
@@ -2277,12 +2395,19 @@ func _mill_tick() -> void:
 		var sp: Array = PlainLayout.spawn_points()["mill_raid" if MillBattle.raiding() else "mill_night"]
 		player.global_position = sp[0]
 		player.rotation.y = deg_to_rad(float(sp[1]))
-	if mb and mb.ready_to_start():
-		start_battle()
-		hud.toast("◆ 他们来了！按 1 让小队跟着你、2 原地坚守、3 冲锋、4 去准星指的地方（触屏「令」）。%s" % ("别让六个人冲进粮仓那片。" if not MillBattle.raiding() else "冲进粮仓那片院子！"), 5.0)
-		if _query("cwskip").is_valid_float():         # 截图用（同堤道夜战）：快进到开打后第 N 秒
-			Engine.time_scale = 8.0
-			Engine.max_physics_steps_per_frame = 64
+	if mb and mb.ready_to_start() and cutscene == null:
+		start_battle()                                  # 第一次先演「磨坊之战开场」（C.5 3-2），演完 _begin_battle 才开打
+		if not battle.started:
+			return
+		_mill_go()
+
+
+## 磨坊之战真开打了：提示命令；截图用的快进
+func _mill_go() -> void:
+	hud.toast("◆ 他们来了！按 1 让小队跟着你、2 原地坚守、3 冲锋、4 去准星指的地方（触屏「令」）。%s" % ("别让六个人冲进粮仓那片。" if not MillBattle.raiding() else "冲进粮仓那片院子！"), 5.0)
+	if _query("cwskip").is_valid_float():         # 截图用（同堤道夜战）：快进到开打后第 N 秒
+		Engine.time_scale = 8.0
+		Engine.max_physics_steps_per_frame = 64
 
 
 ## 第二夜 · 劫粮（5.7a，world/convoy_ambush.gd）：主线到「设伏」时天黑透、粮车出村——把你放到伏击段（重新载入高地，摆好那场仗）；走到伏击点开打
@@ -2305,12 +2430,18 @@ func _ambush_tick() -> void:
 		Engine.set_meta("ic_arrive_note", "天黑透了。粮车点着火把出了村，往盘山路上来。马蒂亚斯的十个人跟着你，伏在%s。" % ("车头前那棵锯倒的枯松后面" if ConvoyAmbush.ambush() == "head" else "车尾后面的弯道上"))
 		travel("highland", "ambush", "night")
 		return
-	if ca and battle and is_instance_valid(battle) and not battle.started and (ConvoyAmbush.at_post(player.global_position) or _query("cwskip").is_valid_float()):
-		start_battle()
-		if _query("cwskip").is_valid_float():         # 截图用：开打并快进到第 N 秒（同堤道夜战）
-			Engine.time_scale = 8.0
-			Engine.max_physics_steps_per_frame = 64
-		hud.toast("◆ 动手！按 1 让他们跟着你、3 冲锋（触屏「令」）。潮水来了就拿火把把它们往押车兵那边引。", 5.0)
+	if ca and battle and is_instance_valid(battle) and not battle.started and cutscene == null and (ConvoyAmbush.at_post(player.global_position) or _query("cwskip").is_valid_float()):
+		start_battle()                                  # 第一次先演「劫粮伏击开场」（C.5 2-2），演完 _begin_battle 才开打
+		if battle.started:
+			_ambush_go()
+
+
+## 劫粮真开打了：提示命令；截图用的快进
+func _ambush_go() -> void:
+	if _query("cwskip").is_valid_float():         # 截图用：开打并快进到第 N 秒（同堤道夜战）
+		Engine.time_scale = 8.0
+		Engine.max_physics_steps_per_frame = 64
+	hud.toast("◆ 动手！按 1 让他们跟着你、3 冲锋（触屏「令」）。潮水来了就拿火把把它们往押车兵那边引。", 5.0)
 
 
 ## 出身三选一以前的存档（O.1）：读进来时问一次（暂停着），选了加上开局的那些，接着玩
@@ -2406,27 +2537,43 @@ func _well_tick() -> void:
 
 ## 守灵夜听完（6.8b；STORY.md 6.5 第 9 步「画面停在修道院钟楼的晨钟里」）：钟楼上敲了三下晨钟，然后第三章完
 func _ch3_bell() -> void:
+	_ring_bells(2.2)
+	if play_cutscene("dawn_bell"):                         # 晨钟（C.5 3-4）：钟声里演一小段，演完再出章末画面
+		cutscene.finished.connect(func(_s: bool): _ch3_after(1.5), CONNECT_ONE_SHOT)
+		return
+	_ch3_after(ch3_end_after)
+
+
+func _ch3_after(wait: float) -> void:
 	hud.say("（钟声从钟楼上落下来，一下，又一下。隔着那扇高窗，看得见平原上的雪亮了）")
-	if Settings.sound:
-		if ch3_bell_player == null:
-			ch3_bell_player = AudioStreamPlayer.new()
-			ch3_bell_player.volume_db = -8.0
-			ch3_bell_player.max_polyphony = 3
-			ch3_bell_player.stream = Bell.make_stream()
-			add_child(ch3_bell_player)
-		for i in 3:
-			get_tree().create_timer(0.1 + i * 2.2).timeout.connect(func():
-				if is_instance_valid(ch3_bell_player):
-					ch3_bell_player.play())
-	get_tree().create_timer(ch3_end_after).timeout.connect(func():
+	get_tree().create_timer(wait).timeout.connect(func():
 		if is_inside_tree() and not GameState.has_flag("ch3_done"):
 			GameState.set_flag("ch3_done")
 			save_game("auto", true)
 			show_ending("ch3"))
 
 
+## 钟楼的钟响三下（第三章晨钟、第四章黄昏钟）
+func _ring_bells(gap: float) -> void:
+	if not Settings.sound:
+		return
+	if ch3_bell_player == null:
+		ch3_bell_player = AudioStreamPlayer.new()
+		ch3_bell_player.volume_db = -8.0
+		ch3_bell_player.max_polyphony = 3
+		ch3_bell_player.stream = Bell.make_stream()
+		add_child(ch3_bell_player)
+	for i in 3:
+		get_tree().create_timer(0.1 + i * gap).timeout.connect(func():
+			if is_instance_valid(ch3_bell_player):
+				ch3_bell_player.play())
+
+
 ## 封誓完了（8.4）：封上了、断了；过一会儿出结局画面（8.5）
 func _on_oath_finished(result: String) -> void:
+	if play_cutscene("oath_sealed" if result == "sealed" else "oath_failed"):     # 封誓（C.5 过场 5-4）：演完出结局
+		cutscene.finished.connect(func(_s: bool): _finale(), CONNECT_ONE_SHOT)
+		return
 	if result == "sealed":
 		hud.say("（最后一滴血落进誓瓶。冰壁上那一大片空着的冰里，慢慢浮出一个名字。井口上那一圈人站住了——一个，接一个，转过身，往南走）")
 	else:
@@ -2435,31 +2582,45 @@ func _on_oath_finished(result: String) -> void:
 
 
 ## 全作完（8.5）：主线「冬井」完、第五章完，自动存档，过 ch3_end_after 秒出结局画面
+## 结局影片（C.5 5-5）：先按结局去一个地方（CutScenes.ending_stage），到了演完再出结局画面（_the_end）
 func _finale() -> void:
-	get_tree().create_timer(ch3_end_after).timeout.connect(func():
-		if is_inside_tree() and not GameState.has_flag("ch5_done"):
-			GameState.set_flag("ch5_done")
-			if GameState.quest_active("ch5_main"):
-				GameState.complete_quest("ch5_main")
-			save_game("auto", true)
-			show_ending("final"))
+	get_tree().create_timer(ch3_end_after).timeout.connect(_finale_go)
+
+
+func _finale_go() -> void:
+	if not is_inside_tree() or GameState.has_flag("ch5_done"):
+		return
+	var st := CutScenes.ending_stage()
+	if not Engine.get_meta("ic_skip_film", false) and not GameState.has_flag("cut_ending_film"):
+		GameState.set_flag("ch5_film")
+		if await travel(str(st[0]), str(st[1]), str(st[2])):
+			return
+		GameState.set_flag("ch5_film", false)
+	_the_end()
+
+
+func _the_end() -> void:
+	if GameState.has_flag("ch5_done"):
+		return
+	GameState.set_flag("ch5_done")
+	if GameState.quest_active("ch5_main"):
+		GameState.complete_quest("ch5_main")
+	save_game("auto", true)
+	show_ending("final")
 
 
 ## 第四章完（7.8）：冬议散了，钟楼上的黄昏钟响起来，画面停在钟声里，再出「第五章 · 冬井　开发中」
 func _ch4_bell() -> void:
+	_ring_bells(2.6)
+	if play_cutscene("dusk_bell"):                         # 黄昏钟（C.5 4-4）：钟声里演一小段，演完再出章末画面
+		cutscene.finished.connect(func(_s: bool): _ch4_after(1.5), CONNECT_ONE_SHOT)
+		return
+	_ch4_after(ch3_end_after)
+
+
+func _ch4_after(wait: float) -> void:
 	hud.say("（钟楼上的黄昏钟响了。一下，又一下。高窗外，冠城的屋顶一片一片暗下去）")
-	if Settings.sound:
-		if ch3_bell_player == null:
-			ch3_bell_player = AudioStreamPlayer.new()
-			ch3_bell_player.volume_db = -8.0
-			ch3_bell_player.max_polyphony = 3
-			ch3_bell_player.stream = Bell.make_stream()
-			add_child(ch3_bell_player)
-		for i in 3:
-			get_tree().create_timer(0.1 + i * 2.6).timeout.connect(func():
-				if is_instance_valid(ch3_bell_player):
-					ch3_bell_player.play())
-	get_tree().create_timer(ch3_end_after).timeout.connect(func():
+	get_tree().create_timer(wait).timeout.connect(func():
 		if is_inside_tree() and not GameState.has_flag("ch4_done"):
 			GameState.set_flag("ch4_done")
 			save_game("auto", true)
@@ -2467,14 +2628,20 @@ func _ch4_bell() -> void:
 
 
 func _on_well_reached() -> void:
+	if play_cutscene("well_ring"):                                # 冬井那一圈（C.5 过场 2-4）：演完直接章末
+		cutscene.finished.connect(func(_s: bool): _well_end(), CONNECT_ONE_SHOT)
+		return
 	hud.say("（诺伯特在你身边站住了，很久没说话）……三十五年，我头一回走到这口井边。它们没往北走。它们在这儿站着，脸都朝着井——像在等一样东西。")
-	get_tree().create_timer(well_end_after).timeout.connect(func():
-		if is_inside_tree() and area == "highland" and not GameState.has_flag("ch2_done"):
-			GameState.set_flag("ch2_done")
-			if GameState.quest_active("ch2_main"):
-				GameState.set_stage("ch2_main", "ch2_end")
-			save_game("auto", true)
-			show_ending("ch2"))
+	get_tree().create_timer(well_end_after).timeout.connect(_well_end)
+
+
+func _well_end() -> void:
+	if is_inside_tree() and area == "highland" and not GameState.has_flag("ch2_done"):
+		GameState.set_flag("ch2_done")
+		if GameState.quest_active("ch2_main"):
+			GameState.set_stage("ch2_main", "ch2_end")
+		save_game("auto", true)
+		show_ending("ch2")
 
 
 ## 两手空空（5.6 empty_handed，5.8）：主线到这一步，这一夜就这么熬过去——天黑、柴省着烧、天亮时火熄了

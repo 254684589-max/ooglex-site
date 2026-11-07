@@ -3,6 +3,7 @@ extends Node
 ## 开场（路线图 3.8；STORY.md 第三节第 1 步「夜，钟声。玩家在宅邸门口被管家叫住」）。只在新游戏时播一次：
 ##   1. 站在领主宅邸门口、背对大门望着雾里的街道，标题卡「序章 · 霜渡镇之夜」，等玩家第一次点击 / 按键 / 触屏
 ##      （网页要有一次用户操作才能出声；电脑上这一下同时锁定鼠标）；标题卡显示的时候先把钟声合成好；
+##   1.5 开场影片（C.5，CutScenes.prologue）：夜空、屋顶、街灯、宅邸门口的你，旁白交代老王、铁冠和冬天，配乐；随时可以跳过；
 ##   2. 钟敲三下，字幕「（镇上的钟敲响了。入夜了。）」，标题卡淡出，底部出走动与转视角的教学提示；
 ##   3. 钟声落下，身后的管家喊「誓剑大人！请留步——」，提示转身对准他说话；设旗标 opening_done（存档里记着，读档不再播）。
 ## 是否播放由 main 决定（Opening.wanted）；自动化测试里默认跳过，opening 组单独测。
@@ -69,11 +70,21 @@ func begin() -> void:
 		return
 	if main and main.origin_panel and main.origin_panel.visible:
 		main.origin_panel.hide()               # 没选出身就开始了（自动化测试直接调 begin）：收起来，出身留空
+	card.dismiss(Settings.reduced_motion)
+	if not Engine.get_meta("ic_skip_film", false) and main.has_method("play_cutscene") and main.play_cutscene("prologue"):
+		stage = "film"                                          # 开场影片（C.5）：演完（或跳过）再敲钟
+		print("IC_OPENING film")
+		main.cutscene.finished.connect(func(_s: bool): _bell(), CONNECT_ONE_SHOT)
+		return
+	_bell()
+
+
+## 钟声响起（开场影片演完以后）
+func _bell() -> void:
 	stage = "bell"
 	t = 0.0
 	if bell.stream == null and Settings.sound:
 		bell.stream = Bell.make_stream()
-	card.dismiss(Settings.reduced_motion)
 	main.hud.say(BELL_LINE, CALL_AT)
 	main.show_tip("move", true)
 	_toll()

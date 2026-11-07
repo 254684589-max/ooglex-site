@@ -11,7 +11,7 @@ var current_group := ""
 
 func _ready() -> void:
 	var dog := Timer.new()
-	dog.wait_time = 1200.0                      # 整个测试跑多久算卡死（2026-10-26：加了火把、第一夜潮水以后全量超过 600 秒）
+	dog.wait_time = 1800.0                      # 整个测试跑多久算卡死（2026-10-26：加了火把、第一夜潮水以后全量超过 600 秒；2026-11-07 C.5 加了 24 段过场的测试，全量贴着 1200 秒，放到 1800）
 	dog.one_shot = true
 	dog.timeout.connect(func():
 		print("WATCHDOG TIMEOUT in group: ", current_group)
@@ -21,10 +21,11 @@ func _ready() -> void:
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	Settings.set_value("third_person", false)    # 上一次测试被中断时，设置文件里可能留着第三人称（Settings 在测试开始前已经读过它）
 	Engine.set_meta("ic_skip_opening", true)     # 开场（3.8）只在 opening 组里测，其余测试照旧从主街南头开始
+	Engine.set_meta("ic_skip_film", true)        # 过场（C.5：开场影片、渡口对峙……）只在 cutscene 组里测；别的组照原来的流程走（opening 组测钟声和管家那一段）
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords", "minimap"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords", "minimap", "cutscene"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -13084,4 +13085,464 @@ func test_minimap() -> void:
 	check(not main.hud.minimap.visible, "测试场没有地图：不显示")
 	await free_main(main)
 	Settings.set_value("minimap", was)
+
+
+func test_cutscene() -> void:
+	# 过场演出（C.5，所有者 2026-11-07「视频小样可以，根据剧情插入相应的电影剧情，建议游戏一开始时加入相应的电影剧情，没有声音就用相应的配乐」）
+	Engine.set_meta("ic_skip_film", false)
+	Engine.set_meta("ic_skip_opening", false)
+	GameState.new_game(1)
+	var main := await make_main(false)
+	await frames(4)
+	var op: Opening = main.find_child("Opening", true, false)
+	check(op != null and op.stage == "card", "新游戏：开场标题卡")
+	op.begin()
+	await frames(2)
+	var cs: Cutscene = main.cutscene
+	check(op.stage == "film" and cs != null and cs.id == "prologue" and cs.shots.size() == 4 and not main.hud.visible and cs.cam.current, "点开始以后先演开场影片：四个镜头、HUD 藏起来、换到过场的相机")
+	check(Music.track == "night", "没有配音，配乐是序章的夜曲（%s）" % Music.track)
+	await seconds(1.4)
+	check(cs.top_bar.size.y > 20.0 and cs.text_label.text.contains("老王") and not cs.speaker_label.visible, "上下黑边、旁白字幕「%s」（旁白不写名字）" % cs.text_label.text)
+	var labels: Array = main.world.find_children("*", "Label3D", true, false).filter(func(l): return (l as Label3D).visible)
+	check(labels.is_empty(), "头顶的名字牌在过场里藏起来")
+	check(not main.player.is_physics_processing(), "过场里你不能动")
+	var esc := InputEventAction.new()
+	esc.action = "pause"
+	esc.pressed = true
+	cs._unhandled_input(esc)
+	await frames(3)
+	check(main.cutscene == null and op.stage == "bell" and main.hud.visible and main.player.camera.current and main.player.is_physics_processing(),
+		"Esc 跳过：回到你的眼睛、HUD 回来、接着敲钟（%s）" % op.stage)
+	check(not main.world.find_children("*", "Label3D", true, false).filter(func(l): return (l as Label3D).visible).is_empty(), "名字牌回来了")
+	await free_main(main)
+	Engine.set_meta("ic_skip_opening", true)
+	# 一段过场完整播完：镜头一个接一个、字幕按时间换、最后淡出
+	GameState.new_game(1)
+	main = await make_main(false)
+	await frames(2)
+	var shots := [{"from": [Vector3(0, 5, 10), Vector3(0, 0, 0)], "to": [Vector3(0, 4, 6), Vector3(0, 0, 0)], "dur": 0.6, "lines": [[0.0, "", "甲"], [0.3, "某人", "乙"]]},
+		{"from": [Vector3(3, 2, 3), Vector3(0, 1, 0)], "dur": 0.6, "cut": true, "lines": [[0.0, "某人", "丙"]]}]
+	var seen := []
+	cs = Cutscene.play(main.world, "test", shots, main.player.camera)
+	var ended := [false]
+	cs.finished.connect(func(sk: bool): ended[0] = not sk)
+	var t0 := Time.get_ticks_msec()
+	while Time.get_ticks_msec() - t0 < 4000 and not ended[0]:
+		await frames(1)
+		if is_instance_valid(cs) and not cs.done and cs.text_label.text != "" and (seen.is_empty() or seen[-1] != cs.text_label.text):
+			seen.append(cs.text_label.text)
+	check(ended[0] and seen == ["甲", "乙", "丙"], "两个镜头、三句字幕按时间换，播完自己结束（%s）" % str(seen))
+	check(is_equal_approx(Cutscene._ease(0.5), 0.5) and Cutscene._ease(0.1) < 0.1 and Cutscene._ease(0.9) > 0.9, "运镜两头慢中间快")
+	await free_main(main)
+	# 第十九烽塔顶交瓶：第一次和诺伯特说话先演过场，演完给誓瓶、主线到 well，从对话 come 那一句接着说
+	check(CutScenes.before_dialogue("norbert5").is_empty(), "主线不在这一步：不演")
+	GameState.new_game(1)
+	GameState.chapter = 5
+	GameState.set_flag("ch2_fire", "lit")
+	GameState.set_flag("crown_holder", "kept")
+	GameState.add_item("iron_crown")
+	GameState.set_stage("ch5_main", "vial")
+	var b := CutScenes.before_dialogue("norbert5")
+	check(str(b.get("cut", "")) == "norbert_vial" and str(b.get("node", "")) == "come", "主线到「找诺伯特拿誓瓶」：和他说话前先演「塔顶交瓶」")
+	GameState.pending_load = {"scene": "highland", "player": {}}
+	main = await make_area("highland")
+	await physics(4)
+	var nb := main.world.find_child("Npc_norbert5", true, false) as Npc
+	check(nb != null and CutScenes.available(main, "norbert_vial"), "诺伯特在塔顶，过场能演")
+	main._on_interacted({"kind": "dialogue", "area": "winter", "id": "norbert5", "npc": nb})
+	await frames(2)
+	cs = main.cutscene
+	check(cs != null and cs.id == "norbert_vial" and cs.shots.size() == 5 and Music.track == "well" and not main.dialogue.visible, "先演过场（五个镜头、冬井的配乐），对话框还没出")
+	await seconds(6.0)
+	check(cs != null and is_instance_valid(cs) and cs.index >= 1 and nb.talking and cs.speaker_label.text == "诺伯特", "第二个镜头：诺伯特边比划边说")
+	cs.skip()
+	await frames(3)
+	check(GameState.has_item("oath_vial") and GameState.quest_stage("ch5_main") == "well" and str(GameState.get_flag("ch5_vial", "")) == "norbert" and GameState.has_flag("ch5_cut_vial"),
+		"演完（跳过也算）：誓瓶给你了、主线到「去冬井」")
+	check(main.dialogue.visible and main.dialogue.runner.node_id == "come", "对话从「我在井边等你」那一句接着说，过场里说过的不再说")
+	check(CutScenes.before_dialogue("norbert5").is_empty(), "演过一次就不再演")
+	main.dialogue.close()
+	await free_main(main)
+	# 渡口对峙（0-2）：序章第一次到渡口先演，演一次就记旗标；和奥弗说过话、做完抉择、第一章都不演
+	GameState.new_game(1)
+	GameState.pending_load = {"scene": "ferry", "player": {}}
+	main = await make_area("ferry")
+	await frames(2)
+	check(CutScenes.on_enter(main) == "ferry_standoff" and CutScenes.available(main, "ferry_standoff") and CutScenes.shots(main, "ferry_standoff").size() == 4, "序章第一次到渡口：演「渡口对峙」（四个镜头）")
+	check(main.play_cutscene("ferry_standoff") and GameState.has_flag("cut_ferry_standoff") and CutScenes.on_enter(main) == "", "演过就记下，不再演")
+	main.cutscene.skip()
+	await frames(2)
+	await free_main(main)
+	GameState.new_game(1)
+	GameState.set_flag("offer_parley")
+	check(CutScenes.on_enter({"area": "ferry"}) == "", "已经和奥弗说上话了：不演")
+	GameState.new_game(1)
+	GameState.chapter = 1
+	check(CutScenes.on_enter({"area": "ferry"}) == "", "第一章回渡口：不演")
+	# 家主临终（1-3）：第一章天亮、和家主说最后一番话之前先演；演完对话照常从头说（他自己说出「是老王自己交出去的」）
+	GameState.new_game(1)
+	GameState.chapter = 1
+	check(CutScenes.before_dialogue("osric").is_empty(), "还没到天亮：不演")
+	GameState.set_stage("ch1_main", "dawn_held")
+	var ob := CutScenes.before_dialogue("osric")
+	check(str(ob.get("cut", "")) == "osric_dawn" and str(ob.get("node", "")) == "", "天亮、堤道守住了：先演「家主临终」，演完对话照常开始")
+	GameState.pending_load = {"scene": "sickroom", "player": {}}
+	main = await make_area("sickroom")
+	await frames(2)
+	var osh := CutScenes.shots(main, "osric_dawn")
+	check(CutScenes.available(main, "osric_dawn") and osh.size() == 3 and str(osh[0].get("music", "")) == "night", "病房里能演：三个镜头、夜曲")
+	main._on_interacted({"kind": "dialogue", "area": "sickroom", "id": "osric", "npc": main.world.find_child("Npc_osric", true, false)})
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "osric_dawn" and not main.dialogue.visible, "和家主说话：先演过场")
+	main.cutscene.skip()
+	await frames(3)
+	check(main.dialogue.visible and main.dialogue.runner.node_id == "dawn_held" and main.dialogue.runner.text().contains("守住了"), "演完：他的话从头说（「……守住了。」）")
+	main.dialogue.close()
+	check(CutScenes.before_dialogue("osric").is_empty(), "演过一次不再演")
+	await free_main(main)
+	# 冬井那一圈（2-4）：第二章你和诺伯特走到井边，先演过场，演完章末
+	GameState.new_game(1)
+	GameState.chapter = 2
+	GameState.set_stage("ch2_main", "to_well")
+	GameState.pending_load = {"scene": "highland", "player": {}}
+	main = await make_area("highland")
+	await physics(4)
+	check(CutScenes.available(main, "well_ring") and CutScenes.shots(main, "well_ring").size() == 4, "冬井边能演「冬井那一圈」：四个镜头")
+	main._on_well_reached()
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "well_ring" and Music.track == "well" and not GameState.has_flag("ch2_done"), "到了井边：先演过场，还没章末")
+	main.cutscene.skip()
+	await frames(3)
+	check(GameState.has_flag("ch2_done") and GameState.quest_stage("ch2_main") == "ch2_end" and main.ending_panel.visible, "演完（跳过也算）：第二章章末画面")
+	main.ending_panel.close()
+	get_tree().paused = false
+	await free_main(main)
+	# 守灵夜的回忆（3-3）：伊格纳兹说完，先演回忆（褪色的镜头）再响晨钟
+	GameState.new_game(1)
+	GameState.chapter = 3
+	GameState.pending_load = {"scene": "scriptorium", "player": {}}
+	main = await make_area("scriptorium")
+	await frames(2)
+	var ws := CutScenes.shots(main, "wake_memory")
+	check(ws.size() == 5 and ws.filter(func(x): return bool(x.get("memory", false))).size() == 3, "「守灵夜的回忆」：五个镜头，中间三个是回忆")
+	GameState.pending_ending = "ch3"
+	main._on_dialogue_closed()
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "wake_memory" and not GameState.has_flag("ch3_done"), "对话关上：先演回忆，还没响晨钟")
+	await seconds(5.6)
+	check(main.cutscene != null and main.cutscene.memory_rect.visible and main.world.find_child("CutCrown", true, false) != null, "回忆的镜头：画面褪色，桌上一顶铁冠")
+	main.ch3_end_after = 0.3
+	main.cutscene.skip()
+	await frames(3)
+	check(main.cutscene != null and main.cutscene.id == "dawn_bell" and CutScenes.shots(main, "dawn_bell").size() == 2 and not GameState.has_flag("ch3_done"), "回忆演完：晨钟响，演「晨钟」（两个镜头），章末还没出")
+	main.cutscene.skip()
+	await seconds(1.9)
+	check(GameState.has_flag("ch3_done") and main.ending_panel.visible, "演完：第三章章末")
+	main.ending_panel.close()
+	get_tree().paused = false
+	await free_main(main)
+	# 冬议开场（4-3）：冬议开始以前第一次和议事厅里的人说话，先演；演完冬议的对话照原样
+	ch4_state({})
+	GameState.set_stage("ch4_main", "council")
+	var cb := CutScenes.before_dialogue("council")
+	check(str(cb.get("cut", "")) == "council_open", "冬议要开了：先演「冬议开场」")
+	GameState.pending_load = {"scene": "council_hall", "player": {}}
+	main = await make_area("council_hall")
+	await frames(2)
+	check(CutScenes.available(main, "council_open") and CutScenes.shots(main, "council_open").size() == 3, "议事厅里能演：三个镜头")
+	check(main.play_cutscene("council_open") and Music.track == "keep" and CutScenes.before_dialogue("council").is_empty(), "演过就不再演")
+	main.cutscene.skip()
+	await frames(2)
+	await free_main(main)
+	# 封誓（5-4）：封上了——冰壁上浮出留名的人的名字；断了——火盆暗下去；演完都接结局
+	GameState.new_game(1)
+	GameState.chapter = 5
+	GameState.set_flag("oath_taker", "norbert")
+	check(CutScenes.oath_name() == "诺伯特", "诺伯特留名：冰壁上浮出「诺伯特」")
+	GameState.set_flag("oath_taker", "you")
+	check(CutScenes.oath_name() == "誓剑", "你留名（你没有名字）：浮出「誓剑」")
+	GameState.set_stage("ch5_main", "oath")
+	GameState.pending_load = {"scene": "well_bottom", "player": {}}
+	main = await make_area("well_bottom")
+	await frames(2)
+	check(CutScenes.shots(main, "oath_sealed").size() == 4 and CutScenes.shots(main, "oath_failed").size() == 2, "封上了四个镜头、断了两个")
+	main.ch3_end_after = 0.3
+	OathRitual.settle("sealed")
+	main._on_oath_finished("sealed")
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "oath_sealed" and not GameState.has_flag("ch5_done"), "封上了：先演过场，还没结局")
+	await seconds(6.2)
+	var lbl := main.world.find_child("CutOathName", true, false) as Label3D
+	check(lbl != null and lbl.text == "誓剑" and lbl.modulate.a > 0.1, "冰壁上的名字浮出来了（%s）" % (lbl.text if lbl else "没有"))
+	var rq := [0]
+	main.reload_requested.connect(func(): rq[0] += 1)
+	main.cutscene.skip()
+	await seconds(1.2)
+	check(rq[0] == 1 and str(GameState.pending_load.get("scene", "")) == "plain" and str(GameState.pending_load.get("daypart", "")) == "day" and GameState.has_flag("ch5_film") and not GameState.has_flag("ch5_done"),
+		"演完：去演结局影片（你留了名 = 无冠之春：金穗平原的白天），还没出结局画面")
+	var pl := GameState.pending_load.duplicate()
+	await free_main(main)
+	# 结局影片（5-5）：到了就演，演完出结局画面
+	GameState.pending_load = pl
+	main = await make_area("plain")
+	check(CutScenes.on_enter(main) == "ending_film" and CutScenes.shots(main, "ending_film").size() == 3, "到了金穗平原：演「结局影片」（三个镜头）")
+	await seconds(1.4)
+	check(main.cutscene != null and main.cutscene.id == "ending_film" and not main.ending_panel.visible, "进来一会儿就演")
+	main.cutscene.skip()
+	await seconds(0.6)
+	check(GameState.has_flag("ch5_done") and GameState.has_flag("cut_ending_film") and main.ending_panel.visible, "演完：结局画面")
+	main.ending_panel.close()
+	get_tree().paused = false
+	await free_main(main)
+	for ek: String in ["new_king", "long_winter"]:
+		GameState.new_game(1)
+		GameState.chapter = 5
+		GameState.set_flag("ending", ek)
+		GameState.set_flag("ch5_film")
+		var est := CutScenes.ending_stage()
+		GameState.pending_load = {"scene": est[0], "spawn": est[1], "daypart": est[2], "player": {}}
+		main = await make_area(str(est[0]))
+		await seconds(1.4)
+		check(main.cutscene != null and main.cutscene.id == "ending_film" and CutScenes.shots(main, "ending_film").size() == 3 and str(est[0]) == {"new_king": "council_hall", "long_winter": "highland"}[ek],
+			"%s：在 %s 演结局影片" % [ek, str(est[0])])
+		if ek == "new_king":
+			await seconds(0.5)
+			check(main.world.find_child("CutCrown", true, false) != null, "新王：王座椅背的凹槽里放着铁冠")
+		main.cutscene.skip()
+		await seconds(0.6)
+		check(main.ending_panel.visible and main.world.find_child("CutCrown", true, false) == null, "演完：结局画面；冠这个道具拿掉了")
+		main.ending_panel.close()
+		get_tree().paused = false
+		await free_main(main)
+	# 堤道夜战开场（1-2）：走到守点先演过场，演完才开打
+	causeway_state("arch")
+	main = await make_causeway()
+	var cbt: Battle = main.battle
+	check(CutScenes.before_battle(main) == "causeway_open" and CutScenes.shots(main, "causeway_open").size() == 2, "堤道夜战开打以前演「堤道夜战开场」（两个镜头）")
+	main.start_battle()
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "causeway_open" and not cbt.started and Music.track == "battle", "走到守点：先演过场，还没开打")
+	main.start_battle()
+	check(not cbt.started, "演着的时候不会重复开打")
+	main.cutscene.skip()
+	await frames(2)
+	check(cbt.started and CutScenes.before_battle(main) == "", "演完（跳过也算）：开打；不再演")
+	await free_main(main)
+	# 第一夜潮水（2-3）：潮水一上来就演，演的时候潮水照样在走
+	GameState.new_game(560)
+	GameState.chapter = 2
+	GameState.daypart = "night"
+	GameState.set_stage("ch2_main", "light_line")
+	GameState.set_flag("matthias_met")
+	GameState.set_flag("norbert_met")
+	main = await make_area("highland")
+	await frames(3)
+	var ftd: FirstTide = main.first_tide
+	check(ftd != null and CutScenes.shots(main, "tide_rising").size() == 3, "第一夜：能演「潮水上来」（三个镜头）")
+	ftd.start_tide()
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "tide_rising" and ftd.state == FirstTide.TIDE and GameState.quest_stage("ch2_main") == "tide", "潮水上来：先演过场，潮水照样在走")
+	main.cutscene.skip()
+	await frames(2)
+	check(main.cutscene == null and ftd.state == FirstTide.TIDE and GameState.has_flag("cut_tide_rising"), "跳过以后接着守夜；只演一次")
+	await free_main(main)
+	# 磨坊之战开场（3-2）：到了几秒，先演过场再开打；演完才提示命令
+	mill_state("lomond")
+	main = await make_mill("mill_night")
+	var mbt: Battle = main.battle
+	check(CutScenes.before_battle(main) == "mill_open" and CutScenes.shots(main, "mill_open").size() == 3, "磨坊之战开打以前演「磨坊之战开场」（三个镜头）")
+	await seconds(MillBattle.START_AFTER + 0.5)
+	check(main.cutscene != null and main.cutscene.id == "mill_open" and not mbt.started and Music.track == "battle" and not main.hud.toast_label.text.contains("粮仓"), "到了几秒：先演过场，还没开打、还没提示")
+	main.cutscene.skip()
+	await frames(3)
+	check(mbt.started and main.hud.toast_label.text.contains("粮仓") and CutScenes.before_battle(main) == "", "演完：开打、提示命令；不再演")
+	await free_main(main)
+	mill_state("severin")
+	main = await make_mill("mill_raid")
+	var rs := CutScenes.shots(main, "mill_open")
+	check(rs.size() == 3 and str(rs[2].lines[0][2]).contains("奥迪隆"), "跟塞弗林家：第三个镜头换成东门外的麦茬里")
+	await free_main(main)
+	# 金库之夜（4-2）：打开铁笼拿到冠的那一下演；演完才出提示，冠这个道具拿掉
+	var vflags := {"ch4_colwin_met": true, "ch4_envoy_severin": true, "ch4_envoy_lomond": true, "ch4_envoy_north": true, "ch4_vault_entered": true, "ch4_vault_sneaky": true, "ch4_maud_keys": true}
+	ch4_state(vflags, "way")
+	GameState.daypart = "night"
+	GameState.pending_load = {"scene": "key_vault", "spawn": "gate", "player": {}}
+	main = await make_area("key_vault")
+	await physics(4)
+	check(CutScenes.shots(main, "vault_crown").size() == 3, "金库之夜：能演「铁冠露面」（三个镜头）")
+	main._on_interacted(HarborRooms.crown_box())
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "vault_crown" and GameState.has_item("iron_crown") and Music.track == "harbor" and main.world.get_node_or_null("CutVaultProps") != null, "拿到冠：先演过场（冠已经在包里了）")
+	await seconds(5.6)
+	var vc := main.world.find_child("CutCrown", true, false) as Node3D
+	check(vc != null and vc.visible, "第二个镜头：匣盖掀开，冠露出来")
+	main.cutscene.skip()
+	await frames(3)
+	check(main.cutscene == null and main.hud.toast_label.text.contains("得到：铁冠") and GameState.has_flag("cut_vault_crown"), "演完：出「得到：铁冠」的提示；只演一次")
+	await frames(2)
+	check(main.world.get_node_or_null("CutVaultProps") == null, "演完：冠这个道具拿掉了")
+	await free_main(main)
+	ch4_state(vflags.merged({"ch3_vigil": true}), "way")
+	GameState.set_flag("ch4_maud_keys", false)
+	GameState.daypart = "night"
+	GameState.pending_load = {"scene": "key_vault", "spawn": "gate", "player": {}}
+	main = await make_area("key_vault")
+	await physics(4)
+	GameState.set_flag("ch4_vault", "talked")
+	GameState.add_item("iron_crown")
+	main._on_dialogue_closed()
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "vault_crown", "莫德自己开的铁笼（talked）：说完话也演")
+	main.cutscene.skip()
+	await frames(2)
+	await free_main(main)
+	# 下到井底（5-3）：第一次下来就演；星铁那道补光演完拿掉；只演一次
+	ch4_state({"ch4_done": true, "crown_holder": "lomond"})
+	CrownPeople.ch5_begin()
+	GameState.add_item("oath_vial")
+	GameState.set_stage("ch5_main", "descend")
+	GameState.pending_load = {"scene": "well_bottom", "spawn": "front", "player": {}}
+	main = await make_area("well_bottom")
+	check(CutScenes.on_enter(main) == "well_descend" and CutScenes.shots(main, "well_descend").size() == 4, "第一次下到井底：演「下到井底」（四个镜头）")
+	await seconds(1.4)
+	check(main.cutscene != null and main.cutscene.id == "well_descend" and Music.track == "well", "进来一会儿就演")
+	await seconds(17.5)
+	check(main.world.find_child("CutStarRim", true, false) != null, "星铁那个镜头：一道冷光")
+	main.cutscene.skip()
+	await frames(3)
+	check(main.cutscene == null and GameState.has_flag("cut_well_descend") and main.world.find_child("CutStarRim", true, false) == null and CutScenes.on_enter(main) == "", "演完：补光拿掉；不再演")
+	await free_main(main)
+	# 王室印鉴（0-3）：序章说完（教堂 / 渡口都一样）先演借据背面的印，演完出结局画面
+	GameState.new_game(3)
+	GameState.set_flag("prologue_edric", "deliver")
+	main = await make_area("chapel")
+	await frames(3)
+	GameState.pending_ending = "prologue"
+	main._on_dialogue_closed()
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "royal_seal" and not main.ending_panel.visible and main.world.find_child("CutSealStage", true, false) != null, "序章说完：先演「王室印鉴」，还没出结局画面")
+	main.cutscene.skip()
+	await seconds(0.5)
+	check(main.ending_panel.visible and main.world.find_child("CutSealStage", true, false) == null, "演完：结局画面；特写台拿掉了")
+	main.ending_panel.close()
+	get_tree().paused = false
+	await free_main(main)
+	# 初见黑鹭堡（1-1）：第一章第一次进堡门就演，只演一次
+	GameState.new_game(4)
+	GameState.chapter = 1
+	GameState.pending_load = {"scene": "castle", "spawn": "gate", "player": {}}
+	main = await make_area("castle")
+	check(CutScenes.on_enter(main) == "castle_first" and CutScenes.shots(main, "castle_first").size() == 3, "第一章第一次进堡：演「初见黑鹭堡」（三个镜头）")
+	await seconds(1.4)
+	check(main.cutscene != null and main.cutscene.id == "castle_first" and Music.track == "keep", "进来一会儿就演")
+	main.cutscene.skip()
+	await frames(2)
+	check(GameState.has_flag("cut_castle_first") and CutScenes.on_enter(main) == "", "只演一次")
+	await free_main(main)
+	# 第一个长眠者（1-4）：撞见他就演，他照样往北走；演完才接「又一个」和章末
+	GameState.new_game(5)
+	GameState.chapter = 1
+	GameState.start_quest("ch1_main")
+	GameState.set_flag("heard_causeway")
+	GameState.set_stage("ch1_main", "farewell")
+	GameState.daypart = "dawn"
+	main = await make_area("marsh")
+	await frames(3)
+	var slp: Sleeper = main.sleeper
+	main.player.global_position = Sleeper.START + Vector3(10, 0.3, 0)
+	await physics(3)
+	check(main.cutscene != null and main.cutscene.id == "first_sleeper" and slp.walking and CutScenes.shots(main, "first_sleeper").size() == 3, "撞见他：先演「第一个长眠者」，他已经在走了")
+	var x0 := slp.npc.position.x
+	await seconds(2.0)
+	check(slp.npc.position.x < x0 - 1.0 and not main.ending_panel.visible, "演的时候他照样往西走（%.1f 米），没出章末" % (x0 - slp.npc.position.x))
+	main.cutscene.skip()
+	await frames(2)
+	check(main.hud.toast_label.text.contains("托宾") and not main.ending_panel.visible, "演完：「托宾？」的提示，章末还没出")
+	await seconds(Sleeper.CHAPTER_END_AFTER * 0.5 + 0.5)
+	check(main.ending_panel.visible and GameState.has_flag("ch1_done"), "再过一会儿：章末画面")
+	main.ending_panel.close()
+	get_tree().paused = false
+	await free_main(main)
+	# 烽燧线全景（2-1）：第二章第一次到余火高地就演，只演一次
+	GameState.new_game(6)
+	GameState.chapter = 2
+	GameState.pending_load = {"scene": "highland", "spawn": "village", "player": {}}
+	main = await make_area("highland")
+	check(CutScenes.on_enter(main) == "beacon_line" and CutScenes.shots(main, "beacon_line").size() == 3, "第二章第一次到高地：演「烽燧线全景」（三个镜头）")
+	await seconds(1.4)
+	check(main.cutscene != null and main.cutscene.id == "beacon_line", "进来一会儿就演")
+	main.cutscene.skip()
+	await frames(2)
+	check(GameState.has_flag("cut_beacon_line") and CutScenes.on_enter(main) == "", "只演一次")
+	await free_main(main)
+	# 劫粮伏击开场（2-2）：走到伏击点先演，演完才开打、才提示命令
+	_ambush_game("head", 601)
+	main = await make_area("highland")
+	await frames(3)
+	var abt: Battle = main.battle
+	check(CutScenes.before_battle(main) == "ambush_open" and CutScenes.shots(main, "ambush_open").size() == 3, "劫粮开打以前演「劫粮伏击开场」（三个镜头）")
+	main.player.global_position = ConvoyAmbush.leg_point(ConvoyAmbush.POST_T.head) + Vector3(0, 0.3, 0)
+	await physics(4)
+	check(main.cutscene != null and main.cutscene.id == "ambush_open" and not abt.started and not main.hud.toast_label.text.contains("动手"), "走到伏击点：先演过场，还没开打")
+	main.cutscene.skip()
+	await frames(3)
+	check(abt.started and main.hud.toast_label.text.contains("动手") and CutScenes.before_battle(main) == "", "演完：开打、提示命令；不再演")
+	await free_main(main)
+	# 双钥港（4-1）：第四章第一次上岸就演，只演一次
+	GameState.new_game(7)
+	GameState.chapter = 4
+	GameState.pending_load = {"scene": "harbor", "spawn": "quay", "player": {}}
+	main = await make_area("harbor")
+	check(CutScenes.on_enter(main) == "harbor_first" and CutScenes.shots(main, "harbor_first").size() == 3, "第四章第一次到双钥港：演「双钥港」（三个镜头）")
+	await seconds(1.4)
+	check(main.cutscene != null and main.cutscene.id == "harbor_first" and Music.track == "harbor", "上岸一会儿就演")
+	main.cutscene.skip()
+	await frames(2)
+	check(GameState.has_flag("cut_harbor_first") and CutScenes.on_enter(main) == "", "只演一次")
+	await free_main(main)
+	# 残卷（5-1）：西缪让开以后第一次和大主祭说话以前演，演完从「打开铁箱」接着说
+	ch4_state({"ch4_done": true, "crown_holder": "kept"})
+	CrownPeople.ch5_begin()
+	GameState.set_flag("ch5_wardens", "let")
+	GameState.set_stage("ch5_main", "to_archive")
+	GameState.pending_load = {"scene": "church_archive", "spawn": "front", "player": {}}
+	main = await make_area("church_archive")
+	await frames(3)
+	var luc := main.world.find_child("Npc_lucien_archive", true, false) as Npc
+	check(luc != null and CutScenes.before_dialogue("lucien_archive").get("cut", "") == "archive_open", "第一次找大主祭：先演「残卷」")
+	main._on_interacted(luc.interact(main.player))
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "archive_open" and not main.dialogue.visible and main.world.find_child("CutArchiveLights", true, false) != null, "演着：对话还没开，补了暖光")
+	main.cutscene.skip()
+	await frames(3)
+	check(main.dialogue.visible and main.dialogue.runner.node_id == "greet" and main.world.find_child("CutArchiveLights", true, false) == null, "演完：大主祭打开铁箱（greet）；补光拿掉")
+	main.dialogue.close()
+	await free_main(main)
+	# 黄昏钟（4-4）：冬议散了，钟声里演议事厅空下来，演完第四章章末
+	ch4_state({})
+	GameState.pending_load = {"scene": "council_hall", "spawn": "front", "player": {}}
+	main = await make_area("council_hall")
+	await frames(3)
+	main._ch4_bell()
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "dusk_bell" and CutScenes.shots(main, "dusk_bell").size() == 2 and not GameState.has_flag("ch4_done"), "冬议散了：演「黄昏钟」（两个镜头），章末还没出")
+	main.cutscene.skip()
+	await seconds(1.9)
+	check(GameState.has_flag("ch4_done") and main.ending_panel.visible, "演完：第四章章末")
+	main.ending_panel.close()
+	get_tree().paused = false
+	await free_main(main)
+	# 金穗平原（3-1）：第三章渡口上岸就演，只演一次
+	GameState.new_game(8)
+	GameState.chapter = 3
+	GameState.pending_load = {"scene": "plain", "spawn": "dock", "player": {}}
+	main = await make_area("plain")
+	check(CutScenes.on_enter(main) == "plain_first" and CutScenes.shots(main, "plain_first").size() == 3, "第三章渡口上岸：演「金穗平原」（三个镜头）")
+	await seconds(1.4)
+	check(main.cutscene != null and main.cutscene.id == "plain_first", "上岸一会儿就演")
+	main.cutscene.skip()
+	await frames(2)
+	check(GameState.has_flag("cut_plain_first") and CutScenes.on_enter(main) == "", "只演一次")
+	await free_main(main)
+	Engine.set_meta("ic_skip_film", true)
 

@@ -318,7 +318,7 @@ func _enter(nid: String) -> void:
 	apply(data.nodes[nid].get("do", []))
 
 
-func start(area: String, dialogue_id: String) -> bool:
+func start(area: String, dialogue_id: String, at_node := "") -> bool:
 	var all := load_file(area)
 	if not all.has(dialogue_id):
 		push_warning("找不到对话：%s / %s" % [area, dialogue_id])
@@ -331,6 +331,8 @@ func start(area: String, dialogue_id: String) -> bool:
 		if conds_ok(k.get("if", [])):
 			first = str(k.node)
 			break
+	if at_node != "" and data.get("nodes", {}).has(at_node):
+		first = at_node                         # 过场演过的那几句不再说一遍，从后面接着说（C.5）
 	_enter(first)
 	return true
 

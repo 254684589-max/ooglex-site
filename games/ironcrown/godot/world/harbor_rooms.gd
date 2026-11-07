@@ -268,7 +268,7 @@ static func crown_box() -> Dictionary:
 	if str(GameState.get_flag("ch4_vault", "")) == "":
 		GameState.set_flag("ch4_vault", "unseen")
 	GameState.set_stage("ch4_main", "to_city")
-	return {"toast": "最小的那把钥匙打开了铁笼。铁匣不沉，比你想的轻。你把它揣进怀里——一圈暗色的铁，冠底下那块星铁冰得扎手。（得到：铁冠）"}
+	return {"cutscene": "vault_crown", "toast": "最小的那把钥匙打开了铁笼。铁匣不沉，比你想的轻。你把它揣进怀里——一圈暗色的铁，冠底下那块星铁冰得扎手。（得到：铁冠）"}
 
 
 ## 约斯特那间牢门（7.7）：夜里看门的打盹，撬锁（潜行 14，一次定）；白天、或者人已经出来了，只是看看
