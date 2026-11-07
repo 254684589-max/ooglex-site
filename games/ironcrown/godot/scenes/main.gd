@@ -1753,7 +1753,10 @@ func _on_dialogue_closed() -> void:
 	var ending := GameState.pending_ending
 	GameState.pending_ending = ""
 	if ending == "ch3":
-		_ch3_bell()                                         # 守灵夜听完（6.8b）：先响晨钟，再出章末画面
+		if play_cutscene("wake_memory"):                    # 守灵夜的回忆（C.5 过场 3-3）：演完再响晨钟
+			cutscene.finished.connect(func(_s: bool): _ch3_bell(), CONNECT_ONE_SHOT)
+		else:
+			_ch3_bell()                                     # 守灵夜听完（6.8b）：先响晨钟，再出章末画面
 	elif ending == "ch4":
 		_ch4_bell()                                         # 冬议散了（7.8）：钟楼的黄昏钟，再出章末画面
 	elif ending == "final":

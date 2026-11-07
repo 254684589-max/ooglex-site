@@ -16,7 +16,10 @@ extends RefCounted
 ##   well_ring      第二章章末，你和诺伯特走到冬井边（WinterWell.reached）：冰原上一口石井、长眠者站成一圈 → 圈里贴着它们的脸 →
 ##                  你和诺伯特的背影（他那句「三十五年，我头一回走到这口井边」） → 镜头升高拉远，淡出接章末画面。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring"]
+##   wake_memory    第三章，伊格纳兹说完守灵夜那一夜（对话关上、晨钟响以前）：跪在墙下的他 → 回忆（褪色）：烛光里的铁冠、
+##                  老王亲手把它交出去、第二天说是被偷了 → 回到现在，窗外天快亮了；演完接晨钟和章末。
+
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory"]
 
 
 ## 进一个区域时要不要先演一段（main 进场时调，每段只演一次：播的时候记旗标 cut_<编号>）
@@ -54,6 +57,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.world.find_child("Npc_osric", true, false) != null
 		"well_ring":
 			return main.world != null and main.area == "highland" and main.world.find_child("WinterWell", true, false) != null
+		"wake_memory":
+			return main.world != null and main.area == "scriptorium"
 	return false
 
 
@@ -69,7 +74,90 @@ static func shots(main: Node, id: String) -> Array:
 			return osric_dawn(main)
 		"well_ring":
 			return well_ring(main)
+		"wake_memory":
+			return wake_memory(main)
 	return []
+
+
+## 守灵夜的回忆（3-3）：抄经室 9 × 4.8 米，伊格纳兹跪在东墙（刻满划痕）下；回忆的几个镜头在窗下那张抄经桌上——一块黑布、一支蜡烛、一顶铁冠
+static func wake_memory(main: Node) -> Array:
+	var p: FpController = main.player
+	var ig: Vector3 = Scriptorium.IGNAZ[0]
+	var desk: Vector3 = Scriptorium.DESKS[1]
+	var top := desk + Vector3(0, 0.8, 0)
+	var crown := _crown()
+	var candle := OmniLight3D.new()
+	candle.name = "CutCandle"
+	candle.light_color = Color("ffb060")
+	candle.light_energy = 1.6
+	candle.omni_range = 2.2
+	var cloth := MeshInstance3D.new()
+	cloth.name = "CutCloth"
+	var cm := BoxMesh.new()
+	cm.size = Vector3(0.9, 0.01, 0.6)
+	cloth.mesh = cm
+	var clm := StandardMaterial3D.new()
+	clm.albedo_color = Color("1a1416")
+	clm.roughness = 0.95
+	cloth.material_override = clm
+	var stage := func():
+		for n in [crown, candle, cloth]:
+			if (n as Node).get_parent() == null:
+				main.world.add_child(n)
+		cloth.global_position = top + Vector3(0, 0.005, 0)
+		crown.global_position = top + Vector3(0, 0.02, 0)
+		candle.global_position = top + Vector3(0.35, 0.35, 0.25)
+	return [
+		{"from": [ig + Vector3(-2.2, 1.7, 1.4), ig + Vector3(0.4, 1.0, 0.0)], "to": [ig + Vector3(-1.6, 1.55, 1.0), ig + Vector3(0.5, 1.0, 0.0)], "dur": 5.0, "fov": 46.0, "music": "night",
+			"lines": [[0.5, "", "他说完了。手还按在墙上那一道一道的划痕上。"]],
+			"on_start": func():
+				p.set_third_person(false)
+				stage.call()},
+		{"from": [top + Vector3(0.0, 0.55, 0.95), top + Vector3(0, 0.08, 0)], "to": [top + Vector3(0.0, 0.42, 0.62), top + Vector3(0, 0.08, 0)], "dur": 6.0, "fov": 38.0, "memory": true,
+			"lines": [[0.5, "", "三十五年前，冠城。老王在半夜睁开眼，叫所有人出去。"]]},
+		{"from": [top + Vector3(-0.55, 0.3, 0.35), top + Vector3(0, 0.1, 0)], "to": [top + Vector3(0.5, 0.32, 0.4), top + Vector3(0, 0.1, 0)], "dur": 6.5, "fov": 34.0, "cut": true, "memory": true,
+			"lines": [[0.4, "", "他从枕边拿起铁冠，亲手放进一个从双钥港来的人手里。"], [3.6, "", "那人手上戴着一枚戒指：两把钥匙，交叉着。"]]},
+		{"from": [Vector3(Scriptorium.TALLY_WALL_X - 0.9, 1.3, 0.4), Vector3(Scriptorium.TALLY_WALL_X, 1.25, 0.4)], "to": [Vector3(Scriptorium.TALLY_WALL_X - 0.6, 1.25, 0.2), Vector3(Scriptorium.TALLY_WALL_X, 1.2, 0.3)], "dur": 5.0, "fov": 40.0, "cut": true, "memory": true,
+			"lines": [[0.4, "", "第二天，王城里的人说冠被偷了。他什么都没说。"]]},
+		{"from": [Vector3(-2.0, 1.5, 1.6), Vector3(Scriptorium.WIN_X, Scriptorium.WIN_Y + 0.6, -2.4)], "to": [Vector3(-1.6, 1.4, 1.2), Vector3(Scriptorium.WIN_X, Scriptorium.WIN_Y + 0.7, -2.4)], "dur": 5.0, "fov": 44.0, "cut": true,
+			"lines": [[0.5, "", "高窗外，天快亮了。"]],
+			"on_start": func():
+				for n in [crown, candle, cloth]:
+					if is_instance_valid(n):
+						(n as Node).queue_free()},
+	]
+
+
+## 铁冠（过场的道具）：一圈黑铁，十个齿，铆钉；只有回忆和金库里用
+static func _crown() -> Node3D:
+	var root := Node3D.new()
+	root.name = "CutCrown"
+	var iron := StandardMaterial3D.new()
+	iron.albedo_color = Color("3a3634")
+	iron.metallic = 0.6
+	iron.roughness = 0.45
+	var n := 20
+	var r := 0.1
+	for i in n:
+		var a := TAU * i / n
+		var seg := MeshInstance3D.new()
+		var b := BoxMesh.new()
+		b.size = Vector3(TAU * r / n * 1.05, 0.045, 0.012)
+		seg.mesh = b
+		seg.material_override = iron
+		seg.position = Vector3(cos(a) * r, 0.022, sin(a) * r)
+		seg.rotation.y = -a + PI * 0.5
+		root.add_child(seg)
+		if i % 2 == 0:
+			var spike := MeshInstance3D.new()
+			var pm := PrismMesh.new()
+			pm.size = Vector3(0.03, 0.05, 0.01)
+			spike.mesh = pm
+			spike.material_override = iron
+			spike.position = Vector3(cos(a) * r, 0.07, sin(a) * r)
+			spike.rotation.y = -a + PI * 0.5
+			root.add_child(spike)
+	return root
 
 
 ## 冬井那一圈（2-4）：井在 HighlandLayout.WELL，长眠者站成半径 WinterWell.RING_R 的一圈；诺伯特停在井外 STOP_R 米

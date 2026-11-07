@@ -15,6 +15,7 @@ extends Node
 ##   on_start         Callable（可选）：镜头开始时调（摆道具之类）
 ##   exposure         曝光倍数（默认 1；火光照着脸的近景压一点，不发白）
 ##   music            第一个镜头上写：过场开始时换这首曲子（没有配音，就靠配乐，data/music.json 的曲目编号）
+##   memory           true = 回忆：画面褪成旧照片的暖褐色、四角压暗、带颗粒（shaders/memory.gdshader）
 ## 播放时：玩家不能动、HUD 藏起来、换到过场自己的相机；结束或跳过后全部还原，发 finished(skipped)。
 
 signal finished(skipped: bool)
@@ -30,6 +31,7 @@ var layer: CanvasLayer
 var top_bar: ColorRect
 var bottom_bar: ColorRect
 var fader: ColorRect
+var memory_rect: ColorRect             # 回忆的滤镜（盖在画面上、黑边和字幕底下）
 var speaker_label: Label
 var text_label: Label
 var skip_btn: Button
@@ -63,6 +65,13 @@ func _ready() -> void:
 	layer = CanvasLayer.new()
 	layer.layer = 60
 	add_child(layer)
+	memory_rect = _rect(Color.WHITE)
+	memory_rect.name = "Memory"
+	var mm := ShaderMaterial.new()
+	mm.shader = load("res://shaders/memory.gdshader")
+	memory_rect.material = mm
+	memory_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	memory_rect.visible = false
 	top_bar = _rect(Color.BLACK)
 	bottom_bar = _rect(Color.BLACK)
 	fader = _rect(Color.BLACK)
@@ -143,6 +152,7 @@ func _next_shot() -> void:
 		(sh.on_start as Callable).call()
 	if sh.has("music") and Settings.music:
 		Music.play(str(sh.music))
+	memory_rect.visible = bool(sh.get("memory", false))
 	var attr := CameraAttributesPractical.new()
 	attr.exposure_multiplier = float(sh.get("exposure", 1.0))
 	cam.attributes = attr
@@ -182,6 +192,8 @@ func _process(delta: float) -> void:
 	var dur := float(sh.get("dur", 3.0))
 	t += delta
 	_pose(t / dur)
+	if memory_rect.visible:
+		(memory_rect.material as ShaderMaterial).set_shader_parameter("time_s", t)
 	# 淡入（第一个镜头、或者不是直接切的镜头）、最后一个镜头淡出
 	var fade_in := 1.0 if (index == 0 or not bool(sh.get("cut", false))) else 0.0
 	var a := 0.0

@@ -13217,5 +13217,26 @@ func test_cutscene() -> void:
 	main.ending_panel.close()
 	get_tree().paused = false
 	await free_main(main)
+	# 守灵夜的回忆（3-3）：伊格纳兹说完，先演回忆（褪色的镜头）再响晨钟
+	GameState.new_game(1)
+	GameState.chapter = 3
+	GameState.pending_load = {"scene": "scriptorium", "player": {}}
+	main = await make_area("scriptorium")
+	await frames(2)
+	var ws := CutScenes.shots(main, "wake_memory")
+	check(ws.size() == 5 and ws.filter(func(x): return bool(x.get("memory", false))).size() == 3, "「守灵夜的回忆」：五个镜头，中间三个是回忆")
+	GameState.pending_ending = "ch3"
+	main._on_dialogue_closed()
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "wake_memory" and not GameState.has_flag("ch3_done"), "对话关上：先演回忆，还没响晨钟")
+	await seconds(5.6)
+	check(main.cutscene != null and main.cutscene.memory_rect.visible and main.world.find_child("CutCrown", true, false) != null, "回忆的镜头：画面褪色，桌上一顶铁冠")
+	main.ch3_end_after = 0.3
+	main.cutscene.skip()
+	await seconds(0.8)
+	check(GameState.has_flag("ch3_done") and main.ending_panel.visible, "演完：晨钟、第三章章末")
+	main.ending_panel.close()
+	get_tree().paused = false
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 
