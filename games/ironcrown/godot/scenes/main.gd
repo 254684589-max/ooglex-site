@@ -720,6 +720,8 @@ var cutscene: Cutscene = null
 
 ## 播一段过场：玩家不能动、HUD 藏起来；播完（或跳过）还原
 func play_cutscene(id: String) -> bool:
+	if Engine.get_meta("ic_skip_film", false):
+		return false                                     # 自动化测试：过场只在 cutscene 组里测，别的组照原来的流程走
 	if cutscene != null or not CutScenes.available(self, id):
 		return false
 	var sh := CutScenes.shots(self, id)
@@ -2533,14 +2535,20 @@ func _ch4_bell() -> void:
 
 
 func _on_well_reached() -> void:
+	if play_cutscene("well_ring"):                                # 冬井那一圈（C.5 过场 2-4）：演完直接章末
+		cutscene.finished.connect(func(_s: bool): _well_end(), CONNECT_ONE_SHOT)
+		return
 	hud.say("（诺伯特在你身边站住了，很久没说话）……三十五年，我头一回走到这口井边。它们没往北走。它们在这儿站着，脸都朝着井——像在等一样东西。")
-	get_tree().create_timer(well_end_after).timeout.connect(func():
-		if is_inside_tree() and area == "highland" and not GameState.has_flag("ch2_done"):
-			GameState.set_flag("ch2_done")
-			if GameState.quest_active("ch2_main"):
-				GameState.set_stage("ch2_main", "ch2_end")
-			save_game("auto", true)
-			show_ending("ch2"))
+	get_tree().create_timer(well_end_after).timeout.connect(_well_end)
+
+
+func _well_end() -> void:
+	if is_inside_tree() and area == "highland" and not GameState.has_flag("ch2_done"):
+		GameState.set_flag("ch2_done")
+		if GameState.quest_active("ch2_main"):
+			GameState.set_stage("ch2_main", "ch2_end")
+		save_game("auto", true)
+		show_ending("ch2")
 
 
 ## 两手空空（5.6 empty_handed，5.8）：主线到这一步，这一夜就这么熬过去——天黑、柴省着烧、天亮时火熄了

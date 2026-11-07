@@ -21,7 +21,7 @@ func _ready() -> void:
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	Settings.set_value("third_person", false)    # 上一次测试被中断时，设置文件里可能留着第三人称（Settings 在测试开始前已经读过它）
 	Engine.set_meta("ic_skip_opening", true)     # 开场（3.8）只在 opening 组里测，其余测试照旧从主街南头开始
-	Engine.set_meta("ic_skip_film", true)        # 开场影片（C.5）只在 cutscene 组里测；opening 组测钟声和管家那一段
+	Engine.set_meta("ic_skip_film", true)        # 过场（C.5：开场影片、渡口对峙……）只在 cutscene 组里测；别的组照原来的流程走（opening 组测钟声和管家那一段）
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
@@ -13199,6 +13199,23 @@ func test_cutscene() -> void:
 	check(main.dialogue.visible and main.dialogue.runner.node_id == "dawn_held" and main.dialogue.runner.text().contains("守住了"), "演完：他的话从头说（「……守住了。」）")
 	main.dialogue.close()
 	check(CutScenes.before_dialogue("osric").is_empty(), "演过一次不再演")
+	await free_main(main)
+	# 冬井那一圈（2-4）：第二章你和诺伯特走到井边，先演过场，演完章末
+	GameState.new_game(1)
+	GameState.chapter = 2
+	GameState.set_stage("ch2_main", "to_well")
+	GameState.pending_load = {"scene": "highland", "player": {}}
+	main = await make_area("highland")
+	await physics(4)
+	check(CutScenes.available(main, "well_ring") and CutScenes.shots(main, "well_ring").size() == 4, "冬井边能演「冬井那一圈」：四个镜头")
+	main._on_well_reached()
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "well_ring" and Music.track == "well" and not GameState.has_flag("ch2_done"), "到了井边：先演过场，还没章末")
+	main.cutscene.skip()
+	await frames(3)
+	check(GameState.has_flag("ch2_done") and GameState.quest_stage("ch2_main") == "ch2_end" and main.ending_panel.visible, "演完（跳过也算）：第二章章末画面")
+	main.ending_panel.close()
+	get_tree().paused = false
 	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 

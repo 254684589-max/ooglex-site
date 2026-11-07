@@ -13,7 +13,10 @@ extends RefCounted
 ##   osric_dawn     第一章天亮、家主临终（和他说最后一番话之前）：熄了一半的炭盆和窗缝里的灰光 → 守了一夜的人（床尾的继承人或者玛尔塔）
 ##                  → 床上他的脸，慢慢推近；之后他在对话里说「铁冠没有被偷，是老王自己交出去的」（过场里不抢这句）。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn"]
+##   well_ring      第二章章末，你和诺伯特走到冬井边（WinterWell.reached）：冰原上一口石井、长眠者站成一圈 → 圈里贴着它们的脸 →
+##                  你和诺伯特的背影（他那句「三十五年，我头一回走到这口井边」） → 镜头升高拉远，淡出接章末画面。
+
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring"]
 
 
 ## 进一个区域时要不要先演一段（main 进场时调，每段只演一次：播的时候记旗标 cut_<编号>）
@@ -49,6 +52,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "ferry"
 		"osric_dawn":
 			return main.world != null and main.world.find_child("Npc_osric", true, false) != null
+		"well_ring":
+			return main.world != null and main.area == "highland" and main.world.find_child("WinterWell", true, false) != null
 	return false
 
 
@@ -62,7 +67,31 @@ static func shots(main: Node, id: String) -> Array:
 			return ferry_standoff(main)
 		"osric_dawn":
 			return osric_dawn(main)
+		"well_ring":
+			return well_ring(main)
 	return []
+
+
+## 冬井那一圈（2-4）：井在 HighlandLayout.WELL，长眠者站成半径 WinterWell.RING_R 的一圈；诺伯特停在井外 STOP_R 米
+static func well_ring(main: Node) -> Array:
+	var p: FpController = main.player
+	var w2: Vector2 = HighlandLayout.WELL
+	var w := WinterWell.ground(w2)
+	var nb := main.world.find_child("Npc_norbert_well", true, false) as Node3D
+	var nbp: Vector3 = nb.global_position if nb else WinterWell.ground(w2 + Vector2(0, WinterWell.STOP_R))
+	var away := Vector3(nbp.x - w.x, 0, nbp.z - w.z).normalized()          # 从井指向诺伯特（你们站的那一边）
+	var side := Vector3(-away.z, 0, away.x)
+	var face_at := w + Vector3(cos(0.6), 0, sin(0.6)) * WinterWell.RING_R + Vector3(0, 1.55, 0)      # 圈上一张脸
+	return [
+		{"from": [w + away * 22.0 + side * 10.0 + Vector3(0, 13.0, 0), w + Vector3(0, 1.0, 0)], "to": [w + away * 15.0 - side * 6.0 + Vector3(0, 9.0, 0), w + Vector3(0, 1.0, 0)], "dur": 6.5, "fov": 48.0, "music": "well",
+			"lines": [[0.7, "", "冰原上一口石井。长眠的人围着它站成一圈，一动不动。"]],
+			"on_start": func(): p.set_third_person(true)},
+		{"from": [w + Vector3(0, 1.45, 0) + (face_at - w).normalized() * 1.2 * Vector3(1, 0, 1), face_at], "to": [w + Vector3(0, 1.5, 0) + (face_at - w).normalized() * 2.4 * Vector3(1, 0, 1), face_at], "dur": 5.0, "fov": 40.0, "cut": true,
+			"lines": [[0.5, "", "它们闭着眼睛，脸都朝着井。"]]},
+		{"from": [nbp + away * 3.2 + side * 1.4 + Vector3(0, 1.8, 0), w + Vector3(0, 1.0, 0)], "to": [nbp + away * 2.6 + side * 1.0 + Vector3(0, 1.75, 0), w + Vector3(0, 1.0, 0)], "dur": 6.5, "fov": 44.0, "cut": true,
+			"talk": nb, "lines": [[0.4, "诺伯特", "……三十五年，我头一回走到这口井边。"], [3.4, "诺伯特", "它们没往北走。它们在这儿站着——像在等一样东西。"]]},
+		{"from": [w + away * 10.0 + Vector3(0, 5.0, 0), w + Vector3(0, 0.5, 0)], "to": [w + away * 26.0 + side * 4.0 + Vector3(0, 20.0, 0), w], "dur": 6.0, "fov": 46.0, "cut": true},
+	]
 
 
 ## 家主临终（1-3）：病房 5.6 × 5 米，床靠北墙（床头朝北），东墙窄窗、西南角炭盆；守夜的人：床尾的继承人（守住了）或者床边的玛尔塔
