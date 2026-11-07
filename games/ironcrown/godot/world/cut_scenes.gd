@@ -44,16 +44,16 @@ static func shots(main: Node, id: String) -> Array:
 static func prologue(main: Node) -> Array:
 	var p: FpController = main.player
 	return [
-		{"from": [Vector3(0, 46, 34), Vector3(0, 30, -30)], "to": [Vector3(0, 30, 26), Vector3(0, 6, -18)], "dur": 7.0, "fov": 55.0, "music": "night",
+		{"from": [Vector3(0, 19, 21), Vector3(0, 6, -6)], "to": [Vector3(0, 14, 11), Vector3(0, 1.5, -20)], "dur": 7.0, "fov": 55.0, "music": "night",      # 雾大：机位不能太高太远，不然只看得见雾
 			"lines": [[0.8, "", "冠历六四三年秋，老王奥雷利安三世在冠城暴毙。"], [4.0, "", "守灵夜里，铁冠不见了。"]],
 			"on_start": func():
 				if p.global_position.distance_to(Vector3(0, 0, -44.3)) > 3.0:     # 预览 / 录视频时人不在宅邸门口：站过去（正常开场本来就在那儿）
 					p.global_position = Vector3(0, 0.05, -44.3)
 					p.rotation.y = PI
 				p.set_third_person(true)},
-		{"from": [Vector3(7.5, 9.5, 9.0), Vector3(0, 2.5, -18)], "to": [Vector3(6.0, 7.5, -14.0), Vector3(-1.0, 2.0, -36)], "dur": 7.0, "fov": 50.0,
+		{"from": [Vector3(0.6, 13.0, 4.0), Vector3(0, 2.0, -24)], "to": [Vector3(0.6, 10.0, -14.0), Vector3(0, 1.5, -40)], "dur": 7.0, "fov": 50.0,
 			"lines": [[0.6, "", "三年过去，王位空着。"], [3.4, "", "没有加冕的冬天，一年比一年长。"]]},
-		{"from": [Vector3(-3.2, 1.5, -6.0), Vector3(0.5, 1.6, -30)], "to": [Vector3(-2.4, 1.7, -22.0), Vector3(0.5, 2.0, -42)], "dur": 6.5, "fov": 46.0,
+		{"from": [Vector3(-1.1, 1.6, -4.0), Vector3(0.5, 1.6, -30)], "to": [Vector3(-0.9, 1.7, -22.0), Vector3(0.4, 2.0, -42)], "dur": 6.5, "fov": 46.0,
 			"lines": [[0.5, "", "五个家族在冠城争摄政；"], [3.0, "", "北方烽燧线上的火，一座接一座熄灭。"]]},
 		{"from": [Vector3(3.8, 2.6, -33.0), Vector3(0, 2.0, -46)], "to": [Vector3(1.4, 1.9, -39.0), Vector3(0, 1.6, -44.3)], "dur": 6.5, "fov": 44.0,
 			"lines": [[0.5, "", "霜渡镇，灰鲸河上的一个渡口。"], [3.2, "", "今夜，镇上的钟要响了。"]]},
