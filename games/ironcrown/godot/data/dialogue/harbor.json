@@ -1,0 +1,139 @@
+{
+  "_说明": "双钥港的人（路线图 7.4；STORY.md 7.3、7.4、7.5 第 1–3 步）。主线 ch4_main：to_keyhouse（从木栈码头上岸）→ envoys（钥楼里见了科尔温：铁冠是老王押在钥楼金库里的，冬至那天冠城清账，谁替王国把账还清冠就跟谁走；各家都派了人来）→ way（三家的使者都开过价：塞弗林家的奥迪隆在「咸潮」酒馆、洛蒙德家的管家塞缪尔在渡工行会会馆、北境的人在钥楼大厅的长凳上——阿尔里克当家的是军士赫尔曼，伊薇特当家的是厄尔德家的罗薇娜）。怎么把冠弄出来（赎 / 换 / 偷）是 7.5。前三章和出身留下的话（STORY.md 7.4）：序章怎么待塞拉斯、借据在谁手里、埃德里克（放走的在会馆记账）、伊薇特 / 阿尔里克、第十九烽的火、留在手里的罪证（摄政的信、粮仓账本）、磨坊那一夜、渡工之子。 7.5 把冠弄出来（ch4_crown_way）：赎（bought：在科尔温那儿替一家把账赎了——塞弗林家的铁他收，洛蒙德家的粮要口才 14，北境要口才 15、给他看过借据的 11；冠由科尔温冬至那天带上冠城，ch4_buyer）、换（traded：拿摄政的信或粮仓账本跟他换，冠交到你手里）、偷（stolen：夜里退潮、知道沟底哪段能落脚——科妮莉亚的红线或渡工之子——从南岸翻下北潮沟摸到钥楼的水门，用埃德里克给的钥匙或撬锁进金库：潜行 14 过了莫德睡着，拿她的钥匙；没过她醒着——听过守灵夜的跟她说伊格纳兹还活着她自己打开铁笼（talked），不然和三个雇佣兵打（caught）；world/harbor_people.gd）。序章勒索过的，塞拉斯的人在码头上堵你（付六十枚、口才 13 说走、或者打）。都到 to_city（坐船上冠城，7.6）。 7.7 支线：灯塔的火（老蒂博，ch4_lighthouse：钥楼付油钱——口才 13、自己出二十枚、从城西盐仓「借」两桶；亮了以后黄昏、夜里行会的船肯撑进北潮沟送你到水门）；债牢里的人（约斯特，ch4_debtor：付四十二枚、拿老王的担保压科尔温——口才 14、夜里撬牢门——潜行 14）；去沙嘴坐码头上摆渡的船。",
+  "colwin": {"speaker": "科尔温·卡斯韦尔", "start": "greet",
+    "start_if": [{"if": [{"quest_stage": "ch4_main", "eq": "to_city"}, {"flag": "ch4_crown_way", "eq": "stolen"}], "node": "stolen_after"}, {"if": [{"quest_stage": "ch4_main", "eq": "to_city"}], "node": "settled"}, {"if": [{"quest_stage": "ch4_main", "eq": "way"}], "node": "deal"}, {"if": [{"flag": "ch4_colwin_met"}], "node": "again"}, {"if": [{"flag": "prologue_edric", "eq": "extort"}], "node": "greet_extort"}],
+    "nodes": {
+      "greet": {"text": "（他坐在柜台后面最里头那张账桌边，没起身，手里的笔也没放下）北边来的誓剑。塞拉斯说起过你。（他抬眼看了你一下）坐——那边的长凳。我这儿没有给客人的椅子。", "options": [{"text": "我来问铁冠的事。", "next": "crown"}, {"text": "告辞。", "end": true}]},
+      "greet_extort": {"text": "（他把笔放下）一百二十枚银币。霜渡镇的渡口，塞拉斯的手套上还有你的鞋印。（他慢慢地笑了一下）我记账，不记仇。你来问什么？", "options": [{"text": "我来问铁冠的事。", "next": "crown"}, {"text": "告辞。", "end": true}]},
+      "crown": {"text": "（他翻开一本黑皮的账，从柜台的铁栅底下推过来）你想问它在不在我这儿。在。三年前守灵夜，老王亲手把它交给了我的人。不是偷的——是押的。", "options": [{"text": "押的？押了什么？", "next": "debt"}]},
+      "debt": {"text": "老王在位三十二年，北境年年缺粮，烽燧线年年要柴要人。王城不给，他就借——借卡斯韦尔家的钱，一张一张盖着王室的印，替瓦伦家、替厄尔德家、替那些守烽燧的人担保。（他点了点账页）最后一张，押的是那顶冠。", "options": [{"text": "（拿出借据）霜渡镇这张，也是其中一张。", "if": [{"has_item": "debt_note"}], "next": "note"}, {"text": "这些债，谁来还？", "next": "clear"}]},
+      "note": {"text": "（他接过去，只看了一眼背面的星铁冠印，就推了回来）渡口的税权，瓦伦家的。对，是其中一张。留着吧——冬至那天，它在你手里比在我手里值钱。", "do": [{"set": "ch4_note_shown"}], "options": [{"text": "这些债，谁来还？", "next": "clear"}]},
+      "clear": {"text": "冬至那天，冠城的摄政会议清账。谁替王国把这些账还清，冠就跟谁走——我不卖冠，我只收债。（他合上账）各家都派了人来。塞弗林家的人在码头的「咸潮」酒馆里喝酒，洛蒙德家的管家在渡工行会会馆里看船期，北境的人……在我门口的长凳上坐了三天了。", "do": [{"set": "ch4_colwin_met"}, {"quest": "ch4_main", "stage": "envoys"}], "options": [{"text": "你站哪一边？", "next": "side"}, {"text": "告辞。", "end": true}]},
+      "side": {"text": "（他第一回把笔放下，看着你）我站在账本这边。谁当王都行，只要账继续有人还。（他又拿起笔）去问问他们开什么价。誓剑总得替谁卖命。", "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（他没抬头，笔尖沙沙地走）冬至还有三天。去问问他们开什么价。", "text_if": [{"if": [{"quest_stage": "ch4_main", "eq": "way"}], "text": "（他没抬头）三家的价你都听过了。（笔停了一下）冠在下面，账在这儿。你想好了再来。"}], "options": [{"text": "灯塔三个月没付油钱。昨夜那条粮船，就是看不见灯。", "if": [{"quest_stage": "ch4_lighthouse", "eq": "ask"}, {"not_flag": "ch4_oil_asked"}], "check": {"id": "ch4_oil_talk", "skill": "speech", "dc": 13, "pass": "oil_yes", "fail": "oil_no"}}, {"text": "债牢里的约斯特，担保人是老王。老王的担保作废了——北境那些盖着王印的债，也跟着作废吗？", "if": [{"quest_active": "ch4_debtor"}, {"not_flag": "ch4_jost_pressed"}], "check": {"id": "ch4_jost_press", "skill": "speech", "dc": 14, "pass": "jost_yes", "fail": "jost_no"}}, {"text": "告辞。", "end": true}]},
+      "deal": {"text": "（他抬起头，笔还捏在手里）三家的价你都听过了。冠在下面，账在这儿。你替谁开口？", "options": [{"text": "替塞弗林家把账赎了：砧山北坑十年的铁。", "if": [{"flag": "ch4_envoy_severin"}], "next": "buy_severin"}, {"text": "替洛蒙德家把账赎了：两年的粮、南境的磨坊作保。", "if": [{"flag": "ch4_envoy_lomond"}], "check": {"id": "ch4_buy_lomond", "skill": "speech", "dc": 14, "pass": "buy_lomond", "fail": "no_lomond"}}, {"text": "替北境开口：北边欠你的，一半是烧在烽燧线上的柴。", "if": [{"flag": "ch4_envoy_north"}, {"flag": "ch4_note_shown"}], "check": {"id": "ch4_buy_north", "skill": "speech", "dc": 11, "pass": "buy_north", "fail": "no_north"}}, {"text": "替北境开口：北边拿不出钱，可这些债是老王替他们担保的。", "if": [{"flag": "ch4_envoy_north"}, {"not_flag": "ch4_note_shown"}], "check": {"id": "ch4_buy_north", "skill": "speech", "dc": 15, "pass": "buy_north", "fail": "no_north"}}, {"text": "（拿出摄政的信）这封信，换那顶冠。", "if": [{"has_item": "regent_letter"}], "next": "trade_letter"}, {"text": "（拿出粮仓账本）这本账，换那顶冠。", "if": [{"has_item": "granary_ledger"}], "next": "trade_ledger"}, {"text": "（拿出借据）这张借据，换那顶冠。", "if": [{"has_item": "debt_note"}], "next": "trade_note"}, {"text": "灯塔三个月没付油钱。昨夜那条粮船，就是看不见灯。", "if": [{"quest_stage": "ch4_lighthouse", "eq": "ask"}, {"not_flag": "ch4_oil_asked"}], "check": {"id": "ch4_oil_talk", "skill": "speech", "dc": 13, "pass": "oil_yes", "fail": "oil_no"}}, {"text": "债牢里的约斯特，担保人是老王。老王的担保作废了——北境那些盖着王印的债，也跟着作废吗？", "if": [{"quest_active": "ch4_debtor"}, {"not_flag": "ch4_jost_pressed"}], "check": {"id": "ch4_jost_press", "skill": "speech", "dc": 14, "pass": "jost_yes", "fail": "jost_no"}}, {"text": "我再想想。", "end": true}]},
+      "buy_severin": {"text": "砧山的铁……（他在账上写了一笔，又写了一笔）够了。铁不会烂，也不会被人吃掉。冬至那天，我带着冠上冠城，当着摄政会议交给塞弗林家。（他抬眼看你）你替砧山做了一笔好买卖。", "do": [{"set": "ch4_crown_way", "value": "bought"}, {"set": "ch4_buyer", "value": "severin"}, {"rep": "severin", "delta": 10}, {"rep": "caswell", "delta": 5}, {"quest": "ch4_main", "stage": "to_city"}], "options": [{"text": "告辞。", "end": true}]},
+      "buy_lomond": {"text": "（他拨了很久的算筹）……粮会烂，可磨坊不会跑。好。冬至那天，我带着冠上冠城，交给洛蒙德家——让女家主在冬议上坐到她想坐的那张椅子上。", "do": [{"set": "ch4_crown_way", "value": "bought"}, {"set": "ch4_buyer", "value": "lomond"}, {"rep": "lomond", "delta": 10}, {"rep": "caswell", "delta": 5}, {"quest": "ch4_main", "stage": "to_city"}], "options": [{"text": "告辞。", "end": true}]},
+      "no_lomond": {"text": "（他摇了摇头）两年的粮，一个冬天就吃完了。粮会烂，铁不会。洛蒙德家的价，不够。", "options": [{"text": "告辞。", "end": true}]},
+      "buy_north": {"text": "（他把笔放下，很久没说话）……老王押冠，押的是北境的柴和粮。这笔账要是算在北边头上，我这本账就算不平了。（他重新拿起笔，写得很慢）冬至那天，我带着冠上冠城，交给瓦伦家。北边拿不出钱——那就拿冬议上一句话来还。", "do": [{"set": "ch4_crown_way", "value": "bought"}, {"set": "ch4_buyer", "value": "north"}, {"rep": "valen", "delta": 10}, {"rep": "eld", "delta": 5}, {"quest": "ch4_main", "stage": "to_city"}], "options": [{"text": "告辞。", "end": true}]},
+      "no_north": {"text": "（他的笔没停）北边拿不出钱。我同情北边——同情不进账。", "options": [{"text": "告辞。", "end": true}]},
+      "trade_letter": {"text": "（他读到最后一行，手指在那一行字底下停了很久）「老王最后一个冬天的药，照旧由砧山送去。」……这一行，能让砧山在冬议上一个字都说不出来。（他把信折好，放进柜台底下）冠是你的了。莫德——开金库。", "do": [{"set": "ch4_crown_way", "value": "traded"}, {"take_item": "regent_letter"}, {"give_item": "iron_crown"}, {"set": "ch4_traded", "value": "letter"}, {"rep": "caswell", "delta": 5}, {"quest": "ch4_main", "stage": "to_city"}], "options": [{"text": "（接过铁冠）", "next": "crown_in_hand"}]},
+      "trade_ledger": {"text": "（他翻到腊月，看了一眼，就合上了）……饿死的人，一笔一笔都记着。有了它，洛蒙德家在冬议上就只能听，不能说。（他把账本收进柜台底下）冠是你的了。莫德——开金库。", "do": [{"set": "ch4_crown_way", "value": "traded"}, {"take_item": "granary_ledger"}, {"give_item": "iron_crown"}, {"set": "ch4_traded", "value": "ledger"}, {"rep": "caswell", "delta": 5}, {"quest": "ch4_main", "stage": "to_city"}], "options": [{"text": "（接过铁冠）", "next": "crown_in_hand"}]},
+      "trade_note": {"text": "（他笑了一下，把借据推回来）一张借据，换一顶冠？它只值霜渡镇一个渡口。留着吧，冬至那天它还有用。", "options": [{"text": "我再想想。", "end": true}]},
+      "crown_in_hand": {"text": "（莫德从金库里上来，把那只星铁包角的铁匣放在柜台上，打开。里面一顶暗色的铁冠，没有宝石。科尔温没有看它）它比你想的轻。拿好——从现在起，城里每一双眼睛都在找你。", "options": [{"text": "告辞。", "end": true}]},
+      "settled": {"text": "（他没抬头）账结了。冬至那天，议事厅见。", "text_if": [{"if": [{"flag": "ch4_crown_way", "eq": "traded"}], "text": "（他没抬头）冠在你手里，信——或者账——在我这儿。我们两清了。冬至那天，议事厅见。"}], "options": [{"text": "灯塔三个月没付油钱。昨夜那条粮船，就是看不见灯。", "if": [{"quest_stage": "ch4_lighthouse", "eq": "ask"}, {"not_flag": "ch4_oil_asked"}], "check": {"id": "ch4_oil_talk", "skill": "speech", "dc": 13, "pass": "oil_yes", "fail": "oil_no"}}, {"text": "债牢里的约斯特，担保人是老王。老王的担保作废了——北境那些盖着王印的债，也跟着作废吗？", "if": [{"quest_active": "ch4_debtor"}, {"not_flag": "ch4_jost_pressed"}], "check": {"id": "ch4_jost_press", "skill": "speech", "dc": 14, "pass": "jost_yes", "fail": "jost_no"}}, {"text": "告辞。", "end": true}]},
+      "stolen_after": {"text": "（他看着你，笔停在半空）……金库少了一只匣子。（他慢慢把笔放下）我记账，不记仇。可这一笔，我会在冬议上念出来。议事厅见。", "options": [{"text": "灯塔三个月没付油钱。昨夜那条粮船，就是看不见灯。", "if": [{"quest_stage": "ch4_lighthouse", "eq": "ask"}, {"not_flag": "ch4_oil_asked"}], "check": {"id": "ch4_oil_talk", "skill": "speech", "dc": 13, "pass": "oil_yes", "fail": "oil_no"}}, {"text": "债牢里的约斯特，担保人是老王。老王的担保作废了——北境那些盖着王印的债，也跟着作废吗？", "if": [{"quest_active": "ch4_debtor"}, {"not_flag": "ch4_jost_pressed"}], "check": {"id": "ch4_jost_press", "skill": "speech", "dc": 14, "pass": "jost_yes", "fail": "jost_no"}}, {"text": "告辞。", "end": true}]},
+      "oil_yes": {"text": "（他翻到一页，用笔划了一道）……灯油十二桶，三个月。我付。不是因为船沉了——是因为沉船的账，没人来还。", "do": [{"set": "ch4_oil_asked"}, {"set": "ch4_oil_paid"}, {"quest": "ch4_lighthouse", "stage": "tell"}], "options": [{"text": "告辞。", "end": true}]},
+      "oil_no": {"text": "（他没抬头）船沉了，账就清了。灯塔是王室的，王室的账，冬至再算。", "do": [{"set": "ch4_oil_asked"}], "options": [{"text": "告辞。", "end": true}]},
+      "jost_yes": {"text": "（他的笔停住了）……你想让我在冬议以前，自己承认老王的担保不算数。（他看了你很久，在账上划掉一行）约斯特的四十二枚，记回王室的账上。让看门的放人。", "do": [{"set": "ch4_jost_pressed"}, {"set": "ch4_debtor", "value": "pressed"}, {"quest_done": "ch4_debtor"}, {"rep": "caswell", "delta": -3}], "options": [{"text": "告辞。", "end": true}]},
+      "jost_no": {"text": "老王的担保，一张一张都作废了——账可没作废。它落在谁头上，就是谁的。", "do": [{"set": "ch4_jost_pressed"}], "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "silas": {"speaker": "塞拉斯", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch4_silas_met"}], "node": "again"}, {"if": [{"flag": "prologue_edric", "eq": "extort"}], "node": "greet_extort"}, {"if": [{"flag": "prologue_edric", "eq": "release"}], "node": "greet_release"}, {"if": [{"flag": "prologue_edric", "eq": "deliver"}], "node": "greet_deliver"}],
+    "nodes": {
+      "greet": {"text": "（他靠在柜台边，手套搭在腕子上）卡斯韦尔家的密使，塞拉斯。替主人收债，顺便替主人看人。（他上下打量你）北边来的人，靴子都一样脏。", "do": [{"set": "ch4_silas_met"}], "options": [{"text": "告辞。", "end": true}]},
+      "greet_extort": {"text": "（他摘下一只手套，又慢慢戴上）一百二十枚银币。我在雾里等了一夜，等来一个收钱的誓剑。（他笑了笑）别担心。卡斯韦尔家不记仇——只记账。", "do": [{"set": "ch4_silas_met"}], "options": [{"text": "那张借据呢？", "next": "note_extort"}, {"text": "告辞。", "end": true}]},
+      "note_extort": {"text": "（他拍了拍胸口）在我这儿。芦栈村那个收账的吉尔伯特送回来的。冬至那天，我会在议事厅里把它念出来——一个字一个字地念。", "options": [{"text": "告辞。", "end": true}]},
+      "greet_deliver": {"text": "（他朝你点了点头，像对一个打过一局牌的人）霜渡镇那一夜，你把账算得很清楚：少爷回家，借据回瓦伦家。我输得不冤。", "do": [{"set": "ch4_silas_met"}], "options": [{"text": "告辞。", "end": true}]},
+      "greet_release": {"text": "（他看着你，像在心里算一笔账）你放少爷坐船南下了。他现在就在这座城里，替渡工行会记账——借据还揣在他怀里。（他压低声音）冬至那天，那张纸会被人念出来的。你最好想想，由谁来念。", "do": [{"set": "ch4_silas_met"}], "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（他没回头）主人在后面那张桌子。他不喜欢别人站着跟他说话——所以那儿没有椅子。", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "maud": {"speaker": "金库管事莫德", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch4_maud_met"}], "node": "again"}],
+    "nodes": {
+      "greet": {"text": "（一个六十多岁的女人，腰上挂着一大串钥匙，站在铁门前面，像一截门柱）下面是金库。没有家主的话，谁都不下去。（她看了你一眼）你在看我的钥匙。", "options": [{"text": "三年前送冠进来的那一夜，你在吗？", "if": [{"flag": "ch3_vigil"}], "next": "night"}, {"text": "四十年，一只匣子都没丢过？", "next": "forty"}, {"text": "告辞。", "end": true}]},
+      "night": {"text": "（她的手按在钥匙上）……在。来的人浑身一股海盐味，冠用一块黑布包着。我登了账，放进最里头那一格。（她停了一下）他走的时候哭了。我当了四十年管事，没见过那样哭的人。", "do": [{"set": "ch4_maud_met"}, {"set": "ch4_maud_night"}], "options": [{"text": "告辞。", "end": true}]},
+      "forty": {"text": "四十年。抵押的人死了，匣子还在；欠债的人跑了，匣子还在。（她把钥匙串换了只手）匣子比人老实。", "do": [{"set": "ch4_maud_met"}], "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（她没动）铁门锁着。我在这儿。", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "cornelia": {"speaker": "科妮莉亚", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch4_cornelia_met"}], "node": "again"}, {"if": [{"flag": "origin", "eq": "boatman"}], "node": "greet_kin"}],
+    "nodes": {
+      "greet": {"text": "（她正把一张河道图往桌上摊，拿船钉压住四个角）船钱月底结，活今天没有。（她抬起头）你不是来找活的。", "do": [{"set": "ch4_cornelia_met"}], "options": [{"text": "往冠城的船什么时候走？", "next": "boat"}, {"text": "运粮船怎么搁浅的？", "next": "wreck"}, {"text": "河道图上那条红线是什么？", "next": "redline"}, {"text": "告辞。", "end": true}]},
+      "greet_kin": {"text": "（她盯着你看了一会儿）……你是老渡工家的孩子。你爹那条船，冬天渡人不收钱。（她用脚把一张凳子踢到你跟前）坐。行会的人在这儿不用站着。", "do": [{"set": "ch4_cornelia_met"}, {"set": "ch4_guild_kin"}, {"rep": "ferrymen", "delta": 5}], "options": [{"text": "往冠城的船什么时候走？", "next": "boat"}, {"text": "运粮船怎么搁浅的？", "next": "wreck"}, {"text": "河道图上那条红线是什么？", "next": "redline"}, {"text": "告辞。", "end": true}]},
+      "boat": {"text": "每天卯时一班，逆流一天到冠城，一人三枚银币。冬至前三日加一班——到时候想上船的人，会比船多。", "options": [{"text": "运粮船怎么搁浅的？", "next": "wreck"}, {"text": "河道图上那条红线是什么？", "next": "redline"}, {"text": "告辞。", "end": true}]},
+      "wreck": {"text": "灯塔没亮。三个月了，钥楼不给灯油钱，老蒂博一个人守着一盆冷炭。（她把船钉按进桌面）昨夜那条粮船，就是看不见灯，撞上了沙嘴。船上十二个人，捞上来九个。", "options": [{"text": "河道图上那条红线是什么？", "next": "redline"}, {"text": "告辞。", "end": true}]},
+      "again": {"text": "（她头也不抬）河道图上那条红线是退潮能走的地方。别的地方，泥能吞人。", "text_if": [{"if": [{"flag": "ch4_guild_kin"}], "text": "（她朝你点了点头）坐。今天的潮汐表钉在北墙上，退潮在子时。"}], "options": [{"text": "河道图上那条红线是什么？", "if": [{"not_flag": "ch4_redline"}], "next": "redline"}, {"text": "告辞。", "end": true}]},
+      "redline": {"text": "（她用船钉点着图）退潮能落脚的地方。北潮沟那一段，红线贴着南岸走，过了钥楼才拐到沟当中——别的地方，泥能吞人。（她看了你一眼）你问这个做什么，我不问。", "do": [{"set": "ch4_redline"}], "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "samuel": {"speaker": "管家塞缪尔", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch4_envoy_lomond"}], "node": "again"}],
+    "nodes": {
+      "greet": {"text": "（他手里捏着一张船期单，见了你，愣了一下）……是你。女家主让我来的。", "text_if": [{"if": [{"flag": "ch3_evidence_to", "eq": "tenants"}, {"flag": "south_evidence", "eq": "lomond"}], "text": "（他看见你，脸一下子白了，船期单在手里攥成一团）……麦渡的人当着全村念的那本账。是我记的。女家主没让我死——让我来了双钥港。"}, {"if": [{"flag": "ch3_mill", "eq": "held"}, {"flag": "ch3_side", "eq": "lomond"}], "text": "（他见了你，把船期单叠好收起来，第一回直直地看着你）磨坊守住了。女家主记着。她让我来双钥港，也让我来找你。"}], "options": [{"text": "洛蒙德家开什么价？", "next": "offer"}, {"text": "告辞。", "end": true}]},
+      "offer": {"text": "明后两年的粮，南境所有的磨坊作保，替王国把账结了。女家主要的不是冠——是冬议上一个说话的位子。（他压低声音）她让我问你：冠赎出来那天，你能不能站在洛蒙德家这边。", "do": [{"set": "ch4_envoy_lomond"}], "options": [{"text": "（拿出粮仓账本）这本账，也是你记的。", "if": [{"has_item": "granary_ledger"}], "next": "ledger"}, {"text": "我想想。", "end": true}]},
+      "ledger": {"text": "（他看着那本账，很久）……留着吧。女家主的价是对冬议开的；你手里这本，是对我开的。（他把船期单塞回怀里）冬议上你要是把它拿出来，洛蒙德家就一个位子都没有了。你自己掂量。", "do": [{"set": "ch4_samuel_ledger"}], "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（他还在看船期）卯时那班船……女家主等着回信。", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "odilon": {"speaker": "奥迪隆", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch4_envoy_severin"}], "node": "again"}],
+    "nodes": {
+      "greet": {"text": "（他坐在火塘边，面前一壶酒，灰斗篷搭在椅背上）又见面了，誓剑。坐。这儿的酒比砧山的淡，可是热。", "text_if": [{"if": [{"flag": "ch3_side", "eq": "severin"}], "text": "（他把酒杯推过来）磨坊那一夜，你跟我们站在一起。摄政记得——我也记得。坐。"}, {"if": [{"flag": "ch3_odilon_down"}], "text": "（他的左手还吊着布带，用右手给自己倒了一杯）磨坊那一夜，你把我打倒在麦茬地里。（他喝了一口）摄政不在乎我被谁打倒。他在乎冠。坐。"}], "options": [{"text": "塞弗林家开什么价？", "next": "offer"}, {"text": "告辞。", "end": true}]},
+      "offer": {"text": "砧山北坑十年的铁，替王国把账结了。冠赎出来，戴在摄政的孙子头上。（他转着酒杯）你帮我们把冠送进议事厅，塞弗林家欠你一个人情——砧山的人情，比洛蒙德家的粮硬。", "do": [{"set": "ch4_envoy_severin"}], "options": [{"text": "我手里有一封摄政的信。", "if": [{"has_item": "regent_letter"}], "next": "letter"}, {"text": "我想想。", "end": true}]},
+      "letter": {"text": "（他的手停在酒杯上，火塘里噼啪响了一声）……你留着它。（他很久没说话）那你开个价。冬议以前，别让那封信见光——「老王最后一个冬天的药」那一行，不是你我该念的东西。", "do": [{"set": "ch4_odilon_letter"}], "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（他又倒了一杯）想好了来找我。冬至只有一次。", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "herman": {"speaker": "赫尔曼", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch4_envoy_north"}], "node": "again"}],
+    "nodes": {
+      "greet": {"text": "（他坐在长凳上，膝盖上搭着一件旧披风）三天了。门房让我等，我就等。（他看着你，像是认了好一会儿才认出来）……是你。堤道上那一夜，我记得你。", "options": [{"text": "阿尔里克派你来做什么？", "next": "offer"}, {"text": "告辞。", "end": true}]},
+      "offer": {"text": "大人让我来求科尔温宽限。北境拿不出钱，只拿得出人。（他把披风攥紧）大人和摄政……说好了一些事，我一个军士不该问。可北境的人还是要吃饭，烽燧线上的人还是要柴。冠要是回到瓦伦家，冬议上北边就有一个说话的位子。你帮帮北边吧。", "do": [{"set": "ch4_envoy_north"}], "options": [{"text": "我想想。", "end": true}]},
+      "again": {"text": "（他还坐在那条长凳上）我等。北边的人会等。", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "rowena": {"speaker": "罗薇娜", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch4_envoy_north"}], "node": "again"}],
+    "nodes": {
+      "greet": {"text": "（她坐在长凳的另一头，剑横在膝盖上，门房离她远远的）伊薇特和厄尔德家派我来的。（她看着柜台后面那一墙账册）北境欠这家的钱，一半是烧在烽燧线上的柴。", "text_if": [{"if": [{"flag": "ch2_fire", "eq": "lit"}], "text": "（她坐在长凳的另一头，剑横在膝盖上）第十九烽的火还亮着——你送上去的粮。（她看着那一墙账册）伊薇特和厄尔德家派我来的。北境欠这家的钱，一半是烧在烽燧线上的柴。"}, {"if": [{"flag": "ch2_fire", "eq": "out"}], "text": "（她坐在长凳的另一头，剑横在膝盖上，没看你）第十九烽熄了。（她看着那一墙账册）伊薇特和厄尔德家派我来的。北境欠这家的钱，一半是烧在烽燧线上的柴。"}], "options": [{"text": "北境开什么价？", "next": "offer"}, {"text": "告辞。", "end": true}]},
+      "offer": {"text": "北境拿不出钱，只拿得出一句话：冠要是回到北边，烽燧线上每一座火都会点着。（她站起来，剑还在手里）帮我们。别让砧山的人把它戴走。", "do": [{"set": "ch4_envoy_north"}], "options": [{"text": "我想想。", "end": true}]},
+      "again": {"text": "（她又坐下了）门房怕我。挺好。", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "edric": {"speaker": "埃德里克", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch4_edric_met"}], "node": "again"}],
+    "nodes": {
+      "greet": {"text": "（他正埋头在一本船账里，抬头看见你，笔掉在了桌上）……是你。（他笑了，又不太笑得出来）我在行会记账，一天三个铜子。借据还在我身上——我每天晚上摸一遍。", "options": [{"text": "冬至那天，你打算怎么办？", "next": "plan"}, {"text": "告辞。", "end": true}]},
+      "plan": {"text": "（他把手按在胸口）念出来。让冠城的人都听听，老王拿北境的什么押了钱。（他看着你）霜渡镇那一夜，你放了我。我欠你的。你要我做什么，就说。", "do": [{"set": "ch4_edric_met"}], "options": [{"text": "你能弄到钥楼那道水门的钥匙吗？", "if": [{"not_flag": "ch4_edric_key"}], "next": "key"}, {"text": "告辞。", "end": true}]},
+      "again": {"text": "（他压低声音）卯时那班船，我也想上。", "options": [{"text": "你能弄到钥楼那道水门的钥匙吗？", "if": [{"not_flag": "ch4_edric_key"}], "next": "key"}, {"text": "告辞。", "end": true}]},
+      "key": {"text": "（他四下看了一眼，压低声音）行会管闸。钥楼背后那道水门的备用钥匙，登在行会的账上——我记账，钥匙也归我登。（他从柜子里摸出一把长柄铁钥匙，塞进你手里）退潮的时候才能下沟。别在沟底停。", "do": [{"give_item": "sluice_key"}, {"set": "ch4_edric_key"}], "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "maud_vault": {"speaker": "金库管事莫德", "start": "awake",
+    "start_if": [{"if": [{"flag": "ch4_vault", "eq": "caught"}], "node": "after_fight"}, {"if": [{"has_item": "iron_crown"}], "node": "gone"}, {"if": [{"flag": "ch4_vault_sneaky"}], "node": "asleep"}],
+    "nodes": {
+      "asleep": {"text": "（她靠在石台边的椅子上睡着了，下巴抵着胸口，那一大串钥匙搭在膝盖上。蜡烛只剩一截）", "options": [{"text": "（轻轻把钥匙串从她膝盖上拿起来）", "do": [{"set": "ch4_maud_keys"}], "end": true}, {"text": "（叫醒她）", "next": "awake"}]},
+      "awake": {"text": "（她站起来，钥匙串哗啦一响，石阶那边的三个人一下子都站直了）……水门。四十年，头一回有人从水门进来。", "options": [{"text": "伊格纳兹还活着。在坠星院的抄经室里，他三十五年没开口——直到前几天。", "if": [{"flag": "ch3_vigil"}], "next": "talked"}, {"text": "（拔剑）", "do": [{"fight": "vault_guards", "win": "ch4_vault", "value": "caught"}], "end": true}]},
+      "talked": {"text": "（她的手停在钥匙上，很久）……那个哭着走的人。他还活着。（她转过身，用最小的那把钥匙打开铁笼，把铁匣抱出来，放在你手里）这一只，我替他守了三年。拿走吧——明天早上，我会说是我自己睡着了。", "do": [{"set": "ch4_vault", "value": "talked"}, {"give_item": "iron_crown"}, {"set": "ch4_crown_way", "value": "stolen"}, {"quest": "ch4_main", "stage": "to_city"}], "options": [{"text": "告辞。", "end": true}]},
+      "after_fight": {"text": "（她贴着墙站着，把钥匙串扔在你脚下）……拿吧。四十年，一只匣子都没丢过。", "do": [{"set": "ch4_maud_keys"}], "options": [{"text": "告辞。", "end": true}]},
+      "gone": {"text": "（她坐回椅子上，看着空了的铁笼）走吧。水门开着。", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "silas_man": {"speaker": "收债的打手", "start": "greet",
+    "nodes": {
+      "greet": {"text": "（三个人从栈桥那头拦过来，领头的掂着一根短棍）塞拉斯先生问你好。霜渡镇那一百二十枚银币——加上三年的利。", "options": [{"text": "（数出六十枚银币）这些，够塞拉斯先生买一副新手套。", "if": [{"silver": 60}], "do": [{"pay": 60}, {"set": "ch4_thugs", "value": "paid"}, {"leave": "silas_men"}], "next": "paid"}, {"text": "塞拉斯在钥楼里等着冬议。你们在码头上动手，他的账就不好看了。", "check": {"id": "ch4_thugs_talk", "skill": "speech", "dc": 13, "pass": "talked", "fail": "no_talk"}}, {"text": "（拔剑）", "do": [{"fight": "silas_men", "win": "ch4_thugs", "value": "beaten"}], "end": true}]},
+      "paid": {"text": "（他数了一遍，揣进怀里）塞拉斯先生会记账的。", "options": [{"text": "告辞。", "end": true}]},
+      "talked": {"text": "（他看了看另外两个人，把短棍插回腰上）……算你会说话。我们会跟塞拉斯先生说，码头上风大。", "do": [{"set": "ch4_thugs", "value": "talked"}, {"leave": "silas_men"}], "options": [{"text": "告辞。", "end": true}]},
+      "no_talk": {"text": "（他笑了）塞拉斯先生说你会这么说。", "options": [{"text": "（数出六十枚银币）", "if": [{"silver": 60}], "do": [{"pay": 60}, {"set": "ch4_thugs", "value": "paid"}, {"leave": "silas_men"}], "next": "paid"}, {"text": "（拔剑）", "do": [{"fight": "silas_men", "win": "ch4_thugs", "value": "beaten"}], "end": true}]}
+    }},
+  "thibault": {"speaker": "老蒂博", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch4_lighthouse", "eq": "lit"}], "node": "lit_again"}, {"if": [{"quest_active": "ch4_lighthouse"}], "node": "again"}],
+    "nodes": {
+      "greet": {"text": "（一个裹着三层破袄的老头，蹲在塔门口一只冷火盆边上）……你也是来看沉船的？三个月了。钥楼说灯塔是王室的，王室的账冬至再算。（他朝沙嘴外那条歪着的粮船抬了抬下巴）船沉了，账就清了——他们是这么说的。", "options": [{"text": "灯要多少油？", "next": "need"}, {"text": "告辞。", "end": true}]},
+      "need": {"text": "十二桶够一冬。没有十二桶，两桶也行——两桶能亮到冬至。（他把手伸到冷火盆上，又缩回去）", "do": [{"quest": "ch4_lighthouse"}], "options": [{"text": "我去钥楼替你要油钱。", "end": true}, {"text": "（数出二十枚银币）买两桶。", "if": [{"silver": 20}], "do": [{"pay": 20}], "next": "lit"}, {"text": "城西盐仓边上码着油桶。", "next": "borrow"}, {"text": "告辞。", "end": true}]},
+      "borrow": {"text": "（他看了你一眼）那是钥楼的盐仓。我什么都没听见。", "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（他还蹲在冷火盆边上）油呢？", "options": [{"text": "钥楼答应付油钱了。", "if": [{"flag": "ch4_oil_paid"}], "next": "lit"}, {"text": "（放下两桶灯油）", "if": [{"has_item": "lamp_oil"}], "do": [{"take_item": "lamp_oil"}], "next": "lit"}, {"text": "（数出二十枚银币）买两桶。", "if": [{"silver": 20}], "do": [{"pay": 20}], "next": "lit"}, {"text": "城西盐仓边上码着油桶。", "next": "borrow"}, {"text": "告辞。", "end": true}]},
+      "lit": {"text": "（他把油倒进火盆，点着了。火苗一下子窜上来，照亮了半个沙嘴）……亮了。（他搓着手）黄昏以后行会的船看得见这盏灯，就敢撑进潮沟——涨着潮也敢。跟科妮莉亚说，是老蒂博说的。", "do": [{"set": "ch4_lighthouse", "value": "lit"}, {"quest_done": "ch4_lighthouse"}, {"rep": "ferrymen", "delta": 5}], "options": [{"text": "告辞。", "end": true}]},
+      "lit_again": {"text": "（他往火盆里添了一块炭）灯亮着。这一冬，不会再有船撞上沙嘴了。", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "jost": {"speaker": "约斯特", "start": "greet",
+    "start_if": [{"if": [{"quest_active": "ch4_debtor"}], "node": "again"}],
+    "nodes": {
+      "greet": {"text": "（他隔着铁栅抬起头）……船钱四十二枚。我给烽燧线运粮，船是赊的，担保人是老王。老王一死，担保作废，账就落到我头上了。冬至以前不赎，就转卖钥楼。", "text_if": [{"if": [{"flag": "ch2_roll", "eq": "served"}], "text": "（他隔着铁栅抬起头，盯着你看了很久）……第十九烽名册上那个「补」字，是你？我爹是烽誓团的人。（他把声音放低）船钱四十二枚。我给烽燧线运粮，船是赊的，担保人是老王。老王一死，账就落到我头上了。冬至以前不赎，就转卖钥楼。"}], "do": [{"quest": "ch4_debtor"}], "options": [{"text": "（数出四十二枚银币，放在看门的桌上）", "if": [{"silver": 42}], "do": [{"pay": 42}, {"set": "ch4_debtor", "value": "paid"}, {"quest_done": "ch4_debtor"}], "next": "paid"}, {"text": "我去跟科尔温说说老王的担保。", "next": "go_colwin"}, {"text": "告辞。", "end": true}]},
+      "go_colwin": {"text": "（他苦笑了一下）去吧。他会说，担保作废了，账没作废。", "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（他靠着铁栅）还是四十二枚。", "options": [{"text": "（数出四十二枚银币，放在看门的桌上）", "if": [{"silver": 42}], "do": [{"pay": 42}, {"set": "ch4_debtor", "value": "paid"}, {"quest_done": "ch4_debtor"}], "next": "paid"}, {"text": "我去跟科尔温说说老王的担保。", "if": [{"not_flag": "ch4_jost_pressed"}], "next": "go_colwin"}, {"text": "告辞。", "end": true}]},
+      "paid": {"text": "（看门的数了两遍，开了锁。约斯特从铁栅里出来，站了很久）……冬至那天，我去议事厅。我要听听他们怎么说北边的粮。", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "ferry": {"speaker": "摆渡的船工", "start": "greet",
+    "nodes": {
+      "greet": {"text": "去沙嘴？行会的小船。（他把桨往水里一插）本该两个铜子——算了。灯塔要是能亮，大家都有好处。", "options": [{"text": "去沙嘴灯塔。", "do": [{"goto": "harbor", "spawn": "lighthouse"}], "end": true}, {"text": "告辞。", "end": true}]}
+    }},
+  "ferry_back": {"speaker": "摆渡的船工", "start": "greet",
+    "nodes": {
+      "greet": {"text": "（他坐在小船上抽烟斗）回码头？", "options": [{"text": "回木栈码头。", "do": [{"goto": "harbor", "spawn": "quay"}], "end": true}, {"text": "告辞。", "end": true}]}
+    }}
+}

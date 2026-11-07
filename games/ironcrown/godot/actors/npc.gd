@@ -15,6 +15,7 @@ var pose := "idle"                 # A.2b：平时的动作（data/looks.json �
 var talking := false
 const LYING_OFFSET := Vector3(0, 0.08, 0.75)   # LayToIdle 第一帧：脚在本地 z -0.62、头在 +0.9；往床头挪、背贴在褥子上
 var lying := false          # 躺着（4.5c 病床上昏睡的家主）：身子放平、脸朝上，说话时不转身；头朝本地 +Z
+var label_far := 0.0        # 名字多远以外不画（0 = 跟人一样）：金穗平原坠星院门口十来个人，名字一个一次绘制（6.7a）
 var far_end := 0.0          # 多远以外整个人（远处那份胶囊、名字）都不画（0 = 一直画）。第十九烽的人从村口看整条山谷时会把绘制调用顶过 400（5.3c）
 
 
@@ -43,9 +44,13 @@ func _ready() -> void:
 		cs.position = Vector3(0, 0.3, 0.875)
 		body.rotation.x = PI / 2           # 头（本地 +Y 1.6）转到 +Z，鼻子朝上
 		body.position.y = 0.3
-		Blocks.label(self, display_name, Vector3(0, 0.95, 0.9), 32, 0.0035)
+		var ll := Blocks.label(self, display_name, Vector3(0, 0.95, 0.9), 32, 0.0035)
+		if label_far > 0.0:
+			ll.visibility_range_end = label_far
 	else:
-		Blocks.label(self, display_name, Vector3(0, 1.98, 0), 32, 0.0035)
+		var lb := Blocks.label(self, display_name, Vector3(0, 1.98, 0), 32, 0.0035)
+		if label_far > 0.0:
+			lb.visibility_range_end = label_far
 	if far_end > 0.0:
 		_cut_far(self)
 
@@ -68,6 +73,10 @@ func _dress(body: Node3D) -> void:
 		m.queue_free()
 		return
 	Looks.finish(m)
+	var merged := SkinMerge.merge(m.skeleton)          # 衣服、头、头发、胡子合成一块蒙皮网格（同士兵 B.6b；6.7a：金穗平原坠星院门口十来个人 113 次绘制）
+	if merged != null:
+		merged.visibility_range_end = Looks.LOD_FAR
+		merged.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	pose = Looks.pose(display_name, name)
 	m.hold_prop(Props.make(Looks.prop(display_name, name)), Looks.prop(display_name, name) in Props.LEFT_HAND)
 	if lying:

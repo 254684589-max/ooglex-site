@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -4311,7 +4311,7 @@ func test_squad() -> void:
 	check(white.filter(func(s): return not s.in_squad).all(func(s): return s.marker == null), "小队以外的白带头顶没有 ◆")
 	check(BattleArena.squad_size(10) == 6 and BattleArena.squad_size(30) == 12 and BattleArena.squad_size(1) == 1, "小队人数：每边人数的六成，1–12 人")
 	check(b.squad_order == "charge" and squad.all(func(s): return s.order == "charge") and b.leash(squad[0]).is_empty() and b.post_of(squad[0]) == null, "默认冲锋：不拴绳、没有固定位置（和 B.1 一样）")
-	check(main.hud.squad_label.visible and main.hud.squad_label.text == "◆ 小队 6 人：冲锋 · 1 跟随 2 坚守 3 冲锋", "右上角写小队人数与命令（%s）" % main.hud.squad_label.text)
+	check(main.hud.squad_label.visible and main.hud.squad_label.text == "◆ 小队 6 人：冲锋 · 1 跟随 2 坚守 3 冲锋 4 去那儿", "右上角写小队人数与命令（%s）" % main.hud.squad_label.text)
 	var hr: Rect2 = main.hud.squad_label.get_global_rect()
 	check(hr.end.x <= main.hud.size.x and hr.position.y >= main.hud.menu_btn.get_global_rect().end.y, "小队一行在右上角按钮下面、不出屏幕")
 	# —— 跟随（开打前）：站到玩家身后的队形里，玩家走开就跟上
@@ -4399,11 +4399,11 @@ func test_squad() -> void:
 	tap.call(t.button_centers().order)
 	check(t.order_open and t.button_centers().has("order_follow") and t.button_centers().has("order_charge"), "点「令」：往左展开「跟随」「坚守」「冲锋」")
 	var cs: Dictionary = t.button_centers()
-	check(cs.order_charge.x < cs.order_hold.x and cs.order_hold.x < cs.order_follow.x and cs.order_follow.x < cs.order.x and cs.order_charge.x > 0.0, "三个命令按钮在「令」左边一字排开、不出屏幕")
+	check(cs.order_goto.x < cs.order_charge.x and cs.order_charge.x < cs.order_hold.x and cs.order_hold.x < cs.order_follow.x and cs.order_follow.x < cs.order.x and cs.order_goto.x > 0.0, "四个命令按钮在「令」左边一字排开、不出屏幕（6.7c 加了「去那儿」）")
 	check(not t.buttons_rect().has_point(cs.order_charge), "展开的命令按钮不算进右下角按钮列（底部提示不跟着挪）")
 	tap.call(cs.order_hold)
 	await frames(2)
-	check(b.squad_order == "hold" and not t.order_open and main.hud.squad_label.text == "◆ 小队 6 人：原地坚守 · 1 跟随 2 坚守 3 冲锋", "点「坚守」：下了命令，按钮收起")
+	check(b.squad_order == "hold" and not t.order_open and main.hud.squad_label.text == "◆ 小队 6 人：原地坚守 · 1 跟随 2 坚守 3 冲锋 4 去那儿", "点「坚守」：下了命令，按钮收起")
 	await free_main(main)
 	# —— 别的区域没有小队：数字键不下命令、没有「令」
 	main = await make_main(false)
@@ -8532,8 +8532,8 @@ func test_maidu() -> void:
 	check(PlainLayout.river_d(a) > PlainLayout.RIVER_HALF + 2.0 and PlainLayout.river_d(b) > PlainLayout.RIVER_HALF + 2.0 and mid_y > PlainLayout.WATER_Y + 1.5 and absf(PlainVillage.bridge_y(0.0) - PlainLayout.height(a.x, a.y)) < 0.3,
 		"木桥两头在岸上、桥面中间比水面高 %.1f 米" % (mid_y - PlainLayout.WATER_Y))
 	check(PlainLayout.river_d(PlainVillage.DOCK_TO) < PlainLayout.RIVER_HALF + 0.5 and PlainVillage.dock_y() > PlainLayout.WATER_Y + 0.8, "栈桥伸到水上（头上离河中线 %.1f 米）" % PlainLayout.river_d(PlainVillage.DOCK_TO))
-	check(Travel.validate().is_empty() and Travel.region_title(3) == "南部" and Travel.places(3) == ["maidu", "mill", "manor", "abbey", "camp"] and Travel.built("maidu") and not Travel.built("camp") and Travel.region_of_chapter(2) == "north",
-		"旅行地图第三章是「南部」一页：麦渡、坠星院（6.2b）做好了，磨坊、庄园、营地还没做好；第二章还是北境北部 %s" % str(Travel.validate()))
+	check(Travel.validate().is_empty() and Travel.region_title(3) == "南部" and Travel.places(3) == ["maidu", "mill", "manor", "abbey", "camp"] and Travel.built("maidu") and Travel.built("camp") and Travel.region_of_chapter(2) == "north",
+		"旅行地图第三章是「南部」一页：麦渡、磨坊、庄园、坠星院、营地都做好了（6.3c）；第二章还是北境北部 %s" % str(Travel.validate()))
 	GameState.new_game(620)
 	GameState.chapter = 3
 	GameState.daypart = "day"
@@ -8693,7 +8693,7 @@ func test_ch3open() -> void:
 	main = await make_area("plain")
 	await frames(3)
 	check(GameState.quest_active("ch3_main") and GameState.quest_stage("ch3_main") == "to_abbey", "上了岸：主线「粮与铁」，第一步去坠星院（%s）" % GameState.quest_stage("ch3_main"))
-	var queue: Array = main.world.find_children("Npc_queue*", "Npc", true, false)
+	var queue: Array = main.world.find_children("Npc_queue*", "Npc", true, false) + main.world.find_children("Npc_ida", "Npc", true, false)   # 队里第四个是伊达（6.4）
 	var gregor := main.world.find_child("Npc_gregor", true, false) as Npc
 	var porter := main.world.find_child("Npc_porter", true, false) as Npc
 	check(gregor != null and porter != null and gregor.dialogue_area == "plain" and queue.size() == PlainAbbey.QUEUE.size(),
@@ -8857,6 +8857,1853 @@ func test_mill() -> void:
 		"磨坊里面：站在门里、出口回到院子；木齿轮、账房桌上的油灯")
 	check(AreaMap.spec("mill_inside").shapes.size() >= 4 and Areas.views("mill_inside").size() == MillInside.VIEW_NAMES.size(), "磨坊里面的本地地图（账房、磨盘、粮袋）和固定机位")
 	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_camp() -> void:
+	# 布局：营地的东西都在压平的那块上、不压路；指挥帐门朝路；木桩两排中间留出车道；出生点在木桩外头的路上
+	var c := PlainLayout.CAMP
+	var worst := 0.0
+	var on_road := []
+	var spots := [[PlainCamp.PAVILION[0], PlainCamp.PAVILION[1], "指挥帐"], [PlainCamp.FORGE[0], PlainCamp.FORGE[1], "熔炉车"], [PlainCamp.FIRE[0], PlainCamp.FIRE[1], "营火"], [PlainCamp.HITCH[0], PlainCamp.HITCH[1], "拴马桩"]]
+	for t: Array in PlainCamp.TENTS:
+		spots.append([t[0], t[1], "帐篷"])
+	for w: Array in PlainCamp.WAGONS:
+		spots.append([w[0], w[1], "粮车"])
+	for sp: Array in spots:
+		var p := PlainCamp.at(float(sp[0]), float(sp[1]))
+		worst = maxf(worst, p.distance_to(c))
+		if PlainLayout.road_d(p) < PlainLayout.ROAD_HALF + 2.0:
+			on_road.append(sp[2])
+	var flat := absf(PlainLayout.height(c.x - 14.0, c.y) - PlainLayout.height(c.x + 14.0, c.y)) + absf(PlainLayout.height(c.x, c.y - 14.0) - PlainLayout.height(c.x, c.y + 14.0))
+	var door_dir := Vector2.from_angle(TAU * (PlainCamp._pav_door() + 0.5) / 8.0)
+	var sp0: Array = PlainLayout.SPAWN_XZ.camp
+	var s0: Vector2 = sp0[0]
+	check(worst < PlainLayout.CAMP_R and on_road.is_empty() and flat < 0.5 and door_dir.dot(PlainCamp.SIDE) > 0.9 and PlainLayout.road_d(s0) < 1.0 and (s0 - c).dot(PlainCamp.ALONG) < PlainCamp.STAKES_U - 2.0,
+		"营地的东西都在压平的地上（最远 %.1f 米）、不压路（压路的：%s）；地是平的（差 %.2f 米）；指挥帐门朝路；出生点在木桩外的路上" % [worst, str(on_road), flat])
+	check(Travel.built("camp") and Travel.check(3, "manor", "camp", true).ok and not Travel.check(3, "maidu", "camp", true).ok and AreaMap.place_at("plain", s0) == "camp"
+		and AreaMap.place_at("plain", PlainMill.SIGN_AT) == "mill" and AreaMap.place_at("plain", PlainCamp.at(PlainCamp.SIGN[0], PlainCamp.SIGN[1])) == "camp",
+		"旅行地图上营地做好了：从庄园能去、从麦渡要先到庄园；营地口、磨坊南门的路牌都在各自的地点里（6.3b 漏了磨坊这一块）")
+	GameState.new_game(633)
+	GameState.chapter = 3
+	GameState.daypart = "day"
+	GameState.pending_load = {"scene": "plain", "spawn": "camp", "player": {}}
+	var main := await make_area("plain")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	await frames(2)
+	var names := ["CampPavilion", "CampTents", "CampForge", "CampFire", "CampWagons", "CampHorses", "CampStakes", "CampBanners", "CampProps", "PavilionLamp", "ForgeFire", "CampFireLight"]
+	var missing := []
+	for n in names:
+		if main.world.find_child(n, true, false) == null:
+			missing.append(n)
+	check(missing.is_empty() and float(st.stats.max_job_ms) < 60.0, "分块搭完：指挥帐、帐篷、熔炉车、营火、空粮车、马、木桩、红旗（缺：%s）；最慢一块 %.1f 毫秒" % [str(missing), st.stats.max_job_ms])
+	var sign := main.world.find_child("CampSign", true, false) as RoadSign
+	check(sign != null and sign.text == PlainCamp.SIGN_TEXT and PlainCamp.CANVAS_TEX != "" and ResourceLoader.exists(PlainCamp.CANVAS_TEX % "diff") and PlainCamp.canvas().albedo_texture != null,
+		"营地口的路牌；帐篷用粗麻布照片（chapters/ch3/tex/hessian_380）")
+	await physics(8)
+	var p: FpController = main.player
+	check(p.is_on_floor() and Vector2(p.global_position.x, p.global_position.z).distance_to(s0) < 0.5, "新开在营地口（%s）" % p.global_position)
+	p.rotation.y = deg_to_rad(float(sp0[1]))
+	p.velocity = Vector3.ZERO
+	Input.action_press("move_forward")
+	await seconds(4.0)
+	Input.action_release("move_forward")
+	var u := (Vector2(p.global_position.x, p.global_position.z) - c).dot(PlainCamp.ALONG)
+	check(u > PlainCamp.STAKES_U + 3.0, "顺着路穿过两排木桩中间、走进营地（走到 u = %.1f）" % u)
+	# 走得进指挥帐（门朝路）
+	var pc := PlainCamp.at(PlainCamp.PAVILION[0], PlainCamp.PAVILION[1])
+	var outside := pc + door_dir * (float(PlainCamp.PAVILION[2]) + 1.6)
+	p.global_position = Vector3(outside.x, PlainLayout.height(outside.x, outside.y) + 0.3, outside.y)
+	var to_in := pc - outside
+	p.rotation.y = atan2(-to_in.x, -to_in.y)
+	p.velocity = Vector3.ZERO
+	await physics(6)
+	Input.action_press("move_forward")
+	await seconds(1.6)
+	Input.action_release("move_forward")
+	var din := Vector2(p.global_position.x, p.global_position.z).distance_to(pc)
+	check(din < float(PlainCamp.PAVILION[2]) - 0.6, "从门帘那儿走得进指挥帐（离帐中心 %.1f 米）" % din)
+	# 从帐篷背后走不进指挥帐（墙挡着）
+	var back := pc - door_dir * (float(PlainCamp.PAVILION[2]) + 1.6)
+	p.global_position = Vector3(back.x, PlainLayout.height(back.x, back.y) + 0.3, back.y)
+	to_in = pc - back
+	p.rotation.y = atan2(-to_in.x, -to_in.y)
+	p.velocity = Vector3.ZERO
+	await physics(6)
+	Input.action_press("move_forward")
+	await seconds(1.6)
+	Input.action_release("move_forward")
+	din = Vector2(p.global_position.x, p.global_position.z).distance_to(pc)
+	check(din > float(PlainCamp.PAVILION[2]) - 0.2, "帐子背后是墙，走不进去（离帐中心 %.1f 米）" % din)
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch3sides() -> void:
+	# 主线第 3–4 步（6.3d）：伊莎贝拉开条件 → 两边（老贝恩、奥迪隆，顺序随意）都见过 → 天黑以前决定
+	GameState.new_game(634)
+	GameState.chapter = 3
+	GameState.daypart = "day"
+	GameState.start_quest("ch3_main")
+	check(say_runner("isabella", [], "plain") == "busy" and say_runner("bain", [], "plain") == "early" and say_runner("odilon", [], "plain") == "early",
+		"没去过门房以前：女家主不见客，老贝恩、奥迪隆都不搭理")
+	GameState.set_stage("ch3_main", "to_manor")
+	check(say_runner("samuel", [], "plain") == "greet", "没谈以前，管家只说女家主在高桌那儿")
+	check(say_runner("isabella", ["您怎么知道我想见谁？", "那您也知道我为什么来。", "仓里的粮够全平原吃一冬，佃农却在修道院门口喝水。", "说条件。"], "plain") == "deal"
+		and GameState.quest_stage("ch3_main") == "sides" and GameState.has_flag("ch3_isabella_deal"),
+		"伊莎贝拉：替她守住磨坊到天亮，她就写信给院长放人（主线：去麦渡和塞弗林营地）")
+	check(say_runner("isabella", [], "plain") == "after" and say_runner("samuel", ["账房里有什么？"], "plain") == "what" and GameState.has_flag("ch3_samuel_hint") and say_runner("samuel", [], "plain") == "again",
+		"谈过以后：女家主换了话；管家送你出门时欲言又止（磨坊账房的钥匙在他那儿）")
+	check(say_runner("odilon", ["（端起杯子）喝一杯。", "所以呢？", "凭什么？"], "plain") == "order" and GameState.has_flag("ch3_odilon_order") and not PlainPeople.sides_heard() and GameState.quest_stage("ch3_main") == "sides",
+		"先去营地：奥迪隆请你喝酒、给你看摄政的征粮令；只见了一边，主线还在「两边」")
+	check(say_runner("bain", ["你是村里管事的？", "庄园要我今晚守磨坊。", "进谁的嘴？", "看什么？"], "plain") == "grave" and GameState.has_flag("ch3_bain_grave") and PlainPeople.sides_heard() and GameState.quest_stage("ch3_main") == "choose",
+		"再去麦渡：老贝恩带你看伊达男人的坟；两边都见过 → 天黑以前决定站哪边")
+	check(say_runner("bain", [], "plain") == "again" and say_runner("odilon", [], "plain") == "again", "说过以后：老贝恩、奥迪隆换了话")
+	# 另一个顺序：先麦渡后营地
+	GameState.new_game(635)
+	GameState.chapter = 3
+	GameState.start_quest("ch3_main")
+	GameState.set_stage("ch3_main", "sides")
+	say_runner("bain", ["她要我今晚替她守磨坊。", "进谁的嘴？", "看什么？"], "plain")
+	var mid := PlainPeople.sides_heard()
+	say_runner("odilon", ["你是谁？", "（端起杯子）", "所以呢？", "凭什么？"], "plain")
+	check(not mid and PlainPeople.sides_heard() and GameState.quest_stage("ch3_main") == "choose", "顺序反过来也一样")
+	# 人摆在哪：麦渡的老贝恩和坟、营地里的奥迪隆（在指挥帐里）、哨兵、铁匠都站在地上没卡住
+	GameState.pending_load = {"scene": "plain", "spawn": "camp", "player": {}}
+	var main := await make_area("plain")
+	await frames(3)
+	var names := ["Npc_bain", "Npc_odilon", "Npc_sentry1", "Npc_sentry2", "Npc_camp_smith"]
+	var stuck := []
+	for nm in names:
+		var n := main.world.find_child(nm, true, false) as Npc
+		if n == null or not await stands_clear(n):
+			stuck.append(nm)
+	var od := main.world.find_child("Npc_odilon", true, false) as Npc
+	var pc := PlainCamp.at(PlainCamp.PAVILION[0], PlainCamp.PAVILION[1])
+	check(stuck.is_empty() and od != null and Vector2(od.global_position.x, od.global_position.z).distance_to(pc) < float(PlainCamp.PAVILION[2]) - 0.5 and od.dialogue_id == "odilon"
+		and main.world.find_child("IdaGraveLook", true, false) != null and main.world.find_child("IdaGrave", true, false) != null,
+		"老贝恩、奥迪隆（在指挥帐里）、两个哨兵、跟车的铁匠都站在地上没卡住（卡住的：%s）；伊达男人的坟能看" % str(stuck))
+	await free_main(main)
+	GameState.pending_load = {"scene": "manor_hall", "spawn": "front", "player": {}}
+	main = await make_area("manor_hall")
+	await frames(3)
+	var isa := main.world.find_child("Npc_isabella", true, false) as Npc
+	var sam := main.world.find_child("Npc_samuel", true, false) as Npc
+	check(isa != null and sam != null and isa.dialogue_id == "isabella" and ManorHall.DAIS.has_point(Vector2(isa.position.x, isa.position.z)) and await stands_clear(sam)
+		and Vector2(isa.position.x, isa.position.z).distance_to(Vector2(ManorHall.DAIS.position.x - 0.3, isa.position.z)) < 2.4,
+		"大厅：伊莎贝拉站在东头木台上（站在木台前伸手够得着说话），塞缪尔站在门边")
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch3people() -> void:
+	# 前两章和出身留下的话（6.4，STORY.md 6.4）
+	var fresh := func(stage: String, flags: Dictionary) -> void:
+		GameState.new_game(640)
+		GameState.chapter = 3
+		GameState.daypart = "day"
+		GameState.start_quest("ch3_main")
+		GameState.set_stage("ch3_main", stage)
+		for k in flags:
+			GameState.set_flag(k, flags[k])
+	fresh.call("to_manor", {"beacon_grain": "rob", "ch2_convoy": "taken"})
+	check(say_runner("isabella", [], "plain") == "held" and say_runner("isabella", ["不如说说，你要我做什么。"], "plain") == "held_deal" and GameState.has_flag("ch3_released")
+		and say_runner("isabella", [], "plain") == "greet", "劫了洛蒙德家粮车的：伊莎贝拉先把你扣下；直接谈守磨坊她才放人，之后照常说话")
+	fresh.call("to_manor", {"beacon_grain": "rob", "ch2_convoy": "burned"})
+	GameState.silver = 25
+	check(say_runner("isabella", ["我赔。（把钱袋放在桌上）"], "plain") == "held_paid" and GameState.silver == 5 and GameState.has_flag("ch3_released"), "劫车烧了车的也扣下；赔 20 银币放人")
+	fresh.call("to_manor", {"beacon_grain": "rob", "ch2_convoy": "repelled"})
+	check(say_runner("isabella", [], "plain") == "greet", "劫粮被打散了（粮没劫到）的不扣")
+	fresh.call("to_manor", {"beacon_grain": "lawful", "ch2_aid": "granted", "ch2_requisition": "three"})
+	check(say_runner("isabella", ["罗薇娜那张征粮令，安塞尔姆收下了？"], "plain") == "eld", "护过粮的：伊莎贝拉客气地请你吃东西；用过征粮令的，她顺口问一句厄尔德家")
+	fresh.call("to_manor", {"origin": "knight", "valen_heir": "ivette"})
+	var lom := GameState.get_rep("lomond")
+	check(say_runner("isabella", ["（按老规矩，右手按胸，行了半礼）"], "plain") == "courtesy" and GameState.get_rep("lomond") == lom + 3
+		and say_runner("isabella", ["瓦伦家现在是伊薇特当家。"], "plain") == "furs" and GameState.has_flag("ch3_isabella_furs"),
+		"落魄骑士之后行老礼（洛蒙德家 +3）；伊薇特当家，伊莎贝拉想搭北境的皮毛生意")
+	fresh.call("to_manor", {})
+	check(say_runner("isabella", ["（按老规矩，右手按胸，行了半礼）"], "plain").begins_with("（") and say_runner("isabella", ["瓦伦家现在是伊薇特当家。"], "plain").begins_with("（"),
+		"别的出身、别的继承人没有这两句")
+	fresh.call("sides", {"ch3_isabella_deal": true, "ch1_ledger": "kept"})
+	check(say_runner("samuel", ["我身上有一本黑鹭堡的皮毛税账册。"], "plain") == "ledger" and GameState.has_flag("ch3_samuel_ledger"), "皮毛税账册还在你手里：塞缪尔认得洛蒙德家那几笔")
+	fresh.call("sides", {"ch3_isabella_deal": true, "valen_heir": "alric", "heard_envoy": true})
+	check(say_runner("odilon", [], "plain") == "greet_alric" and say_runner("odilon", ["三天前，你进过黑鹭堡。马鞍上搭着红布。"], "plain") == "envoy" and GameState.has_flag("ch3_odilon_envoy")
+		and say_runner("odilon", ["「一起」做什么？", "凭什么？"], "plain") == "order",
+		"阿尔里克当家：奥迪隆把你当自己人；在芦栈村听说过信使的当面认出他；征粮令照样给你看")
+	fresh.call("sides", {"ch3_isabella_deal": true, "valen_heir": "ivette"})
+	check(say_runner("odilon", [], "plain") == "greet_ivette" and say_runner("odilon", ["来听你要说什么。", "凭什么？"], "plain") == "order", "伊薇特当家：奥迪隆提防你")
+	fresh.call("to_abbey", {"beacon_grain": "lawful", "ch2_aid": "refused"})
+	check(say_runner("porter", [], "plain") == "greet_north", "谈不成两手空空：门房说「北边又来一个讨粮的」")
+	fresh.call("sides", {"beacon_grain": "rob", "ch2_convoy": "taken"})
+	check(say_runner("bain", [], "plain") == "greet_rob" and say_runner("bain", ["她要我今晚替她守磨坊。", "进谁的嘴？", "看什么？"], "plain") == "grave", "劫过粮的：老贝恩高看你一眼")
+	check(say_runner("ida", ["庄园的账上还记着他欠租。"], "plain") == "ledger" and GameState.has_flag("ch3_ida_met") and say_runner("ida", [], "plain") == "again", "看过坟以后，伊达说起她男人、想知道账上写了什么")
+	fresh.call("sides", {"origin": "ferry"})
+	check(say_runner("boatman", ["（伸出手，给他看虎口上撑篙磨出来的那道老茧）", "下一回是哪夜？"], "plain") == "when" and GameState.has_flag("ch3_night_boats"), "渡工之子：船夫说磨坊的船今夜不点灯往下游运粮")
+	fresh.call("sides", {"origin": "knight"})
+	check(say_runner("boatman", ["（伸出手，给他看虎口上撑篙磨出来的那道老茧）"], "plain").begins_with("（") and say_runner("boatman", ["庄园的事？"], "plain") == "manor", "别的出身：船夫什么都不说")
+	# 抄经室门缝
+	var texts := {}
+	for f in [{"ch2_roll": "served"}, {"ch2_fire": "lit"}, {"origin": "deserter"}, {}]:
+		fresh.call("sides", f)
+		texts[PlainPeople.listen_text()] = true
+	check(texts.size() == 4 and PlainPeople.listen_text().contains("冠"), "抄经室门缝里听见的话四种（名册补守 / 北边的火 / 烽誓团逃兵 / 都不是）")
+	# 人摆在哪
+	fresh.call("sides", {})
+	GameState.pending_load = {"scene": "plain", "spawn": "dock", "player": {}}
+	var main := await make_area("plain")
+	await frames(3)
+	var ida := main.world.find_child("Npc_ida", true, false) as Npc
+	var boat := main.world.find_child("Npc_boatman", true, false) as Npc
+	check(ida != null and Vector2(ida.position.x, ida.position.z).distance_to(PlainAbbey.QUEUE[PlainAbbey.IDA_IN_QUEUE]) < 0.5 and boat != null and await stands_clear(boat)
+		and main.world.find_child("ScriptoriumListen", true, false) != null, "白天伊达在坠星院门口排队；船夫站在渡口；抄经室门边能贴着门听")
+	await free_main(main)
+	GameState.daypart = "night"
+	GameState.pending_load = {"scene": "plain", "spawn": "dock", "player": {}}
+	main = await make_area("plain")
+	await frames(3)
+	ida = main.world.find_child("Npc_ida", true, false) as Npc
+	check(ida != null and Vector2(ida.position.x, ida.position.z).distance_to(PlainPeople.GRAVE) < 3.0 and await stands_clear(ida) and main.world.find_children("Npc_ida", "", true, false).size() == 1,
+		"夜里伊达在麦渡那座小坟边（只有一个）")
+	await free_main(main)
+	GameState.pending_load = {"scene": "scriptorium", "spawn": "front", "player": {}}
+	main = await make_area("scriptorium")
+	await frames(3)
+	var ig := main.world.find_child("Npc_ignaz", true, false) as Npc
+	check(ig != null and await stands_clear(ig), "抄经室里，灰袍修士跪在东墙下")
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.daypart = "day"
+	GameState.pending_load = {}
+
+
+func test_ch3side() -> void:
+	# 第三章三条支线（6.5）
+	var fresh := func(flags: Dictionary) -> void:
+		GameState.new_game(650)
+		GameState.chapter = 3
+		GameState.daypart = "day"
+		GameState.start_quest("ch3_main")
+		GameState.set_stage("ch3_main", "sides")
+		GameState.set_flag("ch3_isabella_deal")
+		GameState.set_flag("ch3_heard_monk")
+		for k in flags:
+			GameState.set_flag(k, flags[k])
+	# 账本上的名字：伊达 → 塞缪尔的钥匙 → 账箱 → 回去告诉伊达
+	fresh.call({"ch3_bain_grave": true})
+	check(say_runner("ida", ["庄园的账上还记着他欠租。", "我去替你看。"], "plain") == "go" and GameState.quest_stage("ch3_ida") == "find" and say_runner("ida", [], "plain") == "waiting",
+		"伊达：想知道账上写了什么 → 支线「账本上的名字」")
+	var r := MillInside.open_ledger()
+	var picked := GameState.has_flag("ch3_ledger_open")
+	check(picked == GameState.check("ch3_ledger_pick", "stealth", 13) and (picked or str(r.toast).contains("钥匙在塞缪尔那儿")), "没钥匙就撬锁（潜行 13，一次定：%s）" % ("撬开了" if picked else "没撬开"))
+	GameState.set_flag("ch3_ledger_open", false)
+	GameState.set_flag("ch3_ledger_read", false)
+	GameState.set_stage("ch3_ida", "find")
+	GameState.set_flag("ch3_samuel_ledger")
+	check(say_runner("samuel", ["伊达想知道账上她男人的名字。账箱的钥匙在你这儿。", "黑鹭堡那几笔皮子，也是你记的。"], "plain") == "key_pressed" and GameState.has_flag("ch3_ledger_key"),
+		"拿皮毛税账册那几笔压塞缪尔，他把钥匙放在桌上")
+	r = MillInside.open_ledger()
+	check(str(r.toast).contains("鲁本") and GameState.has_flag("ch3_ledger_read") and GameState.quest_stage("ch3_ida") == "tell" and GameState.clues_for("ch3_ida").size() == 1,
+		"有钥匙开账箱：翻到鲁本那一行，支线到「回去告诉伊达」")
+	check(say_runner("ida", ["院长要是问起来，你肯说吗？"], "plain") == "witness" and str(GameState.get_flag("ch3_ida", "")) == "witness" and GameState.quest_done("ch3_ida") and say_runner("ida", [], "plain") == "after",
+		"念给伊达听：她答应站出来作证（ch3_ida = witness）")
+	fresh.call({})
+	GameState.start_quest("ch3_ida")
+	var ok_key := GameState.check("samuel_key_speech", "speech", 13)
+	check(say_runner("samuel", ["伊达想知道账上她男人的名字。账箱的钥匙在你这儿。", "账上记着的人，是饿死的。她只想看一眼名字。"], "plain") == ("key_given" if ok_key else "key_refused") and GameState.has_flag("ch3_ledger_key") == ok_key,
+		"说动塞缪尔要钥匙（口才 13：%s）" % ("给了" if ok_key else "没给"))
+	# 修道院的粥
+	fresh.call({})
+	check(say_runner("porter", ["锅底都见了。庄园那边，我替你去要。"], "plain") == "soup_ask" and GameState.quest_stage("ch3_soup") == "ask_manor", "门房：粥锅见底 → 支线「修道院的粥」")
+	GameState.silver = 20
+	check(say_runner("isabella", ["坠星院的粥锅见底了。", "我出钱，买两袋。（十五个银币）"], "plain") == "soup_bought" and GameState.silver == 5 and GameState.quest_stage("ch3_soup") == "tell_porter", "出 15 银币向伊莎贝拉买两袋")
+	check(say_runner("porter", [], "plain") == "soup_done" and str(GameState.get_flag("ch3_soup", "")) == "done" and GameState.quest_done("ch3_soup"), "回去告诉门房：明早两袋（ch3_soup = done）")
+	fresh.call({})
+	GameState.start_quest("ch3_soup")
+	var ok_soup := GameState.check("isabella_soup_speech", "speech", 13)
+	check(say_runner("isabella", ["坠星院的粥锅见底了。", "开春的一成救不了今天的锅。两袋麦子，你仓里一千多袋。"], "plain") == ("soup_yes" if ok_soup else "soup_no"), "说动伊莎贝拉（口才 13：%s）" % ("答应了" if ok_soup else "没答应"))
+	# 熔炉车上的学徒
+	fresh.call({})
+	var sev := GameState.get_rep("severin")
+	check(say_runner("apprentice", ["你躲什么？", "沿麦河往下游走。渡口有船。"], "plain") == "free" and str(GameState.get_flag("ch3_apprentice", "")) == "freed" and GameState.has_flag("ch3_letter_place")
+		and GameState.get_rep("severin") == sev - 5 and GameState.quest_done("ch3_apprentice"), "帮学徒溜走：塞弗林家 −5，他说出奥迪隆的信锁在床边箱子里")
+	fresh.call({})
+	check(say_runner("apprentice", ["你躲什么？", "跟我去见征粮官。"], "plain") == "hand" and str(GameState.get_flag("ch3_apprentice", "")) == "handed" and not GameState.has_flag("ch3_letter_place"), "交给奥迪隆：没有信的事")
+	# 人和东西摆在哪
+	fresh.call({})
+	GameState.pending_load = {"scene": "plain", "spawn": "camp", "player": {}}
+	var main := await make_area("plain")
+	await frames(3)
+	var ap := main.world.find_child("Npc_apprentice", true, false) as Npc
+	check(ap != null and await stands_clear(ap), "学徒缩在熔炉车后头，没卡住")
+	await free_main(main)
+	GameState.set_flag("ch3_apprentice", "freed")
+	GameState.pending_load = {"scene": "plain", "spawn": "camp", "player": {}}
+	main = await make_area("plain")
+	await frames(3)
+	check(main.world.find_child("Npc_apprentice", true, false) == null, "放走以后营地里没有他了")
+	await free_main(main)
+	GameState.pending_load = {"scene": "mill_inside", "spawn": "front", "player": {}}
+	main = await make_area("mill_inside")
+	await frames(3)
+	var ch: Node = main.world.find_child("LedgerChestOpen", true, false)
+	check(ch != null and main.world.find_child("LedgerChest", true, false) != null and MillInside.OFFICE.has_point(Vector2(MillInside.LEDGER_CHEST.x, MillInside.LEDGER_CHEST.z)), "磨坊账房东南角有那口铁皮账箱")
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch3choice() -> void:
+	# 抉择（6.6）：三条路，选了就定、主线推进（推进时自动存档）
+	var fresh := func() -> void:
+		GameState.new_game(660)
+		GameState.chapter = 3
+		GameState.daypart = "day"
+		GameState.start_quest("ch3_main")
+		GameState.set_stage("ch3_main", "choose")
+		for f in ["ch3_isabella_deal", "ch3_heard_monk", "ch3_bain_grave", "ch3_odilon_order"]:
+			GameState.set_flag(f)
+	fresh.call()
+	check(say_runner("isabella", ["今晚我守磨坊。"], "plain") == "stand" and str(GameState.get_flag("ch3_side", "")) == "lomond" and GameState.quest_stage("ch3_main") == "to_mill_lomond"
+		and say_runner("captain", [], "plain") == "ready" and say_runner("odilon", ["今晚我跟你们走。"], "plain").begins_with("（") and say_runner("bain", [], "plain") == "chosen",
+		"守磨坊（跟伊莎贝拉说）：主线到「天黑以前到磨坊」；护院头目在分火把；别的两条路没了")
+	fresh.call()
+	check(say_runner("captain", ["女家主派我来守磨坊。今晚我守。"], "plain") == "stand" and str(GameState.get_flag("ch3_side", "")) == "lomond", "守磨坊也可以直接跟护院头目说")
+	fresh.call()
+	check(say_runner("odilon", ["今晚我跟你们走。"], "plain") == "join" and str(GameState.get_flag("ch3_side", "")) == "severin" and GameState.quest_stage("ch3_main") == "to_mill_severin"
+		and say_runner("odilon", [], "plain") == "joined" and say_runner("captain", [], "plain") == "enemy" and say_runner("isabella", ["今晚我守磨坊。"], "plain").begins_with("（"),
+		"跟塞弗林家走：主线到「天黑以后营地口」；护院头目挡在门洞里；伊莎贝拉那边选不了了")
+	fresh.call()
+	var lom := GameState.get_rep("lomond")
+	check(say_runner("bain", ["天黑以前，先开仓。粮分了，人跟我守磨坊。"], "plain") == "open" and str(GameState.get_flag("ch3_side", "")) == "tenants" and GameState.quest_stage("ch3_main") == "open_granary"
+		and str(PlainPeople.pry_granary().toast) != PlainMill.GRANARY_DOOR_TEXT, "先开仓：老贝恩叫人带撬棍；主线到「去磨坊撬开粮仓」")
+	check(GameState.has_flag("ch3_granary_opened") and GameState.has_flag("ch3_guards_left") and GameState.get_rep("lomond") == lom - 20 and GameState.quest_stage("ch3_main") == "to_mill_tenants"
+		and say_runner("isabella", [], "plain") == "grudge" and say_runner("bain", [], "plain") == "opened",
+		"没说动护院头目就撬：仓开了、洛蒙德家 −20、护院撤回庄园；伊莎贝拉记恨")
+	fresh.call()
+	say_runner("bain", ["天黑以前，先开仓。粮分了，人跟我守磨坊。"], "plain")
+	var ok := GameState.check("captain_aside_speech", "speech", 14)
+	var node := say_runner("captain", ["开了仓，佃农跟你们一起守；不开，今晚他们就站到塞弗林家那边去。"], "plain")
+	PlainPeople.pry_granary()
+	check(node == ("aside" if ok else "refuse") and GameState.has_flag("ch3_captain_aside") == ok and GameState.has_flag("ch3_guards_left") == not ok,
+		"开仓以前跟护院头目说（口才 14：%s）：说动了护院留下，没说动撤走" % ("说动了" if ok else "没说动"))
+	fresh.call()
+	check(str(PlainPeople.pry_granary().toast) == PlainMill.GRANARY_DOOR_TEXT and not GameState.has_flag("ch3_granary_opened"), "没选开仓的时候，粮仓门只是锁着")
+	# 人摆在哪
+	GameState.pending_load = {"scene": "plain", "spawn": "mill", "player": {}}
+	var main := await make_area("plain")
+	await frames(3)
+	var stuck := []
+	for nm in ["Npc_captain", "Npc_mill_guard1", "Npc_mill_guard2"]:
+		var n := main.world.find_child(nm, true, false) as Npc
+		if n == null or not await stands_clear(n):
+			stuck.append(nm)
+	check(stuck.is_empty() and main.world.find_child("GranaryPry", true, false) != null, "护院头目在南门里、两个护院在北墙缺口，都没卡住；粮仓门边能撬（卡住的：%s）" % str(stuck))
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+## 平原上一个机位里画几样东西（6.7a）：镜头看得见、在可见距离以内的网格 × 表面（不含阴影、天空、粒子以外的东西；网页上量到的绘制调用比这个多一百上下）
+func plain_surfaces(main: Node, v: int) -> int:
+	var vs: Array = PlainLayout.views()[v]
+	var cam := Camera3D.new()
+	cam.fov = 75.0
+	main.world.add_child(cam)
+	cam.global_position = vs[0]
+	cam.rotation_degrees = Vector3(float(vs[2]), float(vs[1]), 0)
+	var total := 0
+	for g: GeometryInstance3D in main.world.find_children("*", "GeometryInstance3D", true, false):
+		if not g.is_visible_in_tree():
+			continue
+		var aabb := g.global_transform * g.get_aabb()
+		var d := cam.global_position.distance_to(aabb.get_center())
+		if (g.visibility_range_end > 0.0 and d > g.visibility_range_end) or (g.visibility_range_begin > 0.0 and d < g.visibility_range_begin):
+			continue
+		var inside := aabb.has_point(cam.global_position)
+		for k in 8:
+			if cam.is_position_in_frustum(aabb.get_endpoint(k)):
+				inside = true
+		if not inside:
+			continue
+		if g is MeshInstance3D and (g as MeshInstance3D).mesh != null:
+			total += (g as MeshInstance3D).mesh.get_surface_count()
+		elif g is MultiMeshInstance3D and (g as MultiMeshInstance3D).multimesh != null and (g as MultiMeshInstance3D).multimesh.mesh != null:
+			total += (g as MultiMeshInstance3D).multimesh.mesh.get_surface_count()
+		else:
+			total += 1
+	cam.queue_free()
+	return total
+
+
+func test_plainperf() -> void:
+	# 平原的绘制调用（6.7a）：远处的房子换单色那份、远处的人和门不画、人合成一块蒙皮网格；两个最重的机位守住
+	GameState.new_game(670)
+	GameState.chapter = 3
+	GameState.daypart = "day"
+	GameState.pending_load = {"scene": "plain", "spawn": "dock", "player": {}}
+	var main := await make_area("plain")
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	await frames(2)
+	var twins: Array = main.world.find_children("*Far", "MeshInstance3D", true, false).filter(func(m): return m.has_meta("far_lod"))
+	var bad := []
+	for t: MeshInstance3D in twins:
+		if t.mesh.get_surface_count() > 4 or t.visibility_range_begin != Plain.HOUSE_FAR or t.cast_shadow != GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:
+			bad.append(t.name)
+	check(twins.size() >= 30 and bad.is_empty() and float(st.stats.max_job_ms) < 60.0, "远处换单色的网格 %d 份（都 ≤ 4 个表面、%d 米以外才画、不投影；不对的：%s）；搭的时候最慢一块 %.1f 毫秒" % [twins.size(), int(Plain.HOUSE_FAR), str(bad), st.stats.max_job_ms])
+	var npcs: Array = main.world.find_children("Npc_*", "Npc", true, false)
+	var merged := 0
+	var far_ok := true
+	for n: Npc in npcs:
+		if n.far_end != Plain.NPC_FAR:
+			far_ok = false
+		if n.look_model != null and n.look_model.skeleton.find_children("*", "MeshInstance3D", true, false).any(func(m): return m.has_meta("parts")):
+			merged += 1
+	var doors_far := true
+	for d in main.world.get_children():
+		if d is Door:
+			for g: GeometryInstance3D in d.find_children("*", "GeometryInstance3D", true, false):
+				if g.visibility_range_end <= 0.0:
+					doors_far = false
+	check(far_ok and merged >= npcs.size() / 2 and doors_far, "平原上的人 %d 个（%d 个合成了一块蒙皮网格），都是 %d 米以外不画；门远了不画" % [npcs.size(), merged, int(Plain.NPC_FAR)])
+	var s8 := plain_surfaces(main, 8)
+	var s14 := plain_surfaces(main, 14)
+	check(s8 < 300 and s14 < 300, "最重的两个机位画的东西：坠星院回廊 %d、营地东北头往回看 %d 个表面（优化以前 530 / 513；网页中画质量到 339 / 379 次绘制，预算 400）" % [s8, s14])
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func mill_state(side: String, flags := {}, daypart := "night") -> void:
+	GameState.new_game(671)
+	GameState.chapter = 3
+	GameState.daypart = daypart
+	GameState.start_quest("ch3_main")
+	GameState.set_flag("ch3_side", side)
+	GameState.set_stage("ch3_main", {"lomond": "to_mill_lomond", "tenants": "to_mill_tenants", "severin": "to_mill_severin"}[side])
+	for k in flags:
+		GameState.set_flag(k, flags[k])
+
+
+func make_mill(spawn: String) -> Node3D:
+	GameState.pending_load = {"scene": "plain", "spawn": spawn, "player": {}}
+	var main := await make_main(false)
+	await physics(3)
+	return main
+
+
+func test_millbattle() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	# —— 抉择定了、白天：没有仗；走到磨坊就入夜
+	mill_state("lomond", {}, "dusk")
+	var main := await make_mill("mill")
+	check(main.battle == null and MillBattle.pending() and not MillBattle.due(), "黄昏、还没到磨坊：没有仗")
+	check(MillBattle.at_muster(Vector2(20, -10)) and not MillBattle.at_muster(Vector2(-40, 20)) and MillBattle.night_arrival()[0] == "mill_night", "守磨坊：走进磨坊院子就入夜，站到院子里")
+	await free_main(main)
+	# —— 守磨坊：摆好
+	mill_state("lomond")
+	main = await make_mill("mill_night")
+	var b: Battle = main.battle
+	var def := soldiers_of(main, MillBattle.DEF)
+	var atk := soldiers_of(main, MillBattle.ATK)
+	check(b != null and not b.started and b.player_side == MillBattle.DEF and b.squad.size() == 6 and def.size() == 14 and atk.size() == 10 and b.side_total(MillBattle.ATK) == 40,
+		"守磨坊：你的 6 个护院、护院头目和 7 个守东门缺口的（守方 14）；攻方第一拨前 10 个在东门外，后 10 个、第二拨 20 个晚些来（一共 40）")
+	check(b.waves.size() == 2 and b.waves.any(func(w): return w.soldiers.any(func(x): return x.display_override == "奥迪隆" and x.kind == "captain")) and main.world.find_child("Npc_captain", true, false) == null,
+		"第二波由奥迪隆（队长）带队；白天那个护院头目 NPC 拿掉了（在军阵里）")
+	var path := NavigationServer3D.map_get_path(main.world.get_world_3d().navigation_map, MillBattle.p3(Vector2(60, -30)), MillBattle.p3(Vector2(35, -18)), true)
+	check(not main.nav.is_empty() and path.size() > 1 and NavBuilder.path_length(path) < 45.0 and path[path.size() - 1].distance_to(MillBattle.p3(Vector2(35, -18))) < 1.5,
+		"磨坊那一片烘焙了导航：东门外到粮仓走得通（%.1f 米，%d 个多边形）" % [NavBuilder.path_length(path), int(main.nav.get("polygons", 0))])
+	var path2 := NavigationServer3D.map_get_path(main.world.get_world_3d().navigation_map, MillBattle.p3(Vector2(27.5, -50)), MillBattle.p3(Vector2(30, -30)), true)
+	check(path2.size() > 1 and path2[path2.size() - 1].distance_to(MillBattle.p3(Vector2(30, -30))) < 1.5 and NavBuilder.path_length(path2) < 30.0, "北边过来走得进缺口（%.1f 米）" % NavBuilder.path_length(path2))
+	await physics(10)
+	check(not b.started, "到了还没过 %d 秒：还没开打" % int(MillBattle.START_AFTER))
+	await seconds(MillBattle.START_AFTER + 0.5)
+	check(b.started and main.in_combat() and main.hud.toast_label.text.contains("粮仓"), "到了几秒：开打")
+	var auto := Saves.read_slot("auto")
+	check(auto.has("data") and str(auto.data.state.quests.ch3_main.stage) == "to_mill_lomond", "开打前自动存档")
+	var x0: Array = atk.slice(0, 6).map(func(x): return x.global_position.x)
+	await seconds(4.0)
+	var moved: Array = range(6).map(func(i): return float(x0[i]) - atk[i].global_position.x)
+	check(moved.all(func(m): return m > 2.0), "第一波往东门压（4 秒往西走了 %s 米）" % str(moved.map(func(m): return snappedf(m, 0.1))))
+	# 据点规则：6 个人冲进粮仓那片就失守
+	for x in atk.slice(0, 6):
+		x.global_position = MillBattle.p3(MillBattle.granary_doors()[0])
+	await seconds(0.6)
+	check(b.finished and b.winner == MillBattle.ATK and str(GameState.get_flag("ch3_mill", "")) == "lost" and GameState.quest_stage("ch3_main") == "after_mill" and main.hud.toast_label.text.contains("失守"),
+		"6 个人摸到粮仓门口：失守（ch3_mill = lost），主线到「打完了」")
+	await free_main(main)
+	main = await make_mill("mill")
+	check(main.battle == null, "打过了：再来没有仗")
+	await free_main(main)
+	# —— 开仓、护院撤走了：只有佃农
+	mill_state("tenants", {"ch3_granary_opened": true, "ch3_guards_left": true})
+	main = await make_mill("mill_night")
+	b = main.battle
+	def = soldiers_of(main, MillBattle.DEF)
+	check(b != null and b.squad.size() == 6 and def.size() == 12 and def.all(func(x): return x.kind in ["levy", "captain"]) and def.any(func(x): return x.display_override == "老贝恩"),
+		"开仓、护院撤走了：守磨坊的只有佃农（6 个跟着你，缺口东门各 2 个，老贝恩和 1 个人守粮仓）")
+	await free_main(main)
+	mill_state("tenants", {"ch3_granary_opened": true, "ch3_captain_aside": true})
+	main = await make_mill("mill_night")
+	b = main.battle
+	check(b != null and soldiers_of(main, MillBattle.DEF).size() == 24, "开仓、护院留下了：护院 14 人 + 佃农 10 人守磨坊")
+	await free_main(main)
+	# —— 跟塞弗林家：从营地口入夜，东门外开打；抢到了
+	mill_state("severin", {}, "dusk")
+	check(MillBattle.at_muster((PlainLayout.SPAWN_XZ.camp as Array)[0]) and not MillBattle.at_muster(Vector2(20, -10)) and MillBattle.night_arrival()[0] == "mill_raid", "跟塞弗林家：到营地口就入夜，站到东门外")
+	mill_state("severin")
+	main = await make_mill("mill_raid")
+	b = main.battle
+	check(b != null and b.player_side == MillBattle.ATK and b.squad.size() == 6 and soldiers_of(main, MillBattle.ATK).size() == 20 and soldiers_of(main, MillBattle.DEF).size() == 12
+		and b.waves.size() == 2 and b.waves.any(func(w): return w.side == MillBattle.DEF and w.soldiers.any(func(x): return x.display_override == "老贝恩")),
+		"跟塞弗林家：你和第一波 20 人（6 个跟着你）vs 护院头目和 11 个护院；老贝恩带 8 个佃农晚些从南门进来；奥迪隆的第二拨照样来")
+	var lom := GameState.get_rep("lomond")
+	check(MillBattle.finish(MillBattle.ATK).contains("抢到了") and str(GameState.get_flag("ch3_mill", "")) == "seized" and GameState.get_rep("lomond") == lom - 25, "抢到了：ch3_mill = seized，洛蒙德家 −25")
+	await free_main(main)
+	mill_state("lomond")
+	var sev := GameState.get_rep("severin")
+	check(MillBattle.finish(MillBattle.DEF).contains("守住了") and str(GameState.get_flag("ch3_mill", "")) == "held" and GameState.get_rep("severin") == sev - 10, "守住了：ch3_mill = held，塞弗林家 −10")
+	mill_state("severin")
+	check(MillBattle.finish(MillBattle.DEF).contains("打不进去") and str(GameState.get_flag("ch3_mill", "")) == "repelled", "跟塞弗林家打不进去：ch3_mill = repelled")
+	# —— 6.7c：「去那儿」、水渠绕后、远处的背景大军
+	mill_state("lomond")
+	main = await make_mill("mill_night")
+	b = main.battle
+	var mb := main.world.find_child("MillBattle", true, false) as MillBattle
+	var host := main.world.find_child("FarHost", true, false) as MultiMeshInstance3D
+	var fire := main.world.find_child("FarTorches", true, false) as MultiMeshInstance3D
+	var near_far := INF
+	for e: Array in mb.far_base:                       # 无头模式下多实例的位置读不回来（渲染器是空的），看它摆的底
+		var hp: Vector3 = e[0]
+		near_far = minf(near_far, Vector2(hp.x, hp.z).distance_to(PlainMill.RECT.get_center()) - MillBattle.FAR_ADVANCE)
+	check(host.multimesh.instance_count == 240 and mb.far_base.size() == 240 and fire.multimesh.instance_count == 120 and near_far > 60.0 and main.world.find_child("FarBanners", true, false) != null,
+		"远处的背景大军：北边麦茬地上 240 个兵、120 支火把、几面红旗（压到最近也离磨坊 %.0f 米；只是背景，不进军阵）" % near_far)
+	check(not b.order("goto") and b.order("goto", MillBattle.p3(MillBattle.FLANK)) and b.squad.all(func(x): return x.order == "goto" and x.anchor.distance_to(MillBattle.p3(MillBattle.FLANK)) < 4.0),
+		"「去那儿」：没指地方下不了；指了地方，小队的站位都在那一点附近")
+	for x in soldiers_of(main, MillBattle.ATK):         # 第一拨挪到远处：这一段只看绕后（不然你不动、守方先打输了，第二拨就不来了——全量测试里撞上过）
+		x.global_position = MillBattle.p3(Vector2(140.0, 40.0)) + Vector3(randf_range(-3, 3), 0.3, randf_range(-3, 3))
+	await seconds(MillBattle.START_AFTER + 0.5)
+	main.player.rotation.y = deg_to_rad(0.0)
+	main.player.global_position = MillBattle.p3(Vector2(16.0, -30.0)) + Vector3(0, 0.3, 0)
+	await physics(4)
+	var op: Vector3 = main.order_point()
+	check(op.is_finite() and op.distance_to(main.player.global_position) > 2.0 and op.distance_to(main.player.global_position) <= 41.0, "准星指的地方（往北 %.1f 米）" % op.distance_to(main.player.global_position))
+	b.order("goto", MillBattle.p3(MillBattle.FLANK))
+	var path3 := NavigationServer3D.map_get_path(main.world.get_world_3d().navigation_map, MillBattle.p3(Vector2(26, -24)), MillBattle.p3(MillBattle.FLANK), true)
+	check(path3.size() > 1 and path3[path3.size() - 1].distance_to(MillBattle.p3(MillBattle.FLANK)) < 1.5 and NavBuilder.path_length(path3) < 50.0,
+		"从院子里顺着西边水渠绕到北墙缺口外西北角走得通（%.1f 米）" % NavBuilder.path_length(path3))
+	for x in b.squad:
+		x.global_position = MillBattle.p3(MillBattle.FLANK) + Vector3(randf_range(-2, 2), 0.3, randf_range(-2, 2))
+	b.elapsed = MillBattle.WAVE2_AT + 0.5
+	await seconds(0.8)                                  # 援军按 Battle 的检查步（0.25 秒）进场
+	check(not b.finished, "（这一段仗还没打完）")
+	var w2: Array = soldiers_of(main, MillBattle.ATK).filter(func(x): return str(x.enemy_id).begins_with("wave2") or x.enemy_id == "odilon")
+	var m0: float = w2.map(func(x): return x.morale).reduce(func(a2, c2): return a2 + c2, 0.0) / maxf(w2.size(), 1)
+	check(mb.hinted and mb.flank_done and GameState.has_flag("ch3_flanked") and w2.size() >= 10 and m0 < 70.0 - MillBattle.FLANK_HIT + 5.0,
+		"第二拨到了、小队在缺口外西北角：从背后打进去，第二拨士气 −%d（平均 %.0f）、记 ch3_flanked；之前有提示" % [int(MillBattle.FLANK_HIT), m0])
+	var t0 := mb.far_t
+	await seconds(1.0)
+	check(mb.far_t > t0 + 0.5, "背景大军开打以后慢慢往前压（按开打后的秒数摆，%d 秒压 %d 米）" % [int(MillBattle.FAR_ADVANCE_T), int(MillBattle.FAR_ADVANCE)])
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch3evidence() -> void:
+	# 罪证（6.8a）：账本、摄政的信从哪儿来；交给院长 / 佃农 / 留着；跟塞弗林家时佃农挡路
+	mill_state("lomond")
+	GameState.set_flag("ch3_odilon_down")
+	check(MillBattle.finish(MillBattle.DEF).contains("摄政的信") and GameState.has_item("regent_letter") and GameState.quest_stage("ch3_main") == "after_mill", "守住了、打倒了奥迪隆：从他怀里搜出摄政的信")
+	check(MillInside.ledger_takeable() and str(MillInside.open_ledger().toast).contains("得到") and GameState.has_item("granary_ledger") and str(MillInside.open_ledger().toast) == "账箱空了。", "守住了：磨坊账房的铁皮箱里拿走粮仓账本（再开是空的）")
+	var lom := GameState.get_rep("lomond")
+	check(say_runner("gregor", ["账本和信，两样都交给你。"], "plain") == "took_both" and str(GameState.get_flag("south_evidence", "")) == "both" and str(GameState.get_flag("ch3_evidence_to", "")) == "abbey"
+		and not GameState.has_item("granary_ledger") and not GameState.has_item("regent_letter") and GameState.get_rep("lomond") == lom - 10 and GameState.quest_stage("ch3_main") == "vigil",
+		"两样都交给院长：south_evidence = both、ch3_evidence_to = abbey、洛蒙德家 −10、主线到守灵夜")
+	mill_state("lomond")
+	MillBattle.finish(MillBattle.ATK)
+	check(not MillInside.ledger_takeable() and str(MillInside.open_ledger().toast).contains("空了") and not GameState.has_item("granary_ledger") and not GameState.has_item("regent_letter"), "失守了：账箱被砸开、空了，也没有信")
+	check(str(PlainPeople.letter_chest_open().toast).contains("不知道里头有什么") and not GameState.has_item("regent_letter"), "不知道信在哪：指挥帐床边那口箱子不撬")
+	GameState.set_flag("ch3_letter_place")
+	check(str(PlainPeople.letter_chest_open().toast).contains("得到") and GameState.has_item("regent_letter"), "学徒说过信在哪：打完以后从指挥帐床边箱子里拿到摄政的信")
+	GameState.set_flag("ch3_ida", "witness")
+	var sev := GameState.get_rep("severin")
+	check(say_runner("bain", ["摄政的信。念给全村人听。"], "plain") == "read_letter" and str(GameState.get_flag("ch3_evidence_to", "")) == "tenants" and GameState.get_rep("severin") == sev - 10, "把信念给麦渡的人听：塞弗林家 −10")
+	mill_state("tenants", {"ch3_granary_opened": true, "ch3_guards_left": true, "ch3_night_boats": true, "ch3_ida": "witness"})
+	MillBattle.finish(MillBattle.ATK)
+	check(MillInside.ledger_takeable(), "开过仓的，失守了账箱也拿得到（夜里没人顾得上那间屋子）")
+	check(say_runner("boatman", ["昨夜那条船……"], "plain") == "night_ledger" and GameState.has_item("granary_ledger"), "渡工之子：船夫把夜船上捞上来的那本账给你（罪证的另一条来路）")
+	check(say_runner("bain", ["洛蒙德家的粮仓账本。念给全村人听。", "（看向伊达）"], "plain") == "ida_speaks" and str(GameState.get_flag("south_evidence", "")) == "lomond", "当着全村念账本：伊达站出来作证")
+	mill_state("lomond")
+	MillBattle.finish(MillBattle.DEF)
+	MillInside.open_ledger()
+	check(say_runner("gregor", ["我什么都不交。东西我留着。"], "plain") == "keep" and str(GameState.get_flag("ch3_evidence_to", "")) == "kept" and GameState.has_item("granary_ledger"), "跟院长说什么都不交：留着（ch3_evidence_to = kept）")
+	PlainPeople.evidence_settle()
+	check(str(GameState.get_flag("south_evidence", "")) == "lomond", "留着的：south_evidence 按手里有什么记（这回是账本 = lomond）")
+	# 跟塞弗林家：佃农挡路，让开
+	mill_state("severin")
+	var main := await make_mill("mill_raid")
+	var b: Battle = main.battle
+	var mb := main.world.find_child("MillBattle", true, false) as MillBattle
+	await seconds(MillBattle.START_AFTER + 0.5)
+	for x in soldiers_of(main, MillBattle.DEF):         # 守方挪远：这一段只看佃农进来以后
+		x.global_position = MillBattle.p3(Vector2(-120.0, 100.0)) + Vector3(randf_range(-3, 3), 0.3, randf_range(-3, 3))
+	b.order("hold")
+	b.elapsed = MillBattle.WAVE_TEN_AT + 0.5
+	await seconds(0.8)
+	b.elapsed = MillBattle.WAVE_TEN_AT + MillBattle.SPARE_AFTER + 0.5
+	await seconds(0.6)
+	check(mb.spare_decided and GameState.has_flag("ch3_tenants_spared") and mb.tenants.size() == 8 and mb.tenants.all(func(x): return x.guard_r < 4.0)
+		and not MillBattle.at_granary_door(MillBattle.p3(MillBattle.granary_doors()[0])) and MillBattle.at_granary_door(MillBattle.p3(MillBattle.granary_doors()[1])),
+		"跟塞弗林家：老贝恩的人挡在粮仓前，你让小队坚守 = 让开——他们只守第一座仓，那座不算抢")
+	await free_main(main)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func vigil_state(flags := {}) -> void:
+	GameState.new_game(672)
+	GameState.chapter = 3
+	GameState.daypart = "dawn"
+	GameState.start_quest("ch3_main")
+	GameState.set_stage("ch3_main", "vigil")
+	for k in flags:
+		GameState.set_flag(k, flags[k])
+
+
+func test_ch3vigil() -> void:
+	# 守灵夜与章末（6.8b）：院长按你交出的东西放人、伊格纳兹说出那一夜、晨钟、第三章完
+	var free_cases := [
+		[{"ch3_evidence_to": "abbey", "south_evidence": "lomond"}, "账本你也翻过了。", "free_ledger", "ledger"],
+		[{"ch3_evidence_to": "abbey", "south_evidence": "severin"}, "那封信你也读过了。", "free_letter", "letter"],
+		[{"ch3_evidence_to": "abbey", "south_evidence": "both"}, "账本和信，你都看过了。", "free_both", "both"],
+		[{"ch3_evidence_to": "kept", "ch3_side": "lomond", "ch3_mill": "held"}, "伊莎贝拉说过：守住了磨坊，她就写信给你。", "free_isabella", "isabella"],
+		[{"ch3_evidence_to": "tenants", "ch3_soup": "done"}, "门房说过，他替我说话。", "free_soup", "soup"],
+	]
+	for c: Array in free_cases:
+		vigil_state(c[0])
+		check(say_runner("gregor", [c[1]], "plain") == c[2] and GameState.has_item("scriptorium_key") and GameState.quest_stage("ch3_main") == "to_ignaz"
+			and str(GameState.get_flag("ch3_monk_freed", "")) == c[3], "院长放人（%s）：「%s」→ 给抄经室的钥匙，主线去见灰袍修士" % [c[3], c[1]])
+	check(say_runner("gregor", [], "plain") == "key_given", "给过钥匙再说话：东边那排石屋，最里头那间")
+	vigil_state({"ch3_evidence_to": "tenants", "ch3_side": "severin", "ch3_mill": "seized"})
+	var opts := []
+	var r := DialogueRunner.new()
+	r.start("plain", "gregor")
+	for o in r.options():
+		opts.append(str(o.text))
+	check(r.node_id == "vigil" and not opts.has("账本你也翻过了。") and not opts.has("门房说过，他替我说话。") and not opts.has("伊莎贝拉说过：守住了磨坊，她就写信给你。"),
+		"什么都没交给他、没替门房要粥、不是替伊莎贝拉守住的：只剩口才（%s）" % "／".join(opts))
+	var n := say_runner("gregor", ["他在墙上刻了三十五年。让他说出来吧。"], "plain")
+	if n == "refuse":
+		n = say_runner("gregor", ["他在墙上刻了三十五年。让他说出来吧。", "那我就在门洞外等。等到你肯为止。"], "plain")
+	check(n in ["free_speech", "free_wait"] and GameState.has_item("scriptorium_key") and GameState.quest_stage("ch3_main") == "to_ignaz",
+		"口才说动了给钥匙；说不动就在门洞外等一个上午，他也扔下钥匙（%s，不会卡死）" % n)
+	# 交罪证的那一句接着问抄经室
+	vigil_state({})
+	GameState.set_stage("ch3_main", "after_mill")
+	GameState.add_item("granary_ledger")
+	check(say_runner("gregor", ["洛蒙德家的粮仓账本。交给你。", "抄经室里那个人……"], "plain") == "vigil", "交了账本接着问抄经室里那个人：院长掂着钥匙问你凭什么")
+	# 抄经室的门：没钥匙锁着，有钥匙进得去
+	var holder := Node3D.new()
+	add_child(holder)
+	PlainAbbey.interactables(holder)
+	var door := holder.find_child("ScriptoriumDoor", true, false) as Door
+	vigil_state({})
+	var res := door.interact(null)
+	check(door.locked and str(res.get("kind", "")) == "door" and str(res.get("toast", "")) == PlainAbbey.SCRIPTORIUM_DOOR_TEXT, "抄经室的门：没钥匙还是锁着，门缝里有人在说话")
+	GameState.add_item("scriptorium_key")
+	res = door.interact(null)
+	check(str(res.get("kind", "")) == "travel" and str(res.get("area", "")) == "scriptorium" and str(res.get("spawn", "")) == "front", "有院长的钥匙：开锁进抄经室")
+	holder.free()
+	# 替挨饿的人做过事没有
+	for c: Array in [[{"ch3_granary_opened": true}, "opened"], [{"ch3_evidence_to": "tenants"}, "read"], [{"ch3_soup": "done"}, "soup"], [{"ch3_ida": "witness"}, "ida"],
+			[{"ch3_apprentice": "freed"}, "apprentice"], [{"ch3_tenants_spared": true}, "spared"], [{"ch3_apprentice": "handed", "ch3_evidence_to": "kept"}, ""]]:
+		vigil_state(c[0])
+		Chapter3.settle()
+		check(Chapter3.poor_deed() == c[1] and str(GameState.get_flag("ch3_poor_deed", "")) == c[1], "替挨饿的人做过的事：%s → %s" % [JSON.stringify(c[0]), c[1] if c[1] != "" else "没有"])
+	# 伊格纳兹：火、做过的事、那一夜、戒指、誓瓶
+	vigil_state({"ch2_fire": "lit", "origin": "deserter", "knows_double_key_ring": true, "ch3_poor_deed": "soup"})
+	GameState.set_stage("ch3_main", "to_ignaz")
+	check(say_runner("ignaz", ["还亮着。第十九烽，我看着它亮到天亮。", "你在等什么？", "（说出你做过的事）", "（听他说）", "两把钥匙交叉……霜渡镇那个南方人手上，就是这一枚。",
+		"后来呢？", "还有别的吗？", "护送誓瓶北上的，是烽誓团的人。", "（不说话）"], "plain") == "done"
+		and GameState.has_flag("ch3_vigil") and GameState.has_flag("ch3_vial_heard") and GameState.quest_stage("ch3_main") == "ch3_end" and GameState.pending_ending == "ch3",
+		"伊格纳兹（火亮着、替穷人做过事、见过双钥戒指、烽誓团逃兵）：说完那一夜和誓瓶，主线到章末、等着出章末画面")
+	GameState.pending_ending = ""
+	check(say_runner("ignaz", [], "plain") == "after", "说完以后：钟响过了，去吧")
+	vigil_state({"ch2_fire": "out", "ch2_roll": "served", "ch3_poor_deed": "read"})
+	GameState.set_stage("ch3_main", "to_ignaz")
+	check(say_runner("ignaz", ["熄了。", "说什么？", "（说出你做过的事）", "（听他说）", "老王亲手给他的？", "后来呢？", "还有别的吗？", "第二十一烽……"], "plain") == "vial_roll",
+		"火熄了、名册上认下补守的：他记得第二十一烽")
+	vigil_state({})
+	GameState.set_stage("ch3_main", "to_ignaz")
+	var r2 := DialogueRunner.new()
+	r2.start("plain", "ignaz")
+	check(r2.options().size() == 1 and str(r2.options()[0].text) == "我不知道。", "北边的火的事你不知道（没有 ch2_fire）：只能说不知道")
+	check(say_runner("ignaz", ["我不知道。", "你在等什么？", "什么都没做。", "那我走了。"], "plain") == "silent" and GameState.has_flag("ch3_vigil") and not GameState.has_flag("ch3_vial_heard")
+		and GameState.pending_ending == "ch3", "什么都没做、也不肯说：他只说冠去了双钥港，誓瓶的事不说；照样到章末")
+	GameState.pending_ending = ""
+	# 在抄经室里听完：晨钟，然后第三章完
+	wipe_test_saves()
+	vigil_state({"ch3_side": "tenants", "ch3_granary_opened": true, "ch3_guards_left": true, "ch3_mill": "held", "ch3_flanked": true, "ch3_odilon_down": true,
+		"south_evidence": "lomond", "ch3_evidence_to": "tenants", "ch3_ida": "witness", "ch3_soup": "done", "ch3_apprentice": "freed", "ch3_monk_freed": "soup", "ch2_fire": "lit"})
+	GameState.set_stage("ch3_main", "to_ignaz")
+	GameState.add_item("scriptorium_key")
+	GameState.pending_load = {"scene": "scriptorium", "spawn": "front", "player": {}}
+	var main := await make_area("scriptorium")
+	await frames(3)
+	var ig := main.world.find_child("Npc_ignaz", true, false) as Npc
+	check(ig != null and ig.dialogue_area == "plain" and ig.dialogue_id == "ignaz" and str(GameState.get_flag("ch3_poor_deed", "")) == "opened", "进了抄经室：灰袍修士有话说了；开过仓的记成替挨饿的人做过事")
+	say_runner("ignaz", ["还亮着。第十九烽，我看着它亮到天亮。", "你在等什么？", "（说出你做过的事）", "（听他说）", "老王亲手给他的？", "后来呢？", "还有别的吗？", "诺伯特还活着。他在第十九烽守了三十五年。", "（不说话）"], "plain")
+	main.ch3_end_after = 0.6
+	main._on_dialogue_closed()
+	await frames(2)
+	check(not GameState.has_flag("ch3_done") and not main.ending_panel.visible, "说完了：先响晨钟（章末画面还没出）")
+	await seconds(1.0)
+	var ep: EndingPanel = main.ending_panel
+	check(GameState.has_flag("ch3_done") and ep.visible and ep.header.text == "第三章「粮与铁」完" and ep.title.text == "第四章 · 双钥港的账" and ep.sub.text == "开发中"
+		and not ep.continue_btn.visible and not Saves.read_slot("auto").is_empty() and get_tree().paused,
+		"晨钟以后章末：「第三章「粮与铁」完 / 第四章 · 双钥港的账 / 开发中」，没有「继续」（第四章还没有），自动存档")
+	check(ep.recap.text.contains("撬开了粮仓") and ep.recap.text.contains("护院撤回了庄园") and ep.recap.text.contains("水渠") and ep.recap.text.contains("守到了天亮")
+		and ep.recap.text.contains("奥迪隆倒在") and ep.recap.text.contains("念了洛蒙德家的粮仓账本") and ep.recap.text.contains("伊达站出来作证") and ep.recap.text.contains("立住了勺子") and ep.recap.text.contains("学徒顺着河溜走了"),
+		"回顾按旗标写：开仓、护院撤走、水渠、守到天亮、奥迪隆、念账本、伊达、粥、学徒")
+	check(ep.seal.text.contains("双钥港") and ep.seal.text.contains("双钥交叉的戒指") and ep.seal.text.contains("誓瓶是空的"), "钩子：铁冠交给了双钥港来的人、双钥戒指、空的誓瓶")
+	check(ep.back_btn.text == "在晨钟里再站一会儿", "按钮：在晨钟里再站一会儿")
+	ep.close()
+	await frames(2)
+	check(not get_tree().paused, "关掉章末接着走")
+	await free_main(main)
+	vigil_state({"ch3_side": "severin", "ch3_mill": "seized", "ch3_tenants_spared": true, "ch3_evidence_to": "kept", "south_evidence": "severin", "ch3_apprentice": "handed", "ch3_monk_freed": "waited"})
+	var rc := Chapter3.recap()
+	check(rc.contains("跟着奥迪隆的兵") and rc.contains("抢下了磨坊") and rc.contains("让开了") and rc.contains("摄政的信还在你手里") and rc.contains("交还给了奥迪隆") and rc.contains("门洞外等了一个上午")
+		and not Chapter3.hook().contains("誓瓶"), "跟塞弗林家、留着信、交还学徒、院长说不动的回顾；没听到誓瓶的钩子不提誓瓶")
+	check(Chapters.wip_note_of(3).contains("守灵夜和章末") and not Chapters.wip_note_of(3).contains("还没做"), "第三章进场的提示：主线做到章末了")
+	GameState.chapter = 0
+	GameState.daypart = "day"
+	GameState.pending_load = {}
+
+
+func test_harbor() -> void:
+	# 双钥港地图底座（7.1）：河口、泥滩、潮沟、沙嘴、海；潮汐；第四章章节包；旅行地图「河口」一页
+	check(Areas.known("harbor") and Areas.display_name("harbor") == "双钥港" and Areas.pack_chapter("harbor") == 4 and Chapters.known(4) and Chapters.pack_of(4) == "ch4"
+		and Chapters.LIST[4].spawn == "quay" and Chapters.wip_of(4) != "" and Chapters.PLAYABLE == 2,
+		"双钥港登记了：内容在第四章章节包（ch4）里、从木栈码头上岸；第四章还没对玩家打开、标着制作中")
+	check(Harbor.textures_ready() and ResourceLoader.exists(Harbor.FIELD_PATH) and ResourceLoader.exists(Harbor.PAINT_PATH), "第四章的天空照片、预先算好的高度场都在 chapters/ch4/")
+	var tex_ok := true
+	for layer: String in Harbor.LAYERS.values():
+		for kind in ["diff", "nor_gl"]:
+			if not ResourceLoader.exists(Harbor.TEX_DIR % [layer, kind]):
+				tex_ok = false
+	check(tex_ok, "地面五层贴图（泥雪地、铺石、泥滩、沙、卵石）各有颜色和法线")
+	Harbor._field = PackedFloat32Array()
+	Harbor.ensure_field()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 71
+	var worst := 0.0
+	var paint_worst := 0.0
+	for k in 300:
+		var i := rng.randi_range(0, HarborLayout.NX - 1)
+		var j := rng.randi_range(0, HarborLayout.NZ - 1)
+		var x := HarborLayout.BOUNDS.position.x + i * HarborLayout.STEP
+		var z := HarborLayout.BOUNDS.position.y + j * HarborLayout.STEP
+		worst = maxf(worst, absf(Harbor._field[j * HarborLayout.NX + i] - HarborLayout.height(x, z)))
+		var m := HarborLayout.masks(x, z)
+		var c := Harbor._paint[j * HarborLayout.NX + i]
+		paint_worst = maxf(paint_worst, maxf(absf(c.r - m.x), maxf(absf(c.g - m.y), absf(c.b - m.z))))
+	check(worst < 0.01 and paint_worst < 0.01 and Harbor.field_ms < 200.0, "高度场、地面颜色图和布局一致（最大差 %.4f 米 / %.4f；不一致就跑 tests/gen_harbor_field.tscn）；读文件 %.0f 毫秒" % [worst, paint_worst, Harbor.field_ms])
+	# 城在台地上、高过涨潮；泥滩在涨潮以下、退潮以上；潮沟底退潮露出来、涨潮盖住；河道和海比深水线深
+	var town := HarborLayout.height(-40.0, -20.0)
+	var flats := HarborLayout.height(-40.0, 66.0)
+	var canal := HarborLayout.height(-30.0, -47.8)
+	var river := HarborLayout.height(HarborLayout.river_x(-20.0), -20.0)
+	var sea := HarborLayout.height(-40.0, 105.0)
+	var spit := HarborLayout.height(80.0, 62.0)
+	check(town > Harbor.TIDE.day + 2.0 and flats < Harbor.TIDE.day and flats > Harbor.TIDE.night and canal < Harbor.TIDE.day - 0.8 and canal > Harbor.TIDE.night
+		and river < HarborLayout.DEEP_Y and sea < HarborLayout.DEEP_Y and spit > Harbor.TIDE.day + 1.0,
+		"城 %.1f 米高过涨潮；泥滩 %.1f、潮沟底 %.1f 在涨潮（%.1f）以下、退潮（%.1f）以上；河道 %.1f、海 %.1f 是深水；沙嘴 %.1f 露在水上" % [town, flats, canal, Harbor.TIDE.day, Harbor.TIDE.night, river, sea, spit])
+	var sp_ok := true
+	for id: String in HarborLayout.SPAWN_XZ:
+		var xz: Vector2 = HarborLayout.SPAWN_XZ[id][0]
+		if HarborLayout.height(xz.x, xz.y) < Harbor.TIDE.day + 1.5:
+			sp_ok = false
+	check(sp_ok and HarborLayout.SPAWN_XZ.has("quay"), "%d 个出生点都在岸上、高过涨潮" % HarborLayout.SPAWN_XZ.size())
+	# 潮汐：白天涨、夜里退
+	Daypart.current = "day"
+	var hi := Harbor.tide()
+	Daypart.current = "night"
+	var lo := Harbor.tide()
+	check(hi > lo + 1.2 and Harbor.low_tide(), "潮位：白天 %.2f 米、夜里 %.2f 米（夜里退潮，潮沟底露出来）" % [hi, lo])
+	Daypart.current = "day"
+	check(not Harbor.low_tide() and HarborLayout.surface_at(Vector3(-40.0, flats, 66.0)) == "shallows", "白天涨潮：泥滩盖在水下，蹚着走（浅水）")
+	Daypart.current = "night"
+	check(HarborLayout.surface_at(Vector3(-40.0, flats, 66.0)) == "mud" and HarborLayout.surface_at(Vector3(-40.0, town, -20.0)) == "" and Surface.mult("shallows") < Surface.mult("mud") and not Surface.can_run("shallows"),
+		"夜里退潮：泥滩露出来是泥（走得慢）；城里的地是普通的；浅水比泥还慢、不能跑")
+	Daypart.current = "day"
+	# 深水边的墙：河道、海走不进去
+	var faces := Harbor.deep_wall_faces()
+	check(faces.size() > 600 and faces.size() % 3 == 0, "深水边一圈看不见的墙：%d 个三角形" % (faces.size() / 3))
+	GameState.new_game(710)
+	GameState.daypart = "day"
+	GameState.chapter = 4
+	var main := await make_area("harbor")
+	var space := main.get_world_3d().direct_space_state
+	var col_worst := 0.0
+	for k in 60:
+		var x := rng.randf_range(-120.0, 120.0)
+		var z := rng.randf_range(-100.0, 100.0)
+		var rq := PhysicsRayQueryParameters3D.create(Vector3(x, 100.0, z), Vector3(x, -50.0, z), 1)
+		rq.exclude = [(main.world.find_child("HarborSolids", true, false) as StaticBody3D).get_rid()]     # 房子、栈桥、栏石不算（7.2）
+		var hit: Dictionary = space.intersect_ray(rq)
+		col_worst = maxf(col_worst, absf((float(hit.position.y) if not hit.is_empty() else -999.0) - Harbor.height_at(x, z)))
+	check(col_worst < 0.05, "碰撞（高度图）和地形一致（60 个点最大差 %.3f 米）" % col_worst)
+	var wq := PhysicsRayQueryParameters3D.create(Vector3(-40.0, 0.0, 60.0), Vector3(-40.0, 0.0, 110.0), FpController.LAYER_BOUNDARY)
+	var wh: Dictionary = space.intersect_ray(wq)
+	check(not wh.is_empty() and float(wh.position.z) > 70.0 and float(wh.position.z) < 104.0, "从泥滩往南走到深水边就有墙（z = %.1f）" % (float(wh.position.z) if not wh.is_empty() else -1.0))
+	var rq2 := PhysicsRayQueryParameters3D.create(Vector3(HarborLayout.river_x(-60.0) - 30.0, 0.0, -60.0), Vector3(HarborLayout.river_x(-60.0), 0.0, -60.0), FpController.LAYER_BOUNDARY)
+	var rh: Dictionary = space.intersect_ray(rq2)
+	var rq3 := PhysicsRayQueryParameters3D.create(Vector3(HarborLayout.river_x(-60.0) - 30.0, 2.6, -60.0), Vector3(HarborLayout.river_x(-60.0), 2.6, -60.0), FpController.LAYER_BOUNDARY)
+	check(not rh.is_empty() and space.intersect_ray(rq3).is_empty(), "码头石岸下面、河边深水那儿有墙；码头面那么高的地方没有（以后的栈桥上走得过去）")
+	await physics(10)
+	var p: FpController = main.player
+	var sp: Vector3 = Harbor.spawn_points().quay[0]
+	check(p.is_on_floor() and p.global_position.distance_to(sp) < 0.4, "新开进双钥港：站在木栈码头（%s）" % p.global_position)
+	var st: ChunkStreamer = main.streamer
+	st.build_all()
+	check(st.chunks.size() == 20 and st.is_done() and float(st.stats.max_job_ms) < 60.0, "地形 %d 块全搭完，最慢一块 %.1f 毫秒" % [st.chunks.size(), st.stats.max_job_ms])
+	var water := main.world.find_child("HarborWater", true, false) as MeshInstance3D
+	check(water != null and main.world.find_child("FarSea", true, false) != null and main.world.find_child("FarTerrain", true, false) != null and absf(water.position.y - Harbor.TIDE.day) < 0.01,
+		"有水面（河、潮沟、泥滩、海一整片）、地图外的海和远岸；白天水面在涨潮的高度")
+	main.set_daypart("night", false)
+	await seconds(1.6)
+	check(absf(water.position.y - Harbor.TIDE.night) < 0.01 and Harbor.low_tide(), "入夜：水面退到退潮的高度（%.2f 米）" % water.position.y)
+	main.set_daypart("day", false)
+	await seconds(1.6)
+	var views_ok := Areas.views("harbor").size() == HarborLayout.VIEW_NAMES.size()
+	for v: Array in Areas.views("harbor"):
+		var vp: Vector3 = v[0]
+		if absf(vp.y - 1.7 - Harbor.height_at(vp.x, vp.z)) > 0.05 or Harbor.height_at(vp.x, vp.z) < Harbor.TIDE.day + 1.0:
+			views_ok = false
+	check(views_ok, "%d 个固定机位都在岸上、地面上方 1.7 米" % HarborLayout.VIEW_NAMES.size())
+	var env: Environment = main.env
+	check(env.background_mode == Environment.BG_SKY and env.sky != null and Daypart.preset("harbor", "day").fog_end > 0.0 and Cold.COLD_AREAS.get("harbor", 0.0) > 0.0 and Cold.COLD_AREAS.harbor < Cold.COLD_AREAS.highland,
+		"天空是海上的阴云照片；双钥港有自己的时段预设；湿冷，没有高地冷")
+	var spec := AreaMap.spec("harbor")
+	var labels := []
+	for sh: Dictionary in spec.get("shapes", []):
+		if sh.has("label"):
+			labels.append(str(sh.label))
+	check(labels.has("灰鲸河") and labels.has("钥楼") and labels.has("泥滩") and labels.has("灯塔") and labels.has("债牢") and labels.has("渡工行会会馆") and spec.get("zones", []).size() == 4
+		and spec.shapes.filter(func(x): return str(x.k) == "house").size() >= 60, "本地地图：灰鲸河、潮沟、海、钥楼、会馆、债牢、泥滩、灯塔、房子（%s）" % "、".join(labels))
+	# 城（7.2）
+	var hs := HarborTown.houses()
+	var hs_ok := true
+	for h: Dictionary in hs:
+		for q: Vector2 in HarborTown.footprint(h):
+			if HarborLayout.canal_d(q) < HarborLayout.CANAL_HALF + HarborLayout.CANAL_BANK or HarborLayout.street_d(q) < HarborLayout.STREET_HALF - 0.1 or Harbor.height_at(q.x, q.y) < 1.0:
+				hs_ok = false
+	check(hs.size() >= 60 and hs_ok and hs.filter(func(h): return bool(h.stone)).size() >= 8, "沿街摆了 %d 栋房子（钥楼街上 %d 栋全石砌的商行），都不压在街、潮沟、石岸上" % [hs.size(), hs.filter(func(h): return bool(h.stone)).size()])
+	var blocks: Array = main.world.find_children("Houses_*", "Node3D", true, false)
+	check(blocks.size() >= 6 and blocks.all(func(b): return b.is_in_group("house") and b.get_node_or_null("Mesh") != null) and main.world.find_child("KeyHouse", true, false) != null
+		and main.world.find_child("GuildHall", true, false) != null and main.world.find_child("Prison", true, false) != null and main.world.find_child("Lighthouse", true, false) != null,
+		"一块里的房子合成一个网格（%d 块，按时段亮灯）；钥楼、会馆、债牢、灯塔都搭了" % blocks.size())
+	var mesh: MeshInstance3D = blocks[0].get_node("Mesh")
+	check(mesh.mesh.get_surface_count() <= 12, "一块房子只有 %d 种材质（= 几次绘制）" % mesh.mesh.get_surface_count())
+	var lantern: Node = main.world.find_child("LighthouseEmber", true, false)
+	check(lantern != null and lantern.is_in_group("night_light") and main.world.find_child("Ship0", true, false) != null and main.world.find_child("Ship1", true, false) != null,
+		"灯塔顶上一盏很弱的灯（夜里才亮）；河口停着两条船")
+	var ship := main.world.find_child("Ship0", true, false) as Node3D
+	main.set_daypart("night", false)
+	await seconds(1.6)
+	var ship_night := ship.position.y
+	main.set_daypart("day", false)
+	await seconds(1.6)
+	check(absf(ship.position.y - ship_night - (Harbor.TIDE.day - Harbor.TIDE.night)) < 0.01, "船跟着潮水上下（白天比夜里高 %.1f 米）" % (ship.position.y - ship_night))
+	var doors := ["KeyHouseDoor", "GuildDoor", "PrisonDoor", "LighthouseDoor"].all(func(n): return main.world.find_child(n, true, false) is Door)
+	var signs := ["QuaySign", "KeyStreetSign"].all(func(n): return main.world.find_child(n, true, false) is RoadSign)
+	var notice := main.world.find_child("ClearingNotice", true, false) as Examine
+	check(doors and signs and notice != null and str(notice.on_use.call(p).toast).contains("冬至日") and GameState.has_flag("ch4_notice_read")
+		and main.world.find_children("HarborDoor_*", "Door", true, false).size() >= 10,
+		"钥楼、会馆、债牢、灯塔的门（锁着、各一句话）、街上一些人家的门；码头、钥楼前的路牌（旅行地图出发的地方）；钥楼门口清账的告示")
+	var pier: Array = HarborTown.piers()[2]
+	var pm: Vector2 = ((pier[0] as Vector2) + (pier[1] as Vector2)) * 0.5 + Vector2(3.0, 0.0)
+	var pq := PhysicsRayQueryParameters3D.create(Vector3(pm.x, 10.0, pm.y), Vector3(pm.x, -10.0, pm.y), 1)
+	var ph: Dictionary = space.intersect_ray(pq)
+	check(not ph.is_empty() and absf(float(ph.position.y) - HarborTown.pier_y(pier)) < 0.05 and HarborTown.piers().size() == 5, "5 座栈桥伸进河里，桥面站得住（%.2f 米）" % (float(ph.position.y) if not ph.is_empty() else -99.0))
+	var br: Array = HarborTown.bridges()[0]
+	var bq := PhysicsRayQueryParameters3D.create(Vector3((br[0] as Vector2).x, 10.0, (br[0] as Vector2).y), Vector3((br[0] as Vector2).x, -10.0, (br[0] as Vector2).y), 1)
+	var bh: Dictionary = space.intersect_ray(bq)
+	check(HarborTown.bridges().size() >= 4 and not bh.is_empty() and float(bh.position.y) > 1.5, "街跨潮沟的地方都有石桥（%d 座），桥面站得住" % HarborTown.bridges().size())
+	var sx: float = HarborLayout.STAIRS[0]
+	var sp2 := HarborLayout.stair_span(sx)
+	var steep := 0.0
+	for k in 20:
+		var z0 := lerpf(sp2.x, sp2.y, k / 20.0)
+		var z1 := lerpf(sp2.x, sp2.y, (k + 1) / 20.0)
+		steep = maxf(steep, rad_to_deg(atan2(absf(Harbor.height_at(sx, z1) - Harbor.height_at(sx, z0)), z1 - z0)))
+	check(steep < 40.0 and HarborTown.kerbs().size() > 200, "城南边石岸下到泥滩的石阶最陡 %.0f°（走得下去）；码头边、潮沟边、石岸上沿一圈栏石（%d 段）" % [steep, HarborTown.kerbs().size()])
+	await free_main(main)
+	check(Travel.validate().is_empty() and Travel.region_title(4) == "河口" and Travel.places(4) == ["harbor_quay", "keyhouse_street", "lighthouse", "crown_city"] and Travel.built("harbor_quay") and Travel.built("crown_city") and not Travel.built("lighthouse")
+		and Travel.region_of_chapter(3) == "south", "旅行地图第四章翻到「河口」：木栈码头、钥楼街、冠城（7.6）能去，灯塔还没做好")
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_harborrooms() -> void:
+	# 双钥港的室内（7.3）：钥楼大厅、金库、会馆、「咸潮」酒馆、债牢
+	GameState.new_game(730)
+	GameState.chapter = 4
+	GameState.daypart = "day"
+	for area: String in HarborRooms.AREAS:
+		check(Areas.known(area) and Areas.is_indoor(area) and Areas.chapter_of(area) == 4 and Areas.display_name(area) == HarborRooms.display_name(area), "%s 登记了（室内、第四章）" % HarborRooms.display_name(area))
+		GameState.pending_load = {"scene": area, "spawn": "front", "player": {}}
+		var main := await make_area(area)
+		await physics(8)
+		var p: FpController = main.player
+		var sp: Vector3 = HarborRooms.spawns(area).front[0]
+		check(p.is_on_floor() and p.global_position.distance_to(sp) < 0.4, "进了%s：站在门里头的地上" % HarborRooms.display_name(area))
+		var spec := AreaMap.spec(area)
+		var ex_ok := true
+		for ex: Dictionary in spec.get("exits", []):
+			if not Areas.known(str(ex.to)) or Areas.spawn(str(ex.to), str(ex.spawn)) == null:
+				ex_ok = false
+		check(ex_ok and not spec.get("exits", []).is_empty() and spec.get("shapes", []).size() >= 2, "%s 的本地地图：%d 处陈设、出口都通到登记过的出生点" % [HarborRooms.display_name(area), spec.shapes.size()])
+		var exit := main.world.find_child("Exit", true, false) as Door
+		if area == "key_vault":
+			var up := main.world.find_child("StairUp", true, false) as Door
+			var gate := main.world.find_child("WaterGate", true, false) as Door
+			var box := main.world.find_child("CrownBox", true, false) as Examine
+			check(up != null and str(up.interact(p).get("area", "")) == "key_hall" and gate != null and gate.locked and str(gate.interact(p).toast).contains("北潮沟")
+				and box != null and str(box.on_use.call(p).toast).contains("星铁冠印") and GameState.has_flag("ch4_crown_seen"),
+				"金库：石阶上大厅；东墙的铁栅水门锁着（外面是北潮沟）；北墙石台上、铁笼里那只星铁包角的铁匣（封蜡上是星铁冠印）")
+		else:
+			var r := exit.interact(p) if exit != null else {}
+			check(exit != null and str(r.get("kind", "")) == "travel" and str(r.get("area", "")) == "harbor" and Areas.spawn("harbor", str(r.spawn)) != null, "%s 的门通回双钥港（%s）" % [HarborRooms.display_name(area), r.get("spawn", "")])
+		match area:
+			"key_hall":
+				var vd := main.world.find_child("VaultDoor", true, false) as Door
+				var board := main.world.find_child("ClearingBoard", true, false) as Examine
+				check(vd != null and vd.locked and str(vd.interact(p).toast).contains("莫德") and board != null and str(board.on_use.call(p).toast).contains("王室——未结")
+					and main.world.find_child("Scales", true, false) != null, "钥楼大厅：下金库的铁门锁着（钥匙在莫德身上）；清账的黑板、柜台上的天平")
+			"guild_hall":
+				var tide := main.world.find_child("TideChart", true, false) as Examine
+				check(tide != null and str(tide.on_use.call(p).toast).contains("子时退到底") and main.world.find_child("BoatSchedule", true, false) != null, "会馆：潮汐表（子时退到底）、船期板")
+			"dock_tavern":
+				check(main.world.find_child("TavernCounter", true, false) != null and main.world.find_child("Hearth", true, false) != null, "「咸潮」酒馆：柜台上刻的字、火塘")
+			"debt_prison":
+				var book := main.world.find_child("DebtBook", true, false) as Examine
+				check(book != null and str(book.on_use.call(p).toast).contains("约斯特") and str(book.on_use.call(p).toast).contains("转卖钥楼"), "债牢：看门的账上约斯特那一行（担保：王室）、「冬至以前不赎，转卖钥楼」")
+		await free_main(main)
+	# 双钥港那边：四扇门通进来，出来的出生点在门外、不在房子里
+	GameState.pending_load = {"scene": "harbor", "spawn": "quay", "player": {}}
+	var hm := await make_area("harbor")
+	await physics(4)
+	var into := {"KeyHouseDoor": "key_hall", "GuildDoor": "guild_hall", "PrisonDoor": "debt_prison", "TavernDoor": "dock_tavern"}
+	var in_ok := true
+	for n: String in into:
+		var d := hm.world.find_child(n, true, false) as Door
+		if d == null or str(d.interact(hm.player).get("area", "")) != str(into[n]):
+			in_ok = false
+	check(in_ok and hm.world.find_child("Tavern", true, false) != null, "双钥港：钥楼、会馆、债牢、「咸潮」酒馆的门都进得去（酒馆是码头街西边新盖的一栋）")
+	var space := hm.get_world_3d().direct_space_state
+	var out_ok := true
+	for id: String in ["keyhouse_door", "guild_door", "prison_door", "tavern_door"]:
+		var spv: Vector3 = Harbor.spawn_points()[id][0]
+		var q := PhysicsShapeQueryParameters3D.new()
+		var cap := CapsuleShape3D.new()
+		cap.radius = 0.3
+		cap.height = 1.6
+		q.shape = cap
+		q.transform = Transform3D(Basis.IDENTITY, spv + Vector3(0, 1.0, 0))
+		q.collision_mask = 1
+		if not space.intersect_shape(q, 4).is_empty():
+			out_ok = false
+	check(out_ok, "从屋里出来站的四个地方（门外）都是空地，不卡在房子里")
+	await free_main(hm)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func ch4_state(flags := {}, stage := "") -> void:
+	GameState.new_game(740)
+	GameState.chapter = 4
+	GameState.daypart = "day"
+	for k in flags:
+		GameState.set_flag(k, flags[k])
+	if stage != "":
+		GameState.start_quest("ch4_main")
+		GameState.set_stage("ch4_main", stage)
+
+
+func test_ch4people() -> void:
+	# 双钥港的人与开场白（7.4）
+	var r := DialogueRunner.new()
+	check(r.start("harbor", "colwin"), "双钥港的对话文件读得出来（逐条校验在 dialogue 组，读 data/dialogue 下所有文件）")
+	# 一进双钥港：主线开场、城里的人都站在空地上
+	ch4_state()
+	GameState.pending_load = {"scene": "harbor", "spawn": "quay", "player": {}}
+	var main := await make_area("harbor")
+	await frames(3)
+	check(GameState.quest_stage("ch4_main") == "to_keyhouse", "第四章开场：从木栈码头上岸，主线「去钥楼街见科尔温」")
+	var crowd: Array = main.world.find_children("Npc_*", "Npc", true, false)
+	var clear_ok := true
+	for n: Npc in crowd:
+		if not await stands_clear(n):
+			clear_ok = false
+			print("  卡住：", n.name, " ", n.global_position)
+	check(crowd.size() >= 12 and clear_ok, "城里 %d 个人（码头、鱼市、钥楼街），都站在空地上" % crowd.size())
+	await free_main(main)
+	# 钥楼大厅里的人；北境派谁来看伊薇特 / 阿尔里克
+	for heir: String in ["alric", "ivette"]:
+		ch4_state({"valen_heir": heir}, "to_keyhouse")
+		GameState.pending_load = {"scene": "key_hall", "spawn": "front", "player": {}}
+		main = await make_area("key_hall")
+		await frames(3)
+		var envoy := "Npc_north_envoy"
+		var names := ["Npc_colwin", "Npc_silas", "Npc_maud", envoy]
+		var en := main.world.find_child(envoy, true, false) as Npc
+		check(en != null and en.dialogue_id == ("rowena" if heir == "ivette" else "herman"), "北境的使者：%s 当家派的是%s" % [heir, "罗薇娜" if heir == "ivette" else "赫尔曼"])
+		var ok := true
+		for nm: String in names:
+			var n := main.world.find_child(nm, true, false) as Npc
+			if n == null or not await stands_clear(n) or n.dialogue_area != "harbor":
+				ok = false
+				print("  卡住：", nm, " ", n.position if n else "没有", " ", main.world.find_children("Npc_*", "", true, false).map(func(x): return x.name))
+		check(ok, "钥楼大厅：科尔温、塞拉斯、莫德，长凳上北境的人（%s 当家），都站得住" % heir)
+		await free_main(main)
+	for area: String in ["guild_hall", "dock_tavern", "debt_prison"]:
+		ch4_state({"prologue_edric": "release"}, "envoys")
+		GameState.pending_load = {"scene": area, "spawn": "front", "player": {}}
+		main = await make_area(area)
+		await frames(3)
+		var ppl: Array = main.world.find_children("Npc_*", "Npc", true, false)
+		var ok2 := not ppl.is_empty()
+		for n: Npc in ppl:
+			if not await stands_clear(n):
+				ok2 = false
+				print("  卡住：", n.name, " ", n.position)
+		check(ok2 and (area != "guild_hall" or main.world.find_child("Npc_edric", true, false) != null) and (area != "dock_tavern" or main.world.find_child("Npc_odilon", true, false) != null),
+			"%s：%d 个人都站得住（会馆里有埃德里克——序章放走的；酒馆里有奥迪隆）" % [HarborRooms.display_name(area), ppl.size()])
+		await free_main(main)
+	ch4_state({"prologue_edric": "deliver"}, "envoys")
+	check(HarborPeople.room_people("guild_hall").all(func(x): return str(x[0]) != "edric"), "序章没放走埃德里克的：会馆里没有他")
+	# 科尔温：铁冠是押的、冬至清账；主线到 envoys
+	ch4_state({}, "to_keyhouse")
+	check(say_runner("colwin", ["我来问铁冠的事。", "押的？押了什么？", "这些债，谁来还？"], "harbor") == "clear" and GameState.quest_stage("ch4_main") == "envoys" and GameState.has_flag("ch4_colwin_met"),
+		"科尔温：铁冠在金库里、是老王押的，冬至那天谁还清账冠跟谁走；主线到「三家的使者」")
+	ch4_state({"prologue_edric": "extort"}, "to_keyhouse")
+	GameState.add_item("debt_note")
+	check(say_runner("colwin", [], "harbor") == "greet_extort" and say_runner("colwin", ["我来问铁冠的事。", "押的？押了什么？", "（拿出借据）霜渡镇这张，也是其中一张。"], "harbor") == "note" and GameState.has_flag("ch4_note_shown"),
+		"序章勒索过的：科尔温先提那一百二十枚银币；手里有借据的给他看，他认得（是那一大笔里的一张）")
+	for pe: Array in [["extort", "greet_extort"], ["release", "greet_release"], ["deliver", "greet_deliver"], ["", "greet"]]:
+		ch4_state({"prologue_edric": pe[0]} if pe[0] != "" else {}, "envoys")
+		check(say_runner("silas", [], "harbor") == pe[1], "塞拉斯按序章怎么待他开口：%s → %s" % [pe[0] if pe[0] != "" else "（没有序章）", pe[1]])
+	# 三家的使者：都开过价 → way
+	ch4_state({"valen_heir": "ivette", "ch2_fire": "lit"}, "envoys")
+	GameState.add_item("regent_letter")
+	check(say_runner("samuel", ["洛蒙德家开什么价？", "我想想。"], "harbor") == "" and GameState.has_flag("ch4_envoy_lomond"), "洛蒙德家的管家塞缪尔开价：两年的粮、南境的磨坊作保，要冬议上一个位子")
+	check(say_runner("odilon", ["塞弗林家开什么价？", "我手里有一封摄政的信。"], "harbor") == "letter" and GameState.has_flag("ch4_envoy_severin") and GameState.has_flag("ch4_odilon_letter"),
+		"奥迪隆开价：砧山北坑十年的铁、冠戴在摄政的孙子头上；手里有摄政的信的，他要你冬议以前别让它见光")
+	check(not HarborPeople.envoys_heard() and GameState.quest_stage("ch4_main") == "envoys", "还差北境的人：主线不动")
+	var rw := DialogueRunner.new()
+	rw.start("harbor", "rowena")
+	check(str(rw.text()).contains("第十九烽的火还亮着"), "罗薇娜（伊薇特当家）：第十九烽的火还亮着——你送上去的粮")
+	check(say_runner("rowena", ["北境开什么价？", "我想想。"], "harbor") == "" and HarborPeople.envoys_heard() and GameState.quest_stage("ch4_main") == "way", "三家都开过价：主线到「怎么把冠弄出来」")
+	# 渡工之子：科妮莉亚认出你爹；莫德说出那一夜（听过守灵夜的）
+	ch4_state({"origin": "boatman"}, "envoys")
+	var fr := GameState.get_rep("ferrymen")
+	check(say_runner("cornelia", [], "harbor") == "greet_kin" and GameState.has_flag("ch4_guild_kin") and GameState.get_rep("ferrymen") == fr + 5, "渡工之子：科妮莉亚认出你爹（行会 +5）")
+	ch4_state({}, "envoys")
+	var mr := DialogueRunner.new()
+	mr.start("harbor", "maud")
+	var has_night := mr.options().any(func(o): return str(o.text).contains("三年前"))
+	ch4_state({"ch3_vigil": true}, "envoys")
+	check(not has_night and say_runner("maud", ["三年前送冠进来的那一夜，你在吗？"], "harbor") == "night" and GameState.has_flag("ch4_maud_night"), "听过守灵夜的才问得出：莫德说出三年前送冠进金库的那一夜")
+	check(Chapters.wip_note_of(4).contains("冬议") and Chapters.wip_note_of(4).contains("三条支线"), "第四章进场的提示：做到冬议和章末、三条支线（7.8）")
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch4crown() -> void:
+	# 把冠弄出来（7.5）：赎 / 换 / 偷、金库之夜、码头上塞拉斯的人
+	var way_flags := {"ch4_colwin_met": true, "ch4_envoy_severin": true, "ch4_envoy_lomond": true, "ch4_envoy_north": true}
+	ch4_state(way_flags, "way")
+	check(say_runner("colwin", [], "harbor") == "deal", "三家都开过价以后找科尔温：问你替谁开口")
+	check(say_runner("colwin", ["替塞弗林家把账赎了：砧山北坑十年的铁。"], "harbor") == "buy_severin" and str(GameState.get_flag("ch4_crown_way", "")) == "bought"
+		and str(GameState.get_flag("ch4_buyer", "")) == "severin" and GameState.quest_stage("ch4_main") == "to_city" and not GameState.has_item("iron_crown"),
+		"赎：替塞弗林家把账赎了（砧山的铁）——冠由科尔温冬至那天带上冠城；主线到「上冠城」")
+	ch4_state(way_flags, "way")
+	var rr := DialogueRunner.new()
+	rr.start("harbor", "colwin")
+	var north_dc := -1
+	for o in rr.options():
+		if str(o.text).begins_with("替北境开口") and o.has("check"):
+			north_dc = int(o.check.dc)
+	GameState.set_flag("ch4_note_shown")
+	var rr2 := DialogueRunner.new()
+	rr2.start("harbor", "colwin")
+	var north_dc2 := -1
+	for o in rr2.options():
+		if str(o.text).begins_with("替北境开口") and o.has("check"):
+			north_dc2 = int(o.check.dc)
+	check(north_dc == 15 and north_dc2 == 11, "替北境开口：口才 15；给科尔温看过借据的 11（老王押冠押的是北境的柴和粮）")
+	ch4_state(way_flags, "way")
+	GameState.add_item("regent_letter")
+	GameState.add_item("debt_note")
+	check(say_runner("colwin", ["（拿出借据）这张借据，换那顶冠。"], "harbor") == "trade_note" and GameState.has_item("debt_note") and GameState.quest_stage("ch4_main") == "way", "一张借据换不来一顶冠（只值霜渡镇一个渡口）")
+	check(say_runner("colwin", ["（拿出摄政的信）这封信，换那顶冠。", "（接过铁冠）"], "harbor") == "crown_in_hand" and GameState.has_item("iron_crown") and not GameState.has_item("regent_letter")
+		and str(GameState.get_flag("ch4_crown_way", "")) == "traded" and str(GameState.get_flag("ch4_traded", "")) == "letter" and GameState.quest_stage("ch4_main") == "to_city",
+		"换：拿摄政的信换——冠交到你手里（「从现在起，城里每一双眼睛都在找你」）")
+	check(say_runner("colwin", [], "harbor") == "settled", "换完了再找他：两清了，议事厅见")
+	# 偷：红线、钥匙、退潮
+	ch4_state(way_flags.merged({"prologue_edric": "release", "ch4_edric_met": true}), "way")
+	check(say_runner("edric", ["你能弄到钥楼那道水门的钥匙吗？"], "harbor") == "key" and GameState.has_item("sluice_key"), "放走的埃德里克：从行会的柜子里拿出水门的备用钥匙")
+	check(say_runner("cornelia", ["河道图上那条红线是什么？"], "harbor") == "redline" and GameState.has_flag("ch4_redline"), "科妮莉亚：河道图上那条红线是退潮能落脚的地方")
+	ch4_state(way_flags, "way")
+	Daypart.current = "day"
+	check(str(HarborTown.canal_descend().toast).contains("涨着潮"), "白天涨潮：水门淹在水底下")
+	Daypart.current = "night"
+	check(str(HarborTown.canal_descend().toast).contains("陷住"), "夜里退潮，可不知道沟底哪段能落脚：陷进泥里")
+	GameState.set_flag("ch4_redline")
+	GameState.add_item("sluice_key")
+	var res := HarborTown.canal_descend()
+	check(str(res.get("kind", "")) == "travel" and str(res.area) == "key_vault" and str(res.spawn) == "gate" and GameState.has_flag("ch4_vault_entered") and HarborRooms.vault_night(),
+		"退潮、知道红线、有钥匙：从桥头翻下北潮沟，开了水门进金库")
+	Daypart.current = "day"
+	ch4_state(way_flags, "envoys")
+	check(not str(HarborTown.canal_descend().toast).is_empty() and not GameState.has_flag("ch4_vault_entered"), "还没到这一步：桥下只是看看")
+	# 金库之夜：莫德、三个雇佣兵
+	ch4_state(way_flags.merged({"ch4_vault_entered": true, "ch3_vigil": true}), "way")
+	GameState.daypart = "night"
+	GameState.pending_load = {"scene": "key_vault", "spawn": "gate", "player": {}}
+	var main := await make_area("key_vault")
+	await physics(6)
+	var guards: Array = main.get_tree().get_nodes_in_group(Encounter.group_name("vault_guards"))
+	var gate := main.world.find_child("WaterGate", true, false) as Door
+	check(main.world.find_child("Npc_maud_vault", true, false) != null and guards.size() == 3 and gate != null and not gate.locked and gate.to_area == "harbor" and main.player.is_on_floor(),
+		"金库之夜：从水门进来站在地上；莫德在石台边，三个雇佣兵；水门从里面出去（回西边那座桥）")
+	check(str(HarborRooms.crown_box().toast).contains("钥匙在莫德腰上"), "铁笼锁着，钥匙在莫德腰上")
+	check(say_runner("maud_vault", ["伊格纳兹还活着。在坠星院的抄经室里，他三十五年没开口——直到前几天。"], "harbor") == "talked" and GameState.has_item("iron_crown")
+		and str(GameState.get_flag("ch4_vault", "")) == "talked" and str(GameState.get_flag("ch4_crown_way", "")) == "stolen" and GameState.quest_stage("ch4_main") == "to_city",
+		"听过守灵夜的：跟莫德说伊格纳兹还活着——她自己打开铁笼，把铁匣放在你手里（ch4_vault = talked）")
+	check(str(HarborRooms.crown_box().toast).contains("空了"), "拿走以后：石台上空了")
+	await free_main(main)
+	ch4_state(way_flags.merged({"ch4_vault_entered": true}), "way")
+	GameState.daypart = "night"
+	GameState.pending_load = {"scene": "key_vault", "spawn": "gate", "player": {}}
+	main = await make_area("key_vault")
+	await physics(4)
+	var mr := DialogueRunner.new()
+	mr.start("harbor", "maud_vault")
+	check(mr.node_id == "awake" and not mr.options().any(func(o): return str(o.text).contains("伊格纳兹")), "没听过守灵夜的：莫德醒着，没话可说——只剩拔剑")
+	say_runner("maud_vault", ["（拔剑）"], "harbor")
+	main._on_dialogue_closed()
+	await frames(2)
+	check(main.encounter_active() and main.encounter.enemies.size() == 3, "拔剑：三个雇佣兵动手（%d 个）" % (main.encounter.enemies.size() if main.encounter else 0))
+	await free_main(main)
+	ch4_state(way_flags.merged({"ch4_vault_entered": true, "ch4_vault": "caught"}), "way")
+	check(say_runner("maud_vault", [], "harbor") == "after_fight" and GameState.has_flag("ch4_maud_keys") and str(HarborRooms.crown_box().toast).contains("得到：铁冠")
+		and str(GameState.get_flag("ch4_vault", "")) == "caught", "打完了：莫德把钥匙扔在你脚下，打开铁笼拿走（ch4_vault = caught）")
+	ch4_state(way_flags.merged({"ch4_vault_entered": true, "ch4_vault_sneaky": true}), "way")
+	check(say_runner("maud_vault", ["（轻轻把钥匙串从她膝盖上拿起来）"], "harbor") == "" and GameState.has_flag("ch4_maud_keys") and str(HarborRooms.crown_box().toast).contains("得到：铁冠")
+		and str(GameState.get_flag("ch4_vault", "")) == "unseen", "进来时没惊动人：莫德睡着了，拿走钥匙打开铁笼（ch4_vault = unseen）")
+	# 码头上塞拉斯的人
+	for pe: String in ["extort", "deliver"]:
+		ch4_state({"prologue_edric": pe, "ch4_colwin_met": true}, "envoys")
+		GameState.daypart = "day"
+		check(HarborPeople.silas_men_due() == (pe == "extort"), "塞拉斯的人只堵序章勒索过的（%s：%s）" % [pe, "堵" if pe == "extort" else "不堵"])
+	ch4_state({"prologue_edric": "extort", "ch4_colwin_met": true}, "envoys")
+	GameState.add_silver(80)
+	var sv := GameState.silver
+	check(say_runner("silas_man", ["（数出六十枚银币）这些，够塞拉斯先生买一副新手套。"], "harbor") == "paid" and GameState.silver == sv - 60 and str(GameState.get_flag("ch4_thugs", "")) == "paid" and not HarborPeople.silas_men_due(),
+		"付六十枚：他们走了")
+	GameState.daypart = "day"
+	Daypart.current = "day"
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_crown() -> void:
+	# 冠城一角（7.6）：岛城地图、石桥、桥门、斜街、议事厅广场、钟楼；两间室内；坐船上冠城
+	check(Areas.known("crown_city") and Areas.display_name("crown_city") == "冠城" and Areas.pack_chapter("crown_city") == 4 and Areas.chapter_of("crown_city") == 4 and not Areas.is_indoor("crown_city"),
+		"冠城登记了：室外，内容在第四章章节包里")
+	check(CrownCity.textures_ready() and ResourceLoader.exists(CrownCity.FIELD_PATH) and ResourceLoader.exists(CrownCity.PAINT_PATH), "冠城预先算好的高度场、贴图分布在 chapters/ch4/")
+	CrownCity._field = PackedFloat32Array()
+	CrownCity.ensure_field()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 76
+	var worst := 0.0
+	var paint_worst := 0.0
+	for k in 300:
+		var i := rng.randi_range(0, CrownLayout.NX - 1)
+		var j := rng.randi_range(0, CrownLayout.NZ - 1)
+		var x := CrownLayout.BOUNDS.position.x + i * CrownLayout.STEP
+		var z := CrownLayout.BOUNDS.position.y + j * CrownLayout.STEP
+		worst = maxf(worst, absf(CrownCity._field[j * CrownLayout.NX + i] - CrownLayout.height(x, z)))
+		var m := CrownLayout.masks(x, z)
+		var c := CrownCity._paint[j * CrownLayout.NX + i]
+		paint_worst = maxf(paint_worst, maxf(absf(c.r - m.x), maxf(absf(c.g - m.y), absf(c.b - m.z))))
+	check(worst < 0.01 and paint_worst < 0.01 and CrownCity.field_ms < 200.0, "高度场、地面颜色图和布局一致（最大差 %.4f 米 / %.4f；不一致就跑 tests/gen_crown_field.tscn）；读文件 %.0f 毫秒" % [worst, paint_worst, CrownCity.field_ms])
+	# 地形：河西岸、北岸南岸高过河面；两股河是深水；岛从桥门往东上坡，广场比桥门高九米多；斜街不陡
+	var bank := CrownLayout.height(-80.0, 0.0)
+	var river := CrownLayout.height(-53.0, 20.0)
+	var north := CrownLayout.height(20.0, -64.0)
+	var gate := CrownLayout.height(-36.0, 0.0)
+	var square := CrownLayout.height(56.0, -10.0)
+	var steep := 0.0
+	var st: Array = CrownLayout.STREET
+	for k in st.size() - 1:
+		for s in 10:
+			var a: Vector2 = (st[k] as Vector2).lerp(st[k + 1], s / 10.0)
+			var b: Vector2 = (st[k] as Vector2).lerp(st[k + 1], (s + 1) / 10.0)
+			steep = maxf(steep, absf(CrownLayout.height(b.x, b.y) - CrownLayout.height(a.x, a.y)) / a.distance_to(b))
+	check(bank > CrownLayout.RIVER_Y + 1.5 and river < CrownLayout.DEEP_Y and north < CrownLayout.DEEP_Y and gate > CrownLayout.RIVER_Y + 2.5 and square - gate > 9.0 and steep < 0.2,
+		"河西岸 %.1f 米、两股河 %.1f / %.1f 米是深水；桥门里 %.1f 米、广场 %.1f 米（高 %.1f 米）；斜街最陡 %.0f%%" % [bank, river, north, gate, square, square - gate, steep * 100.0])
+	var sp_ok := true
+	for id: String in CrownLayout.SPAWN_XZ:
+		var spv: Vector3 = CrownLayout.spawn_points()[id][0]
+		if spv.y < CrownLayout.RIVER_Y + 2.0:
+			sp_ok = false
+	check(sp_ok and CrownLayout.SPAWN_XZ.has("bridge") and CrownLayout.spawn_points().size() == 6, "6 个出生点都在岸上（河西岸、桥门里、广场、议事厅和小酒馆门外、钟楼门外——8.1）")
+	check(CrownCity.deep_wall_faces().size() > 300 and CrownCity.tide() == CrownLayout.RIVER_Y, "深水边一圈看不见的墙；河面不跟潮走")
+	GameState.new_game(760)
+	GameState.daypart = "day"
+	GameState.chapter = 4
+	GameState.pending_load = {"scene": "crown_city", "spawn": "bridge", "player": {}}
+	var main := await make_area("crown_city")
+	await physics(10)
+	var p: FpController = main.player
+	var sp: Vector3 = CrownCity.spawn_points().bridge[0]
+	check(p.is_on_floor() and p.global_position.distance_to(sp) < 0.4 and GameState.quest_active("ch4_main"), "进冠城：站在河西岸行会的小码头边（%s）；第四章主线开着" % p.global_position)
+	var space := main.get_world_3d().direct_space_state
+	var col_worst := 0.0
+	for k in 60:
+		var x := rng.randf_range(-80.0, 80.0)
+		var z := rng.randf_range(-70.0, 70.0)
+		var rq := PhysicsRayQueryParameters3D.create(Vector3(x, 100.0, z), Vector3(x, -50.0, z), 1)
+		rq.exclude = [(main.world.find_child("CrownSolids", true, false) as StaticBody3D).get_rid()]
+		var hit: Dictionary = space.intersect_ray(rq)
+		col_worst = maxf(col_worst, absf((float(hit.position.y) if not hit.is_empty() else -999.0) - CrownCity.height_at(x, z)))
+	check(col_worst < 0.05, "碰撞（高度图）和地形一致（60 个点最大差 %.3f 米）" % col_worst)
+	var streamer: ChunkStreamer = main.streamer
+	streamer.build_all()
+	check(streamer.chunks.size() == 9 and streamer.is_done() and float(streamer.stats.max_job_ms) < 80.0, "地形 %d 块全搭完，最慢一件活 %.1f 毫秒" % [streamer.chunks.size(), streamer.stats.max_job_ms])
+	var water := main.world.find_child("CrownWater", true, false) as MeshInstance3D
+	check(water != null and absf(water.position.y - CrownLayout.RIVER_Y) < 0.01 and main.world.find_child("FarRiver", true, false) != null and main.world.find_child("FarTerrain", true, false) != null
+		and main.world.find_child("FarCity", true, false) != null, "河面在 %.1f 米；地图外的河、远岸；东边岛上越来越高的城和王宫的影子" % CrownLayout.RIVER_Y)
+	# 石桥：桥面站得住、两边石栏；桥门的门洞走得过，墙挡人
+	var bq := PhysicsRayQueryParameters3D.create(Vector3(-53.0, 20.0, 0.0), Vector3(-53.0, -20.0, 0.0), 1)
+	var bh: Dictionary = space.intersect_ray(bq)
+	var pq := PhysicsRayQueryParameters3D.create(Vector3(-53.0, CrownCity.bridge_y(-53.0) + 0.8, 0.0), Vector3(-53.0, CrownCity.bridge_y(-53.0) + 0.8, 6.0), 1)
+	check(not bh.is_empty() and absf(float(bh.position.y) - CrownCity.bridge_y(-53.0)) < 0.12 and not space.intersect_ray(pq).is_empty(),
+		"石桥当中桥面在 %.2f 米（站得住），两边石栏挡着" % (float(bh.position.y) if not bh.is_empty() else -99.0))
+	var gy := CrownLayout.height(-36.0, 0.0) + 1.0
+	var gq := PhysicsRayQueryParameters3D.create(Vector3(-46.0, gy, 0.0), Vector3(-34.0, gy, 0.0), 1)
+	var wq := PhysicsRayQueryParameters3D.create(Vector3(-46.0, gy, 20.0), Vector3(-34.0, gy, 20.0), 1)
+	check(space.intersect_ray(gq).is_empty() and not space.intersect_ray(wq).is_empty(), "桥门的门洞走得过去；旁边的城墙挡人")
+	var houses := CrownTown.houses()
+	var hs_ok := true
+	for h: Dictionary in houses:
+		for q: Vector2 in HarborTown.footprint(h):
+			if CrownLayout.street_d(q) < CrownLayout.STREET_HALF - 0.1 or CrownLayout.island_d(q) < 3.0 or CrownLayout.SQUARE.has_point(q):
+				hs_ok = false
+	check(houses.size() >= 60 and hs_ok, "斜街、小巷两边摆了 %d 栋窄房子，都不压在街、广场、石岸上" % houses.size())
+	var blocks: Array = main.world.find_children("CrownHouses_*", "Node3D", true, false)
+	check(blocks.size() >= 5 and blocks.all(func(b): return b.is_in_group("house") and b.get_node_or_null("Mesh") != null)
+		and ["CouncilHall", "BellTower", "CityWall", "StoneBridge", "Bakery", "MatildaInn"].all(func(n): return main.world.find_child(n, true, false) != null),
+		"房子按块合成网格（%d 块）；议事厅、钟楼、城墙和桥门、石桥、面包坊、玛蒂尔达的小酒馆都搭了" % blocks.size())
+	check(CrownTown.wash_lines().size() >= 6 and not main.world.find_children("Washing_*", "MeshInstance3D", true, false).is_empty(), "斜街上空 %d 道晾衣绳" % CrownTown.wash_lines().size())
+	var mesh: MeshInstance3D = blocks[0].get_node("Mesh")
+	check(mesh.mesh.get_surface_count() <= 12, "一块房子只有 %d 种材质（= 几次绘制）" % mesh.mesh.get_surface_count())
+	var cd := main.world.find_child("CouncilDoor", true, false) as Door
+	var md := main.world.find_child("MatildaDoor", true, false) as Door
+	var signs := ["BankSign", "GateSign"].all(func(n): return main.world.find_child(n, true, false) is RoadSign)
+	var notice := main.world.find_child("CouncilNotice", true, false) as Examine
+	check(cd != null and str(cd.interact(p).get("area", "")) == "council_hall" and md != null and str(md.interact(p).get("area", "")) == "matilda_inn"
+		and (main.world.find_child("BakeryDoor", true, false) as Door).locked and (main.world.find_child("BellDoor", true, false) as Door).locked and signs
+		and notice != null and str(notice.on_use.call(p).toast).contains("冬至日辰时") and GameState.has_flag("ch4_council_notice"),
+		"议事厅、玛蒂尔达的小酒馆进得去；面包坊、钟楼的门锁着；河西岸、桥门里的路牌；钟楼脚下冬议的告示")
+	var out_ok := true
+	for id: String in ["council_door", "matilda_door", "gate", "square"]:
+		var spv: Vector3 = CrownCity.spawn_points()[id][0]
+		var q := PhysicsShapeQueryParameters3D.new()
+		var cap := CapsuleShape3D.new()
+		cap.radius = 0.3
+		cap.height = 1.6
+		q.shape = cap
+		q.transform = Transform3D(Basis.IDENTITY, spv + Vector3(0, 1.0, 0))
+		q.collision_mask = 1
+		if not space.intersect_shape(q, 4).is_empty():
+			out_ok = false
+	check(out_ok, "门外、桥门里、广场的出生点都是空地，不卡在房子里")
+	var kq := PhysicsRayQueryParameters3D.create(Vector3(30.0, CrownLayout.height(30.0, -40.0) + 0.6, -40.0), Vector3(30.0, CrownLayout.height(30.0, -40.0) + 0.6, -70.0), 1)
+	check(CrownTown.kerbs().size() > 80 and not space.intersect_ray(kq).is_empty(), "岛南北两边石岸上沿一圈栏石（%d 段），走不下河" % CrownTown.kerbs().size())
+	var env: Environment = main.env
+	check(env.background_mode == Environment.BG_SKY and Daypart.preset("crown_city", "day").fog_end == Daypart.preset("harbor", "day").fog_end and Cold.COLD_AREAS.get("crown_city", 0.0) > 0.0,
+		"天空是阴云照片；时段预设用双钥港那一套；湿冷")
+	var spec := AreaMap.spec("crown_city")
+	var labels := []
+	for sh: Dictionary in spec.get("shapes", []):
+		if sh.has("label"):
+			labels.append(str(sh.label))
+	check(["灰鲸河", "石桥", "议事厅", "钟楼", "议事厅广场", "玛蒂尔达的小酒馆", "面包坊", "桥门"].all(func(l): return labels.has(l)), "本地地图：%s" % "、".join(labels))
+	var views_ok := Areas.views("crown_city").size() == CrownLayout.VIEW_NAMES.size()
+	for v: Array in Areas.views("crown_city"):
+		var vp: Vector3 = v[0]
+		if vp.y < CrownLayout.RIVER_Y + 2.0:
+			views_ok = false
+	check(views_ok, "%d 个固定机位" % CrownLayout.VIEW_NAMES.size())
+	await free_main(main)
+	# 两间室内
+	for area: String in ["council_hall", "matilda_inn"]:                      # 钟楼底下的档案馆是第五章的（8.1，ch5archive 组）
+		check(Areas.known(area) and Areas.is_indoor(area) and Areas.chapter_of(area) == 4, "%s 登记了（室内、第四章）" % Areas.display_name(area))
+		GameState.pending_load = {"scene": area, "spawn": "front", "player": {}}
+		var rm := await make_area(area)
+		await physics(8)
+		var rp: FpController = rm.player
+		check(rp.is_on_floor() and rp.global_position.distance_to(HarborRooms.spawns(area).front[0]) < 0.4, "进了%s：站在门里头的地上" % Areas.display_name(area))
+		var exit := rm.world.find_child("Exit", true, false) as Door
+		var r := exit.interact(rp) if exit != null else {}
+		check(str(r.get("area", "")) == "crown_city" and Areas.spawn("crown_city", str(r.get("spawn", ""))) != null, "%s 的门通回冠城（%s）" % [Areas.display_name(area), r.get("spawn", "")])
+		var rs := AreaMap.spec(area)
+		check(rs.get("shapes", []).size() >= 3 and rs.exits.size() == 1 and str(rs.exits[0].to) == "crown_city", "%s 的本地地图：陈设、出口回冠城" % Areas.display_name(area))
+		var people_ok := true
+		for n in rm.world.find_children("Npc_*", "Npc", true, false):
+			if not await stands_clear(n):
+				people_ok = false
+		match area:
+			"council_hall":
+				var th := rm.world.find_child("Throne", true, false) as Examine
+				check(th != null and str(th.on_use.call(rp).toast).contains("凹槽") and GameState.has_flag("ch4_throne_seen") and rm.world.find_child("Npc_council_steward", true, false) != null and people_ok,
+					"议事厅：空王座（椅背顶上冠形的凹槽）、五张高背椅；差役站在空地上")
+			"matilda_inn":
+				var sg := rm.world.find_child("OldSign", true, false) as Examine
+				check(sg != null and str(sg.on_use.call(rp).toast).contains("倒钩鱼") and rm.world.find_child("Npc_matilda", true, false) != null and people_ok,
+					"玛蒂尔达的小酒馆：墙上霜渡镇「倒钩鱼」的旧招牌；玛蒂尔达在柜台后面")
+		await free_main(rm)
+	# 旅行：冠的事定了才走得了；到了是天亮
+	ch4_state({}, "way")
+	var r0 := Travel.check(4, "harbor_quay", "crown_city", true)
+	ch4_state({}, "to_city")
+	var r1 := Travel.check(4, "harbor_quay", "crown_city", true)
+	check(not r0.ok and str(r0.why).contains("冠的事定了") and r1.ok and str((r1.route as Dictionary).daypart) == "dawn" and Travel.check(4, "crown_city", "harbor_quay", true).ok
+		and not Travel.check(4, "keyhouse_street", "crown_city", true).ok and Travel.validate().is_empty(),
+		"坐行会的船上冠城：冠的事没定走不了（%s），定了就走，天亮到；回双钥港随时走" % r0.why)
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_crownpeople() -> void:
+	# 冠城的人（7.6）：斜街上的人、排队买面包的、玛蒂尔达；冠在你手里时斜街上堵你的人
+	ch4_state({"ch4_crown_way": "bought"}, "to_city")
+	GameState.pending_load = {"scene": "crown_city", "spawn": "bridge", "player": {}}
+	var main := await make_area("crown_city")
+	await physics(6)
+	check(GameState.quest_stage("ch4_main") == "in_city", "到了冠城：主线到「找玛蒂尔达」")
+	var crowd: Array = main.world.find_children("Npc_*", "Npc", true, false)
+	var clear_ok := true
+	var bad := ""
+	for n in crowd:
+		if not await stands_clear(n):
+			clear_ok = false
+			bad = n.name
+	check(crowd.size() >= 16 and crowd.filter(func(n): return str(n.name).begins_with("Npc_queue")).size() == 7 and clear_ok and main.world.find_children("Npc_ambusher*", "Npc", true, false).is_empty(),
+		"城里 %d 个人都站在空地上（%s），面包坊门口排着七个人；冠不在你手里，斜街上没人堵你" % [crowd.size(), bad if bad != "" else "没有卡住的"])
+	await free_main(main)
+	# 玛蒂尔达：椅子、昨夜的酒 → 主线到 council
+	check(say_runner("matilda", ["冬议上谁坐哪张椅子？"], "crown") == "seats" and GameState.has_flag("ch4_seats_heard") and not CrownPeople.matilda_heard(), "玛蒂尔达说了冬议上谁坐哪张椅子")
+	check(say_runner("matilda", ["昨夜谁跟谁喝过酒？"], "crown") == "drinks" and CrownPeople.matilda_heard() and GameState.quest_stage("ch4_main") == "council", "又说了昨夜谁跟谁喝过酒：主线到「上议事厅」")
+	GameState.set_flag("valen_heir", "ivette")
+	var r := DialogueRunner.new()
+	r.start("crown", "matilda")
+	check(r.node_id == "again", "再找她：「椅子还是那五张」")
+	# 冠在你手里：斜街上堵你（三个；无旗者收编过的两个）
+	for ally: bool in [false, true]:
+		ch4_state({"ch4_crown_way": "stolen", "ch1_outlaws": "ally" if ally else "driven"}, "to_city")
+		GameState.add_item("iron_crown")
+		GameState.pending_load = {"scene": "crown_city", "spawn": "gate", "player": {}}
+		var m2 := await make_area("crown_city")
+		await physics(6)
+		var men: Array = m2.world.find_children("Npc_ambusher*", "Npc", true, false)
+		var grp := get_tree().get_nodes_in_group(Encounter.group_name("crown_ambush"))
+		var tr := m2.world.find_child("AmbushTrigger", true, false) as StreetTrigger
+		check(men.size() == (2 if ally else 3) and grp.size() == men.size() and tr != null and (m2.world.find_child("Npc_outlaw", true, false) != null) == ally,
+			"冠在你手里进冠城：斜街小巷口 %d 个蒙着脸的人（%s）" % [men.size(), "无旗者收编过的：巷子里有人拽回去一个、斜街上有个认得你的人" if ally else "三个"])
+		if not ally:
+			var p2: FpController = m2.player
+			p2.global_position = tr.global_position + Vector3(0, 0.1, 0)
+			await physics(6)
+			check(tr.fired and m2.dialogue.visible, "走到巷口前面那段斜街上：他们出来堵你（对话自己开了）")
+			m2.dialogue.close()
+		await free_main(m2)
+	check(say_runner("ambush", ["冠在冬议上等它的主人。你们的主人想要，叫他自己去议事厅开口。"], "crown") in ["talked", "no_talk"], "跟他们说（口才 15）：说走了或者没说动")
+	ch4_state({"ch4_crown_way": "stolen"}, "in_city")
+	GameState.add_item("iron_crown")
+	GameState.set_flag("ch4_ambush", "talked")
+	check(not CrownPeople.ambush_due(), "了结过的（说走了 / 打过了）不再堵你")
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch4side() -> void:
+	# 第四章支线（7.7）：灯塔的火、债牢里的人、玛蒂尔达的人
+	# 灯塔：摆渡的船到沙嘴；老蒂博；钥楼付油钱 / 自己出钱 / 盐仓「借」两桶；亮了以后黄昏涨潮也进得了潮沟
+	ch4_state({"ch4_colwin_met": true}, "envoys")
+	GameState.pending_load = {"scene": "harbor", "spawn": "quay", "player": {}}
+	var main := await make_area("harbor")
+	await physics(6)
+	var ferry := main.world.find_child("Npc_ferry", true, false) as Npc
+	var oil := main.world.find_child("OilBarrels", true, false) as Examine
+	check(ferry != null and ferry.dialogue_id == "ferry" and await stands_clear(ferry) and oil != null and str(oil.on_use.call(main.player).toast).contains("双钥的印") and not GameState.has_item("lamp_oil"),
+		"木栈码头上摆渡的船工（站在栈桥上）；盐仓边的油桶没接灯塔的事时只是看看")
+	check(say_runner("ferry", ["去沙嘴灯塔。"], "harbor") == "" and GameState.pending_goto.get("spawn", "") == "lighthouse", "坐摆渡的船去沙嘴")
+	GameState.pending_goto = {}
+	await free_main(main)
+	GameState.pending_load = {"scene": "harbor", "spawn": "lighthouse", "player": {}}
+	main = await make_area("harbor")
+	await physics(8)
+	var p: FpController = main.player
+	var tb := main.world.find_child("Npc_thibault", true, false) as Npc
+	var back := main.world.find_child("Npc_ferry_back", true, false) as Npc
+	check(p.is_on_floor() and p.global_position.distance_to(Harbor.spawn_points().lighthouse[0]) < 0.4 and tb != null and await stands_clear(tb) and back != null and await stands_clear(back),
+		"到了沙嘴尽头：老蒂博蹲在灯塔门口，摆渡的船工等着送你回去")
+	check(say_runner("thibault", ["灯要多少油？", "我去钥楼替你要油钱。"], "harbor") == "" and GameState.quest_stage("ch4_lighthouse") == "ask", "接了「灯塔的火」")
+	GameState.checks["ch4_oil_talk"] = false
+	check(say_runner("colwin", [], "harbor") == "again" and say_runner("colwin", ["灯塔三个月没付油钱。昨夜那条粮船，就是看不见灯。"], "harbor") == "oil_no" and not GameState.has_flag("ch4_oil_paid"),
+		"跟科尔温要油钱没说动：「船沉了，账就清了」")
+	GameState.checks["ch4_oil_steal"] = false
+	var cw := GameState.get_rep("caswell")
+	var r := HarborTown.oil_barrels()
+	check(GameState.has_item("lamp_oil") and GameState.has_flag("ch4_oil_seen") and GameState.get_rep("caswell") == cw - 5 and str(r.toast).contains("钥楼会记这一笔"),
+		"从盐仓「借」两桶，被看见了：卡斯韦尔家 −5，油照样到手")
+	var lamp := main.world.find_child("LighthouseEmber", true, false) as Tavern.FireLight
+	var dim := lamp.omni_range
+	var fr := GameState.get_rep("ferrymen")
+	check(say_runner("thibault", ["（放下两桶灯油）"], "harbor") == "lit" and str(GameState.get_flag("ch4_lighthouse", "")) == "lit" and GameState.quest_done("ch4_lighthouse") and not GameState.has_item("lamp_oil")
+		and GameState.get_rep("ferrymen") == fr + 5, "把油交给老蒂博：灯塔亮了（行会 +5）")
+	main._ch3_sides_heard()
+	check(lamp.omni_range > dim * 2.0 and HarborTown.lighthouse_lit(), "灯塔顶上的火当场烧旺（光照得远）")
+	await free_main(main)
+	ch4_state({"ch4_lighthouse": "lit"}, "way")
+	GameState.daypart = "dusk"
+	Daypart.current = "dusk"
+	var cd := HarborTown.canal_descend()
+	check(str(cd.get("kind", "")) == "" and str(cd.toast).contains("铁栅"), "灯塔亮了、黄昏：行会的船肯撑进潮沟，但水门的锁还是要钥匙或撬开")
+	GameState.add_item("sluice_key")
+	cd = HarborTown.canal_descend()
+	check(str(cd.get("kind", "")) == "travel" and str(cd.toast).contains("小船") and not Harbor.low_tide(), "灯塔亮了：黄昏涨着潮，不知道红线也能坐船到水门")
+	ch4_state({}, "way")
+	GameState.add_item("sluice_key")
+	GameState.daypart = "dusk"
+	check(str(HarborTown.canal_descend().toast).contains("涨着潮"), "灯塔没亮：黄昏还是下不去")
+	ch4_state({}, "to_city")
+	CrownPeople.arrived()
+	check(str(GameState.get_flag("ch4_lighthouse", "")) == "dark" and HarborTown.second_wreck(), "上冠城时灯塔还没亮：记 dark，码头外又多一条沉船")
+	GameState.daypart = "day"
+	Daypart.current = "day"
+	# 债牢里的人
+	ch4_state({"ch4_colwin_met": true, "ch2_roll": "served"}, "envoys")
+	var jr := DialogueRunner.new()
+	jr.start("harbor", "jost")
+	check(jr.text().contains("「补」字"), "第十九烽名册上补过名的：约斯特认得你（他爹是烽誓团的人）")
+	check(say_runner("jost", ["我去跟科尔温说说老王的担保。"], "harbor") == "go_colwin" and GameState.quest_active("ch4_debtor"), "接了「债牢里的人」")
+	GameState.checks["ch4_jost_press"] = true
+	check(say_runner("colwin", ["债牢里的约斯特，担保人是老王。老王的担保作废了——北境那些盖着王印的债，也跟着作废吗？"], "harbor") == "jost_yes" and str(GameState.get_flag("ch4_debtor", "")) == "pressed" and GameState.quest_done("ch4_debtor"),
+		"拿老王的担保压科尔温（口才 14）：约斯特的账记回王室，放人")
+	check(HarborPeople.room_people("debt_prison").filter(func(x): return str(x[0]) == "jost").is_empty(), "放出来了：牢里没有约斯特")
+	ch4_state({"ch4_colwin_met": true}, "envoys")
+	GameState.add_silver(50)
+	var sv := GameState.silver
+	check(say_runner("jost", ["（数出四十二枚银币，放在看门的桌上）"], "harbor") == "paid" and GameState.silver == sv - 42 and str(GameState.get_flag("ch4_debtor", "")) == "paid", "替他还了四十二枚")
+	ch4_state({"ch4_colwin_met": true}, "envoys")
+	say_runner("jost", ["告辞。"], "harbor")
+	GameState.daypart = "day"
+	check(str(HarborRooms.cell_lock().toast).contains("夜里"), "白天撬不了：看门的盯着")
+	GameState.daypart = "night"
+	GameState.checks["ch4_jost_pick"] = true
+	var cl := HarborRooms.cell_lock()
+	check(str(cl.get("kind", "")) == "travel" and str(GameState.get_flag("ch4_debtor", "")) == "broken" and GameState.quest_done("ch4_debtor"), "夜里撬开牢门（潜行 14）：约斯特跟着你溜出去")
+	GameState.daypart = "day"
+	# 玛蒂尔达的人
+	ch4_state({"ch4_matilda_met": true}, "in_city")
+	check(say_runner("matilda", ["你在等谁？"], "crown") == "errand" and GameState.quest_stage("ch4_matilda") == "bakery", "玛蒂尔达托你找米洛")
+	check(say_runner("baker", [], "crown") == "milo" and GameState.quest_stage("ch4_matilda") == "lane", "面包师：米洛钻进了广场那头往北的小巷")
+	GameState.pending_load = {"scene": "crown_city", "spawn": "square", "player": {}}
+	main = await make_area("crown_city")
+	await physics(6)
+	var milo := main.world.find_child("Npc_milo", true, false) as Npc
+	var baker := main.world.find_child("Npc_baker", true, false) as Npc
+	check(milo != null and await stands_clear(milo) and baker != null and await stands_clear(baker), "米洛缩在小巷尽头的门洞里；面包师站在面包坊门口（都站在空地上）")
+	await free_main(main)
+	check(say_runner("milo", ["（蹲下来）你饿不饿？", "玛蒂尔达让我来找你。她在等你。", "走，回酒馆。"], "crown") == "" and GameState.quest_stage("ch4_matilda") == "back", "米洛只肯跟玛蒂尔达说")
+	check(say_runner("matilda", ["米洛找到了。"], "crown") == "found" and str(GameState.get_flag("ch4_regent_visitor", "")) == "lucien" and GameState.quest_done("ch4_matilda")
+		and CrownPeople.room_people("matilda_inn").any(func(x): return str(x[0]) == "milo_inn") and CrownPeople.talkers().size() == 1,
+		"玛蒂尔达：昨夜大主祭卢西安的车停在摄政宅子的后门；米洛回了酒馆")
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch4council() -> void:
+	# 冬议与章末（7.8）：多人在场的对话、罪证当众拿出来、铁冠交给谁、借据被念出来、黄昏钟、「第五章 · 冬井」
+	ch4_state({"ch4_crown_way": "stolen", "ch4_vault": "talked", "prologue_edric": "release", "valen_heir": "ivette", "ch2_fire": "lit", "ch4_debtor": "paid", "ch4_regent_visitor": "lucien", "ch3_vial_heard": true}, "council")
+	GameState.add_item("iron_crown")
+	GameState.add_item("regent_letter")
+	GameState.pending_load = {"scene": "council_hall", "spawn": "front", "player": {}}
+	var main := await make_area("council_hall")
+	await physics(8)
+	var people: Array = main.world.find_children("Npc_council_*", "Npc", true, false)
+	var clear_ok := true
+	var bad := ""
+	for n in people:
+		if not await stands_clear(n):
+			clear_ok = false
+			bad = n.name
+	var names := people.map(func(n): return str(n.display_name))
+	check(people.size() == 10 and clear_ok and names.has("贝尔特兰·塞弗林") and names.has("伊薇特") and names.has("戈兰·厄尔德") and names.has("大主祭卢西安") and names.has("埃德里克") and names.has("约斯特"),
+		"冬议：五张椅子前站着五家的人、王座旁边是大主祭、科尔温身后是塞拉斯；旁听席上埃德里克、约斯特；差役（%d 人，%s）" % [people.size(), bad if bad != "" else "都站在空地上"])
+	check(str(GameState.get_flag("ch4_debt_reader", "")) == "edric", "序章放走了埃德里克：借据由他念")
+	var tr := main.world.find_child("CouncilTrigger", true, false) as StreetTrigger
+	main.player.global_position = tr.global_position + Vector3(0, 0.1, 0)
+	await physics(6)
+	check(tr.fired and main.dialogue.visible, "走到栏杆跟前：冬议开始了（对话自己开）")
+	main.dialogue.close()
+	var r := DialogueRunner.new()
+	r.start("crown", "council")
+	r.choose(0)
+	check(r.text().contains("北边的火还亮着"), "第十九烽的火亮着：戈兰·厄尔德替你说话")
+	r.choose(0)
+	r.choose(0)
+	check(r.text().contains("北境替王国守了三十二年烽燧"), "伊薇特当家：瓦伦家这一句")
+	r.choose(0)
+	check(r.text().contains("冠是偷出来的"), "偷的：科尔温当众念「冠是偷出来的」")
+	await free_main(main)
+	var picks := ["（……）", "（……）", "（……）", "（……）", "（拿出摄政的信）「老王最后一个冬天的药，照旧由砧山送去。」——这是摄政的字。", "（……）"]
+	check(say_runner("council", picks, "crown") == "crown" and GameState.has_flag("ch4_ev_severin") and not GameState.has_item("regent_letter"), "当众拿出摄政的信：塞弗林家不说话了")
+	var r2 := DialogueRunner.new()
+	r2.start("crown", "council")
+	for k in 4:
+		r2.choose(0)
+	var opts := r2.options().map(func(o): return str(o.text))
+	check(not opts.has("（把铁匣放在贝尔特兰面前）交给塞弗林家。") and opts.has("（把铁匣递给大主祭）它该回到坠星的地方。") and opts.has("（把铁匣揣回怀里）冠留在我这儿。"), "闭了嘴的塞弗林家拿不到冠；能交给瓦伦家、大主祭、钥楼，或者自己留着")
+	GameState.set_flag("ch4_ev_severin", false)
+	GameState.flags.erase("ch4_ev_severin")
+	GameState.add_item("regent_letter")
+	picks.append_array(["（把铁匣递给大主祭）它该回到坠星的地方。", "（议事厅快散的时候，有人站了起来）", "（……）", "（……）"])
+	check(say_runner("council", picks, "crown") == "" and str(GameState.get_flag("crown_holder", "")) == "church" and not GameState.has_item("iron_crown") and GameState.quest_done("ch4_main")
+		and GameState.pending_ending == "ch4" and GameState.pending_daypart == "dusk" and GameState.has_flag("ch4_note_read"), "交给大主祭；埃德里克念借据；主线完、入黄昏、出章末")
+	CrownPeople.council_settle()
+	check(str(GameState.get_flag("ch4_evidence_used", "")) == "severin", "当众拿出来的罪证记下了（ch4_evidence_used = severin）")
+	# 章末画面
+	GameState.pending_ending = ""
+	GameState.pending_daypart = ""
+	GameState.pending_load = {"scene": "council_hall", "spawn": "front", "player": {}}
+	main = await make_area("council_hall")
+	await physics(4)
+	check(not main.world.find_children("Npc_council_*", "Npc", true, false).is_empty(), "黄昏钟响以前，冬议的人还在")
+	main.ch3_end_after = 0.3
+	main._ch4_bell()
+	await seconds(0.8)
+	var ep: EndingPanel = main.ending_panel
+	check(GameState.has_flag("ch4_done") and ep.visible and ep.title.text == "第五章 · 冬井" and ep.header.text.contains("双钥港的账") and ep.recap.text.contains("大主祭卢西安") and ep.recap.text.contains("埃德里克")
+		and ep.recap.text.contains("约斯特") and ep.seal.text.contains("大主祭的车") and ep.seal.text.contains("誓瓶") and not ep.continue_btn.visible,
+		"黄昏钟以后：「第四章「双钥港的账」完 / 第五章 · 冬井」，回顾按旗标写，钩子接冬井；第五章还没有，不出「继续」")
+	ep.close()
+	await free_main(main)
+	check(CrownPeople.room_people("council_hall").size() == 1, "第四章完了：议事厅里只剩差役")
+	# 赎的：科尔温按账交；拿出那一家的罪证，冠回钥楼
+	ch4_state({"ch4_crown_way": "bought", "ch4_buyer": "north", "prologue_edric": "deliver"}, "council")
+	CrownPeople.council_open()
+	check(str(GameState.get_flag("ch4_debt_reader", "")) == "valen" and say_runner("council", ["（……）", "（……）", "（……）", "（……）", "（看着科尔温把铁匣交出去）", "（议事厅快散的时候，有人站了起来）"], "crown") == "note_valen"
+		and str(GameState.get_flag("crown_holder", "")) == "valen", "替北境赎的：科尔温把冠交给瓦伦家；借据由瓦伦家的人念")
+	ch4_state({"ch4_crown_way": "bought", "ch4_buyer": "severin"}, "council")
+	GameState.add_item("regent_letter")
+	check(say_runner("council", ["（……）", "（……）", "（……）", "（……）", "（拿出摄政的信）「老王最后一个冬天的药，照旧由砧山送去。」——这是摄政的字。", "（……）", "（看着科尔温）"], "crown") == "hand_back"
+		and str(GameState.get_flag("crown_holder", "")) == "caswell", "替塞弗林家赎的、却当众拿出摄政的信：科尔温「账平了，人不平」，冠回钥楼")
+	# 换的、借据在身上：自己留着冠、自己念借据
+	ch4_state({"ch4_crown_way": "traded", "ch4_traded": "ledger"}, "council")
+	GameState.add_item("iron_crown")
+	GameState.add_item("debt_note")
+	CrownPeople.council_open()
+	check(str(GameState.get_flag("ch4_debt_reader", "")) == "you" and say_runner("council", ["（……）", "（……）", "（……）", "（……）", "（把铁匣揣回怀里）冠留在我这儿。", "（站起来，从怀里拿出那张借据）"], "crown") == "note_you"
+		and str(GameState.get_flag("crown_holder", "")) == "kept" and GameState.has_item("iron_crown"), "冠留在自己怀里；借据还在你身上：你自己站起来念")
+	GameState.chapter = 0
+	GameState.pending_load = {}
+	GameState.pending_ending = ""
+	GameState.pending_daypart = ""
+
+
+func test_ch5archive() -> void:
+	# 第五章（8.1）：钟楼底下的教会档案馆、守卷的修士、封誓残卷
+	check(Chapters.known(5) and Chapters.name_of(5) == "第五章 · 冬井" and Chapters.pack_of(5) == "ch4" and Chapters.wip_of(5) != "" and Areas.known("church_archive") and Areas.is_indoor("church_archive") and Areas.chapter_of("church_archive") == 5,
+		"第五章登记了（冠城那几处在第四章的包里）；钟楼底下的档案馆是室内")
+	ch4_state({"ch4_done": true, "crown_holder": "valen", "valen_heir": "ivette", "ch4_regent_visitor": "lucien", "ch4_ambush": "talked"})
+	GameState.pending_load = {"scene": "crown_city", "spawn": "bell_door", "player": {}}
+	var main := await make_area("crown_city")
+	await physics(8)
+	var p: FpController = main.player
+	var luc := main.world.find_child("Npc_lucien", true, false) as Npc
+	var door := main.world.find_child("BellDoor", true, false) as Door
+	check(GameState.quest_stage("ch5_main") == "to_bell" and p.is_on_floor() and luc != null and await stands_clear(luc) and door.locked, "冬议散了：主线「冬井」开始，大主祭在钟楼门口（站在空地上），钟楼的门还锁着")
+	check(say_runner("lucien", ["冬议前一夜，你去摄政的宅子做什么？", "冬天为什么没有退？", "走。"], "crown") == "" and GameState.has_flag("ch5_regent_asked") and GameState.quest_stage("ch5_main") == "to_archive", "问大主祭那一夜去摄政宅子做什么；他开了钟楼的门")
+	main._ch3_sides_heard()
+	var r := door.interact(p)
+	check(not door.locked and str(r.get("area", "")) == "church_archive" and door.verb_now() == "下去", "钟楼的门当场开了：下去就是档案馆")
+	await free_main(main)
+	GameState.pending_load = {"scene": "church_archive", "spawn": "front", "player": {}}
+	main = await make_area("church_archive")
+	await physics(8)
+	p = main.player
+	var people: Array = main.world.find_children("Npc_*", "Npc", true, false)
+	var ok := true
+	for n in people:
+		if not await stands_clear(n):
+			ok = false
+	var exit := main.world.find_child("Exit", true, false) as Door
+	var ex: Dictionary = exit.interact(p)
+	check(p.is_on_floor() and people.size() == 4 and ok and str(GameState.get_flag("ch5_wardens", "")) == "let" and str(ex.area) == "crown_city" and str(ex.spawn) == "bell_door",
+		"下了石阶：守卷的西缪、两个修士、大主祭都站在空地上；斜街上没打过，修士不拦你；石阶上去回钟楼门口")
+	var grate := main.world.find_child("UnderGrate", true, false) as Examine
+	var chest := main.world.find_child("ScrollChest", true, false) as Examine
+	check(grate != null and str(grate.on_use.call(p).toast).contains("冠形的凹槽") and str(chest.on_use.call(p).toast).contains("钥匙在大主祭身上"), "北墙的铁栅门（冠形的凹槽）；铁箱锁着")
+	await free_main(main)
+	check(say_runner("simeon", [], "crown") == "greet_talked", "斜街上说走了的：西缪「那一句话，大主祭听了」")
+	check(say_runner("lucien_archive", ["（接过残卷，就着蜡烛读）", "「持冠者」——不一定是王？", "斜街上蒙着脸堵我的人，是你的？"], "crown") == "ambush" and GameState.has_flag("ch5_archive") and GameState.has_flag("ch5_ambush_known")
+		and GameState.quest_stage("ch5_main") == "north", "大主祭打开铁箱：封誓残卷；斜街上的人是他的；主线到「北上」")
+	var r2 := DialogueRunner.new()
+	GameState.set_flag("ch5_archive", false)
+	GameState.flags.erase("ch5_archive")
+	r2.start("crown", "lucien_archive")
+	r2.choose(0)
+	r2.choose(0)
+	check(r2.text().contains("伊薇特会去"), "冠在瓦伦家、伊薇特当家：她跟你去")
+	check(CrownRooms.SCROLL_TEXT.contains("留名于冰"), "残卷原文：留名于冰、每冬还井")
+	# 斜街上打过、冠不在教会：西缪拦你
+	ch4_state({"ch4_done": true, "crown_holder": "kept", "ch4_ambush": "beaten"})
+	CrownPeople.ch5_begin()
+	CrownPeople.wardens_settle()
+	check(GameState.has_flag("ch5_simeon_block") and str(GameState.get_flag("ch5_wardens", "")) == "" and say_runner("lucien_archive", [], "crown") == "blocked", "斜街上打过的：西缪胳膊上缠着布，挡着铁箱；大主祭也拦不住")
+	GameState.checks["ch5_simeon_talk"] = true
+	check(say_runner("simeon", ["大主祭要冠回冬井，我要冬天退。我们要的是一回事。"], "crown") == "talked" and str(GameState.get_flag("ch5_wardens", "")) == "talked" and say_runner("lucien_archive", [], "crown") == "greet",
+		"说开了（口才 14）：他让开，大主祭打开铁箱")
+	ch4_state({"ch4_done": true, "ch4_ambush": "beaten"})
+	CrownPeople.ch5_begin()
+	CrownPeople.wardens_settle()
+	GameState.pending_load = {"scene": "church_archive", "spawn": "front", "player": {}}
+	main = await make_area("church_archive")
+	await physics(6)
+	var grp := get_tree().get_nodes_in_group(Encounter.group_name("wardens"))
+	check(str(GameState.get_flag("crown_holder", "")) == "kept" and GameState.has_item("iron_crown") and grp.size() == 3, "没有第四章存档的：冠在你手里；三个修士是一组（拔剑就动手）")
+	await free_main(main)
+	ch4_state({"ch4_done": true, "crown_holder": "church", "ch4_ambush": "beaten"})
+	CrownPeople.ch5_begin()
+	CrownPeople.wardens_settle()
+	check(str(GameState.get_flag("ch5_wardens", "")) == "let", "冠交给了教会的：打过也不拦")
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch5north() -> void:
+	# 第五章（8.2）：北上——旅行地图、余火高地上的诺伯特和誓瓶、井边更大的一圈、同行的人、井口的石盖
+	ch4_state({"ch4_done": true, "crown_holder": "valen", "valen_heir": "ivette", "ch2_fire": "lit", "ch5_archive": true})
+	CrownPeople.ch5_begin()
+	check(GameState.chapter == 5 and Travel.region_of_chapter(5) == "north" and Travel.places(5).has("crown_city") and Travel.places(5).has("yangji") and Travel.places(5).has("beacon19")
+		and Travel.pos_of("crown_city", "north") == [0.5, 0.94] and Travel.validate().is_empty(), "第五章的旅行地图翻到北境北部：冠城画在南边、羊脊村、第十九烽")
+	var r0 := Travel.check(5, "crown_city", "yangji", true)
+	GameState.set_stage("ch5_main", "north")
+	var r1 := Travel.check(5, "crown_city", "yangji", true)
+	check(not r0.ok and str(r0.why).contains("残卷") and r1.ok and str((r1.route as Dictionary).daypart) == "dusk", "残卷没读走不了；读了坐船换马北上，到了是黄昏")
+	GameState.daypart = "dusk"
+	GameState.pending_load = {"scene": "highland", "spawn": "village", "player": {}}
+	var main := await make_area("highland")
+	await physics(8)
+	check(GameState.quest_stage("ch5_main") == "vial" and str(GameState.get_flag("ch5_companion", "")) == "ivette" and Winter5.active(), "到了余火高地：主线到「找诺伯特拿誓瓶」；伊薇特跟你来了")
+	var nb := main.world.find_child("Npc_norbert5", true, false) as Npc
+	var lid := main.world.find_child("WellLid", true, false) as Examine
+	var comp := main.world.find_child("Npc_companion", true, false) as Npc
+	var outer: Node = main.world.find_child("WellRingOuter", true, false)
+	check(nb != null and nb.dialogue_id == "norbert5" and nb.position.y > HighlandLayout.TOWER_H - 0.5 and main.world.find_children("Npc_norbert", "", true, false).is_empty()
+		and comp != null and comp.display_name == "伊薇特" and outer != null and outer.get_child_count() >= 18 and main.world.find_child("WellRing", true, false) != null,
+		"火亮着：诺伯特在塔顶火盆边（第二章那个不放）；井边第二章那一圈外面又站了一圈（%d 人）；伊薇特先到了井边" % (outer.get_child_count() if outer else 0))
+	check(str(lid.on_use.call(main.player).toast).contains("诺伯特"), "誓瓶还没拿：石盖掀不开（先去找诺伯特）")
+	check(say_runner("norbert5", ["钟楼底下有一卷残卷：「持冠者以血封瓶，瓶置冬井，留名于冰。」", "那只誓瓶还在你手里？", "你跟我去井边？"], "winter") == "come" and GameState.has_item("oath_vial")
+		and str(GameState.get_flag("ch5_vial", "")) == "norbert" and GameState.quest_stage("ch5_main") == "well", "诺伯特把三十五年前那只空誓瓶交给你：主线到「去冬井」")
+	var lr: Dictionary = lid.on_use.call(main.player)
+	check(GameState.has_flag("ch5_lid_open") and GameState.quest_stage("ch5_main") == "descend" and str(lr.get("toast", "")).contains("石阶"), "冠在伊薇特手里、誓瓶在你手里：掀开石盖，井壁上一道石阶往下")
+	await free_main(main)
+	# 火灭了：诺伯特先去了井边；誓瓶在塔里小屋的炉灰里
+	ch4_state({"ch4_done": true, "crown_holder": "kept", "ch2_fire": "out"})
+	GameState.add_item("iron_crown")
+	CrownPeople.ch5_begin()
+	GameState.set_stage("ch5_main", "north")
+	GameState.pending_load = {"scene": "highland", "spawn": "village", "player": {}}
+	main = await make_area("highland")
+	await physics(6)
+	var nw := main.world.find_child("Npc_norbert5", true, false) as Npc
+	check(nw != null and nw.dialogue_id == "norbert5_well" and nw.global_position.distance_to(WinterWell.ground(HighlandLayout.WELL)) < 14.0 and main.world.find_child("Npc_companion", true, false) == null
+		and str(GameState.get_flag("ch5_companion", "")) == "none" and GameState.has_item("iron_crown"), "火灭了：诺伯特一个人先到了井边；冠在你手里，没有人跟你")
+	check(say_runner("norbert5_well", ["那只空誓瓶呢？"], "winter") == "where", "他说瓶埋在塔上小屋的炉灰底下")
+	await free_main(main)
+	GameState.pending_load = {"scene": "beacon_tower", "spawn": "front", "player": {}}
+	main = await make_area("beacon_tower")
+	await physics(4)
+	var ash := main.world.find_child("HearthAsh", true, false) as Examine
+	check(ash != null and main.world.find_child("Npc_norbert_room", true, false) == null and str(ash.on_use.call(main.player).toast).contains("得到：空誓瓶") and GameState.has_item("oath_vial")
+		and str(GameState.get_flag("ch5_vial", "")) == "ashes" and GameState.quest_stage("ch5_main") == "well", "塔上小屋的炉灰里摸到空誓瓶（小屋里没有诺伯特）")
+	await free_main(main)
+	# 冠回了钥楼：到了高地，科尔温的人把冠借给你
+	ch4_state({"ch4_done": true, "crown_holder": "caswell"})
+	CrownPeople.ch5_begin()
+	GameState.set_stage("ch5_main", "north")
+	check(Winter5.arrived().contains("借你一冬") and GameState.has_item("iron_crown") and Winter5.crown_here(), "冠回了钥楼的：科尔温的人把冠借给你（利息另算）")
+	GameState.chapter = 0
+	GameState.daypart = "day"
+	GameState.pending_load = {}
+
+
+func test_ch5well() -> void:
+	# 第五章（8.3）：冬井底——井壁石阶、星铁、冰壁里的名字、石台上冠和誓瓶的凹槽
+	check(Areas.known("well_bottom") and Areas.is_indoor("well_bottom") and Areas.chapter_of("well_bottom") == 5 and Areas.spawn("highland", "well") != null, "冬井底登记了（第五章的室内）；余火高地有井边的出生点")
+	ch4_state({"ch4_done": true, "crown_holder": "lomond", "ch2_nell": "left"})
+	CrownPeople.ch5_begin()
+	GameState.add_item("oath_vial")
+	GameState.set_stage("ch5_main", "descend")
+	GameState.pending_load = {"scene": "well_bottom", "spawn": "front", "player": {}}
+	var main := await make_area("well_bottom")
+	await physics(8)
+	var p: FpController = main.player
+	var people: Array = main.world.find_children("Npc_*", "Npc", true, false)
+	var ok := true
+	for n in people:
+		if not await stands_clear(n):
+			ok = false
+	check(p.is_on_floor() and GameState.quest_stage("ch5_main") == "oath" and people.size() == 2 and ok and main.world.find_child("Npc_companion_well", true, false) != null
+		and (main.world.find_child("Npc_companion_well", true, false) as Npc).display_name == "伊莎贝拉·洛蒙德" and main.world.find_child("Npc_nell_well", true, false) != null,
+		"下到冬井底：主线到「封誓」；伊莎贝拉捧着冠在石台边，随她去了的妮尔站在冰壁前（都站在空地上）")
+	var names := main.world.find_child("IceNames", true, false) as Examine
+	var altar := main.world.find_child("Altar", true, false) as Examine
+	check(str(names.on_use.call(p).toast).contains("冠历三百九十七年") and WellRooms.ALTAR_TEXT.contains("一个冠形的") and str(altar.on_use.call(p).get("id", "")) == "oath" and GameState.has_flag("ch5_names_read") and GameState.has_flag("ch5_altar_seen")
+		and main.world.find_child("StarIron", true, false) != null and main.world.find_children("Brazier*", "", true, false).size() == 4, "冰壁里的名字（最后一个刻在约四百年前）、星铁、石台上的两个凹槽（主线到了封誓，石台打开封誓的对话，8.4）、四角四个冷火盆")
+	var ex: Dictionary = (main.world.find_child("Exit", true, false) as Door).interact(p)
+	var spec := AreaMap.spec("well_bottom")
+	check(str(ex.area) == "highland" and str(ex.spawn) == "well" and spec.shapes.size() >= 3 and str(spec.exits[0].to) == "highland", "顺着石阶回井口（余火高地井边）；本地地图")
+	await free_main(main)
+	var hp: Vector3 = Areas.spawn("highland", "well").origin
+	check(hp.distance_to(WinterWell.ground(HighlandLayout.WELL)) < 8.0, "井边的出生点在井旁边（%.1f 米）" % hp.distance_to(WinterWell.ground(HighlandLayout.WELL)))
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch5oath() -> void:
+	# 第五章（8.4）：封誓——谁来留名、四个火盆、往下涌的长眠者；两条支线
+	ch4_state({"ch4_done": true, "crown_holder": "valen", "valen_heir": "ivette", "ch2_nell": "left", "ch3_vigil": true})
+	CrownPeople.ch5_begin()
+	GameState.add_item("oath_vial")
+	GameState.set_flag("ch5_companion", "ivette")
+	GameState.set_stage("ch5_main", "oath")
+	GameState.pending_load = {"scene": "well_bottom", "spawn": "front", "player": {}}
+	var main := await make_area("well_bottom")
+	await physics(6)
+	var p: FpController = main.player
+	var altar := main.world.find_child("Altar", true, false) as Examine
+	var r: Dictionary = altar.on_use.call(p)
+	check(str(r.get("kind", "")) == "dialogue" and str(r.id) == "oath" and altar.verb_now() == "封誓", "石台前：「封誓」打开谁来留名的对话")
+	var dr := DialogueRunner.new()
+	dr.start("winter", "oath")
+	var opts := dr.options().map(func(o): return str(o.text))
+	check(opts.size() == 4 and opts.has("（把誓瓶交给伊薇特）冠是你们家的。由你来留名。") and opts.has("（朝井口喊）诺伯特——下来。"), "能留名的：伊薇特（同行的继承人）、你自己、诺伯特（听过守灵夜的）、或者不封了")
+	check(say_runner("nell5", ["妮尔。"], "winter") in ["woke", "far"] and str(GameState.get_flag("ch5_nell", "")) != "", "冰壁前的妮尔：叫她的名字（口才 13）")
+	check(say_runner("oath", ["（把誓瓶交给伊薇特）冠是你们家的。由你来留名。", "（……）"], "winter") == "" and str(GameState.get_flag("oath_taker", "")) == "heir" and GameState.has_flag("ch5_ritual") and OathRitual.due(), "伊薇特来留名：封誓开始")
+	main._ch3_sides_heard()
+	var rit := main.world.get_node_or_null("OathRitual") as OathRitual
+	check(rit != null and rit.total == OathRitual.COUNT, "井底摆上封誓：%d 个长眠者会从石阶上下来" % (rit.total if rit else 0))
+	var b0 := main.world.find_child("Brazier0", true, false) as Examine
+	check(b0.verb_now() == "点着火盆" and str(b0.on_use.call(p).toast).contains("点着了") and rit.lit(0) and b0.verb_now() == "添柴", "火盆能点着，点着了以后是「添柴」")
+	rit.step(0.05)
+	check(rit.walkers.size() == 1 and rit.walkers[0].node is CharacterModel, "头一个长眠者从石阶顶上下来（真人模型，麻衣光脚）")
+	# 火盆一直点着（模拟你来回添柴）：撑满时间，封上了
+	for i in 600:
+		for k in 4:
+			rit.fuel[k] = OathRitual.FUEL
+		rit.step(0.1)
+		if rit.done != "":
+			break
+	check(rit.done == "sealed" and rit.reached < OathRitual.FAIL_AT and str(GameState.get_flag("ch5_oath", "")) == "sealed" and str(GameState.get_flag("ending", "")) == "new_king" and GameState.quest_stage("ch5_main") == "after",
+		"四个火盆一直点着：长眠者碰到火就往回退，撑满 %d 秒——封上了（新王）" % int(OathRitual.DURATION))
+	await free_main(main)
+	# 火盆不点：长眠者够着石台，封誓断了
+	ch4_state({"ch4_done": true, "crown_holder": "kept"})
+	CrownPeople.ch5_begin()
+	GameState.add_item("oath_vial")
+	GameState.set_stage("ch5_main", "oath")
+	check(say_runner("oath", ["（把冠放进那个凹槽，划破手掌）我来留名。", "（……）"], "winter") == "" and str(GameState.get_flag("oath_taker", "")) == "you", "冠在你怀里：你自己留名")
+	var r2 := OathRitual.new()
+	add_child(r2)
+	for i in 900:
+		r2.step(0.1)
+		if r2.done != "":
+			break
+	check(r2.done == "failed" and r2.reached >= OathRitual.FAIL_AT and str(GameState.get_flag("ending", "")) == "long_winter", "火盆一个都没点：长眠者够着了石台，封誓断了（长冬）")
+	r2.queue_free()
+	ch4_state({"ch4_done": true, "crown_holder": "kept"})
+	CrownPeople.ch5_begin()
+	GameState.set_stage("ch5_main", "oath")
+	OathRitual.settle("sealed")
+	check(str(GameState.get_flag("ending", "")) == "crownless_spring", "你自己留名、封上了：无冠之春")
+	ch4_state({"ch4_done": true, "crown_holder": "kept"})
+	CrownPeople.ch5_begin()
+	GameState.set_stage("ch5_main", "oath")
+	say_runner("oath", ["（把冠和誓瓶收起来）不封了。", "（转身，顺着石阶往上走）"], "winter")
+	check(str(GameState.get_flag("oath_taker", "")) == "none" and str(GameState.get_flag("ending", "")) == "long_winter" and not OathRitual.due() and GameState.quest_stage("ch5_main") == "after", "不封了：长冬")
+	# 第二十一烽的人：引开一半
+	ch4_state({"ch4_done": true, "crown_holder": "kept", "ch2_roll": "served", "ch5_watch21": true, "ch5_ritual": true})
+	CrownPeople.ch5_begin()
+	GameState.set_stage("ch5_main", "oath")
+	var w := Node3D.new()
+	add_child(w)
+	var r3 := OathRitual.start(w)
+	check(r3 != null and r3.total == OathRitual.COUNT / 2 and say_runner("matthias5", [], "winter") == "again", "和马蒂亚斯把第二十一烽的人引开过：往下涌的少一半")
+	w.queue_free()
+	GameState.chapter = 0
+	GameState.pending_load = {}
+
+
+func test_ch5end() -> void:
+	# 第五章（8.5）：三种结局（新王 / 无冠之春 / 长冬）的结局画面、一路走来的回顾
+	ch4_state({"ch4_done": true, "crown_holder": "valen", "valen_heir": "ivette", "prologue_edric": "release", "ch2_fire": "lit", "ch3_evidence_to": "tenants", "ch2_nell": "left", "ch5_nell": "woke", "ch5_companion": "ivette", "oath_taker": "heir"})
+	CrownPeople.ch5_begin()
+	GameState.set_stage("ch5_main", "oath")
+	OathRitual.settle("sealed")
+	check(Chapter5.ending() == "new_king" and Chapter5.title() == "新王" and Chapter5.text().contains("伊薇特在冠城加冕") and Chapter5.text().contains("一百一十七张借据")
+		and Chapter5.recap().contains("放埃德里克") and Chapter5.recap().contains("伊薇特手里") and Chapter5.recap().contains("一直亮着") and Chapter5.recap().contains("妮尔醒过来"),
+		"伊薇特留名、封上了：新王（每年入冬回井边，借据还在）；回顾从序章写到第五章")
+	GameState.pending_load = {"scene": "well_bottom", "spawn": "front", "player": {}}
+	var main := await make_area("well_bottom")
+	await physics(4)
+	main.ch3_end_after = 0.3
+	main._finale()
+	await seconds(0.8)
+	var ep: EndingPanel = main.ending_panel
+	check(GameState.has_flag("ch5_done") and GameState.quest_done("ch5_main") and ep.visible and ep.title.text == "新王" and ep.sub.text == "终" and ep.header.text.contains("冬井") and not ep.continue_btn.visible
+		and ep.seal.text.contains("加冕"), "结局画面：「第五章「冬井」完 / 新王 / 终」，没有「继续」")
+	ep.close()
+	ep.open_chapter4(true, 0)
+	check(ep.sub.text == "开发中", "别的章末画面照旧写「开发中」")
+	ep.close()
+	await free_main(main)
+	for c: Array in [["you", "sealed", "crownless_spring", "没有人知道是你做的"], ["norbert", "sealed", "crownless_spring", "诺伯特的名字"], ["lucien", "sealed", "crownless_spring", "大主祭卢西安的名字"], ["you", "failed", "long_winter", "最后一座火熄灭了"]]:
+		ch4_state({"ch4_done": true, "crown_holder": "kept", "oath_taker": c[0]})
+		CrownPeople.ch5_begin()
+		GameState.set_stage("ch5_main", "oath")
+		OathRitual.settle(str(c[1]))
+		check(Chapter5.ending() == str(c[2]) and Chapter5.text().contains(str(c[3])), "%s留名、%s：%s" % [c[0], c[1], Chapter5.title()])
+	ch4_state({"ch4_done": true, "crown_holder": "kept"})
+	CrownPeople.ch5_begin()
+	GameState.set_stage("ch5_main", "oath")
+	say_runner("oath", ["（把冠和誓瓶收起来）不封了。", "（转身，顺着石阶往上走）"], "winter")
+	check(GameState.pending_ending == "final" and Chapter5.title() == "长冬" and Chapter5.text().contains("收了起来"), "不封了：对话关上直接出结局画面（长冬）")
+	GameState.pending_ending = ""
 	GameState.chapter = 0
 	GameState.pending_load = {}
 

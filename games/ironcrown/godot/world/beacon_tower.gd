@@ -55,7 +55,13 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_decor(parent, reduced_motion)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
-	if GameState.has_flag("ch2_first_tide") and not Chapter2.at_dawn():          # 第二天（5.5a）：诺伯特下了塔顶，蹲在自己小屋的小铁炉边（第二夜过去以后又上了塔顶，5.8）
+	if Winter5.active():                                                        # 第五章（8.2）：诺伯特不在小屋；火灭了的，誓瓶在小铁炉的炉灰里
+		if not Winter5.fire_lit():
+			var ash := Examine.make("小铁炉的炉灰", "摸摸炉灰", func(_who: FpController) -> Dictionary: return Winter5.hearth_vial(), Vector3(0.8, 0.8, 0.8))
+			ash.name = "HearthAsh"
+			ash.position = Vector3(-0.6, UPPER + 0.3, -0.3)
+			parent.add_child(ash)
+	elif GameState.has_flag("ch2_first_tide") and not Chapter2.at_dawn():          # 第二天（5.5a）：诺伯特下了塔顶，蹲在自己小屋的小铁炉边（第二夜过去以后又上了塔顶，5.8）
 		var n := Npc.make("诺伯特", [], Color("5a5650"))
 		n.name = "Npc_norbert_room"
 		n.dialogue_area = "beacon19"

@@ -1,0 +1,46 @@
+{
+  "_说明": "第五章「冬井」北上以后的人（路线图 8.2 起；STORY.md 第八节）：诺伯特——第十九烽的火亮着在塔顶火盆边（norbert5），灭了一个人先去了井边（norbert5_well）；他把三十五年前那只空誓瓶交给你（oath_vial，ch5_vial），主线 vial → well。 8.4 封誓（oath，冬井底的石台前）：谁来留名（oath_taker：heir 同行的继承人 / lucien 大主祭 / you 你自己 / norbert 诺伯特 / none 不封了），定了以后 ch5_ritual，对话关上封誓开始（world/oath_ritual.gd）；支线：冰壁前的妮尔（nell5，ch5_nell）、第二十一烽的人（matthias5，ch5_watch21）。",
+  "norbert5": {"speaker": "诺伯特", "start": "greet",
+    "start_if": [{"if": [{"has_item": "oath_vial"}], "node": "again"}],
+    "nodes": {
+      "greet": {"text": "（他坐在火盆边，火亮着。他没回头）……你回来了。我数着日子，等了三天。冠城那边的钟，是不是敲过了？", "options": [{"text": "敲过了。冬天没有退。", "next": "vial"}, {"text": "钟楼底下有一卷残卷：「持冠者以血封瓶，瓶置冬井，留名于冰。」", "if": [{"flag": "ch5_archive"}], "next": "scroll"}]},
+      "scroll": {"text": "（他的手停在火盆上方，停了很久）……留名于冰。原来是这一句。主祭那一夜说，那一步早就不用做了。（他转过身来）他说的是「不用」，不是「不能」。", "options": [{"text": "那只誓瓶还在你手里？", "next": "vial"}]},
+      "vial": {"text": "（他从怀里摸出一只灰白的小陶瓶，瓶口封着一圈老蜡，蜡上压着一道冠形的印）三十五年前我捧着它走出去，走到山脊上，回头看了一眼，没往井边去。它一直是空的。（他把瓶子放在你手心里）拿去。这一回，别让它空着回来。", "do": [{"give_item": "oath_vial"}, {"set": "ch5_vial", "value": "norbert"}, {"quest": "ch5_main", "stage": "well"}], "options": [{"text": "你跟我去井边？", "next": "come"}]},
+      "come": {"text": "（他看了一眼北边的山脊）我在井边等你。三十五年了，我总得走完那一段路。", "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（他往火盆里添了一块柴）去吧。我随后就到井边。", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "norbert5_well": {"speaker": "诺伯特", "start": "greet",
+    "nodes": {
+      "greet": {"text": "（他站在那一圈人外面，背对着你，肩上落满了雪）……火灭了以后，我一个人在塔上坐不住。三十五年，我头一回一个人走到这儿来。", "text_if": [{"if": [{"has_item": "oath_vial"}], "text": "（他回头看了一眼你手里那只小陶瓶）你在炉灰里找到它了。……我本来想自己把它放下去。可我不是持冠的人。"}], "options": [{"text": "那只空誓瓶呢？", "if": [{"not_flag": "ch5_vial"}], "next": "where"}, {"text": "冠在北边了。", "next": "crown"}, {"text": "告辞。", "end": true}]},
+      "where": {"text": "在塔上我那间小屋里，小铁炉的炉灰底下。（他没有回头）我把它埋起来了。我怕我拿着它，又会在山脊上回头。", "options": [{"text": "告辞。", "end": true}]},
+      "crown": {"text": "（他看着井口那半块石盖）那就掀开它。我替你看着上面这一圈。", "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "oath": {"speaker": "冬井", "start": "altar",
+    "nodes": {
+      "altar": {"text": "（石台上两个凹槽：一个冠形的，一个誓瓶大小的。冰壁上那一大片空着的冰，像在等）\n「持冠者以血封瓶，瓶置冬井，留名于冰。留名者，每冬还井。」——谁来留名？", "options": [{"text": "（把誓瓶交给小贝尔特兰）冠是你们家的。由你来留名。", "if": [{"flag": "ch5_companion", "eq": "young_bertrand"}], "do": [{"set": "oath_taker", "value": "heir"}], "next": "heir_young_bertrand"}, {"text": "（把誓瓶交给伊莎贝拉）冠是你们家的。由你来留名。", "if": [{"flag": "ch5_companion", "eq": "isabella"}], "do": [{"set": "oath_taker", "value": "heir"}], "next": "heir_isabella"}, {"text": "（把誓瓶交给伊薇特）冠是你们家的。由你来留名。", "if": [{"flag": "ch5_companion", "eq": "ivette"}], "do": [{"set": "oath_taker", "value": "heir"}], "next": "heir_ivette"}, {"text": "（把誓瓶交给阿尔里克）冠是你们家的。由你来留名。", "if": [{"flag": "ch5_companion", "eq": "alric"}], "do": [{"set": "oath_taker", "value": "heir"}], "next": "heir_alric"}, {"text": "（把誓瓶交给大主祭）你来。", "if": [{"flag": "ch5_companion", "eq": "lucien"}], "do": [{"set": "oath_taker", "value": "lucien"}], "next": "lucien"}, {"text": "（把冠放进那个凹槽，划破手掌）我来留名。", "do": [{"set": "oath_taker", "value": "you"}], "next": "you"}, {"text": "（朝井口喊）诺伯特——下来。", "if": [{"flag": "ch3_vigil"}], "do": [{"set": "oath_taker", "value": "norbert"}], "next": "norbert"}, {"text": "（把冠和誓瓶收起来）不封了。", "next": "none"}]},
+      "heir_young_bertrand": {"text": "小贝尔特兰：（他把铁匣抱得更紧了）……祖父说，戴上它就行了。（他看着冰壁上那一大片空着的冰，看了很久）每个冬天都要回来？……好。（他把冠放进凹槽，伸出手）\n（血一滴一滴落进誓瓶。井口上那一圈人动了——头一个顺着石阶往下走）", "options": [{"text": "（……）", "do": [{"set": "ch5_ritual"}], "end": true}]},
+      "heir_isabella": {"text": "伊莎贝拉·洛蒙德：（她摘下手套）洛蒙德家替王国还的账，我亲手还完。（她把冠放进凹槽，划破手掌）\n（血一滴一滴落进誓瓶。井口上那一圈人动了——头一个顺着石阶往下走）", "options": [{"text": "（……）", "do": [{"set": "ch5_ritual"}], "end": true}]},
+      "heir_ivette": {"text": "伊薇特：（她把冠放进凹槽，冠沉得她低了一下头）北境的人，总是自己往北走。每个冬天，我回来。\n（血一滴一滴落进誓瓶。井口上那一圈人动了——头一个顺着石阶往下走）", "options": [{"text": "（……）", "do": [{"set": "ch5_ritual"}], "end": true}]},
+      "heir_alric": {"text": "阿尔里克：（他的手在抖）……我不想。可我更不想让别人来。（他把冠放进凹槽，闭着眼划破了手掌）\n（血一滴一滴落进誓瓶。井口上那一圈人动了——头一个顺着石阶往下走）", "options": [{"text": "（……）", "do": [{"set": "ch5_ritual"}], "end": true}]},
+      "lucien": {"text": "大主祭卢西安：（他把冠放进凹槽，手很稳）四百年前，教会烧了这一页。这一笔，由教会来还。（他划破手掌）\n（血一滴一滴落进誓瓶。井口上那一圈人动了——头一个顺着石阶往下走）", "options": [{"text": "（……）", "do": [{"set": "ch5_ritual"}], "end": true}]},
+      "you": {"text": "（冠放进凹槽的那一刻，像一把钥匙转了半圈。你划破手掌，把血滴进誓瓶）\n（血一滴一滴落进誓瓶。井口上那一圈人动了——头一个顺着石阶往下走）", "options": [{"text": "（……）", "do": [{"set": "ch5_ritual"}], "end": true}]},
+      "norbert": {"text": "（诺伯特顺着石阶下来，走得很慢。他看了一眼冰壁上那片空着的冰）三十五年前就该是我。（他从你手里接过誓瓶）冠你来放。血，我来滴。\n（血一滴一滴落进誓瓶。井口上那一圈人动了——头一个顺着石阶往下走）", "options": [{"text": "（……）", "do": [{"set": "ch5_ritual"}], "end": true}]},
+      "none": {"text": "（你把冠和誓瓶收了起来。冰壁上那片空着的冰还空着。井口上那一圈人，一动不动）", "do": [{"set": "oath_taker", "value": "none"}, {"set": "ch5_oath", "value": "none"}, {"set": "ending", "value": "long_winter"}, {"quest": "ch5_main", "stage": "after"}, {"ending": "final"}], "options": [{"text": "（转身，顺着石阶往上走）", "end": true}]}
+    }},
+  "nell5": {"speaker": "妮尔", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch5_nell"}], "node": "again"}],
+    "nodes": {
+      "greet": {"text": "（她的手指一行一行摸过冰壁上的名字，眼睛是睁着的，却没看你）……爹的名字不在这儿。这儿只有留下来的人。", "options": [{"text": "妮尔。", "check": {"id": "ch5_nell_call", "skill": "speech", "dc": 13, "pass": "woke", "fail": "far"}}, {"text": "（陪她一起找）", "next": "with"}]},
+      "woke": {"text": "（她慢慢回过头，眼睛里有了你）……你答应过我留意他的。（她的手从冰壁上放下来）我冷。", "do": [{"set": "ch5_nell", "value": "woke"}], "options": [{"text": "告辞。", "end": true}]},
+      "far": {"text": "（她没有回头。手指停在一个名字上，又往下移了一行）", "do": [{"set": "ch5_nell", "value": "with"}], "options": [{"text": "告辞。", "end": true}]},
+      "with": {"text": "（你们一行一行地找。她的手指在最后一个名字下面停住了，停在那片空着的冰上）……这儿，会写谁？", "do": [{"set": "ch5_nell", "value": "with"}], "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（她站在冰壁前，手放在那片空着的冰上）", "text_if": [{"if": [{"flag": "ch5_nell", "eq": "woke"}], "text": "（她裹着你的斗篷，靠着冰壁坐着）……等这儿亮了，我跟诺伯特下山。"}], "options": [{"text": "告辞。", "end": true}]}
+    }},
+  "matthias5": {"speaker": "马蒂亚斯", "start": "greet",
+    "start_if": [{"if": [{"flag": "ch5_watch21"}], "node": "again"}],
+    "nodes": {
+      "greet": {"text": "（他举着火把站在那一圈人外面，一张脸一张脸地看过去）……第二十一烽的。这个，那个，最北边那个——我都认得。（他回头看你）你也认得。", "options": [{"text": "（接过一支火把）一个一个引开他们。", "next": "lead"}, {"text": "告辞。", "end": true}]},
+      "lead": {"text": "（你们举着火把绕着圈走。火光扫过去，第二十一烽的那几个人转过身，一个接一个，朝着火走了几步，又站住——离井远了一些）……井口这一边少了一半。下去吧，我替你守着上面。", "do": [{"set": "ch5_watch21"}], "options": [{"text": "告辞。", "end": true}]},
+      "again": {"text": "（他举着火把站在井口边）上面有我。", "options": [{"text": "告辞。", "end": true}]}
+    }}
+}

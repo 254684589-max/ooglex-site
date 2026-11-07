@@ -54,6 +54,7 @@ static func _photo(key: String, path: String, meters: float, tint: Color, fallba
 	var m := StandardMaterial3D.new()
 	m.vertex_color_use_as_albedo = true
 	m.roughness = 0.95
+	m.set_meta("avg", fallback)                 # FarLod（6.7a）
 	var a: Texture2D = load(path % "diff") as Texture2D if ResourceLoader.exists(path % "diff") else null
 	var n: Texture2D = load(path % "nor_gl") as Texture2D if ResourceLoader.exists(path % "nor_gl") else null
 	if a != null:

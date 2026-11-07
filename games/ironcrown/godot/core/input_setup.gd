@@ -22,7 +22,8 @@ const ACTIONS := {
 	"block_key": [KEY_Q],         # 格挡的键盘键（2.5；主要是鼠标右键按住）
 	"order_follow": [KEY_1],      # 小队命令（B.2，军阵战斗里）：跟随我
 	"order_hold": [KEY_2],        # 原地坚守
-	"order_charge": [KEY_3],      # 冲锋（对话面板打开时数字键选选项，游戏暂停，不会误下命令）
+	"order_charge": [KEY_3],
+	"order_goto": [KEY_4],        # 去那儿（6.7c）：跑到准星指的地方排开坚守      # 冲锋（对话面板打开时数字键选选项，游戏暂停，不会误下命令）
 	"travel_map": [KEY_M],
 	"torch": [KEY_T],             # 火把（5.4b）：点着 / 插在地上 / 重新点        # 旅行地图（4.2；第一章起）
 	"pause": [KEY_ESCAPE],

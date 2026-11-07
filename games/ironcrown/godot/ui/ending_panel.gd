@@ -10,7 +10,7 @@ signal closed
 signal restart_requested
 signal continue_requested(chapter: int)
 
-const ENDINGS := ["prologue"]
+const ENDINGS := ["prologue", "ch3", "ch4", "final"]          # 对话里能触发的结局（ch3：伊格纳兹说完守灵夜，6.8b；先响晨钟再出画面，main._ch3_bell）
 ## 抉择 → 这一夜的回顾
 const RECAP := {
 	"deliver": "你把埃德里克和借据交回了瓦伦家。维克托会感激你，埃德里克不会原谅你；塞拉斯空着手回了双钥港。",
@@ -117,8 +117,28 @@ func open_chapter2(reduced_motion := false, next := 0) -> void:
 	_show("第二章「熄灭的烽燧」完", "第三章 · 粮与铁", "在雪原上再站一会儿", Chapter2.recap(), Chapter2.hook(), reduced_motion, next)
 
 
+## 第三章完（6.8b）：「第三章「粮与铁」完 / 第四章 · 双钥港的账 / 开发中」，回顾和钩子由 Chapter3 按旗标写；第四章还没有，不出「继续」
+func open_chapter3(reduced_motion := false, next := 0) -> void:
+	choice = "ch3"
+	_show("第三章「粮与铁」完", "第四章 · 双钥港的账", "在晨钟里再站一会儿", Chapter3.recap(), Chapter3.hook(), reduced_motion, next)
+
+
+## 第四章完（7.8）：「第四章「双钥港的账」完 / 第五章 · 冬井 / 开发中」，回顾和钩子由 Chapter4 按旗标写
+func open_chapter4(reduced_motion := false, next := 0) -> void:
+	choice = "ch4"
+	_show("第四章「双钥港的账」完", "第五章 · 冬井", "在钟声里再站一会儿", Chapter4.recap(), Chapter4.hook(), reduced_motion, next)
+
+
+## 全作完（8.5）：「第五章「冬井」完 / 新王｜无冠之春｜长冬 / 终」，正文按结局写，回顾是一路走来每一章一两句；没有「继续」
+func open_final(reduced_motion := false) -> void:
+	choice = "final"
+	_show("第五章「冬井」完", Chapter5.title(), "在雪里再站一会儿", Chapter5.recap(), Chapter5.text(), reduced_motion, 0)
+	sub.text = "终"
+
+
 func _show(head: String, title_text: String, back_text: String, recap_text: String, seal_text: String, reduced_motion: bool, next: int) -> void:
 	header.text = head
+	sub.text = "开发中"
 	title.text = title_text
 	back_btn.text = back_text
 	next_chapter = next if Chapters.known(next) else 0

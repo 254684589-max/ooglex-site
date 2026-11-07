@@ -9,6 +9,7 @@ extends RefCounted
 const KINDS := {
 	"mud": {"mult": 0.55, "run": false, "label": "泥潭：走得慢，不能跑"},
 	"deep_snow": {"mult": 0.6, "run": false, "label": "深雪：走得慢，不能跑"},   # 5.3a 余火高地：路边的雪檐、背风的雪窝（HighlandLayout.deep）
+	"shallows": {"mult": 0.45, "run": false, "label": "浅水：水没过脚面，走得慢，不能跑"},   # 7.1 双钥港：涨潮时盖在水下的泥滩、潮沟（HarborLayout.surface_at）
 }
 
 

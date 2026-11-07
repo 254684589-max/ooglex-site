@@ -8,9 +8,9 @@ extends RefCounted
 
 const PATH := "res://data/travel.json"
 const META := "ic_travel"
-const ICONS := ["town", "village", "castle", "beacon", "abbey", "mill", "camp"]
+const ICONS := ["town", "village", "castle", "beacon", "abbey", "mill", "camp", "port", "lighthouse", "city"]
 ## 地图的哪一页（5.2a）：第一章是北境西部（霜渡镇、鹭沼），第二章是北境北部（余火高地、烽燧线），第三章起是南部（金穗平原，6.2a）
-const REGIONS := {"west": "北境西部", "north": "北境北部", "south": "南部"}
+const REGIONS := {"west": "北境西部", "north": "北境北部", "south": "南部", "coast": "河口"}      # 河口：第四章（7.1），灰鲸河入海口的双钥港，往北逆流上冠城
 const DEPART_RADIUS := 6.0        # 离出发点（路牌）多近按 M 打开地图也能出发（第一章开场站在宅邸门口，离路牌 4.7 米）
 
 
@@ -51,13 +51,26 @@ static func places(chapter: int) -> Array:
 	var ps: Dictionary = data().get("places", {})
 	var page := region_of_chapter(chapter)
 	for id in ps:
-		if int(ps[id].get("chapter", 1)) <= chapter and str(ps[id].get("region", "west")) == page:
+		if int(ps[id].get("chapter", 1)) <= chapter and (str(ps[id].get("region", "west")) == page or (ps[id].get("also", {}) as Dictionary).has(page)):
 			out.append(str(id))
 	return out
 
 
+## 地点在某一页上的位置（also：第五章北上时，冠城也画在北境北部那一页的南边，8.2）
+static func pos_of(id: String, page: String) -> Array:
+	var p := place(id)
+	var also: Dictionary = p.get("also", {})
+	if also.has(page) and str(p.get("region", "west")) != page:
+		return (also[page] as Dictionary).get("pos", [0.5, 0.5])
+	return p.get("pos", [0.5, 0.5])
+
+
 ## 这一章用地图的哪一页
 static func region_of_chapter(chapter: int) -> String:
+	if chapter >= 5:
+		return "north"                                # 第五章（8.2）：北上回到烽燧线
+	if chapter >= 4:
+		return "coast"
 	if chapter >= 3:
 		return "south"
 	return "north" if chapter >= 2 else "west"
@@ -124,7 +137,20 @@ static func check(chapter: int, from: String, to: String, at_departure: bool) ->
 		why = ("从这里去不了，先到%s。" % name_of(mid)) if mid != "" else "从这里没有路过去。"
 	elif not at_departure:
 		why = "走到%s那里才能出发。" % str(place(from).get("depart_at", "出发的地方"))
+	elif not needs_met(r):
+		why = str((r.needs as Dictionary).get("why", "现在还去不了。"))
 	return {"ok": why == "", "why": why, "route": r}
+
+
+## 路线的前提（7.6）：needs = {quest, stages: 主线在这几步里才走得了, why}；没写 needs 的路线随时能走
+static func needs_met(r: Dictionary) -> bool:
+	if not r.has("needs"):
+		return true
+	var n: Dictionary = r.needs
+	var gs := (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameState")
+	if gs == null:
+		return false
+	return str(gs.quest_stage(str(n.get("quest", "")))) in n.get("stages", [])
 
 
 ## 检查数据（测试用）：地点的区域、出生点、位置、图标；路线两头的地点、到达时段

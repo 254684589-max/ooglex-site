@@ -17,7 +17,13 @@ const LIST := {
 	2: {"name": "第二章 · 熄灭的烽燧", "pack": "ch2", "probe": "res://chapters/ch2/sky/overcast_sky.jpg", "area": "highland", "spawn": "village", "daypart": "day"},
 	## 第三章（6.1a 起）：平原的贴图、天空照片在章节包 ch3 里；还没对玩家打开（PLAYABLE 仍是 2，?preview=3 或 ?area=plain 能看）
 	3: {"name": "第三章 · 粮与铁", "pack": "ch3", "probe": "res://chapters/ch3/sky/misty_sky.jpg", "area": "plain", "spawn": "dock", "daypart": "day",
-		"wip": "制作中", "wip_note": "第三章还在制作中：现在能到麦渡、坠星院，主线做到第二步（去洛蒙德庄园）；庄园、磨坊、营地和后面的故事还没做。"},
+		"wip": "制作中", "wip_note": "第三章还在制作中：现在能到麦渡、坠星院、洛蒙德庄园、水磨坊和塞弗林营地，主线、三条支线和磨坊之战都做完了（一直到守灵夜和章末），还在打磨。"},
+	## 第四章（7.1 起）：双钥港的贴图、天空照片、高度场在章节包 ch4 里；还没对玩家打开（?preview=4 或 ?area=harbor 能看）
+	4: {"name": "第四章 · 双钥港的账", "pack": "ch4", "probe": "res://chapters/ch4/sky/sea_cloud_sky.jpg", "area": "harbor", "spawn": "quay", "daypart": "day",
+		"wip": "制作中", "wip_note": "第四章还在制作中：双钥港、冠城、主线（一直到冬议和章末）和三条支线都做完了，还在打磨。"},
+	## 第五章（8.1 起）：冠城那几处在第四章的包里，北上的余火高地在第二章的包里（到了再下）；还没对玩家打开（?preview=5 能从第四章章末进）
+	5: {"name": "第五章 · 冬井", "pack": "ch4", "probe": "res://chapters/ch4/sky/sea_cloud_sky.jpg", "area": "crown_city", "spawn": "bell_door", "daypart": "day",
+		"wip": "制作中", "wip_note": "第五章还在制作中：钟楼底下、北上、冬井底、封誓和三种结局都做完了，还在打磨。"},
 }
 
 

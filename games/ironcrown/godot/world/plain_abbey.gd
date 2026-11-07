@@ -33,6 +33,7 @@ const DORM_DOOR_TEXT := "修士的宿舍。门闩着。"
 const GREGOR := ["gregor", "格雷戈尔院长", Vector2(41.05, 80.4), 0.0, "6a6660", "gregor"]        # 站在门洞里靠东那边，面朝外（门洞 3.4 米，西边留 2.4 米走得过去）
 const PORTER := ["porter", "门房的修士", Vector2(47.45, 75.2), PI * 0.5, "7a756c", "porter"]      # 锅东边，面朝西对着排队的人（锅和围墙之间只有 0.6 米，站不下）
 ## 排队领粥的佃农：从锅前往西北排开（STORY.md 6.5 第 1 步「一路上看见麦茬地上排队领粥的佃农」）；夜里散了
+const IDA_IN_QUEUE := 3
 const QUEUE := [Vector2(45.6, 74.0), Vector2(44.9, 73.0), Vector2(44.3, 72.0), Vector2(43.9, 70.9), Vector2(43.6, 69.7), Vector2(43.1, 68.6), Vector2(42.4, 67.6), Vector2(41.6, 66.8)]
 const QUEUE_LINES := [
 	["一人一勺。昨天还能看见米粒。"], ["（她把碗揣在怀里捂着）……排到我就好了。"], ["洛蒙德家的仓是满的。修道院的锅是空的。"],
@@ -119,6 +120,10 @@ static func interactables(parent: Node3D) -> void:
 		var spec: Dictionary = h[1]
 		var d := House.door_node(spec.door)
 		d.name = str(h[2])
+		if d.name == "ScriptoriumDoor":                  # 6.8b：院长给了钥匙（scriptorium_key）就进得去；没钥匙还是锁着
+			d.to_area = "scriptorium"
+			d.to_spawn = "front"
+			d.key_item = "scriptorium_key"
 		d.transform = Transform3D(Basis(Vector3.UP, deg_to_rad(float((h[0] as Array)[1]))), house_pos(h[0])) * Transform3D(Basis.IDENTITY, Vector3(float(spec.door_x) - 0.55, 0, 0.05))
 		parent.add_child(d)
 	var rs := RoadSign.new()
@@ -138,6 +143,8 @@ static func people(parent: Node3D) -> void:
 		n.dialogue_id = str(p[5])
 		n.position = Vector3(pos.x, ground(pos), pos.y)
 		n.rotation.y = float(p[3])
+		n.far_end = Plain.NPC_FAR
+		n.label_far = Plain.LABEL_FAR
 		parent.add_child(n)
 	if GameState.daypart == "night":
 		return
@@ -145,10 +152,16 @@ static func people(parent: Node3D) -> void:
 		var q: Vector2 = QUEUE[i]
 		var ahead: Vector2 = CAULDRON if i == 0 else QUEUE[i - 1]
 		var child := i == 4
-		var n := Npc.make("佃农的孩子" if child else "排队领粥的佃农", QUEUE_LINES[i], Color(["5a5046", "6a5a48", "4e4a44", "5e5248"][i % 4]))
-		n.name = "Npc_queue%d" % i
+		var ida := i == IDA_IN_QUEUE                                          # 6.4：队里第四个是麦渡的寡妇伊达（对话 plain.json ida；夜里在麦渡坟边，PlainPeople）
+		var n := Npc.make("伊达" if ida else ("佃农的孩子" if child else "排队领粥的佃农"), [] if ida else QUEUE_LINES[i], Color(["5a5046", "6a5a48", "4e4a44", "5e5248"][i % 4]))
+		n.name = "Npc_ida" if ida else "Npc_queue%d" % i
+		if ida:
+			n.dialogue_area = "plain"
+			n.dialogue_id = "ida"
 		n.position = Vector3(q.x, ground(q), q.y)
 		n.rotation.y = atan2(-(ahead.x - q.x), -(ahead.y - q.y))
+		n.far_end = Plain.NPC_FAR
+		n.label_far = Plain.LABEL_FAR
 		if child:
 			n.scale = Vector3.ONE * 0.72
 		parent.add_child(n)

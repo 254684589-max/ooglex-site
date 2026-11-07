@@ -4,7 +4,7 @@ extends RefCounted
 ## 东边一排石屋里的一间，10 × 5.5 米外面、屋里 9 × 4.8 米、3.4 米高：粗石墙、石板地、木梁顶。
 ##   北墙一扇高窄的窗（冬天的冷光，屋里最亮的就是它），四张斜面的抄经桌、高凳，桌上摊着抄了一半的书、墨水壶、羽毛笔；
 ##   西墙（门边）一排书架，书和卷轴；东头是伊格纳兹修士的角落：一张草铺、一条毯子、一只空碗，墙上从地面到齐肩高刻满了一道道划痕
-##   和几行歪歪扭扭的字——三十五年，他夜里对着墙说话（6.8 他开口时要念的那些）。人（伊格纳兹）6.4 放。
+##   和几行歪歪扭扭的字——三十五年，他夜里对着墙说话（6.8 他开口时要念的那些）。人（伊格纳兹）6.4 放：跪在东墙下（IGNAZ），6.8 才开口。
 ## 室内的光不跟时段走；窗玻璃按时段换颜色（同驿站，Inn.glass）。门从外面锁着（PlainAbbey.SCRIPTORIUM_DOOR_TEXT），6.8 院长放人以后才进得来；?area=scriptorium 和测试直接进。
 ## 坐标：原点在屋里地面中心，北 = -Z；出口门在南墙（z = +2.4），出去站在回廊上（plain 的出生点 scriptorium_door）。
 
@@ -23,6 +23,7 @@ const DESKS := [Vector3(-2.4, 0, -0.9), Vector3(-0.6, 0, -0.9), Vector3(1.2, 0, 
 const SHELF := Rect2(-4.45, -2.2, 0.4, 3.0)
 const PALLET := Rect2(3.0, -1.9, 1.4, 2.2)            # 伊格纳兹的草铺（东头靠北）
 const TALLY_WALL_X := 4.48                            # 刻满划痕的那面墙（东墙）
+const IGNAZ := [Vector3(3.85, 0, 0.7), -90.0]         # 跪在东墙下、草铺旁边，面朝刻满划痕的墙
 const SPAWNS := {
 	"front": [Vector3(DOOR_X, 0, 1.8), 0.0],
 }
@@ -46,6 +47,14 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_decor(parent, reduced_motion)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
+	Chapter3.settle()                                                    # 替挨饿的人做过事没有（6.8b：伊格纳兹只肯对这样的人开口）
+	var ig := Npc.make("灰袍修士", [], Color("6a6a74"))                  # 伊格纳兹（6.4 放进来；6.8b 院长放人以后开口：plain.json ignaz）
+	ig.name = "Npc_ignaz"
+	ig.dialogue_area = "plain"
+	ig.dialogue_id = "ignaz"
+	ig.position = IGNAZ[0]
+	ig.rotation.y = deg_to_rad(float(IGNAZ[1]))
+	parent.add_child(ig)
 	var exit := Door.make(EXIT_NAME, DOOR_W, 2.1, false)
 	exit.verb = "离开"
 	exit.to_area = "plain"

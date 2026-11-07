@@ -59,7 +59,21 @@ const PRESETS := {
 
 ## 个别区域在通用预设上改几项（5.1a，D12）：高地是开阔的山谷和山脊，雾要远得多才看得见山（「远山一层层叠进雾里」）；
 ## 天空换成阴云照片（Highland.apply_sky），sky 是地平线 / 雾的颜色
+## 跟别的区域用同一套（冠城 7.6：同一条灰鲸河、同一片阴云，离海远一点——就用双钥港那一套）
+const AREA_ALIAS := {"crown_city": "harbor"}
 const AREA_PRESETS := {
+	## 双钥港（7.1）：河口、海边——雾从海上来，比平原近、颜色偏青灰；天压得很低，太阳只是云后面亮一点的一片；
+	## 黄昏的光淡橙、贴着海面；夜里海是黑的，月光偏冷，雾更近（金库之夜看得见的只有近处）
+	"harbor": {
+		"dawn": {"sky": Color("8d9396"), "horizon": Color("b3b2ae"), "ambient": Color("a2a8ad"), "ambient_energy": 0.52, "fog_begin": 30.0, "fog_end": 340.0, "fog_curve": 1.3,
+			"fog_height": 4.0, "fog_height_density": 0.05, "sun": Color("f3dccb"), "sun_energy": 0.95, "sun_rot": Vector3(-10, 110, 0), "contrast": 1.06},
+		"day": {"sky": Color("98a0a6"), "horizon": Color("b9bec2"), "ambient": Color("aeb6bd"), "ambient_energy": 0.58, "fog_begin": 45.0, "fog_end": 480.0, "fog_curve": 1.4,
+			"fog_height": 3.0, "fog_height_density": 0.025, "sun": Color("f4f0ea"), "sun_energy": 1.15, "sun_rot": Vector3(-24, 160, 0), "contrast": 1.08},
+		"dusk": {"sky": Color("7f7672"), "horizon": Color("b39484"), "ambient": Color("9c9298"), "ambient_energy": 0.5, "fog_begin": 30.0, "fog_end": 320.0, "fog_curve": 1.3,
+			"fog_height": 4.0, "fog_height_density": 0.04, "sun": Color("f6c49c"), "sun_energy": 0.85, "sun_rot": Vector3(-7, 240, 0), "contrast": 1.07},
+		"night": {"sky": Color("2f3a48"), "horizon": Color("3d4a5c"), "ambient": Color("7890b0"), "ambient_energy": 0.55, "fog_begin": 8.0, "fog_end": 140.0, "fog_curve": 1.1,
+			"fog_height": 3.0, "fog_height_density": 0.04, "sun": Color("9fb6d8"), "sun_energy": 0.5, "sun_rot": Vector3(-34, 170, 0)},
+	},
 	## 金穗平原（6.1a）：开阔的冬天平原，雾很远（砧山在地平线上还看得见轮廓）；天是起雾的、太阳隔着雾是一团白——暖一点、低一点，影子长；
 	## 黄昏的光是橙的（磨坊之战在黄昏到夜里）；夜里月光照着雪盖的田，偏冷蓝，人造光是暖的
 	"plain": {
@@ -149,6 +163,13 @@ static func apply(main: Node, id: String) -> void:
 	if area == "plain":
 		Plain.apply_sky(env, current, p.get("horizon", p.sky))       # 金穗平原（6.1a）：起雾的冬日天空照片
 		sun.shadow_opacity = 0.6
+	if area == "harbor":
+		Harbor.apply_sky(env, current, p.get("horizon", p.sky))      # 双钥港（7.1）：压得很低的海上阴云；潮位跟着时段
+		Harbor.set_tide(main.get("world") if main.get("world") != null else main)
+		sun.shadow_opacity = 0.55
+	if area == "crown_city":
+		CrownCity.apply_sky(env, current, p.get("horizon", p.sky))   # 冠城（7.6）：同一片阴云，河上的雾比海边淡
+		sun.shadow_opacity = 0.55
 	if area == "highland":
 		Highland.apply_sky(env, current, p.get("horizon", p.sky))
 		sun.shadow_opacity = 0.5                      # 阴天：影子淡（阴影距离边上那道直边也就不扎眼了，5.2b 截图）
@@ -161,7 +182,7 @@ static func apply(main: Node, id: String) -> void:
 ## 这个区域、这个时段的预设：通用的加上区域自己改的那几项（AREA_PRESETS）
 static func preset(area: String, id: String) -> Dictionary:
 	var p: Dictionary = PRESETS[id if valid(id) else "night"]
-	var over: Dictionary = AREA_PRESETS.get(area, {}).get(id if valid(id) else "night", {})
+	var over: Dictionary = AREA_PRESETS.get(AREA_ALIAS.get(area, area), {}).get(id if valid(id) else "night", {})
 	if over.is_empty():
 		return p
 	var out := p.duplicate()

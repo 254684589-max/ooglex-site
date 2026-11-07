@@ -32,6 +32,11 @@ static var _mat: ShaderMaterial
 static var _water_mat: ShaderMaterial
 static var _sky_mat: ShaderMaterial
 static var field_ms := 0.0
+const NPC_FAR := 70.0                             # 平原上的人：多远以外整个人都不画（6.7a：从营地往西南看，麦渡、坠星院门口的人几十次绘制，看过去只是几个点）
+const LABEL_FAR := 16.0                           # 平原上的人：名字多远以外不画（远了也看不清；6.7a）
+const HOUSE_FAR := 80.0                          # 房子、围墙这些几种材质的大网格：多远以外换成一份单色网格（FarLod，6.7a）
+const SMALL_FAR := 120.0                          # 几种材质的小东西（水井、旗、坟）多远以外不画（6.7a）
+const DETAIL_FAR := 80.0                          # 门、路牌：多远以外不画（门洞后面本来就黑；6.7a）
 
 var parent: Node3D
 var reduced_motion := false
@@ -52,6 +57,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	PlainManor.base_y()
 	for k in ["roof", "plaster", "castle"]:
 		Look.mat(k)                                    # 石板瓦、灰泥：第一栋 House 在分帧的活里才读这几张贴图，那一块要 70–80 毫秒（6.3b）
+	PlainCamp.mats()                                   # 塞弗林营地的帆布（6.3c）：粗麻布贴图同上，先读
 	PlainVillage.mats()                                # 麦渡的材质先备好（6.2a：土坯、茅草贴图在分帧的活里第一次读，那一块要 70–80 毫秒）
 	pl._collision()
 	ground_material()
@@ -64,6 +70,13 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	PlainAbbey.people(p_parent)                      # 坠星院门口的人（6.2c）：院长、门房的修士、排队领粥的佃农
 	PlainManor.interactables(p_parent)               # 洛蒙德庄园（6.3a）：大厅、仓房的门、门楼外的路牌
 	PlainMill.interactables(p_parent)                # 水磨坊与粮仓（6.3b）：磨坊、粮仓的门、南门外的路牌
+	PlainCamp.interactables(p_parent)                # 塞弗林营地（6.3c）：营地口的路牌
+	PlainPeople.build(p_parent)                      # 主线第 3–4 步（6.3d）：麦渡的老贝恩和伊达男人的坟、营地里的奥迪隆、哨兵、跟车的铁匠
+	for n in p_parent.get_children():                # 门、路牌、伊达男人的坟远了不画（6.7a；远处的山、河、地平线上的树是直接挂在区域上的，不能动）
+		if n is Door or n is RoadSign:
+			_cut_far(n, DETAIL_FAR)
+		elif n is MeshInstance3D and str(n.name) == "IdaGrave":
+			n.visibility_range_end = SMALL_FAR
 	var st := ChunkStreamer.new()
 	st.name = "Streamer"
 	st.host = p_parent
@@ -72,6 +85,13 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	pl._jobs(st)
 	print("IC_PLAIN sync ms=%.0f field_ms=%.0f chunks=%d tex=%s" % [float(Time.get_ticks_usec() - t0) / 1000.0, field_ms, st.chunks.size(), textures_ready()])
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
+
+
+static func _cut_far(node: Node, dist: float) -> void:
+	if node is GeometryInstance3D and (node as GeometryInstance3D).visibility_range_end == 0.0:
+		(node as GeometryInstance3D).visibility_range_end = dist
+	for ch in node.get_children():
+		_cut_far(ch, dist)
 
 
 static func spawn_points() -> Dictionary:
@@ -204,7 +224,7 @@ func _collision() -> void:
 	village.collision_layer = 1
 	village.collision_mask = 0
 	parent.add_child(village)
-	for so: Array in PlainVillage.solids() + PlainAbbey.solids() + PlainManor.solids() + PlainMill.solids():
+	for so: Array in PlainVillage.solids() + PlainAbbey.solids() + PlainManor.solids() + PlainMill.solids() + PlainCamp.solids():
 		var vs := CollisionShape3D.new()
 		var vb := BoxShape3D.new()
 		vb.size = so[1]
@@ -262,6 +282,7 @@ static func clear_cache() -> void:
 	PlainVillage.clear_cache()
 	PlainAbbey.clear_cache()
 	PlainManor.clear_cache()
+	PlainCamp.clear_cache()
 	_mat = null
 	_water_mat = null
 	_sky_mat = null
@@ -383,11 +404,24 @@ func _jobs(st: ChunkStreamer) -> void:
 			jobs.append_array(PlainAbbey.jobs_for(r, reduced_motion))             # 坠星院：围墙、门房、教堂和钟楼、回廊、菜园、宿舍、抄经室（6.2b）
 			jobs.append_array(PlainManor.jobs_for(r, reduced_motion))             # 洛蒙德庄园：围墙和门楼、主楼、仓房、水井、院子里的东西（6.3a）
 			jobs.append_array(PlainMill.jobs_for(r, reduced_motion))              # 水磨坊与粮仓：院墙、磨坊、水轮和木槽、三座粮仓、院子里的东西（6.3b）
+			jobs.append_array(PlainCamp.jobs_for(r, reduced_motion))              # 塞弗林营地：指挥帐、帐篷、熔炉车、营火、空粮车、马、木桩、旗（6.3c）
+			for k in range(2, jobs.size()):               # 地形、树以外的活：搭完以后大网格远处换单色那份（FarLod），门板远了不画（6.7a）
+				jobs[k] = _with_lod.bind(jobs[k])
 			st.add_chunk("%d_%d" % [cx, cz], r, jobs)
 			z += cs
 			cz += 1
 		x += cs
 		cx += 1
+
+
+static func _with_lod(root: Node3D, job: Callable) -> void:
+	var before := root.get_child_count()
+	job.call(root)
+	for i in range(before, root.get_child_count()):
+		var ch := root.get_child(i)
+		FarLod.apply(ch, HOUSE_FAR, SMALL_FAR)
+		for b: Node in ch.find_children("*", "StaticBody3D", true, false):    # House 里的门板（不进可交互层的那种）
+			_cut_far(b, DETAIL_FAR)
 
 
 ## 一块里的树、柳、篱笆、麦垛、木栅（6.1b，PlainFlora）
@@ -608,11 +642,14 @@ static func map_spec() -> Dictionary:
 	shapes.append_array(PlainAbbey.map_shapes())
 	shapes.append_array(PlainManor.map_shapes())
 	shapes.append_array(PlainMill.map_shapes())
+	shapes.append_array(PlainCamp.map_shapes())
 	shapes.append({"k": "road", "pts": _strip(PlainLayout.BRIDGE[0], PlainLayout.BRIDGE[1], PlainVillage.BRIDGE_W * 0.5), "label": "木桥"})
 	return {"bounds": PlainLayout.BOUNDS, "shapes": shapes, "exits": [], "zones": [
 		{"name": "麦渡", "place": "maidu", "pts": _circle(PlainLayout.VILLAGE, PlainLayout.VILLAGE_R + 10.0)},
 		{"name": "坠星院", "place": "abbey", "pts": _circle(PlainLayout.ABBEY_SITE, 34.0)},
 		{"name": "洛蒙德庄园", "place": "manor", "pts": _circle(PlainLayout.MANOR, PlainLayout.MANOR_R + 14.0)},
+		{"name": "水磨坊与粮仓", "place": "mill", "pts": _rect(PlainMill.RECT.grow(8.0))},     # 6.3c 补：6.3b 漏了这一块，站在磨坊南门的路牌前出发不了
+		{"name": "塞弗林营地", "place": "camp", "pts": _circle(PlainLayout.CAMP, PlainLayout.CAMP_R + 6.0)},
 		{"name": "金穗平原", "pts": PackedVector2Array([Vector2(-150, -130), Vector2(150, -130), Vector2(150, 130), Vector2(-150, 130)])},
 	]}
 
@@ -620,6 +657,10 @@ static func map_spec() -> Dictionary:
 static func _strip(a: Vector2, b: Vector2, half: float) -> PackedVector2Array:
 	var side := (b - a).normalized().orthogonal() * half
 	return PackedVector2Array([a + side, b + side, b - side, a - side])
+
+
+static func _rect(r: Rect2) -> PackedVector2Array:
+	return PackedVector2Array([r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)])
 
 
 static func _circle(c: Vector2, r: float) -> PackedVector2Array:

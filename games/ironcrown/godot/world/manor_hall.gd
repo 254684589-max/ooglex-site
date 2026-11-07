@@ -3,7 +3,7 @@ extends RefCounted
 ## 洛蒙德庄园的大厅（路线图 6.3a；STORY.md 6.2「大厅里炉火很旺，桌上摆满吃的——和对岸是两个世界」）：原创布局。
 ## 主楼底层，屋里 14 × 9 米、5 米高：石墙、石板地上铺着长毯、木梁顶。
 ##   北墙一座巨大的石壁炉（火烧得正旺，屋里热得要脱斗篷），炉罩上挂着绿底金麦束的旗；中间一张长桌，桌上摆满了——整只烤的、一摞摞面包、
-##   几碗苹果、奶酪、酒壶和杯子，吃剩一半的也没人收；东头一层木台上是女家主的高桌和高背椅（伊莎贝拉，6.4 放人）；
+##   几碗苹果、奶酪、酒壶和杯子，吃剩一半的也没人收；东头一层木台上是女家主的高桌和高背椅（伊莎贝拉站在那儿，6.3d）；
 ##   西墙一幅挂毯（金色的麦田），墙上四支火把、桌上一排蜡烛；南墙两扇窗、一扇门。
 ## 室内的光不跟时段走；窗玻璃按时段换颜色（Inn.glass）。坐标：原点在屋里地面中心，北 = -Z；出口门在南墙（z = +4.5），出去站在主楼门外（plain 的出生点 manor_door）。
 
@@ -46,6 +46,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_decor(parent, reduced_motion)
 	_colliders(parent)
 	_lights(parent, reduced_motion)
+	people(parent)
 	var exit := Door.make(EXIT_NAME, DOOR_W, 2.4, false)
 	exit.verb = "离开"
 	exit.to_area = "plain"
@@ -54,6 +55,22 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	parent.add_child(exit)
 	var s: Array = SPAWNS.front
 	return Transform3D(Basis(Vector3.UP, deg_to_rad(float(s[1]))), s[0])
+
+
+## 大厅里的人（6.3d，主线第 3 步）：女家主伊莎贝拉站在东头木台上、高桌和高背椅之间（手边那张没写完的信）；管家塞缪尔捧着账站在门边
+const ISABELLA := [Vector3(5.95, 0.3, -0.75), 90.0]
+const SAMUEL := [Vector3(-2.6, 0.0, 3.4), 0.0]
+
+
+static func people(parent: Node3D) -> void:
+	for it: Array in [["isabella", "伊莎贝拉·洛蒙德", ISABELLA, "3e5442"], ["samuel", "管家塞缪尔", SAMUEL, "4a4238"]]:
+		var n := Npc.make(str(it[1]), [], Color(str(it[3])))
+		n.name = "Npc_" + str(it[0])
+		n.dialogue_area = "plain"
+		n.dialogue_id = str(it[0])
+		n.position = (it[2] as Array)[0]
+		n.rotation.y = deg_to_rad(float((it[2] as Array)[1]))
+		parent.add_child(n)
 
 
 static func map_spec() -> Dictionary:

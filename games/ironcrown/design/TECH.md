@@ -952,6 +952,214 @@ godot/
 - `Plain.build` 载入时先读 `Look.mat("roof" / "plaster" / "castle")`：第一栋 House 在分帧的活里才读石板瓦和灰泥贴图，那一块 77 毫秒。平原机位 13 个（11 磨坊院子里、12 北墙外）；`bench_areas.js` 加磨坊里面。旅行地图：磨坊 `area = plain`、出生点 `mill`、「南门外的路牌」。
 - **测试**：`mill` 组 11 项（布局；旅行和登记；分块搭完、最慢一块 < 60 毫秒；水轮在转；门；穿过南门；北墙缺口走得过去；出了磨坊走得动；磨坊里面：出口、齿轮、油灯、本地地图、机位）。
 
+### 4.73 塞弗林营地（路线图 6.3c，2026-11-05）
+
+- **`world/plain_camp.gd`（`PlainCamp`）**：营地在 `PlainLayout.CAMP` (108, −100) 压平的那块上（半径 22 米），顺着大车道摆：`at(u, v)` 把「沿路往东北 u 米、往路的东南边 v 米」换成世界坐标（`ALONG` / `SIDE` 是两段路方向的平均，`YAW_ALONG` −35.2° 面朝砧山，`road_basis()`）。东西：
+  - 指挥帐 `PAVILION`：八面帆布墙（1.7 米）、红白相间的圆锥顶（3.9 米）、檐口红布垂边带齿、中柱顶上铜球和小三角旗；朝路那面是门（`_pav_door()` 取八边形里中点方向最接近路的那面），两片门帘系到两边；八根拉绳和木桩。里头：八边形干草铺、中柱上挂的油灯（`PavilionLamp`，4.2 米小光源）、桌上的地图和酒壶杯子（让开中柱）、两张折凳、行军床、箱子（6.5「摄政的信」放这儿）。碰撞：七面墙各一个盒子（门那面空着）、中柱、桌子、床、箱子——走得进去、从背后走不进去。
+  - 人字帐篷 `TENTS` ×6：两片斜面、两边矮墙、后山墙封死、门那头两片门帘半掀（里头黑、铺着干草），立杆、横杆、六根拉绳和木桩，斜面脚下一道积雪；门都对着路。
+  - 熔炉车 `FORGE`：四轮大车（`_wagon_body`：底板、挡板高度可调、两根车轴、十六段木头拼的轮圈、八根辐条、车辕放在雪里），车斗上泥砌的炉膛（土坯贴图）、炭火、炉口、铁皮烟囱冒烟（`Atmos.smoke`）、皮风箱、车尾挂的火钳锤子；车旁树墩上的铁砧（砧面、砧角、收腰）和打了一半的枪头、淬火桶、一捆铁条、两袋炭；`ForgeFire` 7.5 米 + 光晕。
+  - 营火 `FIRE`：一圈石头、木柴、炭火、三脚架吊着一口锅（汤稀得见底）、两根圆木凳；`CampFireLight` + 光晕 + 烟。
+  - 空粮车 `WAGONS` ×4（同 `_wagon_body`，车斗里只有一层薄雪和叠起来的空麻袋）、拴马桩 `HITCH` 和四匹马（`_horse`：MeshKit 搭的身子、胸臀、脖子、头、耳朵、四条腿和蹄子、尾巴、鬃毛、红马衣带金边；两匹低头吃草）、横木上两副马鞍。
+  - 朝庄园那边两排削尖的木桩（`STAKES_U` = −17，路两边各一排、斜着指向西南，后头一根横木串起来；路当中留着车道）、两面高杆上的红底铁砧托冠旗（`Decor.banner` 新图案 `anvil`：砧面、砧角、收腰、底座，砧面上一顶冠用镶边色——塞弗林家的旗用金边）、兵器架和两面红盾、桶箱子、两垛干草、劈好的柴。
+  - 材质：帆布 `canvas()` 用 Poly Haven 的粗麻布照片 `chapters/ch3/tex/hessian_380`（本色提亮、红的压成暗红、3.5 米铺一次——0.9 米、2 米近看有摩尔纹；双面），营地的木头 `_wood()` 是 `Look.mat("timber")` 提亮（旧木板照片在阴天里把车画成一团黑）。`Plain.build` 载入时先读帆布贴图（`PlainCamp.mats()`）。
+  - 每样一件活：指挥帐、帐篷（路两边各一个网格）、熔炉车、营火、空粮车、马、木桩、旗、零碎（路两边各一个网格）、柴。
+  - **绘制调用**：`_build()` 把一件活里纯色的材质（绳子、干草、皮子、马、铁、金……，没贴图、不自发光、单面）用 `MeshKit.flatten` 压成一个表面、颜色写进顶点色，带贴图的一种一个表面；熔炉、营火的实时光进 `night_light` 组（黄昏、夜里亮；白天靠自发光和光晕，取暖的 `light_source` 不变）。实测电脑中画质：营地口机位 210 → 174；营地东北头往回看 574 → 542（营地整个关掉是 438，超预算主要在庄园、村子那边，6.7 以前处理）。碰撞同步建（`MaiduSolids`）；营地口路牌 `CampSign`（「往庄园 · 往砧山」）。
+- 出生点 `camp`（木桩外头的大车道上，面朝营地）；平原机位 15 个（13 营地口、14 营地东北头往回看）；地图：指挥帐、六顶帐篷、熔炉车。旅行地图：营地 `area = plain`、出生点 `camp`、「营地口的路牌」。
+- **补 6.3b 漏的**：地图册的「区块」（`Plain.map_spec` 的 zones，`AreaMap.place_at` 用它判断站在旅行地图上哪个地点）没加磨坊——站在磨坊南门的路牌前「要先回到地图上的地方才能出发」。加上「水磨坊与粮仓」（院子外扩 8 米）和「塞弗林营地」两块。
+- **测试**：`camp` 组 8 项（布局：都在压平的地上、不压路、地是平的、指挥帐门朝路、出生点在木桩外；旅行：从庄园能去、从麦渡要先到庄园、营地口和磨坊南门的路牌都在各自的地点里；分块搭完、最慢一块 < 60 毫秒；路牌和帆布贴图；新开在营地口；顺着路穿过木桩走进营地；从门帘走得进指挥帐、背后是墙）。
+
+### 4.74 第三章主线第 3–4 步（路线图 6.3d，2026-11-05）
+
+- **对话**（`data/dialogue/plain.json`，紧凑格式：一个节点一行）：`isabella`（`busy` 不到 `to_manor` 不见客 → `greet` / `know` / `nod` / `tenants` → `deal`：设 `ch3_isabella_deal`、主线到 `sides`；之后 `after`）、`samuel`（`greet` → 谈过以后 `out`：设 `ch3_samuel_hint` → `again`）、`bain`、`odilon`（主线到 `sides` / `choose` 以前都是 `early`；`bain/grave` 设 `ch3_bain_grave`、`odilon/order` 设 `ch3_odilon_order`）。主线 `ch3_main` 新阶段 `sides`、`choose`；旗标登记进 `flags.json`。
+- **两边都见过**：`PlainPeople.sides_heard()`（主线在 `sides`、两个旗标都有 → `choose`）；`main._on_dialogue_closed` 里同 `_heirs_heard()` 一起调（`_ch3_sides_heard`）。
+- **`world/plain_people.gd`（`PlainPeople`）**：`Plain.build` 同步摆——老贝恩 `BAIN`、伊达男人的坟 `GRAVE`（麦渡村西头空屋东北角外：三层土包、背阴半边一点雪、一块浅色劈木板和刀刻的暗痕；`Examine`「一座小坟」，听过老贝恩以后多一句）、奥迪隆（`odilon_at()`：指挥帐里桌子朝门那边、面朝门帘）、两个哨兵（营地口木桩后头、路两边）、跟车的铁匠（铁砧旁）。路人只说一句。
+- **`ManorHall.people`**：伊莎贝拉站在东头木台上高桌和高背椅之间（`ISABELLA`，木台高 0.3 米），塞缪尔在门边（`SAMUEL`）。
+- 外观（`looks.json`）：伊莎贝拉（女装、深绿）、塞缪尔（深褐、灰发）、老贝恩（深色粗布、灰胡子）、奥迪隆（**同第一章「塞弗林家的信使」**，拿着木杯、喝酒的动作）、塞弗林家的哨兵（游侠那套染暗红）、跟车的铁匠。
+- 字体子集（`tools/build_font.py`）补「缪」和前几步漏的「崽、篝、赭、饷」：4595 个字形，旧子集的字一个不少。
+- 小修：指挥帐里两张折凳排成一列（改成桌子两头各一张）、铁砧的碰撞盒和画面差 0.4 米（对齐）。
+- **测试**：`ch3sides` 组 9 项（没去过门房以前三个人都不搭理；伊莎贝拉的条件 → `sides`；管家欲言又止；先营地后麦渡、先麦渡后营地都到 `choose`；说过以后换话；平原上五个人站在地上没卡住、奥迪隆在指挥帐里、坟能看；大厅里伊莎贝拉在木台上、塞缪尔在门边）。
+
+### 4.75 第三章的人物与对话（路线图 6.4，2026-11-05）
+
+- **对话**（`plain.json`，`start_if` 按顺序第一个对上的）：
+  - `isabella`：`held`（主线 `to_manor` 且 `ch2_convoy` = taken / burned、还没 `ch3_released`；口才 14 `held_talked` / 失败 `held_firm`、赔 20 银币 `held_paid`、`held_deal`——都设 `ch3_released`）→ `greet_lawful`（`ch2_aid` = granted；有 `ch2_requisition` 多一句 `eld`）→ `greet`；`greet` 和 `greet_lawful` 都有落魄骑士之后的 `courtesy`（洛蒙德家 +3）、伊薇特当家的 `furs`。
+  - `samuel/out` 多一条 `ledger`（`ch1_ledger` = kept → `ch3_samuel_ledger`）。
+  - `odilon`：`greet_alric` / `greet_ivette`（要先谈过伊莎贝拉）、所有开场都有 `envoy`（`heard_envoy` → `ch3_odilon_envoy`）。
+  - `porter/greet_north`（`ch2_aid` = refused）；`bain/greet_rob`（`beacon_grain` = rob）。
+  - 新人 `ida`（`greet` / `who`；看过坟以后 `knows` → `ledger`；`ch3_ida_met`）、`boatman`（渡工之子 `guild` → `when`：`ch3_night_boats`、渡工行会 +3；别的出身只有 `manor`「不归我管」）。
+  - 旗标八个登记进 `flags.json`。
+- **人**：`PlainAbbey.people` 排队第四个（`IDA_IN_QUEUE`）换成伊达（白天）；`PlainPeople`：夜里伊达在坟边（`IDA_NIGHT`）、渡口的船夫（`BOATMAN`，跪着敲船边的冰）、抄经室门旁的 `Examine`「抄经室的门缝」（`listen_text()`：`ch2_roll` = served / `ch2_fire` = lit / 出身 deserter / 都不是，四种；设 `ch3_ignaz_heard`）；`Scriptorium.IGNAZ` 灰袍修士跪在东墙下（只说一句，6.8 加对话）。
+- 字体子集补「愣、咧」（4597 个字形）。
+- **测试**：`ch3people` 组 18 项（扣人三条路、被打散的不扣、护粮的、征粮令、老礼、皮毛、别的出身没有这两句；账册；奥迪隆三种开场和认出信使；门房；老贝恩；伊达；船夫两种出身；门缝四种话；白天伊达在队里、夜里在坟边只有一个；船夫站在渡口；伊格纳兹跪在抄经室）；`ch3open` 的「8 个人排队」把伊达算进去。
+
+### 4.76 第三章支线（路线图 6.5，2026-11-05）
+
+- **任务**（`quests.json`）：`ch3_ida`（`find` → `tell`）、`ch3_soup`（`ask_manor` → `tell_porter`）、`ch3_apprentice`（`decide`）；线索 `ledger_reuben`。旗标八个（`ch3_ida`、`ch3_ledger_key` / `_open` / `_picked` / `_read`、`ch3_soup`、`ch3_apprentice`、`ch3_letter_place`）。
+- **对话**（`plain.json`）：`ida`（`ledger` → 「我去替你看」开支线 → `go`；`waiting`；`tell` 阶段 `told` → `witness`：`ch3_ida` = witness、支线完成；`after`）；`samuel/key`（`find` 阶段在三个开场都有；口才 13 `key_given` / `key_refused`，有 `ch3_samuel_ledger` 的 `key_pressed`）；`isabella/soup`（`ask_manor` 阶段：口才 13 `soup_yes` / `soup_no`、15 银币 `soup_bought`）；`porter`（`again` 开支线 `soup_ask`；`tell_porter` 阶段 `soup_done`）；新 `apprentice`（`why` 开支线；`free`：塞弗林家 −5、`ch3_letter_place` / `hand`：+3）。
+- **`MillInside.LEDGER_CHEST`**：账房东南角的铁皮箱（木箱两道铁箍一把锁、碰撞盒、`Examine`：动作字「撬锁 / 开锁 / 翻账」）；`open_ledger()`：有钥匙直接开、没钥匙 `GameState.check("ch3_ledger_pick", "stealth", 13)`（一次定），开了给 `LEDGER_TEXT`、`find` 阶段加线索并到 `tell`。
+- **`PlainPeople`**：学徒缩在熔炉车车辕边（`ch3_apprentice` 没定的时候才摆；缩小到 0.88）。
+- 字体子集补「廿、殁」（4599 个字形）。
+- **测试**：`ch3side` 组 14 项（伊达开支线；撬锁一次定；压塞缪尔拿钥匙；开账箱翻到鲁本；念给伊达听；口才要钥匙；粥：门房开、买两袋、告诉门房、口才说动；学徒放走 / 交出去；学徒站着没卡住、放走以后不在；账箱在账房里）。
+
+### 4.77 第三章的抉择（路线图 6.6，2026-11-05）
+
+- **对话**（`plain.json`，选项都要主线在 `choose`）：`isabella/after` →「今晚我守磨坊」`stand`（`ch3_side` = lomond、`to_mill_lomond`）；`captain/greet` 同一条（要 `ch3_isabella_deal`）；`odilon/again`、`belly` →「今晚我跟你们走」`join`（severin、`to_mill_severin`），之后 `joined`；`bain/again` →「先开仓」`open`（tenants、`open_granary`），之后 `go_open` / `opened`，别的路 `chosen`；新 `captain`（`block`：口才 14 `aside`（`ch3_captain_aside`）/ `refuse`；`ready` / `enemy` / `aside_again` / `after_open`）；伊莎贝拉开过仓以后 `grudge`。
+- **`PlainPeople`**：护院头目（`CAPTAIN`，南门里）、两个护院（`MILL_GUARDS`，北墙缺口）、第一座粮仓门边 `Examine`（`PRY_AT`；`pry_granary()`：主线在 `open_granary` 才撬得开——`ch3_granary_opened`、`change_rep("lomond", -20)`、没 `ch3_captain_aside` 就 `ch3_guards_left`、主线到 `to_mill_tenants`；别的时候只是 `PlainMill.GRANARY_DOOR_TEXT`）。
+- 战前自动存档：主线推进（`quest_event` advanced）本来就自动存档，选定那一下存的就是战前档。
+- **测试**：`ch3choice` 组 7 项（守磨坊两种说法、跟塞弗林家、先开仓硬撬、口才说动护院头目、没选开仓时仓门锁着、护院头目和两个护院没卡住）。
+
+### 4.78 金穗平原的绘制调用优化（路线图 6.7a，2026-11-05）
+
+- **先量**：临时测试按机位把「镜头看得见、可见距离以内的网格 × 表面」按东西分组（留成测试的 `plain_surfaces()`，比网页上量到的绘制调用少一百上下——阴影、天空、粒子、灯的那几遍不在里头）。坠星院回廊 530、营地东北头往回看 513，人占 120–150。
+- **人**（`actors/npc.gd`）：`_dress` 里 `Looks.finish` 以后 `SkinMerge.merge(m.skeleton)`（衣服、头、头发、胡子合成一块，同士兵 B.6b；合成的那块也 `LOD_FAR` 以外不画、不投影）——**所有区域的人**。代价：合成的网格没有导入时自动生成的 LOD，近处的人图元多（平原机位最多 30 万，预算 50 万）。新 `label_far`：名字多远以外不画。平原上的人 `far_end = Plain.NPC_FAR`（70）、`label_far = Plain.LABEL_FAR`（16）。
+- **`world/far_lod.gd`（`FarLod`）**：`apply(root, dist, small_far)`——`root` 自己和底下表面 ≥ 3、包围盒对角线 ≥ 3 米的网格各做一份 `far_copy`：普通表面压成一个顶点色表面（带贴图的用材质 meta `avg`：`Look.mat`、`PlainVillage._photo`、`PlainCamp.canvas` 记的是缺贴图时的退回色，也就是贴图的平均颜色），自发光 / 不受光 / 透明 / 双面的表面原样留着；原来那份 `visibility_range_end = dist`、远处那份 `begin = dist`、不投影。小东西（对角线 < 3 米、表面 ≥ 2）`visibility_range_end = small_far`。压一栋长屋 0.5–2.5 毫秒。
+- **`Plain._jobs`**：地形、树以外的活都包一层 `_with_lod`：活搭完以后这件活新加的节点走 `FarLod.apply(ch, HOUSE_FAR = 80, SMALL_FAR = 120)`，House 里的门板（`StaticBody3D` 底下）`DETAIL_FAR` = 80 米以外不画。同步搭的门、路牌、伊达男人的坟也是 80 / 120 米。远处的山、河、地平线上的树（直接挂在区域上）不动。
+- 实测（`bench_areas.js`，软件渲染）：电脑中画质 15 个机位 39–360 次（原来 62–586），手机自动 41–215。
+- **测试**：`plainperf` 组 3 项（远处单色那份 ≥ 30 份、都 ≤ 4 个表面、80 米以外才画、不投影，搭建最慢一块 < 60 毫秒；平原上的人都合成了、70 米以外不画，门远了不画；两个最重的机位 < 300 个表面）。
+
+### 4.79 磨坊之战：两波与胜负（路线图 6.7b，2026-11-06）
+
+- **`world/mill_battle.gd`（`MillBattle`）**：同堤道夜战（4.9a）的做法。`pending()`：第三章、`ch3_side` 定了、主线在 `to_mill_*`、没有 `ch3_mill`；`due()` 再加夜里。`at_muster(xz)`：守的一方在磨坊院子外扩 6 米以内、跟塞弗林家的在营地口出生点 14 米以内。`night_arrival()`：[出生点 `mill_night`（东门里）/ `mill_raid`（东门外麦茬地）, 入夜那句话]。
+  - `setup(world)`：先拿掉白天站在磨坊的护院头目和两个护院 NPC（`remove_child`：同一帧要烘焙导航，站着的 NPC 是静态碰撞体）；`Battle`：两边 `lomond`（绿底金带；佃农粗布）/ `severin`（铁灰、红带）；据点规则 `breach_side = severin`、`breach_limit = 6`、`breach_test = at_granary_door`（三座粮仓门外 1 米、半径 `DOOR_R` 3 米）——守的一方是失守条件，跟塞弗林家的那一边就是「抢到了」。守点用 `Soldier.guard_post`（`_guard`：东门、缺口、粮仓三处）；小队 6 人默认跟随。第一拨前 10 人上场、后 10 人 `WAVE1B_AT` 15 秒、第二拨（奥迪隆是队长）`WAVE2_AT` 60 秒从缺口北边来；跟塞弗林家的，老贝恩和 8 个佃农 `WAVE_TEN_AT` 30 秒从南门外来（守方援军）。`captain_down(severin)` 记 `ch3_odilon_down`。
+  - `ready_to_start()`：到了 `START_AFTER` 4 秒。`finish(winner)`：`ch3_mill` held / lost（守的一方）、seized / repelled（跟塞弗林家）、声望、主线 `after_mill`；`dawn_arrival(res)`。
+- **`main.gd`**：区域搭好以后 `MillBattle.setup`；区域那次通用的导航之后，有 `MillBattle` 就只烘焙 `NAV_BOUNDS`（磨坊那一片，746 个多边形、40–50 毫秒，兵绕着院墙、从门和缺口走；整张平原太大）；`_mill_tick`（每帧：天黑以前走到集合的地方 → `travel("plain", 出生点, "night")`；到了几秒 `start_battle`；`?mill=` 截图参数先把人放到开打的地方）；`_on_battle_ended` 平原那一段（写结果、自动存档、`DAWN_DELAY` 以后清晨回到磨坊）。
+- **平衡**（没人指挥的模拟：玩家站着不动，8 倍速跑到分出胜负）：第一版守磨坊 22 秒失守（据点是整片院子，第一拨路过就算）→ 粮仓门口；再一版 26 秒全军溃逃（东门四个人对二十个，士气连锁）→ 东门 6 人、缺口 2 人、出生点挪到东门里、第一拨分两股、民兵为主；改完 39 秒时攻方倒 19、守方倒 6。
+- 实测（软件渲染，电脑中画质）：开打 20 秒 285–307 次绘制、15 万图元；逻辑一帧 45 毫秒——这个浏览器一帧要补 8 步物理（一帧 600 毫秒），一步约 5.7 毫秒（军阵预算 10 毫秒）。
+- **测试**：`millbattle` 组 19 项（黄昏没仗、走到磨坊 / 营地口入夜；守磨坊的阵容和三拨、奥迪隆是队长、白天的 NPC 拿掉了；导航：东门外到粮仓、北边进缺口走得通；到了几秒开打、开打前自动存档；第一拨往东门压；6 个人摸到粮仓门口失守、主线推进、打过了不再有仗；开仓两种阵容；跟塞弗林家的阵容和援军；四种结果的旗标和声望）。
+
+### 4.80 「去那儿」、水渠绕后、背景大军（路线图 6.7c，2026-11-06）
+
+- **`Battle.order(o, at := Vector3.INF)`**：新命令 `goto`「去那儿」（没给 `at` 下不了）；`goto_point`；每个兵 `anchor = _goto_slot(slot, at)`（以那一点为中心横排，每排 `line_cols` 人，面朝下令时你看的方向）；拴绳和站位同「原地坚守」（`leash` / `post_of` 认 `hold` 和 `goto`）。按键 `order_goto` = 4；触屏 `ORDER_BTNS` 多一个「去那儿」（四个按钮在「令」左边排开，手机 360 宽也不出屏幕）；右上角小队一行写「1 跟随 2 坚守 3 冲锋 4 去那儿」。
+- **`main.order_point()`**：相机往前 `ORDER_RANGE` 40 米的射线碰到的第一个东西往回退 0.8 米，再往下落到地上；什么都没碰到就是 40 米那一点落到地上。
+- **水渠绕后**（`MillBattle`）：`WAVE2_AT − HINT_BEFORE` 时 `battle.wave_note` 提示一句；第二拨到了（`wave2[0]` 进了场）以后 `FLANK_WINDOW` 25 秒以内、小队有 `FLANK_MIN` 3 个人在 `FLANK`（缺口外西北角，顺着院子西边的水渠绕出来的地方）`FLANK_R` 8 米以内：第二拨每人士气 −`FLANK_HIT` 25、`ch3_flanked`、提示一句。院子里到 `FLANK` 的导航路径 25 米。
+- **背景大军**（`build_far_host()`）：`FAR_BLOCKS` 三块 × 8 排 × 10 列 = 240 个人（一个 MeshKit 搭的剪影：身子、头、两条腿、一根长枪，压成一个顶点色表面），一个 `MultiMeshInstance3D`（`FarHost`）；120 支火把（`FarTorches`：光晕材质 `Look.halo` 复制一份，广告牌、加法混合、不受雾挡、**关掉随距离淡出**）；9 面旗一个网格（`FarBanners`）。开打以后 `_far_place(t)` 一秒五次：往南（磨坊）压 `FAR_ADVANCE` 14 米 / `FAR_ADVANCE_T` 90 秒、上下轻晃、火把跟着人。不投影、不进军阵。无头测试里多实例的位置读不回来（渲染器是空的），测试看 `far_base` 和 `far_t`。
+- 实测：开打 72 秒中画质 289 次绘制（原来 285）。
+- **测试**（都在 `millbattle` 组，共 25 项）：背景大军 240 人、120 支火把、旗、压到最近也离磨坊 70 米；「去那儿」没指地方下不了、指了站位都在附近；准星指的地方；院子里顺着水渠绕到缺口外走得通；第二拨到了、小队在那儿：士气掉、`ch3_flanked`、之前有提示；背景大军开打以后在动。`touch` / `squad` 组的按钮排法、小队那一行跟着改。
+
+### 4.81 第三章的罪证（路线图 6.8a，2026-11-06）
+
+- **物品**（`items.json`，任务物品）：`granary_ledger` 洛蒙德家的粮仓账本、`regent_letter` 摄政的信。
+- **从哪儿来**：`MillInside.open_ledger()`——有了 `ch3_mill` 以后：`ledger_takeable()`（held / seized，或者开过仓）给账本、`ch3_ledger_taken`；失守了「账箱被砸开……空了」；没打以前照旧是 6.5 的偷看。动作字跟着换（拿走账本 / 看看）。`MillBattle.finish`：held 且 `ch3_odilon_down` → 信。`PlainPeople.letter_chest_open()`（指挥帐床边箱子 `LetterChest`，位置同 `PlainCamp._pav_furniture()[2]`）：要 `ch3_letter_place` 或者 `ch3_side` = severin，且打完了（`ch3_mill`）；`ch3_letter_taken`。船夫 `night_ledger`（有 `ch3_mill`、渡工之子那条线以后）`give_item` 账本、`ch3_boat_ledger`。
+- **交给谁**（主线 `after_mill` → `vigil`）：院长 `gregor/dawn`（`take_item` 账本 / 信 / 两样，`south_evidence` lomond / severin / both、`ch3_evidence_to` = abbey；账本洛蒙德家 −10）或 `keep`（kept）；老贝恩 `bain/dawn`（`read_ledger` / `read_letter` / `read_both`，tenants；账本洛蒙德家 −20、信塞弗林家 −10；`ch3_ida` = witness 时 `ida_speaks`）。`PlainPeople.evidence_settle()`（main 每段对话结束时调）：kept 的按手里有什么补 `south_evidence`。
+- **佃农挡路**（`MillBattle`，跟塞弗林家）：老贝恩那一拨的兵留一份（`tenants`）；`WAVE_TEN_AT + SPARE_AFTER` 时小队命令是「原地坚守」= 让开：`ch3_tenants_spared`，佃农 `guard_post` 挪到第一座仓门口、`guard_r` 3.5；`at_granary_door` 让开以后不算第一座。提示写在援军那句话里。
+- **测试**：`ch3evidence` 组 14 项（打倒奥迪隆得信；守住了拿账本、再开是空的；两样交给院长；失守了账箱空、没有信；不知道信在哪不撬、学徒说过拿得到；把信念给佃农；开过仓的失守也拿得到账本；船夫给夜船那本；当着全村念账本、伊达作证；跟院长说留着、按手里记；跟塞弗林家佃农挡路让开）。
+
+### 4.82 守灵夜与章末（路线图 6.8b，2026-11-06）
+
+- **院长放人**：`plain.json gregor` 的 `start_if` 前面加 `ch3_end` → `bell`、`to_ignaz` → `key_given`、`vigil` → `vigil`；罪证那几句「抄经室里那个人……」直接去 `vigil`（原来的「天亮透了再来」删了）。`vigil` 的选项按条件出现：`ch3_evidence_to` = abbey 且 `south_evidence` lomond / severin / both、`ch3_side` = lomond 且 `ch3_mill` = held、`ch3_soup` = done；口才 14 那一条总在，失败去 `refuse` →「在门洞外等」`free_wait`（不卡主线）。每个 `free_*` 都给 `scriptorium_key`、记 `ch3_monk_freed`、主线 `to_ignaz`。
+- **抄经室的门**：`PlainAbbey.interactables` 里 `ScriptoriumDoor` 设 `to_area` scriptorium、`key_item` scriptorium_key（`Door` 原有的钥匙锁：没钥匙还是那句门缝里的话，有钥匙开锁进区域）。
+- **伊格纳兹**：`Scriptorium.build` 先 `Chapter3.settle()`（`poor_deed()` 按开仓、念给佃农、粥、伊达作证、帮学徒、让开佃农记 `ch3_poor_deed`——对话条件只有「且」，「任一」在代码里算成一个旗标），人改成 `dialogue_id` ignaz。对话 `turn`（按 `ch2_fire` 三选一）→ `deed`（有 `ch3_poor_deed` 才有「说出你做过的事」，没有的口才 14 / 走）→ `night` → `ring` / `ring_known`（`knows_double_key_ring`）→ `after_night` → `vial`（`ch3_vial_heard`；逃兵 / 补守 / 默认三句）→ `done`；`silent` 是没做过事又说不动的短版。`done`、`silent` 都记 `ch3_vigil`、主线 `ch3_end`、`{"ending": "ch3"}`（`EndingPanel.ENDINGS` 加了 ch3）。
+- **晨钟与章末**：`main._on_dialogue_closed` 见到 `pending_ending` = ch3 调 `_ch3_bell()`：字幕一句、开了声音的用 `Bell.make_stream()` 隔 2.2 秒敲三下；`ch3_end_after`（7 秒，测试里调短）后记 `ch3_done`、自动存档、`show_ending("ch3")` → `EndingPanel.open_chapter3`（`Chapter3.recap()` 按站哪边、开仓 / 护院撤走、水渠、磨坊结果、奥迪隆、罪证交给谁、伊达、粥、学徒、在门洞外等写；`hook()` 写双钥港、戒指、誓瓶）。第四章没登记，不出「继续」。`?ending=ch3`（抄经室或平原）直接出画面，截图用。
+- **测试**：`ch3vigil` 组（院长五条放人的路、只剩口才时的选项、说不动也拿得到钥匙；交账本接着问；抄经室的门有钥匙才进得去；替挨饿的人做过的六件事；伊格纳兹两条完整的路和不肯说的短版；抄经室里听完：先钟后画面、章末标题、没有「继续」、自动存档、回顾和钩子；另一种站法的回顾）。
+
+### 4.83 双钥港地图底座（路线图 7.1，2026-11-06）
+
+- **布局**（`world/harbor_layout.gd`，第四张连片地图，260 × 220 米、每 1 米一个采样点）：灰鲸河从北往南越来越宽（半宽 9 → 22 米，河床 -3.8）；西岸是城（码头边 +2.2，往西北抬到 +5），城南边的石岸 2.5 米内陡降到泥滩（-1.3），泥滩外降成海底（-4）；东岸盐沼（+0.4）往南也成了泥滩和海；沙嘴（沙脊 +1.4）从东岸伸向西南，尽头一块礁石（+2.6，7.2 放灯塔）；两条潮沟（半宽 3.2、沟底 -1.7、岸宽 0.9 米，几乎是竖的）从城里通到河里。地点 `KEY_HOUSE`、`GUILD`、`PRISON`、`QUAY`、`FISH` 和六条铺石的街先记在布局里（7.2 放房子）。高度场、贴图分布预先算好放进第四章章节包（`tests/gen_harbor_field.tscn`，改了布局要重跑（7.2 起是个场景：Harbor 用到的房子、门这些类读自动加载）；测试会比对）。
+- **潮汐**（`Harbor.TIDE`）：清晨 -1.45、白天 -0.5、黄昏 -1.05、夜里 -2.1（白天涨、夜里退，STORY.md 7.7）。`Harbor.tide()` 按 `Daypart.current`（不直接读 GameState：生成高度场的 `--script` 里没有自动加载），`Daypart.apply` 在 harbor 里调 `Harbor.set_tide`：水面整片上下挪、地面着色器的湿线跟着走。`low_tide()` = 潮位低于潮沟底（金库之夜的路，7.5）。
+- **脚下**（`Surface`）：高度图碰撞带 `surface_at`（`HarborLayout.surface_at`）——潮位以下是新的 `shallows`（浅水，速度 ×0.45、不能跑），露出来的泥滩、沟底是 `mud`。
+- **深水走不进去**：`Harbor.deep_wall_faces()` 每 2 米一格，比 `DEEP_Y`（-2.6）低的格子和不低的格子之间立一面竖墙，合成一个凹多边形碰撞体（层 5「边界」，两面都挡，730 个三角形）；墙顶 +1.0，码头面（+2.2）、以后的栈桥上走得过去。
+- **水面**（`shaders/harbor_water.gdshader`）：地图里每 2 米一格的网格（比涨潮高一截的台地格子不要），顶点 UV2.x 记着底下的地面高度，着色器按 `tide - 地面` 算水深——浅处颜色淡、半透明、贴岸一道白沫，深处有一点涌；不读深度缓冲（兼容渲染器上不稳）。地图外一圈大平面当作深海（`FarSea`）。
+- **地面**（`shaders/harbor_ground.gdshader`）：五层（泥雪地、铺石、泥、沙、潮线卵石）；顶点色 r 铺石、g 沙、b 遮蔽；泥按高度、湿按潮位；陡的地方（码头石岸、潮沟两壁）用铺石贴图竖着投成石墙（第一版投错了轴，墙上一道道拉丝，截图）。
+- **天空与时段**：`overcast_soil_puresky`（压得很低的海上阴云，三章的天各不一样），`Daypart.AREA_PRESETS.harbor`（雾比平原近、偏青灰）；曝光 0.76（0.85 时城里一片雪发白）；夜里天空亮度 0.42（0.2 时一片黑）。寒冷 0.35（湿冷）。
+- **章节**：`Chapters.LIST[4]`（`ch4` 包、从 `quay` 上岸、白天、制作中），`PLAYABLE` 仍是 2（`?preview=4` / `?area=harbor` 能看）；导出预设 `Chapter4`，`build_web.sh` 多导一个 `ch4.pck`（约 14 MB）。旅行地图第四章翻到新的一页「河口」（`Travel.REGIONS.coast`、`ui/travel_map.gd _draw_coast`：海、浪、灰鲸河、沙嘴、西岸一格格的房子），地点木栈码头、钥楼街（能去）、沙嘴灯塔、冠城（还没做好）；新图标 port / lighthouse / city。
+- **性能**：软件渲染、中画质 64 次绘制（还没有房子）；搭 20 块地形，同步部分约 0.4 秒。
+- **测试**：`harbor` 组 21 项（登记、贴图、高度场一致、城 / 泥滩 / 潮沟 / 河 / 海 / 沙嘴的高度、出生点、潮位与退潮、浅水和泥、深水墙、碰撞、上岸、分块、入夜水面退下去、机位、天空、本地地图、旅行地图「河口」）。
+
+### 4.84 双钥港的城（路线图 7.2，2026-11-06）
+
+- **房子按街自动摆**（`HarborTown.houses()`，种子 7202，结果缓存）：沿每条街每 10 米左右两边各试一栋（宽 6.5–9、进深 7–9.5，山墙朝街），放不下先缩成 7 × 6 再试；每栋后面隔 1.6 米的窄巷背对背再试一栋。放得下 = 四角、四边中点、中心都在台地上（地面 > 1.2 米）、离潮沟、河边、南边石岸、街、钥楼 / 会馆 / 债牢 / 鱼市空地 / 告示 / 路牌、出生点、机位、别的房子都有空。现在 72 栋（多加了三条小巷：西边、城中南北、西南），算一次 30 多毫秒。
+- **一块一个网格**：同一块（64 米）里的房子用一个 `MeshKit` 搭（`_merchant`：底层石砌、上层灰泥木构或全石砌、正面每层一排窗、背面一扇、门洞、门楣、两扇带窗扇的小窗、两片瓦坡和前后两个山墙三角、屋脊积雪、烟囱），挂在组 `house` 的节点下面（`Daypart.set_windows` 找子节点 `Mesh`，按时段整块亮 / 灭灯）——几种材质就是几次绘制（≤ 12），不像平原上一栋一个网格（6.7a 绘制数顶到预算）。远处同样换单色那份（`Plain._with_lod`）。
+- **钥楼、会馆、债牢、灯塔**：钥楼正面朝北对着钥楼街、背墙落在北潮沟岸上（`key_front()` 按潮沟在那儿的 z 算），背墙一直砌到沟底，墙脚一道铁栅水门；四坡顶。会馆用 `_merchant` 放大（15 × 10），旗是新图案 `oar`；钥楼的旗是新图案 `keys`（`Decor.banner`）。灯塔：12 边形石塔往上收、塔顶铁栏和火盆、一层发光的暗红炭、一盏很弱的点光源（组 `night_light`，夜里才亮）。
+- **码头和水边**（`_works_kit`，每块一个网格）：5 座栈桥（避开两条潮沟口；桥面能站，两边和尽头一道栏）、街跨潮沟处的石桥（`bridges()` 按街和潮沟的线段求交，5 座）、两道潮沟口的木闸（闸板吊着，涨潮能进船）、一圈栏石（码头边、潮沟两边、南边石岸上沿，每 2 米一段；桥头、栈桥口、石阶口、闸口留空；看得见的 0.45 米高，碰撞 1.05 米高：别一脚跨下码头掉进深水出不来）、两道下泥滩的石阶（那一段地形在 `HarborLayout.height` 里改成直的斜坡，最陡 < 40°，碰撞就是地形）、晒鱼架、三座盐仓、沙嘴外搁浅的运粮船。河口两条单桅船同步搭，组 `tide_float`，`Harbor.set_tide` 跟着潮位挪。
+- **同步**：碰撞（`HarborTown.solids()`：房子、钥楼、会馆、债牢、灯塔、盐仓、栈桥、桥、闸墩、栏石、零碎，约 400 个盒子，18 毫秒）、门（一部分人家的门锁着，各一句话；钥楼、会馆、债牢、灯塔的门）、两块路牌（旅行地图出发的地方）、钥楼门口清账的告示（`Examine`，看过记 `ch4_notice_read`；不直接写 GameState：生成高度场时没有自动加载）。整个同步部分约 0.5 秒（第一版 3.1 秒：摆房子、栏石反复调带噪声的 `HarborLayout.height`，改成读高度场并缓存）。
+- **高度场生成**改成场景 `tests/gen_harbor_field.tscn`：Harbor 现在用到的房子、门、陈设这些类读自动加载，`--script` 模式下没有自动加载、编不过。
+- **性能**：软件渲染、中画质 153–195 次绘制（钥楼街、鱼市），低画质 153。
+- **测试**：`harbor` 组加 10 项（房子数量与不压街 / 潮沟 / 石岸、一块一个网格、钥楼会馆债牢灯塔、灯和船、船随潮起落、门路牌告示、栈桥和桥能站、石阶坡度和栏石、本地地图上的房子和标签）。
+
+### 4.85 双钥港的室内（路线图 7.3，2026-11-06）
+
+- **一个搭屋子的办法**（`world/harbor_rooms.gd`）：五个区域 `key_hall`、`key_vault`、`guild_hall`、`dock_tavern`、`debt_prison` 的尺寸、墙的材质、出口门、出去的出生点写在 `SPEC` 里；`_room` 按 `[墙, 中心, 宽, 下沿, 上沿]` 把四面墙切开（下沿 0 = 门，> 0 = 窗：玻璃 `Inn.glass` 按时段换色、窗台），南北墙两头各伸出一个墙厚包住四角；`_colliders` 地板、顶、四面墙（南墙留门洞）；`_exit` 出口门（`to_area` harbor）。每间一个 `MeshKit` 网格 + `Decor` 陈设 + 两三盏灯（`Tavern.FireLight`）和补光；能看的东西是 `Examine`（看过的记旗标 `ch4_board_read`、`ch4_crown_seen`、`ch4_tide_read`、`ch4_debts_read`）。
+- **金库**：石阶贴着北墙往西上、钻进顶上一个黑洞（整道石阶一个碰撞盒，人爬不上去），石阶脚下一扇不画门板的门（`Door.panel = false`）「上去」回大厅（出生点 `vault_stair`）；大厅那边下金库的铁门锁着；东墙的铁栅水门是锁着的 `Door`（7.5 开）。
+- **门**：双钥港上钥楼、会馆、债牢的门从「锁着、一句话」改成通进屋里的门；码头街西边新盖「咸潮」酒馆（`HarborTown._tavern`，`_merchant` 一层版 + 招牌、两盏壁灯），房子自动摆放时绕开它。门外四个回来的出生点 `keyhouse_door`、`guild_door`、`prison_door`、`tavern_door`（测试查它们不卡在房子里）。
+- **登记**：`Areas`（名字、室内、第四章）、`AreaMap.spec`、`main` 的区域分派、`data/regions.json`「双钥港一带」（室内的 host 都是 harbor——一带页只认室外区域当 host）。
+- **分帧**：一块里房子多的那件活（14 栋）加上远处单色那份要 90 多毫秒——改成一件活最多 8 栋（`Houses_x_z_n`），最慢一块 26.5 毫秒。
+- **测试**：`harborrooms` 组（五间都登记了、进门站在地上、本地地图的出口都通到登记过的出生点、出口门通回双钥港；金库的石阶、水门、铁匣；大厅的铁门、黑板、天平；会馆的潮汐表、船期板；酒馆；债牢的账；双钥港上四扇门进得去、门外四个出生点是空地）。
+
+### 4.86 双钥港的人与开场白（路线图 7.4，2026-11-06）
+
+- **对话**：`data/dialogue/harbor.json`（科尔温、塞拉斯、莫德、科妮莉亚、塞缪尔、奥迪隆、赫尔曼、罗薇娜、埃德里克），照平原的紧凑格式（一行一个节点）；前几章的不同按 `start_if`（塞拉斯按 `prologue_edric`、科妮莉亚按 `origin`）和 `text_if`（塞缪尔按 `ch3_evidence_to` / `south_evidence` / `ch3_mill`，奥迪隆按 `ch3_side` / `ch3_odilon_down`，罗薇娜按 `ch2_fire`）、选项条件（`has_item` 借据 / 摄政的信 / 粮仓账本，`flag` ch3_vigil）。
+- **人站在哪**（`world/harbor_people.gd`）：城里只说一句的人沿栈桥头（站在桥面上：`_floor_y` 认栈桥）、码头街、鱼市、钥楼街摆（14 个，同步放、远了不画）；屋里的人由 `HarborRooms.build` 调 `HarborPeople.build_room`（每间 2–7 个）。北境的使者按 `valen_heir` 换人，节点叫 `Npc_north_envoy`——叫 `Npc_herman` 时作息表（`data/schedules.json` 第一章的赫尔曼）按编号把他删了（测试查出来的）。
+- **主线**：`ch4_main`（to_keyhouse → envoys → way）。`main._story_progress` 在第四章进了双钥港或那几间屋子时开始主线、提示「制作中」；`HarborPeople.envoys_heard()` 在每段对话结束时查（同第三章 `PlainPeople.sides_heard`）：三家都开过价就推进到 way。
+- **打扮**：`data/looks.json` 加 14 套（科尔温、莫德、科妮莉亚、搬运工、卖鱼的女人、账房先生、等船的人、船工、收债的打手、喝酒的船工、看门的、约斯特、门房、酒馆老板娘），回来的老面孔（奥迪隆、塞缪尔、塞拉斯、埃德里克、赫尔曼、罗薇娜）用原来那套。
+- **测试**：`ch4people` 组（开场主线、城里和四间屋子里的人都站在空地上、北境派谁、序章没放走埃德里克的会馆里没有他、科尔温三步、勒索过的先提银币、借据、塞拉斯四种开场、三家开价和主线推进、罗薇娜说火、渡工之子、听过守灵夜的问莫德、进场提示）。
+
+### 4.87 把冠弄出来（路线图 7.5，2026-11-06）
+
+- **赎 / 换**：`harbor.json colwin` 在主线 `way` 时从 `deal` 开始：选项按 `ch4_envoy_*`、`has_item` 出现，洛蒙德、北境两条是口才检定（北境按 `ch4_note_shown` 分 15 / 11 两条，同一个检定编号）；赎记 `ch4_crown_way = bought`、`ch4_buyer`，换记 `traded`、`ch4_traded`、`give_item iron_crown`，都推进到 `to_city`。之后 `start_if` 换成 `settled` / `stolen_after`。
+- **偷**（`HarborTown.canal_descend`）：西边那座跨北潮沟的桥（`canal_bridge()`：`bridges()` 里在北潮沟上、离钥楼最近的那座）桥面上一个 `Examine`「翻下潮沟」。条件依次：主线在 `way`、还没定；`Harbor.low_tide()`（夜里）；`ch4_redline` 或 `ch4_guild_kin`；`sluice_key` 或撬锁（`check ch4_gate_pick` 潜行 13，一次定）。过了就记 `ch4_gate_open`、`ch4_vault_entered`，再定一回潜行 14（`ch4_vault_sneaky`），返回 `kind = travel` 到 `key_vault` 的出生点 `gate`（`Examine` 的结果和门一样走 `main._on_interacted`）。不直接写 GameState（读自动加载）：生成高度场的场景里也要编得过。
+- **金库之夜**（`HarborRooms.vault_night()`：进了水门、主线在 way / to_city、冠还没定或是偷的）：东墙水门变成通双钥港 `keyhouse_gate`（桥南头）的门；`HarborPeople.room_people("key_vault")` 放莫德（`maud_vault`：睡着 / 醒着 / 打完 / 拿走了）和三个雇佣兵（组 `encounter:vault_guards`、`enemy_kind swordsman`，「拔剑」= `{"fight": "vault_guards", "win": "ch4_vault", "value": "caught"}`）；铁匣（`crown_box()`）要 `ch4_maud_keys` 才打开，`ch4_vault` 没设过的记 `unseen`。
+- **塞拉斯的人**（`HarborPeople.silas_men_due()`：序章勒索过、主线在 envoys / way、`ch4_thugs` 没设）：码头街上三个打手，组 `encounter:silas_men`（clubber）；付钱、说走用 `leave` 效果撤掉。
+- **截图参数** `?vault=1|sneak`（配 `area=key_vault&spawn=gate`）：直接到金库之夜。
+- **测试**：`ch4crown` 组（赎塞弗林、北境两档难度、借据换不来、信换冠、换完再问；埃德里克的钥匙、红线；涨潮 / 陷泥 / 进金库 / 还没到这一步；金库之夜的人和水门；莫德开铁笼；没听过守灵夜只能拔剑、三个雇佣兵动手；打完拿钥匙；睡着拿钥匙；塞拉斯的人只堵勒索过的、付钱走人）。
+
+### 4.88 冠城一角（路线图 7.6，2026-11-06）
+
+- **地图**（`CrownLayout` / `CrownCity`）：照双钥港（4.83）的结构——布局类只放数据和 `height()` / `masks()`，`CrownCity` 搭高度场、碰撞、深水墙、河面（`tide()` 恒为 `RIVER_Y`，不跟时段）、远景；`tests/gen_crown_field.tscn` 生成 `chapters/ch4/crown_field.res` / `crown_paint.res`（进第四章章节包）。180 × 160 米、9 块。岛西岸在 x ≈ -44，往东 `island_y()` 平滑上坡到广场（+9.4 米）；街面、广场抹平。
+- **城**（`CrownTown`）：房子沿斜街和三条小巷两边自动摆、后排背对背，再拿一张网格把街巷背后的空地挤满（共 101 栋；`_fits` 查离石岸、街、广场、议事厅、钟楼、城墙、两栋认得出的房子、出生点、机位）；房子用 `HarborTown._merchant` 搭、一块最多 8 栋合一个网格，坡上靠下那头补一圈石墙基。两栋认得出的（面包坊、玛蒂尔达的小酒馆）由 `CrownLayout.street_front(段, 段上位置, 哪边, 宽, 深)` 算正面；`matilda_door` 出生点按它重算。城墙 `wall_runs()`（西岸一道、往北往南拐一截、收口砌到石岸边），桥门两座塔、门洞上的铁闸；石桥 `bridge_spans()` 每 3 米一段跟着 `CrownCity.bridge_y()` 拱起来；岛南北石岸上沿一圈栏石（碰撞高 1.05 米）。王宫和东头的城（`palace()`）是地图外一个不投影的网格。
+- **人**（`CrownPeople`）：同步放（远了不画）。进 `crown_city` 或冠城的两间屋：主线 `to_city → in_city`（`arrived()`）；对话结束查 `matilda_heard()`（`ch4_seats_heard` + `ch4_drinks_heard` → `council`）。斜街伏击：`ambush_due()`（有 `iron_crown`、没有 `ch4_ambush`），组 `encounter:crown_ambush`（领头 swordsman、其余 clubber），`ch1_outlaws = ally` 少一个；`StreetTrigger`（Area3D，层 2 的玩家走进来就 `main.open_dialogue`，只开一次，正在对话 / 打的时候不开）。
+- **室内**：`HarborRooms.SPEC` 加 `council_hall`、`matilda_inn`，新键 `out`（出口回哪个区域，默认 harbor）；陈设在 `CrownRooms`，人在 `CrownPeople.room_people`（对话文件 `crown`）。
+- **旅行**：路线可以带 `needs = {quest, stages, why}`（`Travel.needs_met`，读自动加载里的 GameState）：木栈码头 → 冠城要主线在 to_city / in_city / council，到了是 dawn。
+- **时段**：`Daypart.AREA_ALIAS = {crown_city: harbor}`（同一套预设），`Daypart.apply` 给冠城换阴云天空（`CrownCity.apply_sky`）。
+- **测试**：`crown` 组（登记、高度场一致、地形、出生点、碰撞、块、河面与远景、石桥与桥门、房子、晾衣绳、门和路牌、告示、出生点不卡、栏石、时段、本地地图、两间室内与出口、旅行门槛）、`crownpeople` 组（到了 in_city、人站在空地上、排队七人、玛蒂尔达推进到 council、伏击三人 / 两人、走进去自己开对话、说走与了结）。
+
+### 4.89 第四章支线（路线图 7.7，2026-11-06）
+
+- **灯塔的火**（`ch4_lighthouse`）：双钥港出生点 `lighthouse` 在灯塔礁石上；码头、礁石上各一个摆渡的船工（`HarborPeople.talkers()`，对话 `ferry` / `ferry_back` 用 `goto` 在同一区域里换出生点）。老蒂博（`thibault`）开任务；科尔温的选项按 `quest_stage` 出现（口才 13）；`HarborTown.oil_barrels()`（盐仓边的 `Examine`，潜行 12，没过卡斯韦尔家 −5，油都到手）。亮了：`refresh_lighthouse()` 把塔顶的光调亮、火盆发光调高（`_lighthouse` 搭的时候和对话结束时各调一次）；`canal_descend()` 里 `boat` = 亮了且黄昏 / 夜，跳过退潮和红线（锁照旧）。`CrownPeople.arrived()` 在 to_city 进冠城时没亮就记 `dark`；`second_wreck()`（主线 in_city / council、没亮）在 `ships()` 里多搭一条歪着的船（组 tide_float）。
+- **礁石**：`HarborLayout.height()` 的河道刻深乘上离灯塔的距离（半径 7 米以内不刻），重新生成 `harbor_field.res` / `harbor_paint.res`；`HarborTown.rock_ring()` 一圈 20 段矮石栏（碰撞 1.05 米、画面跟灯塔一个网格）。
+- **债牢里的人**（`ch4_debtor`）：约斯特改成有对话的（`jost`，`ch2_roll = served` 换开场白）；付钱、科尔温（口才 14）在对话里；`HarborRooms.cell_lock()`（牢门上的 `Examine`，夜里、潜行 14 一次定，过了返回 `travel` 回到债牢门口——屋子重搭，牢里就空了）。
+- **玛蒂尔达的人**（`ch4_matilda`）：`CrownPeople.talkers()` 放面包师（面包坊门东边），米洛只在 `bakery` / `lane` 时缩在第三条小巷尽头；`back` / `found` 以后他在酒馆里（`room_people`）。
+- **测试**：`ch4side` 组（摆渡、礁石上站得住、接任务、科尔温没说动、盐仓被看见、交油点灯、塔顶光变亮、黄昏坐船进潮沟要锁、没亮下不去、上冠城记 dark 和沉船；约斯特认出补名的人、压科尔温、付钱、白天撬不了、夜里撬开；玛蒂尔达托付、面包师、米洛站位、米洛回来、大主祭）。
+
+### 4.90 冬议与章末（路线图 7.8，2026-11-06）
+
+- **人**：`CrownPeople.council_due()`（主线 council、没有 `ch4_done`）时 `room_people("council_hall")` 多放五家的人（站在各自椅子前 1.15 米、脸朝屋子当中；节点名 `Npc_council_*`，不用 `Npc_ivette` 一类——作息表按那些编号删人）、大主祭、塞拉斯、旁听席（埃德里克、约斯特按旗标）；`build_room` 先 `council_open()` 定 `ch4_debt_reader`，再放一个 `StreetTrigger`（栏杆前一条 14 × 1.2 米）。
+- **多人在场的对话**：沿用一个说话人（`speaker = 冬议`），每个节点的台词里写「名字：……」，按旗标的部分拆成一串节点（每个节点自己的 `text_if`），一个「（……）」往下走——不用组合爆炸。冠那一步的选项按 `ch4_crown_way`、`ch4_buyer`、`has_item`、`ch4_ev_*` 互斥出现；借据那一步按 `ch4_debt_reader` 出一个选项。最后一个节点 `quest_done`、`daypart dusk`、`ending ch4`。
+- **罪证**：对话只能设旗标，`ch4_ev_severin` / `ch4_ev_lomond` 两个分开记；对话结束时 `council_settle()` 合成 `ch4_evidence_used`。
+- **章末**：`main._ch4_bell()`（同第三章的晨钟：`hud.say`、三声 `Bell.make_stream`、`ch3_end_after` 秒后设 `ch4_done`、自动存档、`show_ending("ch4")`）；`EndingPanel.open_chapter4`（回顾、钩子在 `quest/chapter4.gd`；第五章没登记，不出「继续」）。
+- **截图参数**：`?area=council_hall&council=stolen|bought`（直接到冬议）、`?ending=ch4`。
+- **测试**：`ch4council` 组（十个人站在空地上、谁念借据、走到栏杆跟前自己开、戈兰 / 伊薇特 / 偷的三句、当众拿出信、闭嘴的拿不到冠、交给大主祭一路到章末、`ch4_evidence_used`、黄昏钟和章末画面、第四章完以后只剩差役、赎给北境、赎给塞弗林却拿出信、换的自己留着自己念）。
+
+### 4.91 第五章开头：钟楼底下（路线图 8.1，2026-11-06）
+
+- **章节**：`Chapters.LIST[5]`（pack 用 `ch4`：冠城那几处在第四章的包里；北上的余火高地是第二章的包，进区域时按 `Areas.pack_chapter` 再下）；第四章章末的「继续」在 `playable_chapter >= 5` 时出现（`?preview=5`）。
+- **开场**：进冠城或冠城的屋子时 `CrownPeople.ch5_begin()`（有 `ch4_done`、主线还没开）开 `ch5_main`；`crown_holder` 空的（没有第四章存档）记 `kept`、给铁冠。场景比主线先搭，所以钟楼门口的大主祭按「`ch4_done` 且主线还没开」或「主线在 to_bell」放。
+- **钟楼的门**：`BellDoor` 原来锁着；`CrownTown.refresh_bell_door()` 看 `ch5_bell_open` 开锁、通 `church_archive`（搭的时候和对话结束时各调一次；`Door._ready` 会把 `verb` 改回「打开」，所以在 refresh 里设）。
+- **档案馆**：`HarborRooms.SPEC` 一间，`out = crown_city`、出口 `bell_door`；陈设在 `CrownRooms.church_archive`；人在 `CrownPeople.room_people`。`wardens_settle()` 进屋时定拦不拦（`ch4_ambush = beaten` 且冠不在教会：`ch5_simeon_block`；不然 `ch5_wardens = let`）；三个修士一组 `encounter:wardens`。
+- **测试**：`ch5archive` 组。
+
+### 4.92 北上（路线图 8.2，2026-11-06）
+
+- **旅行地图**：`Travel.region_of_chapter(5) = "north"`；地点可以带 `also: {页: {pos}}`，在别的页上也画（`places()` 收进来、`pos_of()` 取那一页的位置；`TravelMap` 两处取位置都改用它）。冠城 → 羊脊村带 `needs`（主线 north 起）。`CrownPeople.ch5_begin()` 把 `GameState.chapter` 抬到 5。
+- **第五章叠在余火高地上**（`world/winter5.gd`，`Winter5.active()`：第五章、主线在 north / vial / well / descend / oath）：`main` 在高地搭完以后 `Winter5.setup(world)`（`WinterWell` 之后）——让第二章的 `WinterWell` 摆上里圈（`_build_ring`），自己再摆外圈 `OUTER_N` 个真人模型（同里圈的做法：麻衣、光脚、定住、远了不画）；诺伯特（`ch2_fire = lit` 在塔顶火盆边，不然在井边）；同行的人（`companion()` 按 `crown_holder`，只说一句的 NPC）；井口 `Examine`（`lid()`）。进区域时 `arrived()`（north → vial，记 `ch5_companion`；冠回了钥楼的给铁冠）。`HighlandBeacon.people` / `BeaconTower.build` 在 `Winter5.active()` 时不放第二章的诺伯特；`BeaconTower` 那时在小铁炉放炉灰的 `Examine`（`hearth_vial()`）。
+- **测试**：`ch5north` 组。
+
+### 4.93 冬井底（路线图 8.3，2026-11-06）
+
+- **室内**：`HarborRooms.SPEC["well_bottom"]`（`out = highland`、出口 `well`），新列表 `WELL_AREAS`：陈设 `WellRooms.build`、人 `WellRooms.build_people`、本地地图 `WellRooms.map_shapes`。冰是半透明带一点自发光的材质（`_ice`），星铁是深色高金属（`_star`）；屋顶不画（井很深，往上是黑的）。四个火盆先是 `Examine`（8.4 换成能点的）。进来时主线 descend → oath。
+- **测试**：`ch5well` 组。
+
+### 4.94 封誓（路线图 8.4，2026-11-06）
+
+- **谁来留名**：石台（`WellRooms.altar()`）在主线 oath、还没开始时返回 `{"kind": "dialogue", "area": "winter", "id": "oath"}`（`main._on_interacted` 照对话开）；选项按 `ch5_companion`、`ch3_vigil` 出现，定下 `oath_taker` 和 `ch5_ritual`；不封了直接设 `ch5_oath = none`、`ending = long_winter`。
+- **封誓**（`OathRitual`，挂在井底的 world 下）：对话结束时（`main._ch3_sides_heard`）和进井底时 `OathRitual.start()`（`due()`：主线 oath、`ch5_ritual`、还没结果）。`step(delta)` 每帧：火盆燃料倒数、每 `INTERVAL` 秒从 `PATH[0]`（石阶顶）放一个长眠者（真人模型，麻衣）沿 `PATH` 走，进了点着的火盆 `FIRE_R` 以内往回退 1.2 秒；到石台 `REACH_R` 以内算够着；`FAIL_AT` 个就 failed，撑满 `DURATION` 就 sealed。`settle()` 写 `ch5_oath`、`ending`（sealed：heir → new_king，其余 → crownless_spring；failed → long_winter），主线到 after。火盆的 `Examine`（`WellRooms.brazier`）调 `feed()`，`verb_fn` 按状态显示「点着火盆 / 添柴」。
+- **测试**：`ch5oath` 组（石台开对话、能留名的人、妮尔、伊薇特留名开始、头一个长眠者、火盆点着和添柴、一直点着封上了、一直不点断了、你自己留名封上是无冠之春、不封了是长冬、第二十一烽的人引开一半）。
+
+### 4.95 结局（路线图 8.5，2026-11-06）
+
+- **结局画面**：`EndingPanel.open_final()`（`ENDINGS` 加 `final`；`_show` 每次把副标题复位成「开发中」，`open_final` 再改成「终」）；标题、正文、回顾在 `quest/chapter5.gd`（`ending()` 读 `ending` 旗标，`text()` 按 `oath_taker`、`ch5_oath` 分变体，`recap()` 每章一两句）。
+- **什么时候出**：封誓结束（`main._on_oath_finished` → `_finale()`）或者不封了（对话效果 `{"ending": "final"}` → `_finale()`）：等 `ch3_end_after` 秒，设 `ch5_done`、主线「冬井」完、自动存档、`show_ending("final")`。
+- **测试**：`ch5end` 组（新王的正文和回顾、结局画面、别的章末照旧「开发中」、无冠之春三种和长冬、不封了直接出）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

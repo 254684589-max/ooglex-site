@@ -103,6 +103,8 @@ var cold_shown := ""            # HUD 上现在写的那行寒冷
 var first_tide: FirstTide       # 第一夜潮水（5.4c）：主线到「插火把」「潮水」时在高地搭起来
 var empty_night := false         # 两手空空那一夜正在熬（5.8）
 var well_end_after := WELL_END_AFTER   # 到了冬井边多久章末（全流程测试里调短，5.9）
+var ch3_end_after := 7.0                # 晨钟响起多久出第三章章末画面（6.8b；测试里调短）
+var ch3_bell_player: AudioStreamPlayer = null
 var streamer: ChunkStreamer     # 连片地图的分块搭建（4.4 鹭沼）；别的区域为空
 
 signal reload_requested         # 测试里 main 不是当前场景，读档时改发这个信号
@@ -144,6 +146,74 @@ func _ready() -> void:
 			GameState.set_flag("ch2_ambush", _query("rob"))
 			GameState.set_stage("ch2_main", "rob_ready")
 			GameState.daypart = "night"
+		if _query("mill") in ["lomond", "tenants", "tenants_left", "severin"] and not Engine.has_meta("ic_mill_param_done"):
+			Engine.set_meta("ic_mill_param_done", true)       # 截图用（6.7b）：?area=plain&spawn=mill_night|mill_raid&mill=lomond|tenants|tenants_left|severin 直接到磨坊之战那一夜（配 &cwskip=秒 开打并快进）
+			var ms := _query("mill")
+			GameState.chapter = 3
+			if not GameState.quest_active("ch3_main"):
+				GameState.start_quest("ch3_main")
+			GameState.set_flag("ch3_side", "tenants" if ms == "tenants_left" else ms)
+			if ms.begins_with("tenants"):
+				GameState.set_flag("ch3_granary_opened")
+				GameState.set_flag("ch3_guards_left" if ms == "tenants_left" else "ch3_captain_aside")
+			GameState.set_stage("ch3_main", {"lomond": "to_mill_lomond", "severin": "to_mill_severin"}.get(ms, "to_mill_tenants"))
+			GameState.daypart = "night"
+		if _query("vault") in ["1", "sneak"] and not Engine.has_meta("ic_vault_param_done"):
+			Engine.set_meta("ic_vault_param_done", true)      # 截图用（7.5）：?area=key_vault&spawn=gate&vault=1|sneak 直接到金库之夜（莫德醒着 / 睡着了）
+			GameState.chapter = 4
+			if not GameState.quest_active("ch4_main"):
+				GameState.start_quest("ch4_main")
+			for f in ["ch4_colwin_met", "ch4_envoy_severin", "ch4_envoy_lomond", "ch4_envoy_north", "ch4_vault_entered"]:
+				GameState.set_flag(f)
+			if _query("vault") == "sneak":
+				GameState.set_flag("ch4_vault_sneaky")
+			GameState.set_stage("ch4_main", "way")
+			GameState.daypart = "night"
+		if _query("ch5") in ["north", "well", "bottom", "ritual"] and not Engine.has_meta("ic_ch5_param_done"):
+			Engine.set_meta("ic_ch5_param_done", true)        # 截图用（8.2）：?area=highland&ch5=north 刚到高地 / well 誓瓶在手、去井边（配 &fire=lit|out、&holder=valen…）
+			GameState.chapter = 5
+			GameState.set_flag("ch4_done")
+			if _query("holder") != "":
+				GameState.set_flag("crown_holder", _query("holder"))
+			if _query("fire") in ["lit", "out"]:
+				GameState.set_flag("ch2_fire", _query("fire"))
+			CrownPeople.ch5_begin()
+			GameState.set_flag("ch5_archive")
+			GameState.set_stage("ch5_main", "north")
+			if _query("ending_kind") in ["new_king", "crownless_spring", "long_winter"]:
+				GameState.set_flag("ending", _query("ending_kind"))
+				GameState.set_flag("oath_taker", "heir" if _query("ending_kind") == "new_king" else "you")
+				GameState.set_flag("ch5_oath", "failed" if _query("ending_kind") == "long_winter" else "sealed")
+			if _query("ch5") in ["well", "bottom", "ritual"]:
+				GameState.add_item("oath_vial")
+				GameState.set_flag("ch5_vial", "norbert")
+				GameState.set_stage("ch5_main", "well" if _query("ch5") == "well" else "descend")
+				if _query("ch5") == "ritual":
+					GameState.set_flag("oath_taker", "you")
+					GameState.set_flag("ch5_ritual")
+					GameState.set_stage("ch5_main", "oath")
+				GameState.daypart = "night"
+		if _query("ch5") in ["1", "archive"] and not Engine.has_meta("ic_ch5_param_done"):
+			Engine.set_meta("ic_ch5_param_done", true)        # 截图用（8.1）：?ch5=1 第四章刚完（冠在你手里）；?ch5=archive 已经跟大主祭下了钟楼
+			GameState.chapter = 5
+			GameState.set_flag("ch4_done")
+			CrownPeople.ch5_begin()
+			if _query("ch5") == "archive":
+				GameState.set_flag("ch5_bell_open")
+				GameState.set_stage("ch5_main", "to_archive")
+			GameState.daypart = "day"
+		if _query("council") in ["stolen", "bought"] and not Engine.has_meta("ic_council_param_done"):
+			Engine.set_meta("ic_council_param_done", true)    # 截图用（7.8）：?area=council_hall&council=stolen|bought 直接到冬议（偷的冠在你怀里 / 科尔温替塞弗林家带来）
+			GameState.chapter = 4
+			if not GameState.quest_active("ch4_main"):
+				GameState.start_quest("ch4_main")
+			GameState.set_flag("ch4_crown_way", _query("council"))
+			if _query("council") == "stolen":
+				GameState.add_item("iron_crown")
+			else:
+				GameState.set_flag("ch4_buyer", "severin")
+			GameState.set_stage("ch4_main", "council")
+			GameState.daypart = "day"
 		if _query("dawn") in ["lit", "out"] and not Engine.has_meta("ic_dawn_param_done"):
 			Engine.set_meta("ic_dawn_param_done", true)       # 截图用（5.8）：?dawn=lit|out 直接到第二夜过去的早上（劫下了粮 / 被打退了）
 			for f in ["matthias_met", "norbert_met", "norbert_day2"]:
@@ -271,6 +341,12 @@ func _ready() -> void:
 			t = Highland.build(world, Settings.reduced_motion)
 		"plain":
 			t = Plain.build(world, Settings.reduced_motion)              # 金穗平原（6.1a，第三章）
+		"harbor":
+			t = Harbor.build(world, Settings.reduced_motion)             # 双钥港（7.1，第四章）
+		"key_hall", "key_vault", "guild_hall", "dock_tavern", "debt_prison", "council_hall", "matilda_inn", "church_archive", "well_bottom":
+			t = HarborRooms.build(area, world, Settings.reduced_motion)  # 双钥港的室内（7.3）、冠城的两间（7.6）
+		"crown_city":
+			t = CrownCity.build(world, Settings.reduced_motion)          # 冠城一角（7.6，第四章）
 		"waystation":
 			t = Waystation.build(world, Settings.reduced_motion)
 		"beacon_tower":
@@ -302,6 +378,9 @@ func _ready() -> void:
 		ConvoyAmbush.setup(world)                       # 第二夜 · 劫粮（5.7a）：主线「设伏」、还没打过，在伏击段摆好；走到伏击点开打
 		ConvoyEscort.setup(world)                       # 第二夜 · 护粮（5.7b）：主线「护车」、还没走过，三辆车在伏击段下头；到了几秒以后动身
 		WinterWell.setup(world)                         # 白寂边缘的冬井（5.8b）：井一直在；主线「冬井」起井边站着一圈长眠的人、诺伯特在山脊背后等你
+		Winter5.setup(world)                            # 第五章（8.2）：塔顶或井边的诺伯特、井边更大的一圈、同行的人、井口的石盖
+	if area == "plain":
+		MillBattle.setup(world)                         # 磨坊之战（6.7b）：抉择定了、夜里、还没打过，摆好；到了几秒开打
 	if area == "marsh":
 		CausewayBattle.setup(world)                     # 堤道夜战（4.9a）：入夜备战说定了、还没打过，摆好；走到守点开打
 		sleeper = Sleeper.place(world)                  # 家主走了以后回芦栈村（4.10b）：一个说过话的村民夜里没醒
@@ -314,6 +393,9 @@ func _ready() -> void:
 	if nb.has_volume():
 		nav = NavBuilder.bake(world, nb)
 		print("IC_NAV area=%s ms=%.0f polygons=%d" % [area, nav.ms, nav.polygons])
+	if area == "plain" and world.get_node_or_null("MillBattle") != null:    # 磨坊之战：只烘焙磨坊那一片（整张平原太大；同鹭沼营地 4.7c），兵绕着院墙走
+		nav = NavBuilder.bake(world, MillBattle.NAV_BOUNDS)
+		print("IC_NAV area=plain mill ms=%.0f polygons=%d" % [nav.ms, nav.polygons])
 	# 时段（4.2）：区域搭好以后套光（窗户、夜灯、雾带都在了）；画质在后面（月光阴影、泛光开关、雾带减半归画质）
 	daypart = Daypart.effective(area, GameState.daypart)
 	Daypart.apply(self, daypart)
@@ -424,6 +506,12 @@ func _ready() -> void:
 		show_ending.call_deferred("prologue", _query("ending"))
 	elif _query("ending") == "ch2" and area == "highland" and arrived_by == "" and loaded_from == "":
 		show_ending.call_deferred("ch2")                 # 截图用（5.8b）：?ending=ch2 第二章的章末画面（回顾按当前旗标，配 ?well=all）
+	elif _query("ending") == "ch3" and area in ["scriptorium", "plain"] and arrived_by == "" and loaded_from == "":
+		show_ending.call_deferred("ch3")                 # 截图用（6.8b）：?ending=ch3 第三章的章末画面（回顾按当前旗标，配 ?mill=）
+	elif _query("ending") == "final" and arrived_by == "" and loaded_from == "":
+		show_ending.call_deferred("final")               # 截图用（8.5）：?ending=final 全作的结局画面（回顾按当前旗标，配 ?ch5=…&ending_kind=…）
+	elif _query("ending") == "ch4" and area in ["council_hall", "crown_city"] and arrived_by == "" and loaded_from == "":
+		show_ending.call_deferred("ch4")                 # 截图用（7.8）：?ending=ch4 第四章的章末画面（回顾按当前旗标，配 ?council=）
 	if _query("map") == "1" and GameState.chapter >= 1 and not Engine.has_meta("ic_map_param_done") \
 			and (Areas.pack_chapter(area) == 0 or Chapters.content_ready(Areas.pack_chapter(area))):     # 章节包还没到（先铺平地等重新载入）时不开（5.2a）
 		Engine.set_meta("ic_map_param_done", true)     # 截图、冒烟用（4.2）：第一章起直接打开一次旅行地图（每次打开页面只开一次）
@@ -945,7 +1033,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		open_map()
 		get_viewport().set_input_as_handled()
 		return
-	for o in Battle.ORDERS:              # 小队命令（B.2）：1 跟随我 · 2 原地坚守 · 3 冲锋
+	for o in Battle.ORDERS:              # 小队命令（B.2）：1 跟随我 · 2 原地坚守 · 3 冲锋 · 4 去那儿（6.7c）
 		if event.is_action_pressed("order_" + o):
 			if give_order(o):
 				get_viewport().set_input_as_handled()
@@ -1143,6 +1231,23 @@ func _story_progress() -> void:
 		GameState.start_quest("ch3_main")                    # 第三章开场（6.2c）：从麦渡的渡口上岸
 		if Chapters.wip_note_of(3) != "" and hud:
 			hud.toast(Chapters.wip_note_of(3), 7.0)
+	if GameState.chapter == 4 and (area in ["harbor", "crown_city"] or area in HarborRooms.AREAS or area in HarborRooms.CROWN_AREAS) and not GameState.quest_active("ch4_main") and not GameState.quest_done("ch4_main"):
+		GameState.start_quest("ch4_main")                    # 第四章开场（7.4）：从双钥港的木栈码头上岸
+		if Chapters.wip_note_of(4) != "" and hud:
+			hud.toast(Chapters.wip_note_of(4), 7.0)
+	if GameState.chapter == 4 and (area == "crown_city" or area in HarborRooms.CROWN_AREAS):
+		CrownPeople.arrived()                               # 上了冠城（7.6）：主线 to_city → in_city
+	if area == "well_bottom" and world != null:
+		var rit0 := OathRitual.start(world)                 # 封誓到一半读档 / 进来（8.4）：接着封
+		if rit0:
+			rit0.finished.connect(_on_oath_finished)
+	if area == "highland":
+		var note := Winter5.arrived()                       # 第五章（8.2）：北上到了余火高地
+		if note != "" and hud:
+			hud.toast(note, 6.0)
+	if (area == "crown_city" or area in HarborRooms.CROWN_AREAS) and CrownPeople.ch5_begin():
+		if Chapters.wip_note_of(5) != "" and hud:
+			hud.toast(Chapters.wip_note_of(5), 7.0)          # 第五章开场（8.1）：冬议散了
 	if GameState.chapter == 1 and area in ["marsh", "inn"] and GameState.quest_stage("ch1_main") in ["", "to_reedwharf"] and not GameState.quest_done("ch1_main"):
 		GameState.set_stage("ch1_main", "ask_reedwharf")
 	if GameState.chapter == 1 and area == "castle" and GameState.quest_stage("ch1_main") in ["", "to_reedwharf", "ask_reedwharf", "to_blackheron"] and not GameState.quest_done("ch1_main"):
@@ -1156,6 +1261,25 @@ func _heirs_heard() -> void:
 	if GameState.quest_stage("ch1_main") == "hear_heirs" and GameState.has_flag("ledger_asked") and GameState.has_flag("outlaws_asked"):
 		GameState.set_stage("ch1_main", "see_osric")
 		GameState.set_flag("heirs_heard")
+
+
+## 第三章主线第 4 步（6.3d）：老贝恩给你看了伊达丈夫的坟、奥迪隆给你看了摄政的征粮令——两边都见过了，主线到「天黑以前决定站哪边」（顺序随意）
+func _ch3_sides_heard() -> void:
+	PlainPeople.sides_heard()
+	PlainPeople.evidence_settle()
+	HarborPeople.envoys_heard()                     # 第四章主线第 3 步（7.4）：三家的使者都开过价
+	CrownPeople.matilda_heard()                     # 第四章主线第 6 步（7.6）：玛蒂尔达说完了冬议上的椅子和昨夜的酒
+	if area == "harbor" and world != null:
+		HarborTown.refresh_lighthouse(world)        # 灯塔的火（7.7）：跟老蒂博说完当场点着
+	CrownPeople.council_settle()                    # 冬议（7.8）：当众拿出来的罪证
+	if area == "crown_city" and world != null:
+		CrownTown.refresh_bell_door(world)          # 第五章（8.1）：大主祭开了钟楼的门
+	if area == "well_bottom" and world != null:
+		var rit := OathRitual.start(world)          # 第五章（8.4）：石台前定了谁来留名，封誓开始
+		if rit:
+			rit.finished.connect(_on_oath_finished)
+			hud.toast("井口上那一圈人动了。头一个顺着石阶往下走——点着火盆！", 5.0)
+			save_game.call_deferred("auto", true)
 
 
 ## 区域名；连片地图上加你在的那一块：「鹭沼 · 芦栈村」（4.4）
@@ -1469,6 +1593,7 @@ func _on_dialogue_closed() -> void:
 	if not touch_mode:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED    # 最后一次是点选项或按键，浏览器允许重新锁定
 	_heirs_heard()
+	_ch3_sides_heard()
 	if area == "sickroom":
 		Sickroom.wake(world)                                # 黄昏家主醒了（4.8a）
 	var heir := str(GameState.get_flag("valen_heir", ""))
@@ -1511,7 +1636,13 @@ func _on_dialogue_closed() -> void:
 		print("IC_SQUAD hold=%s gate_guard=%s water_gate=%s" % [GameState.get_flag("ch1_hold", ""), GameState.has_flag("ch1_gate_guard"), GameState.get_flag("ch1_water_gate", "")])
 	var ending := GameState.pending_ending
 	GameState.pending_ending = ""
-	if ending != "":
+	if ending == "ch3":
+		_ch3_bell()                                         # 守灵夜听完（6.8b）：先响晨钟，再出章末画面
+	elif ending == "ch4":
+		_ch4_bell()                                         # 冬议散了（7.8）：钟楼的黄昏钟，再出章末画面
+	elif ending == "final":
+		_finale()                                           # 不封了（8.5）：直接是长冬
+	elif ending != "":
 		show_ending.call_deferred(ending)
 	player.interactor.refresh()
 	var t := player.interactor.target
@@ -1570,7 +1701,13 @@ func show_ending(id: String, choice := "") -> void:
 	hud.visible = false                 # 提示、按钮和触屏摇杆都压在结束画面底下会叠字（平板上「挡」「攻」叠在回顾上），先藏起来
 	touch_was_visible = touch.visible
 	touch.visible = false
-	if id == "ch2":
+	if id == "final":
+		ending_panel.open_final(Settings.reduced_motion)                                             # 全作完（8.5）
+	elif id == "ch4":
+		ending_panel.open_chapter4(Settings.reduced_motion, 5 if playable_chapter >= 5 else 0)       # 第四章完（7.8）；第五章开放以前只有 ?preview=5 能继续（8.1）
+	elif id == "ch3":
+		ending_panel.open_chapter3(Settings.reduced_motion, 4 if playable_chapter >= 4 else 0)       # 第三章完（6.8b）；第四章还没有（Chapters 里没登记就不出「继续」）
+	elif id == "ch2":
 		ending_panel.open_chapter2(Settings.reduced_motion, 3 if playable_chapter >= 3 else 0)       # 第二章完（5.8b）；第三章开放以前只有 ?preview=3 能继续（6.2c）
 	elif id == "ch1":
 		ending_panel.open_chapter1(Settings.reduced_motion, 2 if playable_chapter >= 2 else 0)       # 第一章完（4.10b）；第二章开放以前只有 ?preview=2 能继续（5.1a）
@@ -1628,6 +1765,8 @@ func _fetch_area_pack() -> void:
 	var ok := await ensure_chapter(n)
 	Highland.clear_cache()
 	Plain.clear_cache()
+	Harbor.clear_cache()
+	CrownCity.clear_cache()
 	GameState.pending_load = {"scene": area if ok else "frostford", "player": {}}
 	if ok:
 		GameState.pending_load["player"] = {"pos": [player.global_position.x, player.global_position.y, player.global_position.z], "yaw": player.rotation.y, "pitch": player.pitch}
@@ -1888,11 +2027,31 @@ func start_battle() -> void:
 
 ## 给小队下命令（B.2）；没有小队时什么都不做，返回 false
 func give_order(o: String) -> bool:
-	if battle == null or not is_instance_valid(battle) or not battle.order(o):
+	var at := order_point() if o == "goto" else Vector3.INF
+	if battle == null or not is_instance_valid(battle) or not battle.order(o, at):
 		return false
-	hud.toast("◆ 小队：%s" % Battle.ORDERS[o], 2.0)
+	hud.toast("◆ 小队：%s" % Battle.ORDERS[o] + ("（%.0f 米外）" % player.global_position.distance_to(at) if o == "goto" else ""), 2.0)
 	hud.refresh_squad()
 	return true
+
+
+## 「去那儿」指的地方（6.7c）：准星往前 ORDER_RANGE 米以内碰到的地面 / 墙脚；什么都没碰到就是前面 ORDER_RANGE 米那一点落到地上
+const ORDER_RANGE := 40.0
+
+
+func order_point() -> Vector3:
+	if player == null:
+		return Vector3.INF
+	var cam := get_viewport().get_camera_3d()
+	var from := cam.global_position if cam else player.global_position + Vector3(0, 1.6, 0)
+	var dir := -(cam.global_transform.basis.z if cam else player.global_transform.basis.z)
+	var space := player.get_world_3d().direct_space_state
+	var q := PhysicsRayQueryParameters3D.create(from, from + dir * ORDER_RANGE, 1)
+	q.exclude = [player.get_rid()]
+	var hit := space.intersect_ray(q)
+	var p: Vector3 = hit.position - dir * 0.8 if not hit.is_empty() else from + dir * ORDER_RANGE
+	var down := space.intersect_ray(PhysicsRayQueryParameters3D.create(p + Vector3(0, 3, 0), p + Vector3(0, -30, 0), 1))
+	return down.position if not down.is_empty() else Vector3(p.x, player.global_position.y, p.z)
 
 
 ## 军阵试验场打完了（B.1）：只有一方还站着
@@ -1908,6 +2067,17 @@ func _on_battle_ended(winner: String) -> void:
 		get_tree().create_timer(DAWN_DELAY).timeout.connect(func():
 			if is_inside_tree() and not leaving and area == "highland":
 				_ch2_dawn_world())
+		return
+	if area == "plain" and world.get_node_or_null("MillBattle") != null:     # 磨坊之战（6.7b）：写 ch3_mill、声望、推进主线、自动存档；过一会儿天亮
+		hud.toast(MillBattle.finish(winner), 6.0)
+		print("IC_MILL end winner=%s result=%s" % [winner, GameState.get_flag("ch3_mill", "")])
+		save_game.call_deferred("auto", true)
+		get_tree().create_timer(DAWN_DELAY).timeout.connect(func():
+			if is_inside_tree() and not leaving and area == "plain":
+				var to := MillBattle.dawn_arrival(str(GameState.get_flag("ch3_mill", "")))
+				Engine.set_meta("ic_arrive_note", to[1])
+				GameState.daypart = "dawn"
+				travel("plain", str(to[0])))
 		return
 	if area == "marsh":                                 # 堤道夜战（4.9a）：写旗标、推进主线、自动存档；过一会儿天亮（4.10a）
 		var held := winner == battle.player_side
@@ -2044,6 +2214,29 @@ func _on_tide_ended(result: String) -> void:
 	save_game("auto", true)
 
 
+## 磨坊之战（6.7b，world/mill_battle.gd）：抉择定了，天黑以前走到磨坊（跟塞弗林家的：营地口）就入夜、站到开打的地方；到了几秒开打（先自动存档）
+func _mill_tick() -> void:
+	if area != "plain" or player == null or leaving or GameState.chapter != 3:
+		return
+	if MillBattle.pending() and GameState.daypart != "night" and (battle == null or not is_instance_valid(battle)) and MillBattle.at_muster(player_xz()):
+		var to := MillBattle.night_arrival()
+		Engine.set_meta("ic_arrive_note", to[1])
+		travel("plain", str(to[0]), "night")
+		return
+	var mb := world.get_node_or_null("MillBattle") as MillBattle
+	if mb and _query("mill") != "" and _query("cam") == "" and not mb.has_meta("placed"):
+		mb.set_meta("placed", true)                       # 截图用（?mill=）：站到开打的地方
+		var sp: Array = PlainLayout.spawn_points()["mill_raid" if MillBattle.raiding() else "mill_night"]
+		player.global_position = sp[0]
+		player.rotation.y = deg_to_rad(float(sp[1]))
+	if mb and mb.ready_to_start():
+		start_battle()
+		hud.toast("◆ 他们来了！按 1 让小队跟着你、2 原地坚守、3 冲锋、4 去准星指的地方（触屏「令」）。%s" % ("别让六个人冲进粮仓那片。" if not MillBattle.raiding() else "冲进粮仓那片院子！"), 5.0)
+		if _query("cwskip").is_valid_float():         # 截图用（同堤道夜战）：快进到开打后第 N 秒
+			Engine.time_scale = 8.0
+			Engine.max_physics_steps_per_frame = 64
+
+
 ## 第二夜 · 劫粮（5.7a，world/convoy_ambush.gd）：主线到「设伏」时天黑透、粮车出村——把你放到伏击段（重新载入高地，摆好那场仗）；走到伏击点开打
 func _ambush_tick() -> void:
 	if area != "highland" or player == null or leaving:
@@ -2161,6 +2354,68 @@ func _well_tick() -> void:
 		hud.toast("诺伯特从天窗下去了：「翻过山脊，往冰原那边。我在那儿等你。」", 5.0)
 	ww._build_ring()
 	ww.ensure_norbert()
+
+
+## 守灵夜听完（6.8b；STORY.md 6.5 第 9 步「画面停在修道院钟楼的晨钟里」）：钟楼上敲了三下晨钟，然后第三章完
+func _ch3_bell() -> void:
+	hud.say("（钟声从钟楼上落下来，一下，又一下。隔着那扇高窗，看得见平原上的雪亮了）")
+	if Settings.sound:
+		if ch3_bell_player == null:
+			ch3_bell_player = AudioStreamPlayer.new()
+			ch3_bell_player.volume_db = -8.0
+			ch3_bell_player.max_polyphony = 3
+			ch3_bell_player.stream = Bell.make_stream()
+			add_child(ch3_bell_player)
+		for i in 3:
+			get_tree().create_timer(0.1 + i * 2.2).timeout.connect(func():
+				if is_instance_valid(ch3_bell_player):
+					ch3_bell_player.play())
+	get_tree().create_timer(ch3_end_after).timeout.connect(func():
+		if is_inside_tree() and not GameState.has_flag("ch3_done"):
+			GameState.set_flag("ch3_done")
+			save_game("auto", true)
+			show_ending("ch3"))
+
+
+## 封誓完了（8.4）：封上了、断了；过一会儿出结局画面（8.5）
+func _on_oath_finished(result: String) -> void:
+	if result == "sealed":
+		hud.say("（最后一滴血落进誓瓶。冰壁上那一大片空着的冰里，慢慢浮出一个名字。井口上那一圈人站住了——一个，接一个，转过身，往南走）")
+	else:
+		hud.say("（火盆一个接一个暗下去。那一圈人从石阶上走下来，围住了石台。誓瓶还是空的）")
+	_finale()
+
+
+## 全作完（8.5）：主线「冬井」完、第五章完，自动存档，过 ch3_end_after 秒出结局画面
+func _finale() -> void:
+	get_tree().create_timer(ch3_end_after).timeout.connect(func():
+		if is_inside_tree() and not GameState.has_flag("ch5_done"):
+			GameState.set_flag("ch5_done")
+			if GameState.quest_active("ch5_main"):
+				GameState.complete_quest("ch5_main")
+			save_game("auto", true)
+			show_ending("final"))
+
+
+## 第四章完（7.8）：冬议散了，钟楼上的黄昏钟响起来，画面停在钟声里，再出「第五章 · 冬井　开发中」
+func _ch4_bell() -> void:
+	hud.say("（钟楼上的黄昏钟响了。一下，又一下。高窗外，冠城的屋顶一片一片暗下去）")
+	if Settings.sound:
+		if ch3_bell_player == null:
+			ch3_bell_player = AudioStreamPlayer.new()
+			ch3_bell_player.volume_db = -8.0
+			ch3_bell_player.max_polyphony = 3
+			ch3_bell_player.stream = Bell.make_stream()
+			add_child(ch3_bell_player)
+		for i in 3:
+			get_tree().create_timer(0.1 + i * 2.6).timeout.connect(func():
+				if is_instance_valid(ch3_bell_player):
+					ch3_bell_player.play())
+	get_tree().create_timer(ch3_end_after).timeout.connect(func():
+		if is_inside_tree() and not GameState.has_flag("ch4_done"):
+			GameState.set_flag("ch4_done")
+			save_game("auto", true)
+			show_ending("ch4"))
 
 
 func _on_well_reached() -> void:
@@ -2317,6 +2572,7 @@ func _process(delta: float) -> void:
 	_escort_tick()
 	_empty_night_tick()
 	_well_tick()
+	_mill_tick()
 	if sleeper != null and is_instance_valid(sleeper) and sleeper.near(player.global_position):
 		_sleeper_seen()                                 # 长眠者第一次露面（4.10b）
 	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):

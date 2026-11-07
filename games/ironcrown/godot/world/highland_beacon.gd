@@ -209,6 +209,8 @@ static func people(parent: Node3D) -> void:
 			continue                                                  # 支线「第十年」（5.5b）：你帮卡斯滕夜里溜走了
 		if str(p[0]) == "chopper" and GameState.has_flag("ch2_first_tide"):
 			p = ["chopper", "卡斯滕", p[2], p[3], p[4], "carsten"]    # 第二天：劈柴的老兵报了名字，有话说（5.5b）
+		if str(p[0]) == "norbert" and Winter5.active():
+			continue                                                  # 第五章（8.2）：诺伯特由 Winter5 放（塔顶或者井边）
 		if str(p[0]) == "norbert" and GameState.has_flag("ch2_first_tide"):
 			if Chapter2.norbert_on_roof():
 				dawn_norbert(parent)                                  # 第二夜过去（5.8）：他又上了塔顶，在火盆边

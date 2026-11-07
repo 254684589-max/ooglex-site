@@ -56,6 +56,7 @@ static func mat(kind: String) -> StandardMaterial3D:
 			tex = {}
 			break
 		tex[pair[0]] = t
+	m.set_meta("avg", cfg.fallback)             # 远处那份单色网格（FarLod，6.7a）用这个当贴图的平均颜色
 	if tex.is_empty():
 		m.albedo_color = cfg.fallback
 		m.set_meta("photo", false)

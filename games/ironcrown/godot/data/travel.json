@@ -19,8 +19,17 @@
       "blurb": "东岸缓坡上的石砌庄园，门楼挂着绿底金麦束的旗。院子里停着装满麻袋的车，每个烟囱都冒烟。", "depart_at": "门楼外的路牌"},
     "abbey": {"name": "坠星院", "area": "plain", "spawn": "abbey", "chapter": 3, "region": "south", "pos": [0.6, 0.8], "icon": "abbey",
       "blurb": "南边矮丘顶上星铁教会的修道院：钟楼、回廊、施粥的门房。修道院吃的是洛蒙德家的粮。", "depart_at": "门房外的路牌"},
-    "camp": {"name": "塞弗林营地", "area": "", "chapter": 3, "region": "south", "pos": [0.86, 0.14], "icon": "camp",
-      "blurb": "平原东北角、砧山下来的路口：帐篷、熔炉车、红底铁砧托冠的旗。", "pending": "塞弗林营地还没做好（路线图 6.3）。"}
+    "camp": {"name": "塞弗林营地", "area": "plain", "spawn": "camp", "chapter": 3, "region": "south", "pos": [0.86, 0.14], "icon": "camp",
+      "blurb": "平原东北角、砧山下来的路口：帐篷、熔炉车、红底铁砧托冠的旗。四辆大车空着排在路边，等着装粮。", "depart_at": "营地口的路牌"},
+    "harbor_quay": {"name": "双钥港 · 木栈码头", "area": "harbor", "spawn": "quay", "chapter": 4, "region": "coast", "pos": [0.56, 0.42], "icon": "port",
+      "blurb": "灰鲸河散成几股流进海的地方。沿河一溜木栈码头，从上游下来的船都在这儿靠岸；退了潮，城南边露出大片泥滩。", "depart_at": "码头上的路牌"},
+    "keyhouse_street": {"name": "钥楼街", "area": "harbor", "spawn": "keyhouse", "chapter": 4, "region": "coast", "pos": [0.42, 0.33], "icon": "port",
+      "blurb": "北潮沟北边一排石砌的商行和钱庄，最高的一栋是卡斯韦尔家的钥楼，门楣上蓝底双钥交叉。", "depart_at": "钥楼前的路牌"},
+    "lighthouse": {"name": "沙嘴灯塔", "area": "", "spawn": "", "chapter": 4, "region": "coast", "pos": [0.7, 0.8], "icon": "lighthouse",
+      "blurb": "东岸一道沙嘴伸进海里，尽头一块礁石上是灯塔。这个冬天它时亮时灭。", "pending": "沙嘴在河口对岸，旅行地图上去不了：坐木栈码头上摆渡的小船过去"},
+    "crown_city": {"name": "冠城", "area": "crown_city", "spawn": "bridge", "chapter": 4, "region": "coast", "pos": [0.36, 0.06], "icon": "city",
+      "blurb": "灰鲸河中游的岛城，王都。一道石桥进桥门，桥门里是贫民区的斜街，斜街上去是议事厅广场和钟楼。冬至那天，摄政会议要在议事厅里清账。", "depart_at": "河西岸行会码头边的路牌",
+      "also": {"north": {"pos": [0.5, 0.94]}}}
   },
   "routes": [
     {"from": "frostford", "to": "reedwharf", "text": "出镇往西，沿着沼地边上的路走大半天", "daypart": "day"},
@@ -38,6 +47,14 @@
     {"from": "manor", "to": "camp", "text": "往东北，砧山下来的路口", "daypart": ""},
     {"from": "camp", "to": "manor", "text": "沿大车道回庄园", "daypart": ""},
     {"from": "abbey", "to": "mill", "text": "下丘往北，沿河到磨坊", "daypart": ""},
-    {"from": "mill", "to": "abbey", "text": "沿河往南，上矮丘", "daypart": ""}
+    {"from": "mill", "to": "abbey", "text": "沿河往南，上矮丘", "daypart": ""},
+    {"from": "harbor_quay", "to": "keyhouse_street", "text": "沿码头街往北，过北潮沟就是钥楼街", "daypart": ""},
+    {"from": "keyhouse_street", "to": "harbor_quay", "text": "沿钥楼街往东，到河边的码头", "daypart": ""},
+    {"from": "harbor_quay", "to": "crown_city", "text": "坐渡工行会的船，逆流上灰鲸河——夜里在船上过，天亮在冠城河西岸靠岸", "daypart": "dawn",
+      "needs": {"quest": "ch4_main", "stages": ["to_city", "in_city", "council"], "why": "行会的船要等冠的事定了才带你上冠城（科尔温那儿、或者夜里的钥楼金库）。"}},
+    {"from": "crown_city", "to": "harbor_quay", "text": "坐行会的船顺流回双钥港，半天", "daypart": ""},
+    {"from": "crown_city", "to": "yangji", "text": "坐行会的船逆流到霜渡镇，换马沿灰鲸河往北，三天后的黄昏进了羊脊村的山谷", "daypart": "dusk",
+      "needs": {"quest": "ch5_main", "stages": ["north", "vial", "well", "descend", "oath"], "why": "封誓残卷还没读：先跟大主祭下钟楼底下的档案馆。"}},
+    {"from": "yangji", "to": "crown_city", "text": "顺着来路往南，三天回到冠城", "daypart": ""}
   ]
 }
