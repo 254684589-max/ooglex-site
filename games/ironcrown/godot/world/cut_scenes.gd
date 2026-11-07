@@ -32,7 +32,7 @@ extends RefCounted
 ##   tide_rising    第二章第一夜潮水上来（FirstTide.tide_started）：营地这边往南看，坡上的人影一个接一个走上来 → 迎着它们，光着脚、闭着眼 →
 ##                  火把那一排背后，它们碰到火就拐开；演的时候潮水照样在走。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown"]
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend"]
 
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
@@ -50,6 +50,8 @@ static func on_enter(main: Variant) -> String:
 	if a == "ferry" and GameState.chapter == 0 and not GameState.has_flag("offer_parley") and not GameState.has_flag("offer_left") \
 			and not GameState.has_flag("prologue_edric") and not GameState.has_flag("cut_ferry_standoff"):
 		return "ferry_standoff"
+	if a == "well_bottom" and GameState.chapter == 5 and not GameState.has_flag("ch5_ritual") and not GameState.has_flag("cut_well_descend"):
+		return "well_descend"
 	return ""
 
 
@@ -95,6 +97,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "plain" and main.world.get_node_or_null("MillBattle") != null
 		"vault_crown":
 			return main.world != null and main.area == "key_vault"
+		"well_descend":
+			return main.world != null and main.area == "well_bottom"
 	return false
 
 
@@ -126,6 +130,8 @@ static func shots(main: Node, id: String) -> Array:
 			return mill_open(main)
 		"vault_crown":
 			return vault_crown(main)
+		"well_descend":
+			return well_descend(main)
 	return []
 
 
@@ -155,13 +161,14 @@ static func mill_open(main: Node) -> Array:
 
 
 ## 金库之夜（4-2）：铁冠第一次露面。金库 11 × 7 米，铁匣在北墙正中的石台上（HarborRooms.CROWN_BOX），罩着铁笼（前面一排铁条在 z = 台 + 0.62）
-## 拿到冠的那一下演（HarborRooms.crown_box 返回 cutscene）；冠和星铁那点冷光放在 CutVaultProps 底下，演完 main 拿掉
+## 拿到冠的那一下演（HarborRooms.crown_box 返回 cutscene）；冠和星铁那点冷光放在 CutVaultProps 底下（cut_prop 组：演完 main 拿掉）
 static func vault_crown(main: Node) -> Array:
 	var p: FpController = main.player
 	var cb: Vector3 = HarborRooms.CROWN_BOX
 	var lid := cb + Vector3(0, 1.27, 0)
 	var props := Node3D.new()
 	props.name = "CutVaultProps"
+	props.add_to_group("cut_prop")
 	var crown := _crown()
 	props.add_child(crown)
 	crown.position = lid
@@ -190,6 +197,36 @@ static func vault_crown(main: Node) -> Array:
 				tw.tween_property(glow, "light_energy", 0.9, 2.5)},
 		{"from": [Vector3(0.0, 1.9, 3.0), wide_at], "to": [Vector3(0.0, 1.75, 2.2), cb + Vector3(0, 1.1, 0)], "dur": 5.5, "fov": 50.0, "cut": true, "exposure": 1.45,
 			"lines": [[0.5, "", "王国为它争了三十五年。"], [2.8, "", "它就躺在一只铁匣里，在一间放借据的屋子底下。"]]},
+	]
+
+
+## 下到井底（5-3）：第一次下来就演。井底 14 × 12 × 6 米：石阶贴着南墙从西往东上到顶上的井口，冰壁在东西北三面（刻着名字），星铁在北半边（WellRooms.STAR），石台在它前面
+static func well_descend(main: Node) -> Array:
+	var p: FpController = main.player
+	var st: Vector3 = WellRooms.STAR
+	var al: Vector3 = WellRooms.ALTAR
+	var wx := -6.67
+	var rim := OmniLight3D.new()                                          # 星铁那个镜头的一道冷光（cut_prop：演完拿掉）
+	rim.name = "CutStarRim"
+	rim.add_to_group("cut_prop")
+	rim.light_color = Color(0.7, 0.85, 1.0)
+	rim.light_energy = 0.0
+	rim.omni_range = 7.0
+	return [
+		{"from": [Vector3(2.0, 4.9, 5.3), Vector3(-3.6, 0.6, 4.9)], "to": [Vector3(-0.4, 3.2, 5.2), Vector3(-3.9, 0.3, 3.6)], "dur": 4.5, "fov": 54.0, "music": "well", "exposure": 1.2,
+			"lines": [[0.5, "", "石阶贴着井壁往下，一级一级，结着冰。"]],
+			"on_start": func(): p.set_third_person(false)},
+		{"from": [Vector3(-1.6, 2.6, 4.6), Vector3(-0.5, 0.8, -2.0)], "to": [Vector3(-2.6, 2.0, 4.4), Vector3(0.0, 1.0, -2.5)], "dur": 4.5, "fov": 52.0, "cut": true, "exposure": 1.2,
+			"lines": [[0.4, "", "底下有光——不是火光。"]]},
+		{"from": [Vector3(wx + 2.2, 1.9, 1.6), Vector3(wx, 2.4, 0.6)], "to": [Vector3(wx + 2.0, 1.5, -0.6), Vector3(wx, 1.2, -2.2)], "dur": 7.0, "fov": 44.0, "cut": true, "exposure": 1.2,
+			"lines": [[0.5, "", "冰壁里刻满了名字。有的是王，有的不是。"], [3.8, "", "最后一个，刻在四百年前。再往下，是一大片空着的冰。"]]},
+		{"from": [al + Vector3(1.6, 1.9, 2.0), st + Vector3(0, 1.2, 0)], "to": [al + Vector3(0.9, 1.65, 1.1), st + Vector3(0, 1.3, 0)], "dur": 6.0, "fov": 46.0, "cut": true, "exposure": 1.25,
+			"lines": [[0.5, "", "星铁。半埋在冰里，比一个人还高。"], [3.2, "", "王国的那颗星，一直在这儿。"]],
+			"on_start": func():
+				if rim.get_parent() == null:
+					main.world.add_child(rim)
+				rim.global_position = al + Vector3(0.6, 2.8, 1.4)            # 差不多在镜头上方：黑亮的星铁朝着镜头那几面才反得出光
+				rim.create_tween().tween_property(rim, "light_energy", 3.0, 2.0)},
 	]
 
 

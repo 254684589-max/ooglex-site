@@ -13358,5 +13358,21 @@ func test_cutscene() -> void:
 	main.cutscene.skip()
 	await frames(2)
 	await free_main(main)
+	# 下到井底（5-3）：第一次下来就演；星铁那道补光演完拿掉；只演一次
+	ch4_state({"ch4_done": true, "crown_holder": "lomond"})
+	CrownPeople.ch5_begin()
+	GameState.add_item("oath_vial")
+	GameState.set_stage("ch5_main", "descend")
+	GameState.pending_load = {"scene": "well_bottom", "spawn": "front", "player": {}}
+	main = await make_area("well_bottom")
+	check(CutScenes.on_enter(main) == "well_descend" and CutScenes.shots(main, "well_descend").size() == 4, "第一次下到井底：演「下到井底」（四个镜头）")
+	await seconds(1.4)
+	check(main.cutscene != null and main.cutscene.id == "well_descend" and Music.track == "well", "进来一会儿就演")
+	await seconds(17.5)
+	check(main.world.find_child("CutStarRim", true, false) != null, "星铁那个镜头：一道冷光")
+	main.cutscene.skip()
+	await frames(3)
+	check(main.cutscene == null and GameState.has_flag("cut_well_descend") and main.world.find_child("CutStarRim", true, false) == null and CutScenes.on_enter(main) == "", "演完：补光拿掉；不再演")
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 

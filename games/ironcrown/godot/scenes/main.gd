@@ -742,6 +742,8 @@ func play_cutscene(id: String) -> bool:
 	cutscene = Cutscene.play(world, id, sh, player.camera)
 	cutscene.finished.connect(func(_skipped: bool):
 		cutscene = null
+		for n in get_tree().get_nodes_in_group("cut_prop"):        # 过场里临时搭的道具、补光：演完（跳过也算）拿掉
+			n.queue_free()
 		for l in labels:
 			if is_instance_valid(l):
 				(l as Label3D).visible = true
@@ -1534,9 +1536,6 @@ func _on_interacted(r: Dictionary) -> void:
 		var rest := r.duplicate()
 		rest.erase("cutscene")
 		cutscene.finished.connect(func(_skipped: bool):
-			var props := world.get_node_or_null("CutVaultProps") if world else null
-			if props:
-				props.queue_free()
 			_on_interacted(rest), CONNECT_ONE_SHOT)
 		return
 	if r.has("toast"):
