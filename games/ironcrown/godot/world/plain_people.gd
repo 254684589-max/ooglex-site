@@ -8,6 +8,11 @@ extends RefCounted
 
 const GRAVE := Vector2(-83.4, 16.2)          # 麦渡村西头空屋（PlainVillage.LONGHOUSES 的 empty）的东北角外，离墙角两米多
 const BAIN := [Vector2(-81.9, 17.3), -119.0]  # 坟边，面朝村子
+const BAIN_GATE := [Vector2(12.6, 1.6), 20.0]     # 开仓那一步（open_granary）：老贝恩带着人等在磨坊南门外，面朝门洞（2026-11-07 所有者「老贝恩也没有跟来」）
+const BAIN_GRANARY := [Vector2(31.6, -16.2), 180.0]  # 仓撬开以后（to_mill_tenants，天黑以前）：守在第一座仓门口（门朝北），面朝仓门
+const TENANT_SPOTS := [[Vector2(17.2, 1.8), -15.0], [Vector2(14.2, 3.4), -10.0], [Vector2(16.4, 3.8), 0.0]]
+const TENANT_LINES := ["（他攥着撬棍，指节冻得发紫）老贝恩说等你一句话。", "门里那个拿枪的，看了我们半天了。", "开了仓，今冬就有口粮。不开……（他没说下去）"]
+const TENANT_LINES_OPEN := ["（他把麦子往怀里拢）够吃到开春了。", "天一黑，我们就在这儿守着。谁也别想再锁上。", "老贝恩说，今夜跟你守到天亮。"]
 const BOATMAN := [Vector2(-19.6, 49.2), 37.0]  # 渡口栈桥岸上那头，面朝上岸的地方（出生点 dock）
 const IDA_NIGHT := [Vector2(-82.6, 18.0), 150.0]  # 夜里伊达不在坠星院门口排队：在麦渡那座小坟边
 const LISTEN_AT := Vector2(61.15, 96.2)        # 抄经室门（PlainAbbey.SCRIPTORIUM 正面朝西）旁边的门缝
@@ -53,9 +58,20 @@ static func odilon_at() -> Array:
 	return [p, PlainCamp.YAW_ALONG - 90.0]
 
 
+## 老贝恩站哪儿：开仓那一步在磨坊南门外等你，仓开了守在仓门口（天黑以前；入夜以后在磨坊之战里），别的时候在麦渡那座坟边
+static func bain_at() -> Array:
+	if GameState.daypart != "night":
+		match GameState.quest_stage("ch3_main"):
+			"open_granary":
+				return BAIN_GATE
+			"to_mill_tenants":
+				return BAIN_GRANARY
+	return BAIN
+
+
 static func build(parent: Node3D) -> void:
 	var list := [
-		["bain", "老贝恩", BAIN[0], float(BAIN[1]), "6a6052", "bain", []],
+		["bain", "老贝恩", bain_at()[0], float(bain_at()[1]), "6a6052", "bain", []],
 		["odilon", "奥迪隆", odilon_at()[0], float(odilon_at()[1]), "8a3a34", "odilon", []],
 		["sentry1", "塞弗林家的哨兵", PlainCamp.at(PlainCamp.STAKES_U + 1.5, -3.2), PlainCamp.YAW_ALONG + 180.0, "6a2a26", "", SENTRY_LINES],
 		["sentry2", "塞弗林家的哨兵", PlainCamp.at(PlainCamp.STAKES_U + 1.5, 3.2), PlainCamp.YAW_ALONG + 180.0 + 12.0, "6a2a26", "", SENTRY_LINES.slice(1)],
@@ -68,6 +84,12 @@ static func build(parent: Node3D) -> void:
 	]
 	if str(GameState.get_flag("ch3_apprentice", "")) == "":                                  # 支线「熔炉车上的学徒」（6.5）：放走了、交出去了就不在了
 		list.append(["apprentice", "熔炉车上的学徒", PlainCamp.at(PlainCamp.FORGE[0] + 2.6, PlainCamp.FORGE[1] - 1.5), PlainCamp.YAW_ALONG - 90.0, "3a3430", "apprentice", []])
+	var st := GameState.quest_stage("ch3_main")
+	if GameState.daypart != "night" and st in ["open_granary", "to_mill_tenants"]:              # 跟老贝恩来开仓的佃农（2026-11-07）
+		for k in TENANT_SPOTS.size():
+			var sp: Array = TENANT_SPOTS[k]
+			var at2: Vector2 = sp[0] if st == "open_granary" else [Vector2(33.8, -16.6), Vector2(29.6, -16.8), Vector2(35.4, -15.6)][k]
+			list.append(["tenant%d" % k, "麦渡的佃农", at2, float(sp[1]) if st == "open_granary" else 180.0, "5a5046", "", TENANT_LINES if st == "open_granary" else TENANT_LINES_OPEN])
 	if GameState.daypart == "night":
 		list.append(["ida", "伊达", IDA_NIGHT[0], float(IDA_NIGHT[1]), "5e5248", "ida", []])
 	for it: Array in list:
@@ -129,7 +151,7 @@ static func pry_granary() -> Dictionary:
 
 
 static func _pry(parent: Node3D) -> void:
-	var e := Examine.make("粮仓的门", "看看", func(_who: FpController) -> Dictionary: return pry_granary(), Vector3(1.2, 2.0, 0.8))
+	var e := Examine.make("第一座粮仓的门", "看看", func(_who: FpController) -> Dictionary: return pry_granary(), Vector3(1.2, 2.0, 0.8))
 	e.name = "GranaryPry"
 	e.position = Vector3(PRY_AT.x, ground(PRY_AT), PRY_AT.y)
 	e.verb_fn = func() -> String: return "撬开粮仓" if GameState.quest_stage("ch3_main") == "open_granary" else "看看"

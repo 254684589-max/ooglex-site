@@ -162,6 +162,7 @@
   "ch3_letter_place": {"desc": "学徒告诉你：奥迪隆每夜把一封盖着摄政戒指印的信锁进指挥帐床边那口箱子（6.5）", "set_in": "plain.json apprentice/free", "read_in": "6.8 摄政的信"},
   "ch3_side": {"desc": "今夜站哪边（6.6，抉择）：lomond = 替伊莎贝拉守磨坊，severin = 跟奥迪隆的兵下去「征粮」，tenants = 跟老贝恩先开仓分粮、再守磨坊", "set_in": "plain.json isabella/stand、captain/stand、odilon/join、bain/open", "read_in": "6.7 磨坊之战、6.8 章末"},
   "ch3_granary_opened": {"desc": "粮仓撬开了，佃农扛走了一车（6.6；洛蒙德家 −20，伊莎贝拉记恨）", "set_in": "world/plain_people.gd pry_granary", "read_in": "plain.json isabella/grudge、bain；6.7 佃农变友军"},
+  "ch3_captain_tried": {"desc": "开仓那一步已经跟护院头目说过（说动了或没说动）：任务说明改成去撬粮仓的门（2026-11-07 所有者反馈卡在这一步）", "set_in": "plain.json captain/aside、captain/refuse", "read_in": "core/quest_guide.gd objective（quests.json objective_if）"},
   "ch3_captain_aside": {"desc": "开仓以前说动了护院头目让开（口才 14）：洛蒙德家的护院今夜还跟你守磨坊（6.6）", "set_in": "plain.json captain/aside", "read_in": "world/plain_people.gd pry_granary；6.7"},
   "ch3_guards_left": {"desc": "没说动护院头目就撬了仓：洛蒙德家的护院撤回庄园，今夜只有佃农跟你守（6.6）", "set_in": "world/plain_people.gd pry_granary", "read_in": "6.7 磨坊之战"},
   "ch3_mill": {"desc": "磨坊之战（6.7b）：守的一方 held = 守住 / lost = 失守（粮被抢上砧山）；跟塞弗林家 seized = 抢到了 / repelled = 打不进去", "set_in": "world/mill_battle.gd finish", "read_in": "6.8 罪证、章末回顾"},

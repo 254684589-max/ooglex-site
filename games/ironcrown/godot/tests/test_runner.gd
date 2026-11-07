@@ -9213,6 +9213,43 @@ func test_ch3choice() -> void:
 			stuck.append(nm)
 	check(stuck.is_empty() and main.world.find_child("GranaryPry", true, false) != null, "护院头目在南门里、两个护院在北墙缺口，都没卡住；粮仓门边能撬（卡住的：%s）" % str(stuck))
 	await free_main(main)
+	# 开仓那一步（2026-11-07 所有者反馈：护院头目说不动以后不知道下一步、老贝恩没跟来）
+	fresh.call()
+	say_runner("bain", ["天黑以前，先开仓。粮分了，人跟我守磨坊。"], "plain")
+	GameState.pending_load = {"scene": "plain", "spawn": "mill", "player": {}}
+	main = await make_area("plain")
+	await frames(3)
+	var gb := main.world.find_child("Npc_bain", true, false) as Npc
+	var tens: Array = main.world.find_children("Npc_tenant*", "Npc", true, false)
+	var tstuck := []
+	for n in tens + [gb]:
+		if n == null or not await stands_clear(n):
+			tstuck.append(n.name if n else "bain")
+	check(gb != null and Vector2(gb.global_position.x, gb.global_position.z).distance_to(PlainPeople.BAIN_GATE[0]) < 1.0 and tens.size() == 3 and tstuck.is_empty(),
+		"开仓那一步：老贝恩带着三个佃农等在磨坊南门外，都没卡住（卡住的：%s）" % str(tstuck))
+	var cpt := main.world.find_child("Npc_captain", true, false) as Npc
+	var tg := QuestGuide.target(main.world, main.player.global_position, "ch3_main", "plain")
+	check(tg.get("node") == cpt or tg.get("node") == gb, "还没跟护院头目说：指引指着南门那边（%s）" % str(tg.get("label", "")))
+	GameState.checks["captain_aside_speech"] = false
+	check(say_runner("captain", ["开了仓，佃农跟你们一起守；不开，今晚他们就站到塞弗林家那边去。"], "plain") == "refuse" and GameState.has_flag("ch3_captain_tried")
+		and QuestGuide.objective("ch3_main", "open_granary").contains("粮仓的门"), "没说动护院头目：任务说明改成「撬开东边第一座粮仓的门」")
+	tg = QuestGuide.target(main.world, main.player.global_position, "ch3_main", "plain")
+	check(tg.get("node") == main.world.find_child("GranaryPry", true, false), "指引改指粮仓的门（%s）" % str(tg.get("label", "")))
+	main._on_interacted(PlainPeople.pry_granary())
+	check(GameState.quest_stage("ch3_main") == "to_mill_tenants" and GameState.has_flag("ch3_guards_left"), "撬开：仓开了，护院撤走，主线到「天黑以前到磨坊」")
+	await free_main(main)
+	GameState.pending_load = {"scene": "plain", "spawn": "mill", "player": {}}
+	main = await make_area("plain")
+	await frames(3)
+	gb = main.world.find_child("Npc_bain", true, false) as Npc
+	tens = main.world.find_children("Npc_tenant*", "Npc", true, false)
+	tstuck = []
+	for n in tens + [gb]:
+		if n == null or not await stands_clear(n):
+			tstuck.append(n.name if n else "bain")
+	check(gb != null and Vector2(gb.global_position.x, gb.global_position.z).distance_to(PlainPeople.BAIN_GRANARY[0]) < 1.0 and tens.size() == 3 and tstuck.is_empty(),
+		"仓开了以后：老贝恩和佃农守在第一座仓门口，都没卡住（卡住的：%s）" % str(tstuck))
+	await free_main(main)
 	GameState.chapter = 0
 	GameState.pending_load = {}
 
