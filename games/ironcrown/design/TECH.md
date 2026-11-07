@@ -1203,6 +1203,15 @@ godot/
 - 截图 / 录视频：`?cutscene=<编号>` 进场两秒后播；本地 `--write-movie` 录制。
 - 测试：`cutscene` 组（每段至少一项：触发时机、只演一次、演完接后面的流程、临时道具拿掉）。
 
+### 4.101 长眠者、冬井、马（2026-11-07 所有者反馈）
+
+- `SleeperCrowd.chill(spec)`：长眠者外观（`LINEN_TINT`、`SKIN_TINT`、`EYE_TINT`、头发混 `FROST`，`look.slump = true`）——人群、潮水里认得的脸、冬井两圈、封誓走过来的人、第一章那个村民（`Npc` 带 `sleeper_look` 元数据）都用它。`CharacterModel` 看到 `look.slump`：挂 `actors/sleeper_slump.gd`（`SkeletonModifier3D`：脖子和头往前低、歪向一边、慢慢晃；一起转头：任何一个离镜头 `GLANCE_TRIGGER` 米以内触发，`GLANCE_RANGE` 米里的同时转向镜头，共用 `glance_at` 时钟，冷却 `GLANCE_COOLDOWN` 秒），靴子网格（`*_Feet`）换冻青皮肤材质。
+- `world/sleeper_hum.gd`（`SleeperHum`）：代码合成 4.8 秒循环（五股带通噪声的整齐呼吸、55/56.25 Hz 低嗡、走着的每 0.6 秒一下踩雪），音量按离最近的长眠者的距离（`NEAR`–`FAR`）；人群（走）、冬井那一圈（站）各一个。
+- 人群脚下 `shaders/ground_mist.gdshader` 的多实例平片（每人一片、一次画完）；插在地上的火把 `PlantedTorch.dim` 按离最近的人压到 `TORCH_DIM_MIN`。远处人形 `figure_mesh` 改成 14–18 边、垂头塌肩、眼窝。
+- 冬井 `WinterWell._build_well`：石阶台、三层井栏和盖石（冰凌）、`shaft` 井壁（双面、越往下越暗）、黑底、`WellGlow` 冷光、六块立石、三杆吊架和铁链；石阶台、立石有碰撞。
+- `world/horse_kit.gd`（`HorseKit.build`）：营地和渡口的马；`MeshKit.tube` 是逐顶点法线的圆台（两头略伸出，接缝不漏）。
+- 任务说明 `objective_if`（`QuestGuide.objective`）：同一步里某个旗标设了就换一句说明；指引在几个名字都对得上时取名字最长的。测试组 `dread`、`ch3choice`。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
