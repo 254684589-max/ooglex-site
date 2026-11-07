@@ -13436,5 +13436,29 @@ func test_cutscene() -> void:
 	await frames(2)
 	check(GameState.has_flag("cut_castle_first") and CutScenes.on_enter(main) == "", "只演一次")
 	await free_main(main)
+	# 第一个长眠者（1-4）：撞见他就演，他照样往北走；演完才接「又一个」和章末
+	GameState.new_game(5)
+	GameState.chapter = 1
+	GameState.start_quest("ch1_main")
+	GameState.set_flag("heard_causeway")
+	GameState.set_stage("ch1_main", "farewell")
+	GameState.daypart = "dawn"
+	main = await make_area("marsh")
+	await frames(3)
+	var slp: Sleeper = main.sleeper
+	main.player.global_position = Sleeper.START + Vector3(10, 0.3, 0)
+	await physics(3)
+	check(main.cutscene != null and main.cutscene.id == "first_sleeper" and slp.walking and CutScenes.shots(main, "first_sleeper").size() == 3, "撞见他：先演「第一个长眠者」，他已经在走了")
+	var x0 := slp.npc.position.x
+	await seconds(2.0)
+	check(slp.npc.position.x < x0 - 1.0 and not main.ending_panel.visible, "演的时候他照样往西走（%.1f 米），没出章末" % (x0 - slp.npc.position.x))
+	main.cutscene.skip()
+	await frames(2)
+	check(main.hud.toast_label.text.contains("托宾") and not main.ending_panel.visible, "演完：「托宾？」的提示，章末还没出")
+	await seconds(Sleeper.CHAPTER_END_AFTER * 0.5 + 0.5)
+	check(main.ending_panel.visible and GameState.has_flag("ch1_done"), "再过一会儿：章末画面")
+	main.ending_panel.close()
+	get_tree().paused = false
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 

@@ -2252,12 +2252,19 @@ func _on_battle_ended(winner: String) -> void:
 ## 长眠者第一次露面（4.10b）：他从你身边走过去；有人说「又一个」；过一会儿第一章完
 func _sleeper_seen() -> void:
 	sleeper.wake_walk()
+	if play_cutscene("first_sleeper"):                     # 第一个长眠者（C.5 1-4）：演的时候他照样往北走；演完再接后面的
+		cutscene.finished.connect(func(_s: bool): _sleeper_after(Sleeper.CHAPTER_END_AFTER * 0.5), CONNECT_ONE_SHOT)
+		return
+	_sleeper_after(Sleeper.CHAPTER_END_AFTER)
+
+
+func _sleeper_after(end_after: float) -> void:
 	var nm := str(Sleeper.who()[1])
 	hud.toast("「%s？」……眼睛闭着，从你身边走了过去。叫不醒。" % nm, 5.0)
 	get_tree().create_timer(5.0).timeout.connect(func():
 		if is_inside_tree() and area == "marsh":
 			hud.toast("客栈门口有人看着他的背影，低声说了一句：「又一个。」", 5.0))
-	get_tree().create_timer(Sleeper.CHAPTER_END_AFTER).timeout.connect(func():
+	get_tree().create_timer(end_after).timeout.connect(func():
 		if is_inside_tree() and area == "marsh" and not GameState.has_flag("ch1_done"):
 			GameState.set_flag("ch1_done")
 			if GameState.quest_active("ch1_main"):

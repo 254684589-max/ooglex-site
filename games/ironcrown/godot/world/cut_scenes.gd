@@ -32,7 +32,7 @@ extends RefCounted
 ##   tide_rising    第二章第一夜潮水上来（FirstTide.tide_started）：营地这边往南看，坡上的人影一个接一个走上来 → 迎着它们，光着脚、闭着眼 →
 ##                  火把那一排背后，它们碰到火就拐开；演的时候潮水照样在走。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first"]
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first", "first_sleeper"]
 
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
@@ -109,6 +109,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null
 		"castle_first":
 			return main.world != null and main.area == "castle"
+		"first_sleeper":
+			return main.world != null and main.area == "marsh" and main.sleeper != null and is_instance_valid(main.sleeper)
 	return false
 
 
@@ -148,6 +150,8 @@ static func shots(main: Node, id: String) -> Array:
 			return royal_seal(main)
 		"castle_first":
 			return castle_first(main)
+		"first_sleeper":
+			return first_sleeper(main)
 	return []
 
 
@@ -407,6 +411,27 @@ static func castle_first(main: Node) -> Array:
 			"lines": [[0.5, "", "火盆守着大厅的门。家主躺在东边的塔楼里，一天比一天轻了。"]]},
 		{"from": [Vector3(5.5, 1.7, 15.5), Vector3(0, 1.4, 17.5)], "to": [Vector3(4.5, 1.6, 13.5), Vector3(0, 1.5, 17.5)], "dur": 5.0, "fov": 46.0, "cut": true,
 			"lines": [[0.5, "", "堡门里头，每一双眼睛都在看你这个外人。"]]},
+	]
+
+
+## 第一个长眠者（1-4）：第一章天亮回到芦栈村，撞见那个说过话的村民闭着眼往北走（Sleeper：顺着栈道往西，拐上去泥炭场的木板路往北，走进芦苇里）
+## 演的时候他照样在走，机位按他现在的位置和速度往前算
+static func first_sleeper(main: Node) -> Array:
+	var p: FpController = main.player
+	var n: Npc = main.sleeper.npc
+	var at := n.global_position
+	var head := Vector3(0, 1.55, 0)
+	var west := Vector3(-1, 0, 0)
+	var turn: Vector3 = Sleeper.PATH[0]
+	var nm := str(Sleeper.who()[1])
+	return [
+		{"from": [at + west * 2.2 + Vector3(0, 1.6, 0.25), at + head], "to": [at + west * 5.0 + Vector3(0, 1.6, 0.25), at + west * 3.6 + head], "dur": 4.5, "fov": 38.0, "music": "marsh",
+			"lines": [[0.5, nm, "……"], [2.2, "", "眼睛闭着。光着脚，踩在结霜的栈道上。"]],
+			"on_start": func(): p.set_third_person(true)},
+		{"from": [at + Vector3(3.5, 2.4, 0.0), turn + Vector3(0, 1.0, 0)], "to": [at + Vector3(-1.5, 2.2, 0.0), turn + Vector3(0, 1.0, -1.0)], "dur": 5.5, "fov": 50.0, "cut": true,
+			"lines": [[0.5, "", "叫不醒，拦不住。你挡在前面，他就绕过去。"]]},
+		{"from": [turn + Vector3(1.6, 2.4, 3.0), turn + Vector3(0, 1.0, -30.0)], "to": [turn + Vector3(1.2, 3.4, 1.0), turn + Vector3(0, 1.5, -40.0)], "dur": 6.0, "fov": 50.0, "cut": true,
+			"lines": [[0.5, "", "他拐上去泥炭场的木板路，一直往北，"], [3.0, "", "走进北边的芦苇里。"]]},
 	]
 
 
