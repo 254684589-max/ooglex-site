@@ -31,10 +31,36 @@ const KNOCK_SEC := 1.6
 const TRAMPLE_GAP := 1.0
 const TRAMPLE_DAMAGE := 5
 const TRAMPLE_COLD := 12.0
-const LINEN := Color("b9b3a6")         # 睡衣：浅色的粗麻
-const SKIN := Color("c9a58c")
+const LINEN := Color("85827c")         # 睡衣：灰白的粗麻，脏、潮（2026-11-07 所有者「长眠者不恐怖」：原来 b9b3a6 太干净）
+const SKIN := Color("a7b0b8")          # 失温的灰青皮肤（原来 c9a58c 是活人的肤色）
+const HAIR := Color("70757b")          # 头发上结了霜
+const EYE := Color("0e0f12")           # 眼窝：两道深陷的暗影（眼睛闭着）
 const LAYER := 2                         # 渲染层 2（火把的光跳过这一层）
-const LINEN_TINT := Color(1.85, 2.2, 2.8)   # 真人模型：农夫衣服的贴图是深褐色，乘上去变成浅色的粗麻（各通道按贴图平均色算）
+const LINEN_TINT := Color(0.92, 0.98, 1.08)  # 真人模型：农夫衣服的贴图是深褐色，乘上去变成灰白的脏粗麻（原来 1.85, 2.2, 2.8 太白太干净）
+const SKIN_TINT := Color(0.58, 0.68, 0.8)   # 皮肤贴图乘上去：失温的灰青色，嘴唇、指尖跟着发青
+const EYE_TINT := Color(0.16, 0.17, 0.2)     # 眼睛的材质压暗：远看是闭着的、深陷的眼窝（不是睁着的眼珠）
+const FROST := Color(0.86, 0.9, 0.95)        # 头发往这个颜色混：结了一层霜
+const FROST_MIX := 0.45
+const SKIN_KEYS := ["MI_Superhero_Male", "MI_Superhero_Female", "MI_Regular_Male", "MI_Regular_Female"]
+
+
+## 长眠者的样子（2026-11-07 所有者「长眠者做的不恐怖，能再恐怖些吗」→「先设计一下形象」）：Looks 的外观再改一遍——
+## 灰白的脏麻衣、失温发青的皮肤、深陷发暗的眼窝、头发上结霜；自发光跟着底色（CharacterModel），暗处透出一点冷光。认得的脸（妮尔、托宾……）也一样换。
+static func chill(spec: Dictionary) -> Dictionary:
+	if spec.is_empty():
+		return spec
+	var tint: Dictionary = (spec.look.get("tint", {}) as Dictionary).duplicate()
+	tint["MI_Peasant"] = LINEN_TINT
+	for k in SKIN_KEYS:
+		tint[k] = SKIN_TINT
+	tint["MI_Eyes"] = EYE_TINT
+	for k in ["MI_Hair_1", "MI_Hair_2"]:
+		var h: Variant = tint.get(k, "#3a2a1a")
+		var c: Color = h if h is Color else Color(str(h))
+		tint[k] = c.lerp(FROST, FROST_MIX)
+	spec.look["tint"] = tint
+	spec.look["slump"] = true                       # 头垂下去、歪向一边（SleeperSlump）
+	return spec
 
 var route: Array = []                  # [Vector2, ...]
 var width := 6.0                       # 一股多宽（米）
@@ -99,9 +125,10 @@ func _ready() -> void:
 	if near_enabled:
 		for k in mini(near_max, near_cap):
 			var spec := Looks.spec_of({"preset": "woman" if k % 3 == 1 else "commoner", "hair": [["Hair_Buzzed"], ["Hair_Long"], ["Hair_SimpleParted"]][k % 3],
-				"hair_color": ["#3a2a1a", "#6a5a4a", "#9a948a", "#2a2018"][k % 4], "tint": {"MI_Peasant": LINEN_TINT}})
+				"hair_color": ["#3a2a1a", "#6a5a4a", "#9a948a", "#2a2018"][k % 4]})
 			if spec.is_empty():
 				break
+			chill(spec)
 			var cm := CharacterModel.new()
 			cm.name = "Sleeper%d" % k
 			cm.parts = spec.parts
@@ -137,14 +164,16 @@ static func figure_mesh() -> ArrayMesh:
 	kit.cylinder("skin", Vector3(0, 1.44, 0), Vector3(0, 1.53, 0), 0.05, 0.05, 6)                                     # 脖子
 	kit.cylinder("skin", Vector3(0, 1.52, 0.01), Vector3(0, 1.6, 0.01), 0.075, 0.095, 9)                              # 头：下巴 → 颧骨 → 头顶，几段圆台拼圆
 	kit.cylinder("skin", Vector3(0, 1.6, 0.01), Vector3(0, 1.69, 0.0), 0.095, 0.09, 9)
-	kit.cylinder("hair", Vector3(0, 1.66, -0.01), Vector3(0, 1.76, -0.01), 0.1, 0.05, 9)                              # 头发（深色，盖住头顶后脑）
+	kit.cylinder("hair", Vector3(0, 1.66, -0.01), Vector3(0, 1.76, -0.01), 0.1, 0.05, 9)                              # 头发（结霜的灰，盖住头顶后脑）
+	for s in [-1.0, 1.0]:
+		kit.box("eye", Vector3(s * 0.035, 1.625, 0.095), Vector3(0.034, 0.02, 0.012))                                     # 两道深陷的眼窝
 	var cloth := StandardMaterial3D.new()
 	cloth.albedo_color = LINEN
 	cloth.vertex_color_use_as_albedo = true
 	cloth.roughness = 0.95
 	cloth.emission_enabled = true          # 跟近处的真人模型一样背光处有一点自发光（CharacterModel.GLOW），远近换的时候亮度对得上
 	cloth.emission = LINEN
-	cloth.emission_energy_multiplier = CharacterModel.GLOW * 3.0   # 近处那份是贴图 × 两倍多的 tint 再发光，这边没贴图，乘 3 才对得上（5.4b 截图对过）
+	cloth.emission_energy_multiplier = CharacterModel.GLOW * 1.4      # 原来 ×3（浅色麻衣时对过近处模型）；换成脏灰的麻衣以后远处一片发白，压下来   # 近处那份是贴图 × 两倍多的 tint 再发光，这边没贴图，乘 3 才对得上（5.4b 截图对过）
 	var skin := StandardMaterial3D.new()
 	skin.albedo_color = SKIN
 	skin.vertex_color_use_as_albedo = true
@@ -153,10 +182,14 @@ static func figure_mesh() -> ArrayMesh:
 	skin.emission = SKIN
 	skin.emission_energy_multiplier = CharacterModel.GLOW
 	var hair := StandardMaterial3D.new()
-	hair.albedo_color = Color("3a2e24")
+	hair.albedo_color = HAIR
 	hair.vertex_color_use_as_albedo = true
 	hair.roughness = 0.9
-	var mi := kit.build({"cloth": cloth, "skin": skin, "hair": hair})
+	var eye := StandardMaterial3D.new()
+	eye.albedo_color = EYE
+	eye.vertex_color_use_as_albedo = true
+	eye.roughness = 1.0
+	var mi := kit.build({"cloth": cloth, "skin": skin, "hair": hair, "eye": eye})
 	var mesh := mi.mesh as ArrayMesh
 	mi.free()
 	return mesh

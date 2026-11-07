@@ -54,6 +54,7 @@ static func place(world: Node3D) -> Sleeper:
 	world.add_child(s)
 	var n := Npc.make(str(w[1]), LINES, Color(str(w[2])))
 	n.name = "Npc_sleeper"
+	n.set_meta("sleeper_look", true)
 	n.position = START
 	n.rotation.y = PI / 2                                # 面朝西（栈道往西）
 	s.add_child(n)

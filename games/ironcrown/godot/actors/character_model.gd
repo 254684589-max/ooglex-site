@@ -69,6 +69,8 @@ func _ready() -> void:
 	var gr: Array = g.get("rotation_deg", [0, 0, 0])
 	grip.position = Vector3(gp[0], gp[1], gp[2])
 	grip.rotation_degrees = Vector3(gr[0], gr[1], gr[2])
+	if bool(look.get("slump", false)):
+		SleeperSlump.attach(skeleton, get_instance_id())   # 长眠者：头垂下去、歪向一边（SleeperCrowd.chill 设 look.slump）
 	loaded = true
 
 

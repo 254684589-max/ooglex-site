@@ -124,9 +124,10 @@ func _outer_ring() -> void:
 	add_child(ring)
 	for k in OUTER_N:
 		var spec := Looks.spec_of({"preset": "woman" if k % 3 == 2 else "commoner", "hair": [["Hair_Long"], ["Hair_Buzzed", "Hair_Beard"], ["Hair_SimpleParted"], ["Hair_Buzzed"]][k % 4],
-			"hair_color": ["#2a2018", "#9a948a", "#3a2a1a", "#c8c4bc", "#6a5a4a"][k % 5], "tint": {"MI_Peasant": SleeperCrowd.LINEN_TINT}})
+			"hair_color": ["#2a2018", "#9a948a", "#3a2a1a", "#c8c4bc", "#6a5a4a"][k % 5]})
 		if spec.is_empty():
 			continue
+		SleeperCrowd.chill(spec)
 		var a := TAU * k / OUTER_N + 0.31
 		var p := HighlandLayout.WELL + Vector2(cos(a), sin(a)) * (OUTER_R + 0.4 * sin(k * 1.7))
 		if p.distance_to(COMPANION_AT) < 2.0 or p.distance_to(NORBERT_WELL) < 2.0:

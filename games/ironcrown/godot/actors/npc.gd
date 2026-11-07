@@ -65,6 +65,8 @@ func _cut_far(node: Node) -> void:
 ## 换上真人模型（A.2）：近处画模型、远处画胶囊（visibility range），远了动作也停下
 func _dress(body: Node3D) -> void:
 	var m := Looks.make(display_name, name)
+	if has_meta("sleeper_look"):                         # 长眠了的人（第一章芦栈村那个）：换成长眠者的样子（SleeperCrowd.chill）
+		SleeperCrowd.chill({"look": m.look})
 	m.rotation.y = PI                       # 模型面朝 +Z，人的脸朝本地 -Z
 	if lying:
 		m.position = LYING_OFFSET          # 躺着的动作（LayToIdle 第一帧）：人平躺、脚朝前，挪到床褥上

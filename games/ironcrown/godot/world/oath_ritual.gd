@@ -72,8 +72,8 @@ func _flame(k: int, on: bool) -> void:
 
 
 func _spawn() -> void:
-	var spec := Looks.spec_of({"preset": "commoner" if spawned % 2 == 0 else "woman", "hair": [["Hair_Buzzed"], ["Hair_Long"]][spawned % 2], "hair_color": "#6a5a4a",
-		"tint": {"MI_Peasant": SleeperCrowd.LINEN_TINT}})
+	var spec := Looks.spec_of({"preset": "commoner" if spawned % 2 == 0 else "woman", "hair": [["Hair_Buzzed"], ["Hair_Long"]][spawned % 2], "hair_color": "#6a5a4a"})
+	SleeperCrowd.chill(spec)
 	var n: Node3D
 	if spec.is_empty():
 		n = Node3D.new()

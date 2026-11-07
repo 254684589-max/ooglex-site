@@ -130,9 +130,10 @@ func _build_ring() -> void:
 		if taken.has(k):
 			continue
 		var spec := Looks.spec_of({"preset": "woman" if k % 3 == 1 else "commoner", "hair": [["Hair_Buzzed"], ["Hair_Long"], ["Hair_SimpleParted"], ["Hair_Buzzed", "Hair_Beard"]][k % 4],
-			"hair_color": ["#3a2a1a", "#6a5a4a", "#9a948a", "#2a2018", "#c8c4bc"][k % 5], "tint": {"MI_Peasant": SleeperCrowd.LINEN_TINT}})
+			"hair_color": ["#3a2a1a", "#6a5a4a", "#9a948a", "#2a2018", "#c8c4bc"][k % 5]})
 		if spec.is_empty():
 			continue
+		SleeperCrowd.chill(spec)
 		_place_model(spec, k)
 	for f in specs:
 		var model := _face(f)
@@ -182,9 +183,7 @@ func _face(f: Dictionary) -> CharacterModel:
 	if spec.is_empty():
 		return null
 	if bool(f.linen):
-		var tint: Dictionary = (spec.look.get("tint", {}) as Dictionary).duplicate()
-		tint["MI_Peasant"] = SleeperCrowd.LINEN_TINT
-		spec.look["tint"] = tint
+		SleeperCrowd.chill(spec)                          # 长眠了的认得的脸：一样换成长眠者的样子
 	return _place_model(spec, int(f.slot))
 
 

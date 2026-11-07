@@ -150,9 +150,7 @@ func _make_face(look_name: String, index: int, text: String, flag: String) -> Ch
 	var spec := Looks.spec(look_name)
 	if spec.is_empty():
 		return null
-	var tint: Dictionary = (spec.look.get("tint", {}) as Dictionary).duplicate()
-	tint["MI_Peasant"] = SleeperCrowd.LINEN_TINT
-	spec.look["tint"] = tint
+	SleeperCrowd.chill(spec)
 	var m := CharacterModel.new()
 	m.name = "Face%d" % index
 	m.parts = spec.parts
