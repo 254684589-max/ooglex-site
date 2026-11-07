@@ -25,6 +25,7 @@ const ACTIONS := {
 	"order_charge": [KEY_3],
 	"order_goto": [KEY_4],        # 去那儿（6.7c）：跑到准星指的地方排开坚守      # 冲锋（对话面板打开时数字键选选项，游戏暂停，不会误下命令）
 	"travel_map": [KEY_M],
+	"minimap": [KEY_N],           # 右上角小地图（C.4）：小 → 大 → 隐藏 轮着换
 	"torch": [KEY_T],             # 火把（5.4b）：点着 / 插在地上 / 重新点        # 旅行地图（4.2；第一章起）
 	"pause": [KEY_ESCAPE],
 }

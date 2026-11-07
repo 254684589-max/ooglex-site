@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords", "minimap"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -13009,4 +13009,79 @@ func test_swords() -> void:
 	Settings.set_value("third_person", false)
 	GameState.set_sword_style("arming")
 	await free_main(main)
+
+
+func test_minimap() -> void:
+	# 右上角的圆形小地图（C.4，所有者 2026-11-07）：实时跟着你、上北下南、大小两档和隐藏（暂停菜单、N 键）、任务目标、点一下开大地图
+	var was := Settings.minimap
+	Settings.set_value("minimap", "small")
+	GameState.new_game(1)
+	GameState.pending_load = {"scene": "frostford", "player": {}}
+	var main := await make_area("frostford")
+	await physics(4)
+	var mm: Minimap = main.hud.minimap
+	var hs: Vector2 = main.hud.size
+	check(mm.visible and is_equal_approx(mm.size.x, 150.0) and mm.position.x + mm.size.x <= hs.x - 4.0 and mm.position.y >= main.hud.char_btn.position.y + main.hud.char_btn.size.y,
+		"霜渡镇：右上角按钮下面一个 150 像素的圆形小地图（%s）" % mm.get_rect())
+	check(mm.mask.clip_children == CanvasItem.CLIP_CHILDREN_ONLY and mm.canvas.mini and mm.canvas.mode == "local" and mm.area == "frostford", "画的是本地地图、裁成圆、不写地名")
+	var p: FpController = main.player
+	await place(p, 2.0, -20.0)
+	await frames(8)
+	check(mm.canvas.center.distance_to(Vector2(p.global_position.x, p.global_position.z)) < 0.2, "以你为中心（%s）" % mm.canvas.center)
+	await place(p, 2.0, -35.0)
+	await frames(8)
+	check(mm.canvas.center.distance_to(Vector2(2.0, -35.0)) < 0.5 and is_equal_approx(mm.data.player_yaw, p.yaw_deg()), "走动了：小地图跟着走、箭头跟着转")
+	var tr: Rect2 = main.hud.tracker.panel.get_global_rect()
+	check(not tr.intersects(mm.get_global_rect()), "不压左上角的任务追踪")
+	Settings.set_value("minimap", "large")
+	await frames(2)
+	check(is_equal_approx(mm.size.x, 230.0) and mm.position.x + mm.size.x <= hs.x - 4.0, "设成「大」：230 像素")
+	Settings.set_value("minimap", "off")
+	await frames(2)
+	check(not mm.visible, "设成「隐藏」：不显示")
+	var ev := InputEventAction.new()
+	ev.action = "minimap"
+	ev.pressed = true
+	main._unhandled_input(ev)
+	await frames(2)
+	check(Settings.minimap == "small" and mm.visible and main.hud.toast_label.text.contains("小地图"), "N 键：隐藏 → 小")
+	main._unhandled_input(ev)
+	check(Settings.minimap == "large", "N 键：小 → 大")
+	main.open_pause()
+	await frames(2)
+	var pm: PauseMenu = main.pause_menu
+	var off_btn := pm.find_child("Minimap_off", true, false) as Button
+	check(off_btn != null and (pm.find_child("Minimap_large", true, false) as Button).button_pressed, "暂停菜单里有「小地图：小 / 大 / 隐藏」，现在按下的是「大」")
+	off_btn.pressed.emit()
+	check(Settings.minimap == "off", "暂停菜单里点「隐藏」")
+	(pm.find_child("Minimap_small", true, false) as Button).pressed.emit()
+	main.pause_menu.resume_requested.emit()
+	await frames(4)
+	var opened := [false]
+	mm.open_map.connect(func(): opened[0] = true)
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	mm.gui_input.emit(click)
+	check(opened[0], "点一下小地图：打开大地图")
+	if main.map_panel and main.map_panel.visible:
+		main.map_panel.close()
+	get_tree().paused = false
+	# 任务目标：圈里一个金色菱形
+	var nb := Npc.make("诺伯特", ["……"])
+	main.world.add_child(nb)
+	nb.global_position = p.global_position + Vector3(10, 0, 0)
+	GameState.set_stage("ch2_main", "to_well")
+	await frames(4)
+	main.hud.tracker.retarget_left = 0.0
+	await frames(16)
+	check(mm.target_xz != Vector2.INF and mm.target_xz.distance_to(Vector2(nb.global_position.x, nb.global_position.z)) < 0.5, "任务目标也画在小地图上")
+	nb.queue_free()
+	await free_main(main)
+	GameState.new_game(1)
+	main = await make_main(true)
+	await frames(4)
+	check(not main.hud.minimap.visible, "测试场没有地图：不显示")
+	await free_main(main)
+	Settings.set_value("minimap", was)
 
