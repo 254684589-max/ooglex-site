@@ -10,7 +10,10 @@ extends RefCounted
 ##   ferry_standoff 序章到渡口（第一次走下来、还没和奥弗搭上话）：雾里的河 → 码头尽头埃德里克和塞拉斯在交易 → 芦苇里走出一伙人，
 ##                  领头的摘下灰皮手套 → 回到你走下坡的视角；演完你自己走过去，奥弗那句「又来一个」照旧在对话里说。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff"]
+##   osric_dawn     第一章天亮、家主临终（和他说最后一番话之前）：熄了一半的炭盆和窗缝里的灰光 → 守了一夜的人（床尾的继承人或者玛尔塔）
+##                  → 床上他的脸，慢慢推近；之后他在对话里说「铁冠没有被偷，是老王自己交出去的」（过场里不抢这句）。
+
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn"]
 
 
 ## 进一个区域时要不要先演一段（main 进场时调，每段只演一次：播的时候记旗标 cut_<编号>）
@@ -24,6 +27,8 @@ static func on_enter(main: Variant) -> String:
 
 ## 这段对话开始前要不要先演一段过场：{cut, after: Callable（演完做的事）, node: 演完从对话哪一句接着说}；不用就 {}
 static func before_dialogue(dialogue_id: String) -> Dictionary:
+	if dialogue_id == "osric" and GameState.quest_stage("ch1_main") in ["dawn_held", "dawn_lost"] and not GameState.has_flag("ch1_osric_farewell") and not GameState.has_flag("cut_osric_dawn"):
+		return {"cut": "osric_dawn", "node": "", "after": func(): pass}
 	if dialogue_id == "norbert5" and GameState.quest_stage("ch5_main") == "vial" and not GameState.has_item("oath_vial") and not GameState.has_flag("ch5_cut_vial"):
 		return {"cut": "norbert_vial", "node": "come", "after": func():
 			GameState.set_flag("ch5_cut_vial")
@@ -42,6 +47,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.world.find_child("Npc_norbert5", true, false) != null
 		"ferry_standoff":
 			return main.world != null and main.area == "ferry"
+		"osric_dawn":
+			return main.world != null and main.world.find_child("Npc_osric", true, false) != null
 	return false
 
 
@@ -53,7 +60,32 @@ static func shots(main: Node, id: String) -> Array:
 			return norbert_vial(main)
 		"ferry_standoff":
 			return ferry_standoff(main)
+		"osric_dawn":
+			return osric_dawn(main)
 	return []
+
+
+## 家主临终（1-3）：病房 5.6 × 5 米，床靠北墙（床头朝北），东墙窄窗、西南角炭盆；守夜的人：床尾的继承人（守住了）或者床边的玛尔塔
+static func osric_dawn(main: Node) -> Array:
+	var p: FpController = main.player
+	var watcher: Node3D = null
+	for n in main.world.find_children("Npc_*", "Npc", true, false):
+		if str(n.name) in ["Npc_alric", "Npc_ivette", "Npc_heir"] or (n as Npc).display_name in ["阿尔里克", "伊薇特"]:
+			watcher = n
+	if watcher == null:
+		watcher = main.world.find_child("Npc_marta", true, false) as Node3D
+	var wh: Vector3 = (watcher.global_position if watcher else Vector3(1.0, 0, -1.2)) + Vector3(0, 1.55, 0)
+	var wf: Vector3 = Vector3(0.0, 1.6, 1.2) if watcher == null else watcher.global_position + (Vector3(0.2, 1.6, 1.4) - Vector3(0, 0, 0))
+	var face := Vector3(-0.5, Sickroom.BED_TOP + 0.3, -2.3)          # 头朝北墙（躺着的人本地 +Z 是头，转了 180°）
+	return [
+		{"from": [Vector3(2.2, 2.6, 2.0), Vector3(-0.6, 0.6, -1.3)], "to": [Vector3(1.9, 2.35, 1.5), Vector3(-0.6, 0.6, -1.4)], "dur": 5.5, "fov": 52.0, "music": "night", "exposure": 1.15,
+			"lines": [[0.6, "", "天亮了。窗缝里透进来一点灰光，炭盆快灭了。"]],
+			"on_start": func(): p.set_third_person(false)},
+		{"from": [wf, wh], "to": [wf.lerp(wh, 0.18), wh], "dur": 5.0, "fov": 40.0, "cut": true, "exposure": 1.1,
+			"lines": [[0.5, "", "守了一夜的人都没出声。"]]},
+		{"from": [Vector3(0.5, 0.98, -1.55), face - Vector3(0, 0.12, 0)], "to": [Vector3(0.25, 0.9, -1.85), face - Vector3(0, 0.12, 0)], "dur": 6.0, "fov": 36.0, "fov_to": 32.0, "cut": true, "exposure": 1.1,
+			"lines": [[0.8, "", "他睁开眼睛，找的是你。"]]},
+	]
 
 
 ## 渡口对峙（0-2）：码头沿南北向伸进河里（Ferry.PIER_X0..X1，尽头 z = 14），奥弗站在码头根上（2.1, 2.4）面朝岸上，两个手下在岸上左右；

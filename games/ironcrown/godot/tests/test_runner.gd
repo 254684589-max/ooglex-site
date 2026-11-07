@@ -13179,5 +13179,26 @@ func test_cutscene() -> void:
 	GameState.new_game(1)
 	GameState.chapter = 1
 	check(CutScenes.on_enter({"area": "ferry"}) == "", "第一章回渡口：不演")
+	# 家主临终（1-3）：第一章天亮、和家主说最后一番话之前先演；演完对话照常从头说（他自己说出「是老王自己交出去的」）
+	GameState.new_game(1)
+	GameState.chapter = 1
+	check(CutScenes.before_dialogue("osric").is_empty(), "还没到天亮：不演")
+	GameState.set_stage("ch1_main", "dawn_held")
+	var ob := CutScenes.before_dialogue("osric")
+	check(str(ob.get("cut", "")) == "osric_dawn" and str(ob.get("node", "")) == "", "天亮、堤道守住了：先演「家主临终」，演完对话照常开始")
+	GameState.pending_load = {"scene": "sickroom", "player": {}}
+	main = await make_area("sickroom")
+	await frames(2)
+	var osh := CutScenes.shots(main, "osric_dawn")
+	check(CutScenes.available(main, "osric_dawn") and osh.size() == 3 and str(osh[0].get("music", "")) == "night", "病房里能演：三个镜头、夜曲")
+	main._on_interacted({"kind": "dialogue", "area": "sickroom", "id": "osric", "npc": main.world.find_child("Npc_osric", true, false)})
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "osric_dawn" and not main.dialogue.visible, "和家主说话：先演过场")
+	main.cutscene.skip()
+	await frames(3)
+	check(main.dialogue.visible and main.dialogue.runner.node_id == "dawn_held" and main.dialogue.runner.text().contains("守住了"), "演完：他的话从头说（「……守住了。」）")
+	main.dialogue.close()
+	check(CutScenes.before_dialogue("osric").is_empty(), "演过一次不再演")
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 
