@@ -1194,6 +1194,15 @@ godot/
 - `QuestTracker.update_marker`：按相机坐标（`affine_inverse() * at`）判断在前面还是侧面 / 身后，只在前面时 `unproject_position`。
 - 测试：`minimap` 组。
 
+### 4.100 过场电影（路线图 C.5，2026-11-07）
+
+- `core/cutscene.gd`（`Cutscene.play(parent, id, shots, prev_cam)`）：一串镜头字典——`from` / `to`（[机位, 看向]，按 `dur` 秒平滑推过去）、`fov` / `fov_to`、`cut`（硬切，不淡入淡出）、`lines`（[秒, 说话人, 字幕]）、`on_start`（这个镜头开始时做的事：摆道具、开灯、换第三人称）、`exposure`、`music`、`memory`（`shaders/memory.gdshader` 褪色回忆）。上下黑边、字幕、跳过（Esc / E / 按钮）、`finished(skipped)`。
+- `world/cut_scenes.gd`（`CutScenes`）：`IDS` 24 段；`available(main, id)`、`shots(main, id)` 各段的镜头脚本；三个触发入口——`on_enter(main)`（进区域时：开场、渡口、初见黑鹭堡、烽燧线、金穗平原、双钥港、下到井底、结局影片）、`before_dialogue(id)`（对话开始以前：家主临终、冬议开场、塔顶交瓶、残卷）、`before_battle(main)`（`main.start_battle` 演完才 `_begin_battle`：堤道夜战、劫粮、磨坊之战）；其余在 main 的剧情节点上直接调（第一个长眠者 `_sleeper_seen`、潮水 `_on_tide_started`、冬井 `_on_well_reached`、守灵夜和晨钟 `_ch3_bell`、黄昏钟 `_ch4_bell`、金库 `HarborRooms.crown_box` 返回 `cutscene`、王室印鉴 `pending_ending == "prologue"`、封誓 `_on_oath_finished`）。
+- `main.play_cutscene(id)`：记旗标 `cut_<编号>`（每段只演一次）、藏 HUD 和头顶名字牌、停玩家输入；演完还原，并把 `cut_prop` 组里的临时道具和补光（铁冠、星铁冷光、档案馆暖光、王室印鉴特写台）统一拿掉。自动化测试里 `Engine` 元数据 `ic_skip_film` 默认为真（过场只在 `cutscene` 组里测），别的测试组走原来的流程。
+- 结局影片：`_finale` 先按 `CutScenes.ending_stage()` travel 到结局的地方（旗标 `ch5_film`），到了 `on_enter` 演，演完 `_the_end` 出结局画面；中途关掉网页，读档到了那里照样演完再出。
+- 截图 / 录视频：`?cutscene=<编号>` 进场两秒后播；本地 `--write-movie` 录制。
+- 测试：`cutscene` 组（每段至少一项：触发时机、只演一次、演完接后面的流程、临时道具拿掉）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
