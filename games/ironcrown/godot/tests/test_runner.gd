@@ -13103,7 +13103,7 @@ func test_cutscene() -> void:
 	check(Music.track == "night", "没有配音，配乐是序章的夜曲（%s）" % Music.track)
 	await seconds(1.4)
 	check(cs.top_bar.size.y > 20.0 and cs.text_label.text.contains("老王") and not cs.speaker_label.visible, "上下黑边、旁白字幕「%s」（旁白不写名字）" % cs.text_label.text)
-	var labels := main.world.find_children("*", "Label3D", true, false).filter(func(l): return (l as Label3D).visible)
+	var labels: Array = main.world.find_children("*", "Label3D", true, false).filter(func(l): return (l as Label3D).visible)
 	check(labels.is_empty(), "头顶的名字牌在过场里藏起来")
 	check(not main.player.is_physics_processing(), "过场里你不能动")
 	var esc := InputEventAction.new()
@@ -13126,7 +13126,8 @@ func test_cutscene() -> void:
 	cs = Cutscene.play(main.world, "test", shots, main.player.camera)
 	var ended := [false]
 	cs.finished.connect(func(sk: bool): ended[0] = not sk)
-	for i in 40:
+	var t0 := Time.get_ticks_msec()
+	while Time.get_ticks_msec() - t0 < 4000 and not ended[0]:
 		await frames(1)
 		if is_instance_valid(cs) and not cs.done and cs.text_label.text != "" and (seen.is_empty() or seen[-1] != cs.text_label.text):
 			seen.append(cs.text_label.text)
