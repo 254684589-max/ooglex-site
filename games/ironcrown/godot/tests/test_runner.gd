@@ -21,10 +21,11 @@ func _ready() -> void:
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	Settings.set_value("third_person", false)    # 上一次测试被中断时，设置文件里可能留着第三人称（Settings 在测试开始前已经读过它）
 	Engine.set_meta("ic_skip_opening", true)     # 开场（3.8）只在 opening 组里测，其余测试照旧从主街南头开始
+	Engine.set_meta("ic_skip_film", true)        # 开场影片（C.5）只在 cutscene 组里测；opening 组测钟声和管家那一段
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords", "minimap"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords", "minimap", "cutscene"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -13084,4 +13085,82 @@ func test_minimap() -> void:
 	check(not main.hud.minimap.visible, "测试场没有地图：不显示")
 	await free_main(main)
 	Settings.set_value("minimap", was)
+
+
+func test_cutscene() -> void:
+	# 过场演出（C.5，所有者 2026-11-07「视频小样可以，根据剧情插入相应的电影剧情，建议游戏一开始时加入相应的电影剧情，没有声音就用相应的配乐」）
+	Engine.set_meta("ic_skip_film", false)
+	Engine.set_meta("ic_skip_opening", false)
+	GameState.new_game(1)
+	var main := await make_main(false)
+	await frames(4)
+	var op: Opening = main.find_child("Opening", true, false)
+	check(op != null and op.stage == "card", "新游戏：开场标题卡")
+	op.begin()
+	await frames(2)
+	var cs: Cutscene = main.cutscene
+	check(op.stage == "film" and cs != null and cs.id == "prologue" and cs.shots.size() == 4 and not main.hud.visible and cs.cam.current, "点开始以后先演开场影片：四个镜头、HUD 藏起来、换到过场的相机")
+	check(Music.track == "night", "没有配音，配乐是序章的夜曲（%s）" % Music.track)
+	await seconds(1.4)
+	check(cs.top_bar.size.y > 20.0 and cs.text_label.text.contains("老王") and not cs.speaker_label.visible, "上下黑边、旁白字幕「%s」（旁白不写名字）" % cs.text_label.text)
+	var labels := main.world.find_children("*", "Label3D", true, false).filter(func(l): return (l as Label3D).visible)
+	check(labels.is_empty(), "头顶的名字牌在过场里藏起来")
+	check(not main.player.is_physics_processing(), "过场里你不能动")
+	var esc := InputEventAction.new()
+	esc.action = "pause"
+	esc.pressed = true
+	cs._unhandled_input(esc)
+	await frames(3)
+	check(main.cutscene == null and op.stage == "bell" and main.hud.visible and main.player.camera.current and main.player.is_physics_processing(),
+		"Esc 跳过：回到你的眼睛、HUD 回来、接着敲钟（%s）" % op.stage)
+	check(not main.world.find_children("*", "Label3D", true, false).filter(func(l): return (l as Label3D).visible).is_empty(), "名字牌回来了")
+	await free_main(main)
+	Engine.set_meta("ic_skip_opening", true)
+	# 一段过场完整播完：镜头一个接一个、字幕按时间换、最后淡出
+	GameState.new_game(1)
+	main = await make_main(false)
+	await frames(2)
+	var shots := [{"from": [Vector3(0, 5, 10), Vector3(0, 0, 0)], "to": [Vector3(0, 4, 6), Vector3(0, 0, 0)], "dur": 0.6, "lines": [[0.0, "", "甲"], [0.3, "某人", "乙"]]},
+		{"from": [Vector3(3, 2, 3), Vector3(0, 1, 0)], "dur": 0.6, "cut": true, "lines": [[0.0, "某人", "丙"]]}]
+	var seen := []
+	cs = Cutscene.play(main.world, "test", shots, main.player.camera)
+	var ended := [false]
+	cs.finished.connect(func(sk: bool): ended[0] = not sk)
+	for i in 40:
+		await frames(1)
+		if is_instance_valid(cs) and not cs.done and cs.text_label.text != "" and (seen.is_empty() or seen[-1] != cs.text_label.text):
+			seen.append(cs.text_label.text)
+	check(ended[0] and seen == ["甲", "乙", "丙"], "两个镜头、三句字幕按时间换，播完自己结束（%s）" % str(seen))
+	check(is_equal_approx(Cutscene._ease(0.5), 0.5) and Cutscene._ease(0.1) < 0.1 and Cutscene._ease(0.9) > 0.9, "运镜两头慢中间快")
+	await free_main(main)
+	# 第十九烽塔顶交瓶：第一次和诺伯特说话先演过场，演完给誓瓶、主线到 well，从对话 come 那一句接着说
+	check(CutScenes.before_dialogue("norbert5").is_empty(), "主线不在这一步：不演")
+	GameState.new_game(1)
+	GameState.chapter = 5
+	GameState.set_flag("ch2_fire", "lit")
+	GameState.set_flag("crown_holder", "kept")
+	GameState.add_item("iron_crown")
+	GameState.set_stage("ch5_main", "vial")
+	var b := CutScenes.before_dialogue("norbert5")
+	check(str(b.get("cut", "")) == "norbert_vial" and str(b.get("node", "")) == "come", "主线到「找诺伯特拿誓瓶」：和他说话前先演「塔顶交瓶」")
+	GameState.pending_load = {"scene": "highland", "player": {}}
+	main = await make_area("highland")
+	await physics(4)
+	var nb := main.world.find_child("Npc_norbert5", true, false) as Npc
+	check(nb != null and CutScenes.available(main, "norbert_vial"), "诺伯特在塔顶，过场能演")
+	main._on_interacted({"kind": "dialogue", "area": "winter", "id": "norbert5", "npc": nb})
+	await frames(2)
+	cs = main.cutscene
+	check(cs != null and cs.id == "norbert_vial" and cs.shots.size() == 5 and Music.track == "well" and not main.dialogue.visible, "先演过场（五个镜头、冬井的配乐），对话框还没出")
+	await seconds(6.0)
+	check(cs != null and is_instance_valid(cs) and cs.index >= 1 and nb.talking and cs.speaker_label.text == "诺伯特", "第二个镜头：诺伯特边比划边说")
+	cs.skip()
+	await frames(3)
+	check(GameState.has_item("oath_vial") and GameState.quest_stage("ch5_main") == "well" and str(GameState.get_flag("ch5_vial", "")) == "norbert" and GameState.has_flag("ch5_cut_vial"),
+		"演完（跳过也算）：誓瓶给你了、主线到「去冬井」")
+	check(main.dialogue.visible and main.dialogue.runner.node_id == "come", "对话从「我在井边等你」那一句接着说，过场里说过的不再说")
+	check(CutScenes.before_dialogue("norbert5").is_empty(), "演过一次就不再演")
+	main.dialogue.close()
+	await free_main(main)
+	Engine.set_meta("ic_skip_film", true)
 

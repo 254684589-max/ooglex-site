@@ -13,6 +13,8 @@ extends Node
 ##   lines            [[开始的秒, 谁, 说什么], …]（谁 = "" 是旁白 / 地名，居中、不带名字）
 ##   talk             说话的人（Npc 节点）：这个镜头里他在说话
 ##   on_start         Callable（可选）：镜头开始时调（摆道具之类）
+##   exposure         曝光倍数（默认 1；火光照着脸的近景压一点，不发白）
+##   music            第一个镜头上写：过场开始时换这首曲子（没有配音，就靠配乐，data/music.json 的曲目编号）
 ## 播放时：玩家不能动、HUD 藏起来、换到过场自己的相机；结束或跳过后全部还原，发 finished(skipped)。
 
 signal finished(skipped: bool)
@@ -139,6 +141,11 @@ func _next_shot() -> void:
 	var sh: Dictionary = shots[index]
 	if sh.has("on_start"):
 		(sh.on_start as Callable).call()
+	if sh.has("music") and Settings.music:
+		Music.play(str(sh.music))
+	var attr := CameraAttributesPractical.new()
+	attr.exposure_multiplier = float(sh.get("exposure", 1.0))
+	cam.attributes = attr
 	if sh.get("talk") is Npc and is_instance_valid(sh.talk):
 		talking = sh.talk
 		talking.begin_talk()

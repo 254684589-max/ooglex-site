@@ -724,6 +724,11 @@ func play_cutscene(id: String) -> bool:
 	if sh.is_empty():
 		return false
 	var tp_was := Settings.third_person
+	var labels: Array = []
+	for l in world.find_children("*", "Label3D", true, false):       # 头顶的名字牌、飘字：过场里不露出来
+		if (l as Label3D).visible:
+			(l as Label3D).visible = false
+			labels.append(l)
 	hud.visible = false
 	player.set_physics_process(false)
 	player.set_process_unhandled_input(false)
@@ -732,6 +737,9 @@ func play_cutscene(id: String) -> bool:
 	cutscene = Cutscene.play(world, id, sh, player.camera)
 	cutscene.finished.connect(func(_skipped: bool):
 		cutscene = null
+		for l in labels:
+			if is_instance_valid(l):
+				(l as Label3D).visible = true
 		player.set_third_person(tp_was)
 		player.set_physics_process(true)
 		player.set_process_unhandled_input(true)
@@ -1528,6 +1536,13 @@ func _on_interacted(r: Dictionary) -> void:
 			hud.toast("先把这一架打完。", 1.5)
 			print("IC_INTERACT kind=busy name=%s" % r.get("name", ""))
 			return
+		var before := CutScenes.before_dialogue(str(r.id))          # 有些对话先演一段过场（C.5），演完从后面接着说
+		if not before.is_empty() and play_cutscene(str(before.cut)):
+			var rr := r
+			cutscene.finished.connect(func(_skipped: bool):
+				(before.after as Callable).call()
+				open_dialogue(rr.area, rr.id, rr.get("npc"), str(before.get("node", ""))), CONNECT_ONE_SHOT)
+			return
 		open_dialogue(r.area, r.id, r.get("npc"))
 	if r.get("kind") == "loot":
 		open_loot(r.container)
@@ -1542,8 +1557,8 @@ func _on_interacted(r: Dictionary) -> void:
 
 
 ## 打开对话（2.1）：镜头平滑转向说话人，游戏暂停，鼠标放出来点选项
-func open_dialogue(area: String, id: String, npc: Node3D = null) -> void:
-	if not dialogue.open(area, id):
+func open_dialogue(area: String, id: String, npc: Node3D = null, at_node := "") -> void:
+	if not dialogue.open(area, id, at_node):
 		return
 	dialogue_npc = npc
 	if npc is Npc:
