@@ -32,7 +32,7 @@ extends RefCounted
 ##   tide_rising    第二章第一夜潮水上来（FirstTide.tide_started）：营地这边往南看，坡上的人影一个接一个走上来 → 迎着它们，光着脚、闭着眼 →
 ##                  火把那一排背后，它们碰到火就拐开；演的时候潮水照样在走。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first", "first_sleeper", "beacon_line", "ambush_open"]
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal", "castle_first", "first_sleeper", "beacon_line", "ambush_open", "harbor_first"]
 
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
@@ -58,6 +58,8 @@ static func on_enter(main: Variant) -> String:
 		return "castle_first"
 	if a == "highland" and GameState.chapter == 2 and not GameState.has_flag("cut_beacon_line") and GameState.quest_stage("ch2_main") in ["", "ask_yangji"]:
 		return "beacon_line"
+	if a == "harbor" and GameState.chapter == 4 and not GameState.has_flag("cut_harbor_first") and not GameState.has_flag("ch4_colwin_met"):
+		return "harbor_first"
 	if a == "well_bottom" and GameState.chapter == 5 and not GameState.has_flag("ch5_ritual") and not GameState.has_flag("cut_well_descend"):
 		return "well_descend"
 	return ""
@@ -119,6 +121,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "highland"
 		"ambush_open":
 			return main.world != null and main.area == "highland" and main.world.get_node_or_null("ConvoyAmbush") != null
+		"harbor_first":
+			return main.world != null and main.area == "harbor"
 	return false
 
 
@@ -164,6 +168,8 @@ static func shots(main: Node, id: String) -> Array:
 			return beacon_line(main)
 		"ambush_open":
 			return ambush_open(main)
+		"harbor_first":
+			return harbor_first(main)
 	return []
 
 
@@ -481,6 +487,23 @@ static func ambush_open(main: Node) -> Array:
 			"lines": [[0.5, "", "锯倒的枯松横在路上。马蒂亚斯的人伏在石头后面，一声不出。" if head else "你们伏在车尾后面的弯道上。马蒂亚斯的人一声不出。"]]},
 		{"from": [L.call(mid + 1.5, 3.5, 1.7), L.call(mid, 0.0, 1.2)], "to": [L.call(mid + 0.5, 2.8, 1.6), L.call(mid - 1.5, 0.0, 1.2)], "dur": 5.0, "fov": 44.0, "cut": true, "exposure": 1.5,
 			"lines": [[0.5, "", "押车的是洛蒙德家的兵，十几个人，有两个背着弓。"]]},
+	]
+
+
+## 双钥港（4-1）：第四章第一次上岸。灰鲸河从北往南穿过（x ≈ 36–40），西岸是城（台地），木栈码头在 HarborLayout.QUAY，钥楼在 KEY_HOUSE，南边泥滩外沙嘴尽头是灯塔
+static func harbor_first(main: Node) -> Array:
+	var p: FpController = main.player
+	var g := func(v: Vector2, up: float) -> Vector3: return Vector3(v.x, Harbor.height_at(v.x, v.y) + up, v.y)
+	var kh: Vector2 = HarborLayout.KEY_HOUSE
+	var lh: Vector2 = HarborLayout.LIGHTHOUSE
+	return [
+		{"from": [Vector3(40.0, 4.0, -40.0), g.call(Vector2(-10.0, -10.0), 6.0)], "to": [Vector3(36.0, 3.2, -18.0), g.call(Vector2(-20.0, -20.0), 6.0)], "dur": 7.0, "fov": 50.0, "music": "harbor",
+			"lines": [[0.6, "", "双钥港。灰鲸河在这里入海。"], [3.6, "", "船顺水下来，码头上一片咸腥的雾。"]],
+			"on_start": func(): p.set_third_person(true)},
+		{"from": [g.call(kh + Vector2(-2.0, -11.5), 1.8), g.call(kh, 6.0)], "to": [g.call(kh + Vector2(-0.5, -8.5), 1.7), g.call(kh, 7.5)], "dur": 6.0, "fov": 50.0, "cut": true,
+			"lines": [[0.5, "", "卡斯韦尔家的钥楼。半个王国的借据，锁在它底下。"]]},
+		{"from": [g.call(lh + Vector2(-40.0, -36.0), 14.0), g.call(lh, 6.0)], "to": [g.call(lh + Vector2(-32.0, -28.0), 11.0), g.call(lh, 6.0)], "dur": 6.0, "fov": 48.0, "cut": true,
+			"lines": [[0.5, "", "退潮的时候，泥滩一直露到灯塔脚下。"], [3.0, "", "这座城里，什么都有个价。"]]},
 	]
 
 

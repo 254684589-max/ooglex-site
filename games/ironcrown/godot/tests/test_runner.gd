@@ -13485,5 +13485,17 @@ func test_cutscene() -> void:
 	await frames(3)
 	check(abt.started and main.hud.toast_label.text.contains("动手") and CutScenes.before_battle(main) == "", "演完：开打、提示命令；不再演")
 	await free_main(main)
+	# 双钥港（4-1）：第四章第一次上岸就演，只演一次
+	GameState.new_game(7)
+	GameState.chapter = 4
+	GameState.pending_load = {"scene": "harbor", "spawn": "quay", "player": {}}
+	main = await make_area("harbor")
+	check(CutScenes.on_enter(main) == "harbor_first" and CutScenes.shots(main, "harbor_first").size() == 3, "第四章第一次到双钥港：演「双钥港」（三个镜头）")
+	await seconds(1.4)
+	check(main.cutscene != null and main.cutscene.id == "harbor_first" and Music.track == "harbor", "上岸一会儿就演")
+	main.cutscene.skip()
+	await frames(2)
+	check(GameState.has_flag("cut_harbor_first") and CutScenes.on_enter(main) == "", "只演一次")
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 
