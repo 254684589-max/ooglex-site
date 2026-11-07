@@ -121,7 +121,7 @@ func _ready() -> void:
 	tip_queue = GameState.pending_tips.duplicate() if pending.has("spawn") else []    # 从门走进来：没轮到的教学提示接着排
 	GameState.pending_tips = []
 	GameState.pending_goto = {}                     # 上一个场景没走成的「带你去别处」不带过来（审查）
-	if OS.has_feature("web"):
+	if OS.has_feature("web") or _native_params():
 		Soldier.models_on = _query("models") != "0"      # 基准测试比较用（B.6）：?models=0 兵还是占位胶囊
 		if _query("test") == "1":
 			use_test_range = true
@@ -487,6 +487,8 @@ func _ready() -> void:
 	hud.tracker.refresh()                         # 左上角的任务追踪（C.2）
 	var q := _query("q")
 	apply_quality(q if q in Look.TIERS else (Settings.quality if Settings.quality in Look.TIERS else Look.default_tier()))
+	if _query("cutscene") in CutScenes.IDS:
+		_auto_cutscene.call_deferred(_query("cutscene"))         # 截图 / 录视频用（C.5）：?cutscene=norbert_vial 进场两秒后播
 	print("IC_READY renderer=%s web=%s scene=%s touch=%s quality=%s size=%s" % [
 		ProjectSettings.get_setting("rendering/renderer/rendering_method"), OS.has_feature("web"),
 		scene_name(), touch_mode, quality, get_viewport().get_visible_rect().size])
@@ -689,8 +691,51 @@ func scene_name() -> String:
 
 func _query(key: String) -> String:
 	if not OS.has_feature("web"):
+		for arg in OS.get_cmdline_user_args():                 # 本机用 Godot 录视频时（--write-movie）：命令行「-- key=value」当网址参数（C.5）
+			if arg.begins_with(key + "="):
+				return arg.substr(key.length() + 1)
 		return ""
 	return str(JavaScriptBridge.eval("(new URLSearchParams(window.location.search)).get('%s') || ''" % key, true))
+
+
+## 本机命令行带了「key=value」参数（录过场视频用），网址参数那一套也照样认
+static func _native_params() -> bool:
+	return OS.get_cmdline_user_args().any(func(a: String): return a.contains("="))
+
+
+# ---------------- 过场（C.5） ----------------
+
+func _auto_cutscene(id: String) -> void:
+	await get_tree().create_timer(2.0).timeout
+	if not play_cutscene(id):
+		print("IC_CUTSCENE unavailable id=%s" % id)
+
+
+var cutscene: Cutscene = null
+
+## 播一段过场：玩家不能动、HUD 藏起来；播完（或跳过）还原
+func play_cutscene(id: String) -> bool:
+	if cutscene != null or not CutScenes.available(self, id):
+		return false
+	var sh := CutScenes.shots(self, id)
+	if sh.is_empty():
+		return false
+	var tp_was := Settings.third_person
+	hud.visible = false
+	player.set_physics_process(false)
+	player.set_process_unhandled_input(false)
+	if touch:
+		touch.visible = false
+	cutscene = Cutscene.play(world, id, sh, player.camera)
+	cutscene.finished.connect(func(_skipped: bool):
+		cutscene = null
+		player.set_third_person(tp_was)
+		player.set_physics_process(true)
+		player.set_process_unhandled_input(true)
+		hud.visible = true
+		if touch:
+			touch.visible = touch_mode)
+	return true
 
 
 ## 从固定机位开始（Frostford.VIEWS；截图与冒烟测试用）
