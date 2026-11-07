@@ -24,7 +24,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -12772,3 +12772,126 @@ func pick(r: DialogueRunner, label: String) -> void:
 
 func has_opt(r: DialogueRunner, label: String) -> bool:
 	return r.options().any(func(o): return str(o.text) == label)
+
+
+func test_fx() -> void:
+	# 战斗特效与音效（C.1）：音效都在代码里合成、按设置开关和距离放；挥砍出刀光、打中迸火星 / 溅血 / 木屑；数量有上限
+	var bad: Array = []
+	for n: String in Sfx.LEVEL.keys():
+		var st: AudioStreamWAV = Sfx.stream_of(n)
+		var sec := st.data.size() / 2.0 / st.mix_rate
+		var peak := 0
+		for i in range(0, st.data.size(), 2):
+			peak = maxi(peak, absi(st.data.decode_s16(i)))
+		if sec < 0.08 or sec > 1.0 or peak < 20000:
+			bad.append("%s %.2fs %d" % [n, sec, peak])
+	check(bad.is_empty() and Sfx.LEVEL.size() >= 13, "%d 声音效都合成出来了（0.08–1 秒、音量归一）%s" % [Sfx.LEVEL.size(), bad])
+	check(Sfx.swing_name("blade", "light") == "swing_light" and Sfx.swing_name("blade", "heavy") == "swing_heavy" and Sfx.swing_name("brawl", "light") == "swing_fist"
+		and Sfx.swing_name("club", "light") == "swing_blunt" and Sfx.hit_name("blade", "light") == "hit_flesh" and Sfx.hit_name("fists", "light") == "hit_fist"
+		and Sfx.hit_name("club", "light") == "hit_heavy" and Sfx.hit_name("blade", "arrow") == "hit_arrow", "按武器和招式挑声音（剑、钝器、拳头、箭）")
+	GameState.new_game(1)
+	var main := await make_main(true)
+	var p: FpController = main.player
+	var m: Melee = p.melee
+	var was := Settings.sound
+	Settings.sound = false
+	var n0 := Sfx.played
+	check(not Sfx.play("clang") and Sfx.played == n0, "「声音」关了：音效不放")
+	Settings.sound = true
+	await seconds(0.05)
+	check(Sfx.play("clang") and Sfx.last == "clang" and Sfx.players.all(func(a: AudioStreamPlayer): return a.bus == &"Master"), "「声音」开着：放得出来，走主总线（网页上不新建总线）")
+	await seconds(0.05)
+	check(not Sfx.play("hit_flesh", p.camera.global_position + Vector3(0, 0, 40)), "离相机 40 米：不放（太远）")
+	check(Sfx.play("hit_flesh", p.camera.global_position + Vector3(0, 0, 3)) and not Sfx.play("hit_flesh", p.camera.global_position), "近处放得出；同一声 30 毫秒内不重复")
+	# 挥砍打木桩
+	var dummy: TrainingDummy = null
+	for c in main.world.get_children():
+		if c is TrainingDummy:
+			dummy = c
+	await aim(p, TestRange.DUMMY_POS + Vector3(0, 0, 1.6), TestRange.DUMMY_POS + Vector3(0, 1.2, 0))
+	m.press(); m.release()
+	await melee_tick(0.5)
+	var holders: Array = [main.world] if p.get_parent() == main.world else [main.world, p.get_parent()]     # 玩家的特效挂在玩家的父节点上，敌人的挂在敌人的父节点上
+	var all_fx := func(slash: bool) -> Array:
+		var out: Array = []
+		for h: Node in holders:
+			out.append_array(h.get_children().filter(func(c): return c is CombatFx and (c.what == "slash") == slash))
+		return out
+	var slashes := func() -> Array: return all_fx.call(true)
+	var impacts := func() -> Array: return all_fx.call(false)
+	n0 = Sfx.played
+	m.press(); m.release()
+	await frames(1)
+	var sl: Array = slashes.call()
+	check(sl.size() == 1 and Sfx.last == "swing_light" and Sfx.played == n0 + 1, "轻击：「呼」一声，眼前出一道刀光")
+	var fx: CombatFx = sl[0] if not sl.is_empty() else null
+	check(fx != null and not (fx.get_child(0) as Node3D).visible and fx.delay > 0.0, "刀光等起手过去才出来（起手 %.2f 秒）" % (fx.delay if fx else -1.0))
+	await melee_tick(0.16)
+	check(fx != null and is_instance_valid(fx) and (fx.get_child(0) as Node3D).visible and float(fx.mat.get_shader_parameter("progress")) > 0.0, "挥出去的那一段：刀光顺着弧走过去")
+	var im: Array = impacts.call()
+	check(dummy.hits >= 1 and im.size() >= 1 and (im[0] as Node3D).global_position.distance_to(dummy.global_position + Vector3(0, 1.25, 0)) < 0.6
+		and (im[0] as Node).get_children().any(func(c): return c is CPUParticles3D), "打中木桩：木桩上崩出木屑（粒子）、木头的一声")
+	await melee_tick(0.8)
+	check((slashes.call() as Array).is_empty() and (impacts.call() as Array).is_empty(), "刀光和木屑过一会儿自己没了")
+	# 第二段连击方向反过来；重击从头顶劈下
+	var fx1 := CombatFx.slash_player(p, "light", 1, "blade", 0.0, 0.12)
+	var fx2 := CombatFx.slash_player(p, "heavy", 0, "blade", 0.0, 0.15)
+	check(fx1 != null and (fx1.get_child(0) as Node3D).scale.x < 0.0 and fx2 != null and absf(rad_to_deg((fx2.get_child(0) as Node3D).rotation.z) - 84.0) < 1.0
+		and (fx2.get_child(0) as Node3D).scale.y > 1.0, "第二段刀光左往右（镜像）；重击竖着从头顶劈下、更大")
+	check(CombatFx.slash_player(p, "light", 0, "brawl", 0.0, 0.12) == null and CombatFx.slash_player(p, "dash", 0, "blade", 0.0, 0.12) == null, "拳头、突刺不出刀光")
+	await melee_tick(0.5)
+	# 自己格挡 / 挨打
+	n0 = Sfx.played
+	main._on_guarded("block", {"damage": 6})
+	await frames(1)
+	im = impacts.call()
+	check(Sfx.last == "clang" and im.size() == 1 and (im[0] as Node3D).global_position.distance_to(p.aim_origin()) < 1.1, "挡住了：「铛」一声，眼前迸火星")
+	await seconds(0.05)
+	main._on_guarded("perfect", {"damage": 6})
+	check(Sfx.last == "perfect" and (impacts.call() as Array).any(func(c): return c.flash != null), "完美格挡：更亮的一声、带闪光")
+	await seconds(0.05)
+	main._on_damaged(5, {})
+	check(Sfx.last == "hurt", "挨了一下：闷的一声")
+	await melee_tick(0.9)
+	# 敌人：被你砍中溅血、挡住迸火星；出招有刀光
+	var e := Enemy.make("swordsman", "fx_e")
+	main.world.add_child(e)
+	e.global_position = p.global_position + p.aim_forward() * 1.6 - Vector3(0, 1.5, 0)
+	await physics(2)
+	e.take_hit({"damage": 5, "kind": "light"})
+	im = impacts.call()
+	check(im.size() == 1 and im[0].what == "flesh" and (im[0] as Node).get_child(0) is CPUParticles3D and Sfx.last == "hit_flesh", "砍中敌人：几滴暗红、砍中的一声")
+	await seconds(0.05)
+	e._hit_fx("block", "light", p)
+	check(Sfx.last == "clang" and (impacts.call() as Array).any(func(c): return c.what == "metal" and ((c.get_child(0) as CPUParticles3D).mesh.material as StandardMaterial3D).blend_mode == BaseMaterial3D.BLEND_MODE_ADD), "敌人挡住：「铛」、火星（叠加发光的粒子）")
+	await melee_tick(0.9)
+	e.attack_kind = "light"
+	e._swing_fx()
+	check((slashes.call() as Array).size() == 1 and Sfx.last == "swing_light", "敌人出招：挥砍的一声、一道刀光")
+	var far := Enemy.make("swordsman", "fx_far")
+	main.world.add_child(far)
+	far.global_position = p.global_position + Vector3(0, 0, 30)
+	await physics(2)
+	var c0 := CombatFx.spawned
+	far._swing_fx()
+	far.take_hit({"damage": 5, "kind": "light", "attacker": e})
+	check(CombatFx.spawned == c0, "离你 30 米的兵打兵：不出特效（省绘制）")
+	# 上限、低画质
+	await melee_tick(0.9)
+	for i in 30:
+		CombatFx.impact(main.world, p.global_position + Vector3(0, 1, -3), Vector3.UP, "metal")
+	check(CombatFx.alive <= CombatFx.MAX_ALIVE, "一下子出 30 个：同时最多 %d 个（现在 %d）" % [CombatFx.MAX_ALIVE, CombatFx.alive])
+	await melee_tick(0.9)
+	CombatFx.low = true
+	var lo := CombatFx.impact(main.world, p.global_position, Vector3.UP, "metal")
+	CombatFx.low = false
+	var hi := CombatFx.impact(main.world, p.global_position, Vector3.UP, "metal")
+	check(lo != null and hi != null and (lo.get_child(0) as CPUParticles3D).amount * 2 == (hi.get_child(0) as CPUParticles3D).amount, "低画质：火星减半")
+	main.apply_quality("low")
+	check(CombatFx.low, "切到低画质时特效跟着减半")
+	main.apply_quality("medium")
+	Settings.sound = was
+	e.queue_free()
+	far.queue_free()
+	await free_main(main)
+

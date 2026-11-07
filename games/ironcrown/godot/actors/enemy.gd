@@ -624,6 +624,7 @@ func _combat(delta: float) -> Vector3:
 				action = "strike"
 				action_t = 0.0
 				hit_done = false
+				_swing_fx()
 			return Vector3.ZERO
 		"strike":
 			if not hit_done and action_t >= float(data.strike) * 0.5:
@@ -739,6 +740,7 @@ func take_hit(info: Dictionary) -> String:
 		if has_shield and facing and alive() and state != State.YIELD:
 			if fx:
 				FloatText.spawn(self, "挡箭", Vector3(0, 1.6, 0), Color("c8d8e8"), 26)
+				_hit_fx("block", k, attacker)
 			return "block"
 		can_block = false
 	if can_block and rng.randf() < float(data.block_chance):
@@ -747,6 +749,7 @@ func take_hit(info: Dictionary) -> String:
 			action_t = 0.0
 			if fx:
 				FloatText.spawn(self, "格挡", Vector3(0, 1.6, 0), Color("c8d8e8"), 28)
+				_hit_fx("block", k, attacker)
 			if from_player and player:
 				player.melee.on_blocked()
 			return "block"
@@ -757,6 +760,7 @@ func take_hit(info: Dictionary) -> String:
 	if fx:
 		FloatText.spawn(self, ("重击 −%d" if k == "heavy" else "−%d") % dmg, Vector3(randf_range(-0.2, 0.2), 1.45, 0),
 			Color("ffcf6a") if k == "heavy" else Color("f2e6c8"), 36 if k == "heavy" else 30)
+		_hit_fx("hit", k, attacker)
 	if hp <= 0:
 		_die()
 		return "dead"
@@ -772,6 +776,38 @@ func take_hit(info: Dictionary) -> String:
 			FloatText.spawn(self, "别打了，我认输！" if state == State.YIELD else "快跑！", Vector3(0, 1.9, 0), Color("ffcf6a"), 26)
 	_update_status()
 	return "hit"
+
+
+## 战斗特效和音效（C.1）：被打中 / 挡住时，按出手那一方的兵器出声、迸火星或者溅血（只在玩家附近，take_hit 里 fx 为真时才调）
+func _hit_fx(result: String, k: String, attacker: Node3D) -> void:
+	var out := Vector3.ZERO
+	if attacker and is_instance_valid(attacker):
+		out = _flat(attacker.global_position - global_position).normalized()
+	var at := global_position + Vector3(0, 1.3, 0) + out * 0.3
+	var skill := "blade"
+	if attacker == player and player:
+		skill = player.melee.weapon_skill()
+	elif attacker is Enemy:
+		skill = str((attacker as Enemy).data.get("weapon", "sword"))
+	var bare := skill in ["brawl", "fists"] or str(data.get("weapon", "")) == "fists"
+	if result == "block" and (has_shield or not bare):
+		Sfx.play("clang", at)
+		CombatFx.impact(get_parent(), at, out, "metal")
+		return
+	Sfx.play(Sfx.hit_name(skill, k), at)
+	CombatFx.impact(get_parent(), at, out, "dust" if bare or skill in ["blunt", "club"] else "flesh")
+
+
+## 出招（windup → strike）那一下：挥砍的「呼」和一道刀光（C.1；离玩家近才有）
+var _swing_n := 0
+func _swing_fx() -> void:
+	if not alive() or str(data.get("weapon", "")) == "bow" or not _near_player(16.0):
+		return
+	var w := str(data.get("weapon", "sword"))
+	Sfx.play(Sfx.swing_name("fists" if attack_kind == "kick" else w, attack_kind), global_position + Vector3(0, 1.3, 0))
+	if _near_player(14.0):
+		_swing_n += 1
+		CombatFx.slash_enemy(self, forward(), attack_kind, w, float(data.strike), _swing_n)
 
 
 ## 离玩家多近（水平距离）；没有玩家时当作很远

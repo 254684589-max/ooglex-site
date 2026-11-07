@@ -77,6 +77,9 @@ func take_hit(info: Dictionary) -> void:
 	pending = Vector2(d.z, -d.x).normalized() * strength      # 往被打的方向倒：绕 x 轴前后、绕 z 轴左右
 	flash = 1.0
 	_spawn_number(dmg, info.get("kind") == "heavy")
+	var at := global_position + Vector3(0, 1.25, 0) - (info.get("dir", Vector3.FORWARD) as Vector3) * 0.25
+	Sfx.play("hit_wood", at)                                   # 木头的一声、崩出几片木屑（C.1）
+	CombatFx.impact(get_parent(), at, -(info.get("dir", Vector3.FORWARD) as Vector3), "wood")
 	_update_stats()
 
 
