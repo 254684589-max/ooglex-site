@@ -13409,5 +13409,20 @@ func test_cutscene() -> void:
 	await frames(3)
 	check(main.cutscene == null and GameState.has_flag("cut_well_descend") and main.world.find_child("CutStarRim", true, false) == null and CutScenes.on_enter(main) == "", "演完：补光拿掉；不再演")
 	await free_main(main)
+	# 王室印鉴（0-3）：序章说完（教堂 / 渡口都一样）先演借据背面的印，演完出结局画面
+	GameState.new_game(3)
+	GameState.set_flag("prologue_edric", "deliver")
+	main = await make_area("chapel")
+	await frames(3)
+	GameState.pending_ending = "prologue"
+	main._on_dialogue_closed()
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "royal_seal" and not main.ending_panel.visible and main.world.find_child("CutSealStage", true, false) != null, "序章说完：先演「王室印鉴」，还没出结局画面")
+	main.cutscene.skip()
+	await seconds(0.5)
+	check(main.ending_panel.visible and main.world.find_child("CutSealStage", true, false) == null, "演完：结局画面；特写台拿掉了")
+	main.ending_panel.close()
+	get_tree().paused = false
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 

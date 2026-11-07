@@ -32,7 +32,7 @@ extends RefCounted
 ##   tide_rising    第二章第一夜潮水上来（FirstTide.tide_started）：营地这边往南看，坡上的人影一个接一个走上来 → 迎着它们，光着脚、闭着眼 →
 ##                  火把那一排背后，它们碰到火就拐开；演的时候潮水照样在走。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film"]
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open", "tide_rising", "mill_open", "vault_crown", "well_descend", "ending_film", "royal_seal"]
 
 
 ## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
@@ -103,6 +103,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "well_bottom"
 		"ending_film":
 			return main.world != null and main.area == str(ending_stage()[0])
+		"royal_seal":
+			return main.world != null
 	return false
 
 
@@ -138,6 +140,8 @@ static func shots(main: Node, id: String) -> Array:
 			return well_descend(main)
 		"ending_film":
 			return ending_film(main)
+		"royal_seal":
+			return royal_seal(main)
 	return []
 
 
@@ -305,6 +309,83 @@ static func ending_film(main: Node) -> Array:
 			"lines": [[0.5, "", "井底那面冰壁上，还是一大片空着的冰。"]]},
 		{"from": [gw.call(vil + Vector2(0, 26.0), 9.0), gw.call(vil + Vector2(0, -6.0), 2.0)], "to": [gw.call(vil + Vector2(0, 20.0), 7.0), gw.call(vil + Vector2(0, -10.0), 2.0)], "dur": 7.0, "fov": 50.0, "cut": true, "exposure": 1.5,
 			"lines": [[0.5, "", "开春以前，羊脊村的人往南搬了。"], [3.4, "", "王国一年比一年冷，等着下一个走到井边的人。"]]},
+	]
+
+
+## 王室印鉴（0-3）：序章尾声、出结局画面以前。在哪儿结束都一样（教堂 / 渡口）：在场景上空搭一张「特写台」——黑布、借据正面和背面、一支蜡烛（cut_prop，演完拿掉）
+const SEAL_STAGE := Vector3(0.0, 300.0, 0.0)
+
+
+static func _seal_stage() -> Node3D:
+	var root := Node3D.new()
+	root.name = "CutSealStage"
+	root.add_to_group("cut_prop")
+	var mat := func(c: String, rough := 0.9, metal := 0.0) -> StandardMaterial3D:
+		var m := StandardMaterial3D.new()
+		m.albedo_color = Color(c)
+		m.roughness = rough
+		m.metallic = metal
+		return m
+	var box := func(size: Vector3, at: Vector3, m: Material) -> void:
+		var mi := MeshInstance3D.new()
+		var b := BoxMesh.new()
+		b.size = size
+		mi.mesh = b
+		mi.material_override = m
+		mi.position = at
+		root.add_child(mi)
+	var disc := func(r: float, at: Vector3, m: Material) -> void:
+		var mi := MeshInstance3D.new()
+		var c := CylinderMesh.new()
+		c.top_radius = r
+		c.bottom_radius = r * 1.08
+		c.height = 0.008
+		c.radial_segments = 20
+		mi.mesh = c
+		mi.material_override = m
+		mi.position = at
+		root.add_child(mi)
+	box.call(Vector3(3.0, 0.02, 2.0), Vector3(0.5, -0.01, 0), mat.call("141012"))           # 黑布
+	box.call(Vector3(6.0, 4.0, 0.1), Vector3(0.5, 1.0, -1.2), mat.call("050506"))           # 背后一片黑，看不见天
+	var paper: StandardMaterial3D = mat.call("a8966e")
+	var ink: StandardMaterial3D = mat.call("4a3a2c")
+	for k in 2:                                                       # 0：正面（两家的印）；1：背面（星铁冠印）
+		var c := Vector3(k * 1.0, 0, 0)
+		box.call(Vector3(0.32, 0.004, 0.23), c + Vector3(0, 0.002, 0), paper)
+		if k == 0:
+			for r in 11:
+				box.call(Vector3(0.25 - (0.08 if r == 10 else 0.0), 0.001, 0.0025), c + Vector3(-0.005 - (0.04 if r == 10 else 0.0), 0.0045, -0.09 + r * 0.0135), ink)
+			disc.call(0.022, c + Vector3(-0.07, 0.008, 0.075), mat.call("7a2a20", 0.5))         # 瓦伦家：红蜡
+			disc.call(0.022, c + Vector3(0.07, 0.008, 0.075), mat.call("2f4a3a", 0.5))          # 卡斯韦尔家：绿蜡
+		else:
+			disc.call(0.04, c + Vector3(0, 0.008, 0.0), mat.call("23252a", 0.3, 0.8))         # 星铁冠印：一块黑亮的蜡
+			var cr := _crown()
+			cr.scale = Vector3.ONE * 0.26
+			cr.position = c + Vector3(0, 0.013, 0.0)
+			root.add_child(cr)
+	var candle := OmniLight3D.new()
+	candle.light_color = Color("ffb060")
+	candle.light_energy = 0.9
+	candle.omni_range = 2.5
+	candle.position = Vector3(0.5, 0.45, 0.35)
+	root.add_child(candle)
+	return root
+
+
+static func royal_seal(main: Node) -> Array:
+	var p: FpController = main.player
+	var st := _seal_stage()
+	var o := SEAL_STAGE
+	return [
+		{"from": [o + Vector3(-0.12, 0.3, 0.26), o + Vector3(-0.02, 0.0, 0.0)], "to": [o + Vector3(0.1, 0.24, 0.2), o + Vector3(0.03, 0.0, 0.02)], "dur": 6.0, "fov": 40.0, "music": "night", "exposure": 0.9,
+			"lines": [[0.5, "", "借据底下压着两家的印：瓦伦家的红蜡，卡斯韦尔家的绿蜡。"]],
+			"on_start": func():
+				p.set_third_person(false)
+				if st.get_parent() == null:
+					main.world.add_child(st)
+				st.global_position = o},
+		{"from": [o + Vector3(1.0, 0.24, 0.2), o + Vector3(1.0, 0.0, 0.0)], "to": [o + Vector3(1.0, 0.13, 0.1), o + Vector3(1.0, 0.0, 0.0)], "dur": 6.5, "fov": 34.0, "cut": true, "exposure": 0.9,
+			"lines": [[0.5, "", "翻过来，背面还压着一枚印——一顶星铁冠。"], [3.4, "", "王室的印鉴。老王生前，亲手担保过这笔债。"]]},
 	]
 
 

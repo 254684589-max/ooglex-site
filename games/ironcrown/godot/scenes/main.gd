@@ -1776,6 +1776,8 @@ func _on_dialogue_closed() -> void:
 		_ch4_bell()                                         # 冬议散了（7.8）：钟楼的黄昏钟，再出章末画面
 	elif ending == "final":
 		_finale()                                           # 不封了（8.5）：直接是长冬
+	elif ending == "prologue" and play_cutscene("royal_seal"):
+		cutscene.finished.connect(func(_s: bool): show_ending("prologue"), CONNECT_ONE_SHOT)    # 序章尾声（C.5 0-3）：借据背面的王室印鉴，演完出结局画面
 	elif ending != "":
 		show_ending.call_deferred(ending)
 	player.interactor.refresh()
