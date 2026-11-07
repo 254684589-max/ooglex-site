@@ -224,6 +224,10 @@ func _ready() -> void:
 			GameState.set_stage("ch2_main", "rob_ready")
 			Chapter2.dawn()
 			GameState.daypart = "dawn"
+		if _query("quest").contains(":") and not Engine.has_meta("ic_quest_param_done"):
+			Engine.set_meta("ic_quest_param_done", true)      # 截图用（C.2）：?quest=ch3_main:sides 直接让这条任务走到这一步（看左上角的任务追踪和目标标记）
+			var qs := _query("quest").split(":")
+			GameState.set_stage(qs[0], qs[1])
 		if _query("well") in ["1", "all"] and not Engine.has_meta("ic_well_param_done"):
 			Engine.set_meta("ic_well_param_done", true)       # 截图用（5.8b）：?well=1 直接到诺伯特说完、要带你去看冬井（劫下了粮、火亮着）；=all 圈里认得的脸都有（芦栈村的托宾、妮尔和她父亲、第十八烽的三个守塔人）
 			for f in ["matthias_met", "norbert_met", "norbert_day2", "norbert_dawn"]:

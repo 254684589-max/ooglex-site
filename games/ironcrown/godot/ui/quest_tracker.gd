@@ -42,13 +42,21 @@ func _ready() -> void:
 	panel.add_child(box)
 	title = _label(16, GOLD)
 	box.add_child(title)
-	marker = _label(15, TEXT)
+	marker = _label(18, GOLD)                    # 雪地上看得清：大一号、金色、底下垫一块半透明的深色（第一版 15 号白字压在雪上看不清）
+	var mb := StyleBoxFlat.new()
+	mb.bg_color = Color(0.04, 0.06, 0.09, 0.6)
+	mb.set_corner_radius_all(5)
+	mb.content_margin_left = 8
+	mb.content_margin_right = 8
+	mb.content_margin_top = 2
+	mb.content_margin_bottom = 2
+	marker.add_theme_stylebox_override("normal", mb)
 	marker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	marker.autowrap_mode = TextServer.AUTOWRAP_OFF
 	marker.hide()
 	add_child(marker)
 	arrow = Polygon2D.new()
-	arrow.polygon = PackedVector2Array([Vector2(12, 0), Vector2(-7, -8), Vector2(-3, 0), Vector2(-7, 8)])
+	arrow.polygon = PackedVector2Array([Vector2(16, 0), Vector2(-9, -11), Vector2(-4, 0), Vector2(-9, 11)])
 	arrow.color = GOLD
 	arrow.hide()
 	add_child(arrow)
@@ -141,7 +149,7 @@ func update_marker(world: Node, cam: Camera3D, from: Vector3, area: String, delt
 		arrow.position = edge
 		arrow.rotation = dir.angle()
 		arrow.show()
-		marker.position = (edge - dir * 26.0) - marker.size * 0.5
+		marker.position = (edge - dir * 44.0) - marker.size * 0.5
 	marker.position.x = clampf(marker.position.x, 4.0, size.x - marker.size.x - 4.0)
 	marker.position.y = clampf(marker.position.y, 4.0, size.y - marker.size.y - 4.0)
 	marker.show()
