@@ -132,15 +132,16 @@ func update_marker(world: Node, cam: Camera3D, from: Vector3, area: String, delt
 	marker_text = "◆ %s · %s" % [str(target.get("label", "")), QuestGuide.distance_text(d)]
 	marker.text = marker_text
 	marker.reset_size()
-	var behind := cam.is_position_behind(at)
-	var sp := cam.unproject_position(at)
+	var local := cam.global_transform.affine_inverse() * at          # 相机坐标：-Z 是前方
+	var front := local.z < -0.1                                       # 正好在相机侧面（深度 0）时不能投影（引擎报 p.d == 0）
+	var sp := cam.unproject_position(at) if front else Vector2.ZERO
 	var vr := Rect2(Vector2(EDGE, EDGE + 40.0), size - Vector2(EDGE * 2.0, EDGE * 2.0 + 120.0))
-	if not behind and vr.has_point(sp):
+	if front and vr.has_point(sp):
 		marker.position = sp - Vector2(marker.size.x * 0.5, marker.size.y)
 		arrow.hide()
 	else:
 		var c := size * 0.5
-		var dir := (sp - c) * (-1.0 if behind else 1.0)
+		var dir := (sp - c) if front else Vector2(local.x, -local.y)    # 在身后、侧面：按它在你左边还是右边指
 		if dir.length() < 1.0:
 			dir = Vector2(0, 1)
 		dir = dir.normalized()

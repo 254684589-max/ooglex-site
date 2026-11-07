@@ -7,6 +7,7 @@ const FOV_MIN := 60.0
 const FOV_MAX := 100.0
 const SENS_MIN := 0.3
 const SENS_MAX := 3.0
+const MINIMAP_SIZES := ["small", "large", "off"]
 const MOUSE_DEG_PER_PX := 0.12   # 灵敏度倍数 1.0 时，鼠标每移动 1 像素转多少度
 const TOUCH_DEG_PER_PX := 0.25   # 触屏拖动每 1 像素转多少度（手指移动距离短，比鼠标大）
 
@@ -21,10 +22,11 @@ var third_person := false        # 第三人称越肩视角（2.9，D6；V 键 /
 var sound := true                # 声音（3.8 起有开场的钟声；暂停菜单可以关）
 var music := true                # 背景音乐（M.1；暂停菜单可以关；「声音」关了也不放）
 var music_volume := 0.6          # 背景音乐音量 0..1（M.1）
+var minimap := "small"           # 右上角的圆形小地图（C.4）：small / large / off（暂停菜单、N 键换）
 var tips := true                 # 教学提示（3.8；每条只显示一次，暂停菜单可以关）
 var loaded := false              # 读到过保存的设置（那就不再按系统「减少动态效果」改镜头摆动）
 
-const SAVED_KEYS := ["fov", "sensitivity", "invert_y", "head_bob", "quality", "third_person", "sound", "tips", "music", "music_volume"]
+const SAVED_KEYS := ["fov", "sensitivity", "invert_y", "head_bob", "quality", "third_person", "sound", "tips", "music", "music_volume", "minimap"]
 
 
 func _ready() -> void:
@@ -74,6 +76,8 @@ func _apply(key: String, value) -> bool:
 			music_volume = clampf(float(value), 0.0, 1.0)
 		"quality":
 			quality = str(value) if str(value) in ["", "low", "medium", "high"] else ""
+		"minimap":
+			minimap = str(value) if str(value) in MINIMAP_SIZES else "small"
 		_:
 			push_warning("未知设置项：" + key)
 			return false

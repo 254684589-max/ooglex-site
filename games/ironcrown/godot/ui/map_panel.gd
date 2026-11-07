@@ -405,6 +405,7 @@ func node_center(a: String) -> Vector2:
 ## 画布：本地平面图 / 一带示意图
 class MapCanvas extends Control:
 	var panel: MapPanel
+	var mini := false                # 右上角的圆形小地图（C.4）：不写地名、不画指北和比例尺，你的箭头小一点
 	var mode := "local"              # local / region / none
 	var center := Vector2.ZERO       # 画布中心对着的世界 XZ
 	var px_per_m := 1.0
@@ -551,6 +552,9 @@ class MapCanvas extends Control:
 		var ex := AreaMap.exits(area)
 		for i in ex.size():
 			_draw_exit(ex[i], i, i == panel.selected_exit, font)
+		if mini:
+			_draw_player(font)
+			return
 		var lab := place_labels()
 		skipped_labels = lab.skipped
 		for pl in lab.placed:
@@ -686,6 +690,13 @@ class MapCanvas extends Control:
 		var r := deg_to_rad(panel.player_yaw)
 		var f := Vector2(-sin(r), -cos(r))
 		var sd := Vector2(-f.y, f.x)
+		if mini:
+			var t := PackedVector2Array([c + f * 9.0, c - f * 5.0 + sd * 6.0, c - f * 2.5, c - f * 5.0 - sd * 6.0])
+			draw_colored_polygon(t, HERE)
+			var o := t.duplicate()
+			o.append(t[0])
+			draw_polyline(o, INK, 1.5)
+			return
 		var tri := PackedVector2Array([c + f * 12.0, c - f * 7.0 + sd * 8.0, c - f * 7.0 - sd * 8.0])
 		draw_circle(c, 13.0, Color(PARCHMENT, 0.7))
 		draw_colored_polygon(tri, HERE)

@@ -17,6 +17,7 @@ const BTN_MIN := Vector2(44, 44)      # 右上角按钮最小 44 × 44（触屏�
 
 var title_label: Label
 var tracker: QuestTracker      # 左上角的任务追踪和目标标记（C.2）
+var minimap: Minimap           # 右上角的圆形小地图（C.4）
 var hint_label: Label
 var menu_btn: Button
 var quest_btn: Button
@@ -57,6 +58,13 @@ func _ready() -> void:
 	tracker = QuestTracker.new()
 	tracker.name = "QuestTracker"
 	add_child(tracker)
+	minimap = Minimap.new()
+	minimap.name = "Minimap"
+	add_child(minimap)
+	minimap.open_map.connect(func(): map_pressed.emit())
+	Settings.changed.connect(func():
+		minimap.apply_size()
+		_layout())
 	title_label = Label.new()
 	title_label.text = TITLE
 	title_label.position = Vector2(16, 12)
@@ -332,6 +340,9 @@ func _layout() -> void:
 		title_label.text = TITLE_SHORT
 		if title_label.get_minimum_size().x + 24.0 > char_btn.position.x:
 			title_label.add_theme_font_size_override("font_size", TITLE_FS_SMALL)
+	if minimap:
+		minimap.apply_size()
+		minimap.position = Vector2(size.x - minimap.size.x - 12.0, 10.0 + BTN_MIN.y + 10.0)    # 右上角按钮下面
 	if tracker:
 		tracker.size = size
 		tracker.place(title_label.position.y + title_label.get_minimum_size().y + 6.0, size.x < 700.0)

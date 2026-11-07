@@ -1186,6 +1186,14 @@ godot/
 - `GameState.sword_style` / `set_sword_style()` / `sword_style_changed`；`to_dict` / `from_dict` 带 `sword_style`。`WeaponView.set_model` 和 `PlayerAvatar._set_model` 记着 `style`，样式变了就重搭。
 - UI：`CharacterPanel._sword_styles()`（`SwordStyles` 网格，宽屏两列、窄屏一列）。截图参数 `?sword=`。测试：`swords` 组。
 
+### 4.99 右上角圆形小地图（路线图 C.4，2026-11-07）
+
+- `ui/minimap.gd`（`Minimap`）：`mask`（画实心圆、`clip_children = CLIP_CHILDREN_ONLY`）里放一个 `MapPanel.MapCanvas`（`mini = true`、`mode = "local"`），`overlay` 画金圈、「北」、任务目标菱形。数据装在一个不进场景树的 `MapPanel`（`area`、`player_xz`、`player_yaw`；`_exit_tree` 里 free）。
+- `track(area, xz, yaw, target, delta)`：`main._process` 每帧调（目标取自 `hud.tracker.target`）；`REDRAW` 1/12 秒限频、没动没转不重画。`apply_size()` 按 `Settings.minimap`（`SIZES` 150 / 230 像素、`PX_PER_M` 2.4 / 2.6）。
+- `Settings.minimap`（`MINIMAP_SIZES` small / large / off，`SAVED_KEYS` 里）；输入动作 `minimap`（N）；`PauseMenu.minimap_btns`；`Hud._layout` 把它放在右上角按钮下面。
+- `QuestTracker.update_marker`：按相机坐标（`affine_inverse() * at`）判断在前面还是侧面 / 身后，只在前面时 `unproject_position`。
+- 测试：`minimap` 组。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

@@ -19,7 +19,7 @@ var music_check: CheckButton
 var music_slider: HSlider
 var music_value: Label
 
-const HELP_DESKTOP := "电脑：点击画面锁定鼠标 · WASD 移动 · 鼠标转视角 · Shift 跑 · C 蹲下 / 站起 · 空格 跳 · E 交互 · 左键 / F 出剑 · 右键 / Q 格挡 · 拔剑时按着 A / D / S 再按空格是闪避 · 跑着出剑是突刺 · R 收剑 · V 切换视角 · I 背包 · J 任务 · K 角色 · M 地图 · F8 快速存档 · F9 快速读档 · F3 性能数据 · 军阵里 1 / 2 / 3 指挥小队（跟随 / 坚守 / 冲锋）· Esc 暂停"
+const HELP_DESKTOP := "电脑：点击画面锁定鼠标 · WASD 移动 · 鼠标转视角 · Shift 跑 · C 蹲下 / 站起 · 空格 跳 · E 交互 · 左键 / F 出剑 · 右键 / Q 格挡 · 拔剑时按着 A / D / S 再按空格是闪避 · 跑着出剑是突刺 · R 收剑 · V 切换视角 · I 背包 · J 任务 · K 角色 · M 地图 · N 小地图（小 / 大 / 隐藏） · F8 快速存档 · F9 快速读档 · F3 性能数据 · 军阵里 1 / 2 / 3 指挥小队（跟随 / 坚守 / 冲锋）· Esc 暂停"
 const HELP_TOUCH := "手机：左半屏拖动走路（推到底是跑）· 右半屏拖动转视角 · 右下角「跳」「蹲」「攻」「挡」「视角」· 拔剑时摇杆往侧面或后面推着点「跳」是闪避，跑着点「攻」是突刺 · 右上角「角色」「背包」「任务」「地图」「菜单」· 第一章起站在路牌旁打开地图（或对着路牌点交互按钮）才能出发 · 军阵里点「令」指挥小队"
 var fov_slider: HSlider
 var sens_slider: HSlider
@@ -30,6 +30,7 @@ var fov_value: Label
 var sens_value: Label
 var perf_check: CheckButton
 var quality_btns := {}
+var minimap_btns := {}
 
 
 func _ready() -> void:
@@ -96,6 +97,25 @@ func _ready() -> void:
 		qrow.add_child(b)
 		quality_btns[t] = b
 	box.add_child(qrow)
+	var mrow := HBoxContainer.new()                     # 右上角的小地图（C.4）：小 / 大 / 隐藏
+	mrow.name = "MinimapRow"
+	var ml := Label.new()
+	ml.text = "小地图（N）"
+	ml.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	mrow.add_child(ml)
+	var mgroup := ButtonGroup.new()
+	for m in Settings.MINIMAP_SIZES:
+		var b := Button.new()
+		b.name = "Minimap_" + m
+		b.text = {"small": "小", "large": "大", "off": "隐藏"}[m]
+		b.toggle_mode = true
+		b.button_group = mgroup
+		b.button_pressed = Settings.minimap == m
+		b.custom_minimum_size = Vector2(52, 32)
+		b.pressed.connect(func(): Settings.set_value("minimap", m))
+		mrow.add_child(b)
+		minimap_btns[m] = b
+	box.add_child(mrow)
 	sound_check = _check(box, "声音", Settings.sound, "sound")
 	music_check = _check(box, "背景音乐", Settings.music, "music")            # M.1
 	music_check.disabled = not Settings.sound                               # 「声音」关了，音乐跟着关（灰着，审查）
@@ -106,7 +126,9 @@ func _ready() -> void:
 	Settings.changed.connect(func():
 		music_check.disabled = not Settings.sound
 		perf_check.set_pressed_no_signal(Settings.show_perf)
-		tp_check.set_pressed_no_signal(Settings.third_person))
+		tp_check.set_pressed_no_signal(Settings.third_person)
+		if minimap_btns.has(Settings.minimap):
+			minimap_btns[Settings.minimap].set_pressed_no_signal(true))
 	var help := Label.new()
 	help.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
 	help.add_theme_color_override("font_color", Color("a9b4c0"))

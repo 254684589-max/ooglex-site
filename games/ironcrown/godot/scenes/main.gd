@@ -1044,6 +1044,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		open_map()
 		get_viewport().set_input_as_handled()
 		return
+	if event.is_action_pressed("minimap"):                     # 小地图（C.4）：小 → 大 → 隐藏
+		var i := Settings.MINIMAP_SIZES.find(Settings.minimap)
+		Settings.set_value("minimap", Settings.MINIMAP_SIZES[(i + 1) % Settings.MINIMAP_SIZES.size()])
+		hud.toast("小地图：%s（N 键换）" % {"small": "小", "large": "大", "off": "隐藏"}[Settings.minimap], 1.5)
+		get_viewport().set_input_as_handled()
+		return
 	for o in Battle.ORDERS:              # 小队命令（B.2）：1 跟随我 · 2 原地坚守 · 3 冲锋 · 4 去那儿（6.7c）
 		if event.is_action_pressed("order_" + o):
 			if give_order(o):
@@ -2590,6 +2596,14 @@ func _clear_fog_at(pos: Vector3) -> void:
 func _process(delta: float) -> void:
 	if hud and hud.tracker and hud.visible and player and world:              # 任务目标的标记和距离（C.2）
 		hud.tracker.update_marker(world, player.camera, player.global_position, area, delta)
+	if hud and hud.minimap and hud.visible and player:                        # 右上角的圆形小地图（C.4）
+		var tg: Variant = null
+		var t: Dictionary = hud.tracker.target if hud.tracker else {}
+		if t.has("node") and is_instance_valid(t.node):
+			tg = Vector2((t.node as Node3D).global_position.x, (t.node as Node3D).global_position.z)
+		elif t.has("pos"):
+			tg = Vector2((t.pos as Vector3).x, (t.pos as Vector3).z)
+		hud.minimap.track(area, Vector2(player.global_position.x, player.global_position.z), player.yaw_deg(), tg, delta)
 	combat_music_check -= delta
 	if combat_music_check <= 0.0:                     # 战斗配乐（M.1）：每 0.25 秒看一次在不在打
 		combat_music_check = 0.25
