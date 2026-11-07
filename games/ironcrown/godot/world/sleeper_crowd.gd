@@ -82,6 +82,12 @@ var near_enabled := true               # 测试里可以关掉真人模型（无
 
 var agents: Array = []                 # 每个人：{p: Vector2, prev: Vector2, v: Vector2, seg: int, lat: float, sp: float, phase: float, done: bool, last_trample: float, near: int}
 var mm: MultiMeshInstance3D
+var mist: MultiMeshInstance3D            # 脚下贴地的薄白雾（2026-11-07）：每人一片，一次画完
+var hum: SleeperHum                      # 走近时听得见的呼吸和脚步（2026-11-07）
+var _near_d := INF                       # 离镜头最近的那个人多远（声音、火把用）
+const MIST_SIZE := 3.4
+const TORCH_DIM_R := 6.0                 # 火把离最近的人这么近就开始暗下去
+const TORCH_DIM_MIN := 0.35
 var models: Array = []                 # 真人模型池
 var _acc := 0.0
 var _clock := 0.0
@@ -122,6 +128,24 @@ func _ready() -> void:
 	mm.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mm.layers = LAYER                       # 火把的光不照它们（TorchHand.LIGHT_MASK）：几十个人每多一盏灯都要多画一遍；它们自己有一点自发光
 	add_child(mm)
+	mist = MultiMeshInstance3D.new()
+	mist.name = "Mist"
+	var mq := QuadMesh.new()
+	mq.size = Vector2(MIST_SIZE, MIST_SIZE)
+	mq.orientation = PlaneMesh.FACE_Y
+	var sm := ShaderMaterial.new()
+	sm.shader = load("res://shaders/ground_mist.gdshader")
+	mq.material = sm
+	var mmist := MultiMesh.new()
+	mmist.transform_format = MultiMesh.TRANSFORM_3D
+	mmist.use_colors = true
+	mmist.mesh = mq
+	mmist.instance_count = count
+	mist.multimesh = mmist
+	mist.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(mist)
+	hum = SleeperHum.make(func() -> float: return _near_d, true)
+	add_child(hum)
 	if near_enabled:
 		for k in mini(near_max, near_cap):
 			var spec := Looks.spec_of({"preset": "woman" if k % 3 == 1 else "commoner", "hair": [["Hair_Buzzed"], ["Hair_Long"], ["Hair_SimpleParted"]][k % 3],
@@ -152,21 +176,28 @@ func _ready() -> void:
 ## 远处的人形（约 1.7 米）：两条腿、身子、两条垂着的胳膊、头；顶点色 r = 睡衣还是皮肤（多实例的颜色再乘一遍）
 static func figure_mesh() -> ArrayMesh:
 	var kit := MeshKit.new()
+	# 2026-11-07（所有者「队伍中还有一部分是方块人物」）：原来 6–10 边的圆台，远看一节一节像方块；边数加到 14–18、关节处多接一段，
+	# 头垂到胸前、歪向一边，肩膀往前塌——远处一眼看过去也是「睡着在走」的样子
+	var hd := Vector3(0.035, -0.07, 0.11)           # 头往前、往下垂，偏向一边
 	for s in [-1.0, 1.0]:
-		kit.cylinder("cloth", Vector3(s * 0.09, 0.06, 0.0), Vector3(s * 0.1, 0.84, 0.0), 0.058, 0.08, 8, 0.85)          # 腿（麻布裤）
-		kit.cylinder("skin", Vector3(s * 0.09, 0.0, 0.03), Vector3(s * 0.09, 0.07, 0.03), 0.05, 0.055, 6, 0.8)          # 光脚
-		kit.cylinder("cloth", Vector3(s * 0.2, 1.4, 0.0), Vector3(s * 0.24, 1.12, 0.03), 0.055, 0.05, 7, 0.9)           # 上臂、小臂（垂着，稍微往前）
-		kit.cylinder("cloth", Vector3(s * 0.24, 1.12, 0.03), Vector3(s * 0.25, 0.9, 0.07), 0.048, 0.042, 7, 0.9)
-		kit.cylinder("skin", Vector3(s * 0.25, 0.9, 0.07), Vector3(s * 0.25, 0.8, 0.08), 0.04, 0.03, 6, 0.85)           # 手
-	kit.cylinder("cloth", Vector3(0, 0.78, 0), Vector3(0, 1.12, 0), 0.17, 0.16, 10, 0.92)                              # 腰到胸：麻衣
-	kit.cylinder("cloth", Vector3(0, 1.12, 0), Vector3(0, 1.42, 0), 0.165, 0.2, 10, 1.0)                              # 胸到肩，肩宽一点
-	kit.cylinder("cloth", Vector3(0, 1.42, 0), Vector3(0, 1.46, 0), 0.2, 0.08, 10, 1.0)
-	kit.cylinder("skin", Vector3(0, 1.44, 0), Vector3(0, 1.53, 0), 0.05, 0.05, 6)                                     # 脖子
-	kit.cylinder("skin", Vector3(0, 1.52, 0.01), Vector3(0, 1.6, 0.01), 0.075, 0.095, 9)                              # 头：下巴 → 颧骨 → 头顶，几段圆台拼圆
-	kit.cylinder("skin", Vector3(0, 1.6, 0.01), Vector3(0, 1.69, 0.0), 0.095, 0.09, 9)
-	kit.cylinder("hair", Vector3(0, 1.66, -0.01), Vector3(0, 1.76, -0.01), 0.1, 0.05, 9)                              # 头发（结霜的灰，盖住头顶后脑）
+		kit.cylinder("cloth", Vector3(s * 0.09, 0.06, 0.0), Vector3(s * 0.095, 0.45, 0.01), 0.056, 0.07, 14, 0.85)        # 小腿（麻布裤）
+		kit.cylinder("cloth", Vector3(s * 0.095, 0.45, 0.01), Vector3(s * 0.1, 0.84, 0.0), 0.07, 0.085, 14, 0.85)          # 大腿
+		kit.cylinder("skin", Vector3(s * 0.09, 0.0, 0.05), Vector3(s * 0.09, 0.07, 0.02), 0.045, 0.05, 10, 0.8)            # 光脚（冻青）
+		kit.cylinder("cloth", Vector3(s * 0.19, 1.36, 0.05), Vector3(s * 0.22, 1.1, 0.08), 0.055, 0.05, 12, 0.9)           # 上臂：肩膀往前塌，胳膊垂着
+		kit.cylinder("cloth", Vector3(s * 0.22, 1.1, 0.08), Vector3(s * 0.22, 0.88, 0.1), 0.048, 0.04, 12, 0.9)            # 小臂
+		kit.cylinder("skin", Vector3(s * 0.22, 0.88, 0.1), Vector3(s * 0.215, 0.76, 0.11), 0.038, 0.028, 10, 0.85)         # 手：垂着
+	kit.cylinder("cloth", Vector3(0, 0.78, 0), Vector3(0, 1.0, 0.01), 0.165, 0.17, 18, 0.92)                           # 腰
+	kit.cylinder("cloth", Vector3(0, 1.0, 0.01), Vector3(0, 1.2, 0.03), 0.17, 0.18, 18, 0.95)                          # 胸
+	kit.cylinder("cloth", Vector3(0, 1.2, 0.03), Vector3(0, 1.38, 0.06), 0.18, 0.19, 18, 1.0)                          # 胸到肩：往前塌
+	kit.cylinder("cloth", Vector3(0, 1.38, 0.06), Vector3(0, 1.43, 0.07), 0.19, 0.08, 18, 1.0)
+	kit.cylinder("skin", Vector3(0, 1.41, 0.07), Vector3(hd.x * 0.5, 1.5 + hd.y * 0.5, 0.07 + hd.z * 0.5), 0.05, 0.048, 10)   # 脖子往前探
+	var hc := Vector3(0, 1.52, 0.01) + hd
+	kit.cylinder("skin", hc, hc + Vector3(0, 0.05, -0.01), 0.07, 0.09, 16)                                            # 头：下巴 → 颧骨 → 头顶
+	kit.cylinder("skin", hc + Vector3(0, 0.05, -0.01), hc + Vector3(0, 0.12, -0.02), 0.09, 0.092, 16)
+	kit.cylinder("skin", hc + Vector3(0, 0.12, -0.02), hc + Vector3(0, 0.17, -0.03), 0.092, 0.06, 16)
+	kit.cylinder("hair", hc + Vector3(0, 0.1, -0.04), hc + Vector3(0, 0.21, -0.05), 0.1, 0.04, 16)                    # 头发（结霜的灰）
 	for s in [-1.0, 1.0]:
-		kit.box("eye", Vector3(s * 0.035, 1.625, 0.095), Vector3(0.034, 0.02, 0.012))                                     # 两道深陷的眼窝
+		kit.box("eye", hc + Vector3(s * 0.035, 0.085, 0.085), Vector3(0.034, 0.022, 0.012))                             # 两道深陷的眼窝
 	var cloth := StandardMaterial3D.new()
 	cloth.albedo_color = LINEN
 	cloth.vertex_color_use_as_albedo = true
@@ -373,6 +404,29 @@ func _hit_player(a: Dictionary, pp: Vector2) -> void:
 
 
 ## 现在有哪些火：[圆心, 半径]——组 light_source 带 radius 元数据的（铁匠炉、火盆、壁炉）、组 crowd_fire 的（5.4b：插在地上的火把）
+## 人群走近，插在地上的火把被压得暗下去（2026-11-07）：离最近的人 TORCH_DIM_R 米以内按距离压到 TORCH_DIM_MIN（PlantedTorch.dim，它自己闪的时候乘上）；
+## 人群走完了、不在了还原成 1
+func _dim_torches() -> void:
+	if not is_inside_tree():
+		return
+	for t in get_tree().get_nodes_in_group("planted_torch"):
+		if not (t is PlantedTorch):
+			continue
+		var tp := (t as Node3D).global_position
+		var d := INF
+		for a: Dictionary in agents:
+			if not a.done:
+				d = minf(d, Vector2(tp.x, tp.z).distance_to(a.p))
+		(t as PlantedTorch).dim = lerpf(TORCH_DIM_MIN, 1.0, clampf((d - 1.5) / (TORCH_DIM_R - 1.5), 0.0, 1.0))
+
+
+func _exit_tree() -> void:
+	if is_inside_tree():
+		for t in get_tree().get_nodes_in_group("planted_torch"):
+			if t is PlantedTorch:
+				(t as PlantedTorch).dim = 1.0
+
+
 static func fires(tree: SceneTree) -> Array:
 	var out := []
 	for g in ["light_source", "crowd_fire"]:
@@ -398,6 +452,12 @@ func _draw(f: float) -> void:
 				if d < NEAR_DIST * NEAR_DIST:
 					order.append([d, i])
 		order.sort_custom(func(x, y): return x[0] < y[0])
+	_near_d = INF
+	if cam:
+		for a: Dictionary in agents:
+			if not a.done:
+				_near_d = minf(_near_d, Vector2(cp.x, cp.z).distance_to(a.p))
+	_dim_torches()
 	var near := {}
 	for k in mini(order.size(), models.size()):
 		near[int(order[k][1])] = k
@@ -407,9 +467,14 @@ func _draw(f: float) -> void:
 		var m: MultiMesh = mm.multimesh
 		if a.done or hidden.has(i):
 			m.set_instance_transform(i, Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 0.001), Vector3(0, -100, 0)))
+			if mist:
+				mist.multimesh.set_instance_transform(i, Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 0.001), Vector3(0, -100, 0)))
 			continue
 		var p: Vector2 = (a.prev as Vector2).lerp(a.p, f)
 		var y := float(height_fn.call(p.x, p.y)) if height_fn.is_valid() else 0.0
+		if mist:
+			mist.multimesh.set_instance_transform(i, Transform3D(Basis(Vector3.UP, float(a.phase)), Vector3(p.x, y + 0.35, p.y)))
+			mist.multimesh.set_instance_color(i, Color(1, 1, 1, 1))
 		var yaw := atan2(a.v.x, a.v.y) if a.v.length() > 0.05 else 0.0
 		var bob := absf(sin(float(a.phase))) * 0.04
 		if near.has(i):

@@ -139,6 +139,11 @@ func _build_ring() -> void:
 		var model := _face(f)
 		if model:
 			faces.append({"model": model, "slot": int(f.slot), "text": str(f.text), "said": false})
+	add_child(SleeperHum.make(func() -> float:                # 走近那一圈：一片很低的、整齐的呼吸（站着不走，没有脚步声；2026-11-07）
+		var cam := get_viewport().get_camera_3d() if is_inside_tree() else null
+		if cam == null:
+			return INF
+		return absf(Vector2(cam.global_position.x, cam.global_position.z).distance_to(HighlandLayout.WELL) - RING_R), false))
 
 
 ## 一个人站在圈上第 k 个位置，脸朝井，定住不动

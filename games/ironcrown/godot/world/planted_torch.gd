@@ -16,6 +16,7 @@ var fuel := TorchHand.FUEL
 var lit := true
 var windy := false
 var serial := 0
+var dim := 1.0                    # 长眠者的人群走近时压暗（SleeperCrowd._dim_torches，2026-11-07）
 var visual: Node3D
 var light: OmniLight3D
 var rng := RandomNumberGenerator.new()
@@ -131,7 +132,9 @@ func _physics_process(delta: float) -> void:
 		blow_out()
 	elif light.visible and not Settings.reduced_motion:
 		var t := Time.get_ticks_msec() * 0.001 + serial * 1.7
-		light.light_energy = 1.3 * (1.0 + sin(t * 8.7) * 0.07 + sin(t * 19.3 + 0.4) * 0.05)
+		light.light_energy = 1.3 * dim * (1.0 + sin(t * 8.7) * 0.07 + sin(t * 19.3 + 0.4) * 0.05)
+	elif light.visible:
+		light.light_energy = 1.3 * dim
 
 
 ## 亮着的里面最新插下的 max_lights 支带实时光源

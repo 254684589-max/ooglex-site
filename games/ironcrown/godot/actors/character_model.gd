@@ -71,6 +71,14 @@ func _ready() -> void:
 	grip.rotation_degrees = Vector3(gr[0], gr[1], gr[2])
 	if bool(look.get("slump", false)):
 		SleeperSlump.attach(skeleton, get_instance_id())   # 长眠者：头垂下去、歪向一边（SleeperCrowd.chill 设 look.slump）
+		var feet := StandardMaterial3D.new()                # 光着脚：靴子那块网格换成冻青的皮肤（衣服模型的脚就是靴子，没有光脚的网格）
+		feet.albedo_color = Color("7f8b98")
+		feet.roughness = 0.75
+		feet.emission_enabled = true
+		feet.emission = feet.albedo_color
+		feet.emission_energy_multiplier = GLOW
+		for mi: MeshInstance3D in scene_root.find_children("*_Feet", "MeshInstance3D", true, false):
+			mi.material_override = feet
 	loaded = true
 
 
