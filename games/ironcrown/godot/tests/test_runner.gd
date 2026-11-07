@@ -13276,5 +13276,19 @@ func test_cutscene() -> void:
 	main.ending_panel.close()
 	get_tree().paused = false
 	await free_main(main)
+	# 堤道夜战开场（1-2）：走到守点先演过场，演完才开打
+	causeway_state("arch")
+	main = await make_causeway()
+	var cbt: Battle = main.battle
+	check(CutScenes.before_battle(main) == "causeway_open" and CutScenes.shots(main, "causeway_open").size() == 2, "堤道夜战开打以前演「堤道夜战开场」（两个镜头）")
+	main.start_battle()
+	await frames(2)
+	check(main.cutscene != null and main.cutscene.id == "causeway_open" and not cbt.started and Music.track == "battle", "走到守点：先演过场，还没开打")
+	main.start_battle()
+	check(not cbt.started, "演着的时候不会重复开打")
+	main.cutscene.skip()
+	await frames(2)
+	check(cbt.started and CutScenes.before_battle(main) == "", "演完（跳过也算）：开打；不再演")
+	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
 

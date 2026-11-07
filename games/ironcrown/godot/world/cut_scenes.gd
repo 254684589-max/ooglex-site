@@ -26,7 +26,17 @@ extends RefCounted
 ##                  （留名的人：继承人 / 大主祭卢西安 / 诺伯特 / 你——你没有名字，浮出来的是「誓剑」） → 星铁暗下去 → 抬头看井口，长眠者转身往南；之后结局。
 ##   oath_failed    封誓断了：火盆一个接一个暗下去 → 长眠的人围住石台；之后结局（长冬）。
 
-const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed"]
+##   causeway_open  第一章堤道夜战开打以前（你走到守点、main.start_battle）：高处看堤道和村子那头连成一线的火把 → 你身后的人；演完开打
+##                  （攻方的兵开打以后才摆上去，所以不拍他们的脸）。
+
+const IDS := ["prologue", "norbert_vial", "ferry_standoff", "osric_dawn", "well_ring", "wake_memory", "council_open", "oath_sealed", "oath_failed", "causeway_open"]
+
+
+## 这场仗开打以前演哪一段（每段只演一次）；没有就 ""
+static func before_battle(main: Node) -> String:
+	if str(main.area) == "marsh" and CausewayBattle.due() and not GameState.has_flag("cut_causeway_open"):
+		return "causeway_open"
+	return ""
 
 
 ## 进一个区域时要不要先演一段（main 进场时调，每段只演一次：播的时候记旗标 cut_<编号>）
@@ -72,6 +82,8 @@ static func available(main: Node, id: String) -> bool:
 			return main.world != null and main.area == "council_hall"
 		"oath_sealed", "oath_failed":
 			return main.world != null and main.area == "well_bottom"
+		"causeway_open":
+			return main.world != null and main.area == "marsh"
 	return false
 
 
@@ -95,7 +107,23 @@ static func shots(main: Node, id: String) -> Array:
 			return oath_sealed(main)
 		"oath_failed":
 			return oath_failed(main)
+		"causeway_open":
+			return causeway_open(main)
 	return []
+
+
+## 堤道夜战开场（1-2）：堤道沿 MarshLayout.cw3(t) 走，t 小的那头是村子（攻方列在 WAVE1_T），守点在 HOLD_T（断口 45.5 / 石拱 75）
+static func causeway_open(main: Node) -> Array:
+	var p: FpController = main.player
+	var ht := float(CausewayBattle.HOLD_T[CausewayBattle.hold()])
+	var y := MarshLayout.CAUSE_Y
+	return [
+		{"from": [MarshLayout.cw3(ht + 14.0, 7.0, y + 8.0), MarshLayout.cw3(6.0, 0.0, y + 1.0)], "to": [MarshLayout.cw3(ht + 8.0, 5.0, y + 6.0), MarshLayout.cw3(8.0, 0.0, y + 1.0)], "dur": 7.0, "fov": 48.0, "music": "battle", "exposure": 1.6,
+			"lines": [[0.6, "", "入夜。堤道那头的沼地上，火把连成了一条线。"], [3.8, "", "举着那些火把的，是另一位继承人的人。"]],
+			"on_start": func(): p.set_third_person(true)},
+		{"from": [MarshLayout.cw3(ht + 4.5, 1.2, y + 2.0), MarshLayout.cw3(ht - 14.0, 0.0, y + 1.2)], "to": [MarshLayout.cw3(ht + 3.2, 0.9, y + 1.9), MarshLayout.cw3(ht - 14.0, 0.0, y + 1.2)], "dur": 5.0, "fov": 46.0, "cut": true,
+			"lines": [[0.5, "", "你的人在你身后。今夜，这条堤道要守住。"]]},
+	]
 
 
 ## 留名的人在冰壁上的名字

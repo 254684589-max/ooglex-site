@@ -2137,6 +2137,16 @@ func start_encounter(id: String, win: String, value: Variant = true) -> void:
 
 ## 开打（B.3）：先自动存档（GDD 6.4「开战前自动存档，玩家倒下就读档」），再让两边动起来
 func start_battle() -> void:
+	if battle == null or not is_instance_valid(battle) or battle.started or cutscene != null:
+		return
+	var bc := CutScenes.before_battle(self)                 # 开打以前的过场（C.5：堤道夜战、磨坊之战……）：演完再开打
+	if bc != "" and play_cutscene(bc):
+		cutscene.finished.connect(func(_s: bool): _begin_battle(), CONNECT_ONE_SHOT)
+		return
+	_begin_battle()
+
+
+func _begin_battle() -> void:
 	if battle == null or not is_instance_valid(battle) or battle.started:
 		return
 	save_game("auto", true)
