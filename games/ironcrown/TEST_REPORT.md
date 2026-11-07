@@ -2,6 +2,12 @@
 
 每一步的实际命令与结果，最新的在上面。
 
+## 2026-11-07 · 上线 6.3c–8.5（所有者说「跑完测试后全部上线」）
+
+- 部署构建：`tools/build_web.sh play`，play/ 换成 `ic-f632d4fa.*`（共 111.7 MB），全量测试 ALL 2737 CHECKS PASSED。
+- 对构建好的 play/ 跑冒烟：desk 1280×720、tab 768×1024、phone 360×740 三档全部 PASS，溢出 0px、报错 0（启动 5.6s / 5.0s / 4.6s）。
+- 合并到 main 并推送，触发「Deploy Protected Ooglex Pages」。
+
 ## 2026-11-06 · 8.5 结局（第五章完）
 
 构建：`tools/build_web.sh <临时目录>`（Godot 4.7.2）。全量测试 **2737 项通过**（8.4 2729；新 `ch5end` 组）。
