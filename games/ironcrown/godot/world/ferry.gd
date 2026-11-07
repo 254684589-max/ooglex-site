@@ -161,14 +161,7 @@ static func _shed(kit: MeshKit, parent: Node3D) -> void:
 	kit.box("timber", c + Vector3(0, 0.5, -1.4), Vector3(3.2, 1.0, 0.08), Basis.IDENTITY, 0.8, 0.5)       # 后面一道矮挡板
 	# 马：面朝西（-X），侧对着岸
 	var h := c + Vector3(0.2, 0, 0.1)
-	kit.box("horse", h + Vector3(0, 1.25, 0), Vector3(1.6, 0.65, 0.55), Basis.IDENTITY, 1.0, 0.7)                      # 身子
-	kit.box("horse", h + Vector3(-0.95, 1.65, 0), Vector3(0.35, 0.75, 0.32), Basis(Vector3.BACK, deg_to_rad(-30.0)), 1.0, 0.8)   # 脖子
-	kit.box("horse", h + Vector3(-1.25, 1.95, 0), Vector3(0.55, 0.26, 0.26), Basis(Vector3.BACK, deg_to_rad(-20.0)), 1.0, 0.8)   # 头
-	for lx in [-0.6, 0.6]:
-		for lz in [-0.18, 0.18]:
-			kit.box("horse", h + Vector3(lx, 0.47, lz), Vector3(0.14, 0.94, 0.14), Basis.IDENTITY, 0.8, 0.5)
-	kit.box("mane", h + Vector3(0.88, 1.15, 0), Vector3(0.1, 0.55, 0.12), Basis(Vector3.BACK, deg_to_rad(20.0)), 0.6, 0.5)      # 尾巴
-	kit.box("mane", h + Vector3(-0.86, 1.82, 0), Vector3(0.12, 0.62, 0.1), Basis(Vector3.BACK, deg_to_rad(-30.0)), 0.8, 0.7)     # 鬃毛
+	HorseKit.build(kit, h, Basis(Vector3.UP, PI * 0.5), "horse")                                                        # 一匹马（HorseKit，2026-11-07：原来几个方块拼的）
 	kit.box("hay", c + Vector3(1.2, 0.3, -0.9), Vector3(1.0, 0.6, 0.7), Basis(Vector3.UP, 0.2), 1.0, 0.6)
 	kit.box("timber", c + Vector3(-1.2, 0.45, -1.0), Vector3(0.9, 0.35, 0.4), Basis.IDENTITY, 0.8, 0.5)                     # 料槽
 	_solid(parent, c + Vector3(0, 1.2, 0), Vector3(3.4, 2.4, 3.0))

@@ -77,42 +77,107 @@ func _ready() -> void:
 		ensure_norbert()
 
 
-## 井：石砌的井栏（一圈两层的石块，半埋在雪里）、裂成两半的石盖（一半歪倒在雪里）、黑洞洞的井口、一根冻住的铁链
+## 井（2026-11-07 所有者「把冬井做得更逼真，深一些，太浅太普通，缺乏仪式感」）：
+##   脚下三圈半埋在雪里的石阶台（一圈比一圈高）；井栏三层石块，上面压一圈厚盖石，盖石边上挂着冰凌；
+##   井口往下看得见一米多的井壁（一圈一圈越往下越暗），再往下是黑的，底下透上来一点冷光、冒着一股寒气；
+##   外面一圈六块高高的立石（刻着几道磨平了的线，顶上积着霜），像是给什么仪式立的；井口上架着一副三根木杆的旧吊架，冻住的铁链从架顶垂进井里；
+##   裂成两半的石盖：一半还压在井口边上，一半歪倒在台阶上。
+const CURB_R := 1.25
+const CURB_H := 1.05
+const STONES_R := 3.5
+
+
 func _build_well() -> void:
 	var c := ground(HighlandLayout.WELL)
 	var kit := MeshKit.new()
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 5821
-	for layer in 2:
+	for ring_i in 3:                                                                                       # 石阶台：三圈，半埋在雪里
+		var r: float = [2.75, 2.25, 1.8][ring_i]
+		var hgt: float = [0.08, 0.15, 0.22][ring_i]
+		var n: int = [26, 22, 18][ring_i]
+		for k in n:
+			var a := TAU * (k + 0.3 * ring_i) / n
+			var w := TAU * r / n * 0.97
+			kit.box("stone", c + Vector3(cos(a) * (r - 0.25), hgt * 0.5 - 0.02, sin(a) * (r - 0.25)), Vector3(0.5, hgt + 0.04, w), Basis(Vector3.UP, -a), 0.82, 0.6)
+	for layer in 3:                                                                                        # 井栏：三层石块
 		var n := 14
 		for k in n:
 			var a := TAU * (k + 0.5 * layer) / n
-			var r := 1.25
-			var p := c + Vector3(cos(a) * r, 0.18 + layer * 0.34 - 0.12, sin(a) * r)
-			var b := Basis(Vector3.UP, -a) * Basis(Vector3.FORWARD, rng.randf_range(-0.05, 0.05))
-			kit.box("stone", p, Vector3(0.36, 0.34 + rng.randf_range(-0.03, 0.04), 0.58), b, 0.92, 0.7)
-	kit.cylinder("dark", c + Vector3(0, 0.55, 0), c + Vector3(0, 0.62, 0), 1.0, 1.0, 16, 1.0)              # 井口：黑的
+			var p := c + Vector3(cos(a) * CURB_R, 0.22 + 0.18 + layer * 0.3, sin(a) * CURB_R)
+			var bb := Basis(Vector3.UP, -a) * Basis(Vector3.FORWARD, rng.randf_range(-0.04, 0.04))
+			kit.box("stone", p, Vector3(0.38, 0.3 + rng.randf_range(-0.02, 0.03), 0.6), bb, 0.9 - layer * 0.04, 0.7)
+	for k in 10:                                                                                           # 盖石：一圈厚石板，边上挂着冰凌
+		var a := TAU * k / 10.0
+		var p := c + Vector3(cos(a) * (CURB_R + 0.04), CURB_H - 0.03, sin(a) * (CURB_R + 0.04))
+		kit.box("stone", p, Vector3(0.52, 0.14, 0.82), Basis(Vector3.UP, -a), 1.0, 0.85)
+		kit.box("frost", p + Vector3(0, 0.08, 0), Vector3(0.5, 0.02, 0.8), Basis(Vector3.UP, -a))
+		for j in 3:
+			var ia := a + (j - 1) * 0.18
+			var ip := c + Vector3(cos(ia) * (CURB_R + 0.33), CURB_H - 0.1, sin(ia) * (CURB_R + 0.33))
+			kit.tube("ice", ip, ip - Vector3(0, rng.randf_range(0.12, 0.3), 0), 0.025, 0.003, 6)
+	for d in 6:                                                                                            # 井壁：往下一圈一圈，越往下越暗
+		var y0 := CURB_H - 0.1 - d * 0.18
+		kit.tube("shaft", c + Vector3(0, y0, 0), c + Vector3(0, y0 - 0.2, 0), CURB_R - 0.22, CURB_R - 0.22, 18, 1.0 - d * 0.16, 0.0)
+	kit.cylinder("dark", c + Vector3(0, CURB_H - 1.2, 0), c + Vector3(0, CURB_H - 1.17, 0), CURB_R - 0.2, CURB_R - 0.2, 18, 1.0)   # 再往下：黑的
 	var half := Basis(Vector3.UP, 0.4) * Basis(Vector3.RIGHT, 0.03)
-	kit.box("stone", c + half * Vector3(0.35, 0.72, 0), Vector3(0.75, 0.16, 2.3), half, 0.9, 0.7)          # 石盖：一半还压在井口上
-	var tilt := Basis(Vector3.UP, 0.9) * Basis(Vector3.FORWARD, 0.55)
-	kit.box("stone", c + Vector3(-1.75, 0.3, 0.6), Vector3(0.75, 0.16, 2.2), tilt, 0.9, 0.7)               # 另一半歪倒在雪里
-	for k in 3:                                                                                            # 石盖上刻的几道线（磨得快看不清了）
-		kit.box("groove", c + half * Vector3(0.35, 0.81, -0.6 + k * 0.6), Vector3(0.5, 0.012, 0.04), half)
-	var top := c + Vector3(1.2, 0.78, 0.2)
-	for k in 7:                                                                                            # 冻住的铁链：从井栏上垂进井里
-		var p0 := top + Vector3(-0.12 * k, -0.08 * k * k * 0.25, 0.02 * k)
-		kit.cylinder("iron", p0, p0 + Vector3(-0.12, -0.1, 0.02), 0.025, 0.025, 5)
+	kit.box("stone", c + half * Vector3(0.55, CURB_H + 0.12, 0), Vector3(0.75, 0.16, 2.4), half, 0.9, 0.7)  # 石盖：一半还压在井口边上
+	for k in 3:
+		kit.box("groove", c + half * Vector3(0.55, CURB_H + 0.21, -0.6 + k * 0.6), Vector3(0.5, 0.012, 0.04), half)
+	var tilt := Basis(Vector3.UP, 0.9) * Basis(Vector3.FORWARD, 0.4)
+	kit.box("stone", c + Vector3(-2.05, 0.38, 0.75), Vector3(0.75, 0.16, 2.2), tilt, 0.9, 0.7)            # 另一半歪倒在台阶上
+	for k in 6:                                                                                            # 立石：一圈六块，刻着几道线，顶上积霜
+		var a := TAU * k / 6.0 + 0.26
+		var hgt := rng.randf_range(2.1, 2.9)
+		var base := c + Vector3(cos(a) * STONES_R, -0.2, sin(a) * STONES_R)
+		var lean := Basis(Vector3.UP, -a) * Basis(Vector3.FORWARD, rng.randf_range(-0.07, 0.07)) * Basis(Vector3.RIGHT, rng.randf_range(-0.05, 0.05))
+		kit.box("stone", base + lean * Vector3(0, hgt * 0.5, 0), Vector3(0.36, hgt, 0.62), lean, 1.0, 0.65)
+		kit.box("frost", base + lean * Vector3(0, hgt + 0.02, 0), Vector3(0.38, 0.05, 0.64), lean)
+		for g in 4:
+			kit.box("groove", base + lean * Vector3(-0.185, hgt * (0.45 + g * 0.1), 0), Vector3(0.012, 0.03, 0.4 - g * 0.06), lean)
+	var top := c + Vector3(0, 2.9, 0)                                                                      # 吊架：三根木杆
+	for k in 3:
+		var a := TAU * k / 3.0 + 0.5
+		kit.tube("timber", c + Vector3(cos(a) * (CURB_R + 0.55), 0.15, sin(a) * (CURB_R + 0.55)), top, 0.07, 0.05, 8)
+	var link := top
+	for k in 16:                                                                                           # 铁链：从架顶垂进井里
+		var nxt := top + Vector3(0.02 * sin(k * 0.7), -0.16 * (k + 1), 0)
+		kit.tube("iron", link, nxt, 0.022, 0.022, 6)
+		link = nxt
 	var stone := Look.mat("stone")
 	var dark := StandardMaterial3D.new()
-	dark.albedo_color = Color("050608")
+	dark.albedo_color = Color("020304")
 	dark.roughness = 1.0
+	dark.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	var shaft := Look.mat("stone").duplicate() as StandardMaterial3D
+	shaft.cull_mode = BaseMaterial3D.CULL_DISABLED
+	shaft.vertex_color_use_as_albedo = true
 	var groove := StandardMaterial3D.new()
 	groove.albedo_color = Color("2a2a2c")
-	var mi := kit.build({"stone": stone, "dark": dark, "groove": groove, "iron": Inn._iron_mat()})
+	var frost := StandardMaterial3D.new()
+	frost.albedo_color = Color("e4ecf2")
+	frost.roughness = 0.9
+	var ice := StandardMaterial3D.new()
+	ice.albedo_color = Color(0.8, 0.9, 1.0, 0.75)
+	ice.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	ice.roughness = 0.15
+	var timber := Look.mat("timber")
+	var mi := kit.build({"stone": stone, "dark": dark, "shaft": shaft, "groove": groove, "iron": Inn._iron_mat(), "frost": frost, "ice": ice, "timber": timber})
 	mi.name = "WinterWellStones"
-	mi.visibility_range_end = 160.0
+	mi.visibility_range_end = 180.0
 	add_child(mi)
-	Castle._solid(self, c + Vector3(0, 0.5, 0), Vector3(2.9, 1.0, 2.9))
+	var glow := OmniLight3D.new()                                                                          # 井底透上来的一点冷光
+	glow.name = "WellGlow"
+	glow.light_color = Color(0.55, 0.72, 1.0)
+	glow.light_energy = 0.9
+	glow.omni_range = 3.2
+	glow.position = c + Vector3(0, CURB_H - 0.9, 0)
+	add_child(glow)
+	Castle._solid(self, c + Vector3(0, 0.6, 0), Vector3(2.9, 1.2, 2.9))
+	for k in 6:
+		var a := TAU * k / 6.0 + 0.26
+		Castle._solid(self, c + Vector3(cos(a) * STONES_R, 1.2, sin(a) * STONES_R), Vector3(0.5, 2.4, 0.5))
+	Castle._solid(self, c + Vector3(0, 0.08, 0), Vector3(5.2, 0.16, 5.2))                                 # 石阶台：站得上去
 
 
 ## 圈：每个人都是真人模型（白天看得清：SleeperCrowd 远处那种简化的人在天光下像一排白石膏）——生人换上麻衣、光脚，几种村民的打扮轮着来；认得的脸用那个人的外观

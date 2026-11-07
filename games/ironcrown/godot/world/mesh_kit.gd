@@ -98,6 +98,41 @@ func cylinder(key: String, a: Vector3, b: Vector3, r0: float, r1: float, sides :
 		quad(key, [a + n0 * r0, a + n1 * r0, b + n1 * r1, b + n0 * r1], mid, [shade * 0.8, shade * 0.8, shade, shade])
 
 
+## 圆滑的圆台（2026-11-07 马）：同 cylinder，但每个顶点用自己的法线（光照连成一片，不是一棱一棱的）；
+## 两头各往外多伸出一点（overlap 倍半径），一节一节接起来时接缝处不漏缝
+func tube(key: String, a: Vector3, b: Vector3, r0: float, r1: float, sides := 12, shade := 1.0, overlap := 0.25) -> void:
+	var axis := (b - a)
+	if axis.length() < 0.001:
+		return
+	var dir := axis.normalized()
+	a -= dir * r0 * overlap
+	b += dir * r1 * overlap
+	var ref := Vector3.UP if absf(dir.y) < 0.95 else Vector3.RIGHT
+	var u := dir.cross(ref).normalized()
+	var v := dir.cross(u).normalized()
+	var slope := (r0 - r1) / maxf((b - a).length(), 0.001)
+	var st := _st(key)
+	for i in sides:
+		var a0 := TAU * i / sides
+		var a1 := TAU * (i + 1) / sides
+		var n0 := u * cos(a0) + v * sin(a0)
+		var n1 := u * cos(a1) + v * sin(a1)
+		var m0 := (n0 + dir * slope).normalized()
+		var m1 := (n1 + dir * slope).normalized()
+		var p := [a + n0 * r0, a + n1 * r0, b + n1 * r1, b + n0 * r1]
+		var ns := [m0, m1, m1, m0]
+		var sh := [shade, shade, shade, shade]
+		var order := [0, 1, 2, 0, 2, 3]
+		if (p[1] - p[0]).cross(p[2] - p[0]).dot(n0 + n1) > 0.0:
+			order = [0, 2, 1, 0, 3, 2]
+		for k in order:
+			st.set_normal(ns[k])
+			st.set_color(Color(sh[k], sh[k], sh[k]))
+			st.set_uv(Vector2(float(i) / sides, 0.0 if k < 2 else 1.0))
+			st.add_vertex(p[k])
+		counts[key] += 2
+
+
 ## 把几个网格（各自可能有几个表面、几种材质）压成**一个表面**：每个表面的颜色写进顶点色，配一种开了顶点色的材质就能画，
 ## 一次绘制调用（B.5：军阵的占位兵原来身子、头、鼻子、布带、盾、小旗、兵器各一次，60 人超预算）。
 ## 坐标换算到 root 的本地坐标；带贴图的材质（木头）写不进顶点色，用 wood 代替；材质本身开了顶点色的（遮蔽亮度）乘进去。

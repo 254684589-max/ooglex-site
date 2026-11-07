@@ -614,33 +614,10 @@ static func horses(root: Node3D) -> void:
 	_add(root, kit, "CampHorses")
 
 
-## 一匹马（MeshKit 搭的：身子、胸和臀、脖子、头、耳朵、四条腿和蹄子、尾巴、鬃毛、马衣）；本地 -Z 是马头
+## 一匹马：HorseKit（2026-11-07 换成更像马的搭法），披红马衣；脚下一小块踩实的雪
 static func _horse(kit: MeshKit, o: Vector3, b: Basis, coat: String, grazing: bool) -> void:
-	var P := func(x: float, y: float, z: float) -> Vector3: return o + b * Vector3(x, y, z)
-	kit.cylinder(coat, P.call(0, 1.18, 0.62), P.call(0, 1.22, -0.55), 0.31, 0.33, 10)            # 身子
-	kit.cylinder(coat, P.call(0, 1.2, 0.62), P.call(0, 1.14, 0.82), 0.31, 0.2, 10)              # 臀
-	kit.cylinder(coat, P.call(0, 1.22, -0.55), P.call(0, 1.18, -0.74), 0.33, 0.22, 10)          # 胸
-	var neck_top: Vector3 = P.call(0, 1.05, -1.35) if grazing else P.call(0, 1.78, -1.05)
-	var head_end: Vector3 = P.call(0, 0.35, -1.55) if grazing else P.call(0, 1.45, -1.48)
-	kit.cylinder(coat, P.call(0, 1.3, -0.62), neck_top, 0.22, 0.14, 8)
-	kit.cylinder(coat, neck_top, head_end, 0.13, 0.08, 8)
-	kit.cylinder("mane", P.call(0, 1.5, -0.6), neck_top + b.y * 0.12, 0.05, 0.04, 4)
-	for s in [-1.0, 1.0]:
-		kit.cylinder(coat, neck_top + b * Vector3(s * 0.06, 0.06, 0.04), neck_top + b * Vector3(s * 0.08, 0.2, 0.06), 0.03, 0.01, 4)
-	for sx in [-0.17, 0.17]:
-		for sz in [-0.6, 0.62]:
-			var top: Vector3 = P.call(sx, 1.0, sz)
-			var knee: Vector3 = P.call(sx, 0.48, sz + (0.04 if sz > 0 else 0.0))
-			var foot: Vector3 = P.call(sx, 0.06, sz)
-			kit.cylinder(coat, top, knee, 0.09, 0.055, 6)
-			kit.cylinder(coat, knee, foot, 0.05, 0.045, 6)
-			kit.cylinder("mane", foot, foot - b.y * 0.1, 0.06, 0.065, 6)
-	kit.cylinder("mane", P.call(0, 1.3, 0.84), P.call(0, 0.55, 1.0), 0.07, 0.04, 5)             # 尾巴
-	for s in [-1.0, 1.0]:                                                                        # 马衣：搭在背上、两边垂下来
-		var n := (b * Vector3(s, 0.6, 0)).normalized()
-		kit.quad("red", [P.call(s * 0.05, 1.54, -0.45), P.call(s * 0.05, 1.53, 0.55), P.call(s * 0.36, 0.9, 0.58), P.call(s * 0.36, 0.92, -0.48)], n, [1.0, 1.0, 0.7, 0.7])
-		kit.quad("gold", [P.call(s * 0.36, 0.92, -0.48), P.call(s * 0.36, 0.9, 0.58), P.call(s * 0.37, 0.84, 0.58), P.call(s * 0.37, 0.86, -0.48)], b * Vector3(s, 0, 0))
-	kit.box("snow", P.call(0, 0.02, 0), Vector3(0.8, 0.02, 0.4))
+	HorseKit.build(kit, o, b, coat, grazing, true)
+	kit.box("snow", o + b * Vector3(0, 0.02, 0), Vector3(0.8, 0.02, 0.4))
 
 
 ## 朝庄园那边两排削尖的木桩（斜着指向西南），路当中留出车道
