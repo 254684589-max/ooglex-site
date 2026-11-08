@@ -43,6 +43,34 @@ static func rate(area: String, daypart: String, y: float, survival: int, near_fi
 	return r
 
 
+## 无尽荒野（2026-11-08 所有者选「加荒野内容」）：走出手工地图越远越冷——离地图边 WILD_FROM 米以外开始，每 WILD_PER 米冷一倍（最多 WILD_MAX 倍）；
+## 本来不冷的区域（序章那几片林子）出了地图 WILD_FROM 米也开始冷（按 WILD_BASE 算）。火边、屋里照旧暖
+const WILD_FROM := 40.0
+const WILD_PER := 250.0
+const WILD_MAX := 4.0
+const WILD_BASE := 0.35
+
+
+static func wild_out(tree: SceneTree, p: Vector3) -> float:
+	var w := tree.get_first_node_in_group("wild") as WildStreamer if tree else null
+	if w == null:
+		return 0.0
+	var c := w.core
+	var dx := maxf(maxf(c.position.x - p.x, p.x - c.end.x), 0.0)
+	var dz := maxf(maxf(c.position.y - p.z, p.z - c.end.y), 0.0)
+	return sqrt(dx * dx + dz * dz)
+
+
+static func wild_rate(r: float, tree: SceneTree, p: Vector3, daypart: String) -> float:
+	var out := wild_out(tree, p)
+	if out <= WILD_FROM:
+		return r
+	var mult := minf(1.0 + (out - WILD_FROM) / WILD_PER, WILD_MAX)
+	if r <= 0.0:
+		r = BASE_RATE * WILD_BASE * float(DAYPART_MULT.get(daypart, 1.0))
+	return r * mult
+
+
 ## 站在哪盏亮着的火边（组 light_source，带 radius 元数据的）
 static func near_fire(tree: SceneTree, p: Vector3) -> bool:
 	for l in tree.get_nodes_in_group("light_source"):
@@ -68,6 +96,8 @@ static func text() -> String:
 static func tick(tree: SceneTree, area: String, indoor: bool, daypart: String, p: Vector3, delta: float, state: Dictionary) -> String:
 	var fire := near_fire(tree, p)
 	var r := rate(area, daypart, p.y, int(GameState.skills.get("survival", 5)), fire, indoor)
+	if not fire and not indoor:
+		r = wild_rate(r, tree, p, daypart)
 	var event := ""
 	if GameState.frostbite:
 		state["cure"] = float(state.get("cure", 0.0)) + delta if fire else 0.0

@@ -12802,6 +12802,29 @@ func test_wild() -> void:
 	for n in main.world.find_children("WildTrees_near", "MultiMeshInstance3D", true, false):
 		trees += (n as MultiMeshInstance3D).multimesh.instance_count
 	check(trees > 0, "荒野里长着树（%d 棵）" % trees)
+	# 小发现：走一大圈，碰到几处；翻一次拿到东西，再翻只是看看
+	var seen := {}
+	for k in 12:
+		var at := Vector2(-900 + k * 160, 300 + (k % 3) * 200)
+		w.update_around(at, 40)
+		for f: Dictionary in w.finds.values():
+			seen[f.key] = f
+	check(seen.size() >= 5, "荒野里一路上碰到 %d 处小发现（%s）" % [seen.size(), ", ".join(seen.values().map(func(f): return str(f.name)).slice(0, 6))])
+	var silver0 := GameState.silver
+	var r1 := WildFinds.use("wild_test_1", "一具冻僵的旅人。", [["silver", 9], ["bread", 1]])
+	var r2 := WildFinds.use("wild_test_1", "一具冻僵的旅人。", [["silver", 9], ["bread", 1]])
+	check(GameState.silver == silver0 + 9 and GameState.has_item("bread") and str(r1.toast).contains("拿到") and not str(r2.toast).contains("拿到"), "翻一次拿到东西（9 枚银币、面包），再翻只是看看")
+	# 越走越冷
+	var near_r := Cold.wild_rate(Cold.rate("highland", "day", 10.0, 5, false, false), get_tree(), Vector3(0, 0, HighlandLayout.BOUNDS.end.y + 20.0), "day")
+	var far_r := Cold.wild_rate(Cold.rate("highland", "day", 10.0, 5, false, false), get_tree(), Vector3(0, 0, HighlandLayout.BOUNDS.end.y + 600.0), "day")
+	check(far_r > near_r * 2.0, "走出地图越远越冷（地图边外 20 米 %.2f、600 米 %.2f 每秒）" % [near_r, far_r])
+	# 小地图：荒野里画小发现和回地图的箭头，不报错
+	p.global_position = Vector3(0, Highland.wild_height(0, 600) + 1.0, 600)
+	w.update_around(Vector2(0, 600), 40)
+	await frames(4)
+	main.hud.minimap.overlay.queue_redraw()
+	await frames(2)
+	check(main.hud.minimap.visible, "走在荒野里：小地图照常（画着附近的小发现、圈边上指回地图的箭头）")
 	await free_main(main)
 	# 金穗平原、双钥港：一样没有墙，走远了脚下有地；双钥港南边的海走不进去（荒野里深水边也有墙）
 	for spec: Array in [["plain", "dock", 3, Plain.wild_height, Vector2(40, 520), "PlainWalls"], ["harbor", "quay", 4, Harbor.wild_height, Vector2(-60, -520), "HarborWalls"]]:
@@ -13770,6 +13793,7 @@ func _edges_wild(main: Node, a: String, rect: Rect2, n_exits: int) -> void:
 	p.velocity = Vector3.ZERO
 	await physics(60)
 	check(p.is_on_floor() and not rect.grow(10.0).has_point(Vector2(p.global_position.x, p.global_position.z)), "%s：走得出区域边，站在林子里的雪地上（%s，高 %.2f）" % [Areas.display_name(a), str(Vector2(p.global_position.x, p.global_position.z)), p.global_position.y])
+	check(Cold.rate(a, "day", 0.0, 5, false, false) == 0.0 and Cold.wild_rate(0.0, get_tree(), Vector3(rect.end.x + 300.0, 0, rect.get_center().y), "day") > 0.0, "%s：区域里不冷；走进林子深处（区域外 300 米）开始冷" % Areas.display_name(a))
 	if a == "ferry":
 		var south := Vector2(rect.end.x + 30.0, Ferry.SHORE_Z + 20.0)
 		w.update_around(south, 40)

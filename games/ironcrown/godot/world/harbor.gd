@@ -664,6 +664,8 @@ func _wild() -> void:
 	var w := WildStreamer.make(HarborLayout.BOUNDS, Harbor.wild_height, ground_material(), WILD_RADIUS)
 	w.surface = "mud"
 	w.ground_fn = Harbor.ground_at
+	w.region = "harbor"                                   # 荒野里的小发现（WildFinds）
+	w.area_id = "harbor"
 	w.deep_y = HarborLayout.DEEP_Y
 	w.deep_wall_top = DEEP_WALL_TOP
 	w.color_fn = func(x: float, z: float, _slope: float) -> Color: return Color(0.0, 0.25 if wild_height(x, z) < 0.5 else 0.0, 1.0)

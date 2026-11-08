@@ -118,7 +118,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	var exits := [{"at": Vector3(0, 0, SOUTH_GATE_Z), "out": Vector3(0, 0, 1), "half": 1.6, "fence": true, "lantern": true}]
 	Edges.dress(parent, BOUNDS, exits, [], 3613, "snow", true)   # 镇子外面是白桦林；南门外的路伸进林子，南门两边一段栅栏、一盏灯笼（3.10）
 	# 去墓园的小路不算出口：小路门在两栋房子之间（x 4.55），房子后面到东墙只有窄窄一条，那里伸出一条路反倒像走得出去（审查）
-	WildBirch.attach(parent, BOUNDS, exits)              # 四边原来的看不见的围墙（_bounds）去掉：镇子外面是走得进去的白桦林（2026-11-08 无尽荒野）
+	WildBirch.attach(parent, BOUNDS, exits, INF, "frostford")              # 四边原来的看不见的围墙（_bounds）去掉：镇子外面是走得进去的白桦林（2026-11-08 无尽荒野）
 	# 1.3 的交互物：更夫、木箱上的面包（锁着的门在房子里）
 	var watch := Npc.make("更夫", WATCH_LINES, Color("3e4a3a"))
 	watch.dialogue_area = "frostford"           # 2.1 起用对话树（data/dialogue/frostford.json）

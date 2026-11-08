@@ -70,7 +70,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	var exits := [{"at": Vector3(0, 0, NORTH + 0.6), "out": Vector3(0, 0, -1), "half": 1.6, "fence": true, "lantern": true, "frame": "桦林"}]
 	Edges.dress(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SHORE_Z - NORTH), exits,      # 北头的路口：门柱、地名、栅栏、灯笼，路伸进白桦林（3.10）
 		[Rect2(-400.0, SHORE_Z, 800.0, 400.0)], 3611, "snow", true)                    # 南边是河：不种树、不铺雪（雪地铺到岸边，和水接上）
-	WildBirch.attach(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SHORE_Z - NORTH), exits, SHORE_Z)   # 东西北三面的围墙去掉：外面是白桦林；南边的河照样走不进去（2026-11-08）
+	WildBirch.attach(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SHORE_Z - NORTH), exits, SHORE_Z, "ferry")   # 东西北三面的围墙去掉：外面是白桦林；南边的河照样走不进去（2026-11-08）
 	var exit := Door.make(EXIT_NAME, 1.9, 2.0, false)
 	exit.verb = "回到"
 	exit.to_area = "birch"

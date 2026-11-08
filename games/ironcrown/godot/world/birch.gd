@@ -55,7 +55,7 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	var exits := [{"at": Vector3(0, 0, NORTH), "out": Vector3(0, 0, -1), "half": ROAD_HALF, "fence": true},
 		{"at": Vector3(0, 0, SOUTH), "out": Vector3(0, 0, 1), "half": ROAD_HALF, "fence": true}]
 	Edges.dress(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SOUTH - NORTH), exits, [], 3610, "snow", true)   # 林子外面还是林子，两头的路伸进雾里（3.10）
-	WildBirch.attach(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SOUTH - NORTH), exits)   # 四边的看不见的围墙去掉：外面是走得进去的白桦林（2026-11-08 无尽荒野）
+	WildBirch.attach(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SOUTH - NORTH), exits, INF, "birch")   # 四边的看不见的围墙去掉：外面是走得进去的白桦林（2026-11-08 无尽荒野）
 	_fire(parent, reduced_motion)
 	_fog(parent, reduced_motion)
 	var chest := LootContainer.make("birch_chest", "哨卡的木箱", CHEST_ITEMS, 4)

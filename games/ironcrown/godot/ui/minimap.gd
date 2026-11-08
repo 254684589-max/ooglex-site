@@ -117,9 +117,44 @@ func _draw_overlay() -> void:
 		var o := dia.duplicate()
 		o.append(dia[0])
 		overlay.draw_polyline(o, RING_DARK, 1.5)
+	_draw_wild(c, r)
 	overlay.draw_arc(c, r - 1.5, 0.0, TAU, 64, RING_DARK, 3.0)
 	overlay.draw_arc(c, r - 3.5, 0.0, TAU, 64, RING, 2.0)
 	var font := get_theme_default_font()
 	var n := c + Vector2(0, -r + 3.0)
 	overlay.draw_circle(n + Vector2(0, 7), 10.0, RING_DARK)
 	overlay.draw_string(font, n + Vector2(-7, 13), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, GOLD)
+
+
+## 无尽荒野（2026-11-08）：附近的小发现画成小方块（拿过东西的淡一点）；走出地图 HOME_SHOW 米以外，圈边上一个箭头指回地图，写着多远
+const HOME_SHOW := 25.0
+const FIND_COLOR := Color("c9c2b4")
+
+
+func _draw_wild(c: Vector2, r: float) -> void:
+	var w := get_tree().get_first_node_in_group("wild") as WildStreamer if is_inside_tree() else null
+	if w == null:
+		return
+	var me := data.player_xz
+	for f: Dictionary in w.finds.values():
+		var d := ((f.pos as Vector2) - me) * canvas.px_per_m
+		if d.length() > r - 8.0:
+			continue
+		var col := FIND_COLOR if not GameState.has_flag(str(f.key)) else Color(FIND_COLOR, 0.45)
+		overlay.draw_rect(Rect2(c + d - Vector2(3.5, 3.5), Vector2(7, 7)), col)
+		overlay.draw_rect(Rect2(c + d - Vector2(3.5, 3.5), Vector2(7, 7)), RING_DARK, false, 1.0)
+	var core := w.core
+	var nearest := Vector2(clampf(me.x, core.position.x, core.end.x), clampf(me.y, core.position.y, core.end.y))
+	var dist := me.distance_to(nearest)
+	if dist < HOME_SHOW:
+		return
+	var dir := (nearest - me).normalized()
+	var tip := c + dir * (r - 10.0)
+	var side := Vector2(-dir.y, dir.x)
+	overlay.draw_colored_polygon(PackedVector2Array([tip + dir * 7.0, tip - dir * 5.0 + side * 6.0, tip - dir * 5.0 - side * 6.0]), GOLD)
+	var font := get_theme_default_font()
+	var label := "%d 米" % int(round(dist / 10.0) * 10.0)
+	var lp := c + dir * (r - 28.0) - Vector2(font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x * 0.5, -4.0)
+	overlay.draw_string(font, lp + Vector2(1, 1), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, RING_DARK)
+	overlay.draw_string(font, lp, label, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, GOLD)
+

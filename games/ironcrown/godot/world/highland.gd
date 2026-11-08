@@ -591,6 +591,8 @@ func _wild() -> void:
 	var w := WildStreamer.make(HighlandLayout.BOUNDS, Highland.wild_height, ground_material(), WILD_RADIUS)
 	w.surface = "snow"
 	w.ground_fn = Highland.ground_at
+	w.region = "highland"                                   # 荒野里的小发现（WildFinds）
+	w.area_id = "highland"
 	w.scatter_fn = _wild_scatter
 	w.far_fn = func(c: Vector2) -> void: _far(c)
 	parent.add_child(w)

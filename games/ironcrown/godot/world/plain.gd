@@ -631,6 +631,8 @@ func _wild() -> void:
 	var w := WildStreamer.make(PlainLayout.BOUNDS, Plain.wild_height, ground_material(), WILD_RADIUS)
 	w.surface = "snow"
 	w.ground_fn = Plain.ground_at
+	w.region = "plain"                                   # 荒野里的小发现（WildFinds）
+	w.area_id = "plain"
 	w.color_fn = func(_x: float, _z: float, slope: float) -> Color: return Color(0.0, 0.6 * (1.0 - clampf(slope * 3.0, 0.0, 1.0)), 1.0)
 	w.scatter_fn = _wild_scatter
 	w.far_fn = func(c: Vector2) -> void: _far(c)

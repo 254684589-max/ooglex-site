@@ -26,6 +26,9 @@ var carve_core := true                 # 和手工地图重叠的块切掉重叠
 var deep_y := -INF                      # 比这个低的是深水（海、河）：荒野里同样在深水边立看不见的墙（层 5「边界」），浅滩走得下去，深水走不进去
 var deep_wall_top := 1.5
 var far_fn: Callable                    # (center: Vector2) -> void
+var region := ""                        # 荒野里的小发现（WildFinds）按哪一套：highland / plain / harbor / forest；"" = 不放
+var area_id := ""                       # 区域名（小发现拿过东西的旗标用）
+var finds := {}                         # 块 → 这块里的小发现 {kind, name, pos, key}（小地图画）
 var far_center := Vector2.ZERO
 var chunks := {}                        # "i_j" → Node3D
 var built := 0                          # 一共搭过几块（测试看）
@@ -39,6 +42,7 @@ static func make(p_core: Rect2, p_height: Callable, p_material: Material, p_radi
 	w.height_fn = p_height
 	w.material = p_material
 	w.radius = p_radius
+	w.add_to_group("wild")                     # Cold.wild_rate 找它：走出地图越远越冷
 	return w
 
 
@@ -71,6 +75,7 @@ func update_around(p: Vector2, budget: int) -> void:
 		if absi(int(ij[0]) - ci) > radius + 1 or absi(int(ij[1]) - cj) > radius + 1:
 			(chunks[key] as Node).queue_free()
 			chunks.erase(key)
+			finds.erase(key)
 	if far_fn.is_valid() and p.distance_to(far_center) > FAR_RECENTER:
 		far_center = p.snapped(Vector2(200.0, 200.0))
 		far_fn.call(far_center)
@@ -149,6 +154,10 @@ func _build(i: int, j: int) -> void:
 	root.add_child(mi)
 	if scatter_fn.is_valid():
 		scatter_fn.call(root, body, r, hash("%d_%d" % [i, j]))
+	if region != "":
+		var f := WildFinds.place(root, body, r, hash("%d_%d" % [i, j]), height_fn, region, area_id, core)
+		if not f.is_empty():
+			finds["%d_%d" % [i, j]] = f
 
 
 func _mesh(r: Rect2, g: PackedFloat32Array, sx: int, sz: int) -> ArrayMesh:

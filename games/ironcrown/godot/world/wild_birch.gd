@@ -26,10 +26,12 @@ static func height(x: float, z: float, core: Rect2, water_z: float, exits: Array
 	return y
 
 
-static func attach(parent: Node3D, core: Rect2, exits: Array, water_z := INF) -> WildStreamer:
+static func attach(parent: Node3D, core: Rect2, exits: Array, water_z := INF, area := "forest") -> WildStreamer:
 	var hf := func(x: float, z: float) -> float: return WildBirch.height(x, z, core, water_z, exits)
 	var w := WildStreamer.make(core, hf, Look.mat("snow"), RADIUS)
 	w.carve_core = false
+	w.region = "forest"                               # 荒野里的小发现（WildFinds）：窝棚、火堆、石堆、冻僵的旅人
+	w.area_id = area
 	w.color_fn = func(_x: float, _z: float, slope: float) -> Color:   # Look.mat 的雪地拿顶点色当明暗（MeshKit 的 shade）：白的，陡一点暗一点
 		var v := 1.0 - clampf(slope * 1.5, 0.0, 0.25)
 		return Color(v, v, v)
