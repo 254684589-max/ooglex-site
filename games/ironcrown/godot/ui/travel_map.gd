@@ -83,7 +83,7 @@ func _ready() -> void:
 	info.add_child(name_label)
 	for i in 3:
 		var l := Label.new()
-		l.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+		l.autowrap_mode = UiKit.wrap_mode()
 		l.add_theme_color_override("font_color", [UiKit.TEXT_DIM, Color("9fb2c6"), Color("c8a060")][i])
 		info.add_child(l)
 		match i:
@@ -112,7 +112,7 @@ func _ready() -> void:
 ## 打开：c 第几章，h 现在在哪个地点，departure 是否站在出发的地方
 func open(c: int, h: String, departure: bool, reduced_motion := false) -> void:
 	chapter = c
-	title.text = "旅行地图 · " + Travel.region_title(c)
+	title.text = I18n.t("旅行地图 · ") + Travel.region_title(c)
 	here = h
 	at_departure = departure
 	for b in place_btns.values():
@@ -163,15 +163,15 @@ func select(id: String) -> void:
 	var r: Dictionary = c.route
 	var line := ""
 	if not r.is_empty():
-		line = "路：%s" % str(r.get("text", ""))
+		line = I18n.t("路：%s") % str(r.get("text", ""))
 		var dp := str(r.get("daypart", ""))
 		if Daypart.valid(dp):
-			line += "，到了是%s" % Daypart.display_name(dp)
+			line += I18n.t("，到了是%s") % Daypart.display_name(dp)
 	route_label.text = line
 	route_label.visible = line != ""
 	status.text = str(c.why)
 	status.visible = status.text != ""
-	go_btn.text = "出发去%s" % Travel.name_of(id)
+	go_btn.text = I18n.t("出发去%s") % Travel.name_of(id)
 	go_btn.disabled = not c.ok
 	canvas.queue_redraw()
 

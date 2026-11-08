@@ -67,7 +67,7 @@ func _ready() -> void:
 	for i in 2:
 		var l := Label.new()
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		l.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+		l.autowrap_mode = UiKit.wrap_mode()
 		l.custom_minimum_size = Vector2(300, 0)
 		l.add_theme_color_override("font_color", Color("c8bca0"))
 		box.add_child(l)
@@ -145,7 +145,7 @@ func _show(head: String, title_text: String, back_text: String, recap_text: Stri
 	sub.text = Chapters.wip_of(next_chapter) if next_chapter > 0 else "开发中"     # 下一章能玩了就不写「开发中」（2026-11-07 五章全开）；还在做的写它的 wip
 	sub.visible = sub.text != ""
 	continue_btn.visible = next_chapter > 0
-	continue_btn.text = "继续：%s" % Chapters.name_of(next_chapter) + ("（%s）" % Chapters.wip_of(next_chapter) if Chapters.wip_of(next_chapter) != "" else "")
+	continue_btn.text = I18n.t("继续：%s") % Chapters.name_of(next_chapter) + ("（%s）" % Chapters.wip_of(next_chapter) if Chapters.wip_of(next_chapter) != "" else "")
 	recap.text = recap_text
 	recap.visible = recap.text != ""
 	seal.text = seal_text

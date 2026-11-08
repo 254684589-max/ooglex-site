@@ -77,7 +77,7 @@ static func fit(root: Control, f: Dictionary, max_w := 600.0) -> float:
 static func label(parent: Node, text: String, dim := false, size := 0) -> Label:
 	var l := Label.new()
 	l.text = text
-	l.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	l.autowrap_mode = wrap_mode()
 	l.add_theme_color_override("font_color", TEXT_DIM if dim else TEXT)
 	if size > 0:
 		l.add_theme_font_size_override("font_size", size)
@@ -105,6 +105,11 @@ static func focus_style() -> StyleBoxFlat:
 	sb.set_corner_radius_all(6)
 	sb.set_expand_margin_all(2)
 	return sb
+
+
+## 换行方式（2026-11-08 中英文切换）：中文照旧逐字换行；英文按词换行，不把一个词拆成两半
+static func wrap_mode() -> TextServer.AutowrapMode:
+	return TextServer.AUTOWRAP_WORD_SMART if I18n.en() else TextServer.AUTOWRAP_ARBITRARY
 
 
 static func clear(box: Node) -> void:

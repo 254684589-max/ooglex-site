@@ -52,7 +52,7 @@ func _ready() -> void:
 		buttons[id] = b
 	desc = Label.new()
 	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	desc.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	desc.autowrap_mode = UiKit.wrap_mode()
 	desc.add_theme_color_override("font_color", Color("c8bca0"))
 	desc.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.7))
 	desc.add_theme_constant_override("outline_size", 3)

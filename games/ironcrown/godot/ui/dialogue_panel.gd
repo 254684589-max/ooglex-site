@@ -38,11 +38,11 @@ func _ready() -> void:
 	name_label.add_theme_color_override("font_color", Color("e8c88a"))
 	box.add_child(name_label)
 	text_label = Label.new()
-	text_label.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	text_label.autowrap_mode = UiKit.wrap_mode()
 	text_label.add_theme_color_override("font_color", Color("e8dcc0"))
 	box.add_child(text_label)
 	tip_label = Label.new()
-	tip_label.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	tip_label.autowrap_mode = UiKit.wrap_mode()
 	tip_label.add_theme_color_override("font_color", Color("9fb2c6"))
 	tip_label.add_theme_font_size_override("font_size", 14)
 	tip_label.hide()
@@ -85,7 +85,7 @@ func close() -> void:
 func _refresh() -> void:
 	name_label.text = runner.speaker()
 	if not runner.last_check.is_empty():     # 2.2：刚做过的检定结果（文字 + 符号，不只靠颜色）
-		name_label.text += "  %s %s检定%s" % ["√" if runner.last_check.ok else "×", GameState.SKILL_NAMES.get(runner.last_check.skill, ""), "成功" if runner.last_check.ok else "失败"]
+		name_label.text += I18n.t("  %s %s检定%s") % ["√" if runner.last_check.ok else "×", GameState.SKILL_NAMES.get(runner.last_check.skill, ""), I18n.t("成功") if runner.last_check.ok else I18n.t("失败")]
 	text_label.text = runner.text()
 	tip_label.hide()
 	for b in buttons + locked_buttons:
@@ -98,9 +98,9 @@ func _refresh() -> void:
 		var b := Button.new()
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.custom_minimum_size.y = 34          # 手机上手指好点
-		b.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+		b.autowrap_mode = UiKit.wrap_mode()
 		if e.locked:                          # 只差银币或物品（3.9）：灰色、不编号、点不了，写明还差什么
-			b.text = "· %s（需要：%s）" % [DialogueRunner.option_label(e.option), e.need]
+			b.text = I18n.t("· %s（需要：%s）") % [DialogueRunner.option_label(e.option), e.need]
 			b.disabled = true
 			b.focus_mode = Control.FOCUS_NONE
 			b.add_theme_color_override("font_disabled_color", Color("8c8678"))

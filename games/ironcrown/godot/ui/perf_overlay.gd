@@ -50,11 +50,11 @@ func text_now() -> String:
 	var size := Vector2(get_tree().root.size)
 	var q: String = main.quality if main else ""
 	var lines := [
-		"性能 · %s画质 · %d×%d · 3D 分辨率 ×%.2f" % [PerfOverlay.tier_name(q), size.x, size.y, vp.scaling_3d_scale],
-		"帧率 %d（最慢一帧 %d 毫秒）" % [Engine.get_frames_per_second(), worst_us / 1000],
-		"绘制调用 %d · 图元 %.1f 万 · 物体 %d" % [Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
+		I18n.t("性能 · %s画质 · %d×%d · 3D 分辨率 ×%.2f") % [PerfOverlay.tier_name(q), size.x, size.y, vp.scaling_3d_scale],
+		I18n.t("帧率 %d（最慢一帧 %d 毫秒）") % [Engine.get_frames_per_second(), worst_us / 1000],
+		I18n.t("绘制调用 %d · 图元 %.1f 万 · 物体 %d") % [Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
 			Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME) / 10000.0, Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME)],
-		"显卡：%s" % RenderingServer.get_video_adapter_name(),
+		I18n.t("显卡：%s") % RenderingServer.get_video_adapter_name(),
 	]
 	if bench_text != "":
 		lines.append("")

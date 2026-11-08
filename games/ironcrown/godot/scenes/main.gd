@@ -87,6 +87,9 @@ var hint_left := HINT_SECONDS
 var started := false
 var use_screen_logged := false
 var save_panel: SavePanel
+var start_menu: StartMenu          # 开始主菜单（2026-11-08）：打开网页先到这里；进了游戏就关掉
+var credits_panel: CreditsPanel
+var menu_opening := false          # 主菜单点「新游戏」以后才演开场
 var loaded_from := ""           # 这次是从哪个栏位读档进来的（空 = 新游戏）
 var area := "frostford"         # 现在所在的区域（Areas.NAMES；3.1）
 var arrived_by := ""            # 从门走进来的（换区域）时是出生点名字；读档 / 新游戏时为空
@@ -505,6 +508,11 @@ func _ready() -> void:
 	if arrived_by != "":
 		_arrive()
 	_story_progress()
+	var want_menu := StartMenu.wanted(self, pending, _query)
+	if want_menu:
+		menu_opening = want_opening
+		want_opening = false
+		_open_start_menu()
 	if want_opening:
 		opening = Opening.new()
 		opening.name = "Opening"
@@ -547,11 +555,11 @@ func _ready() -> void:
 			touch.order_enabled = true
 			touch.order_pressed.connect(give_order)
 		battle.captain_down.connect(func(side: String):
-			if not battle_bench: hud.toast("◆ %s的队长倒下了！" % battle.sides.get(side, side), 3.0))
+			if not battle_bench: hud.toast(I18n.t("◆ %s的队长倒下了！") % battle.sides.get(side, side), 3.0))
 		battle.routed_side.connect(func(side: String):
-			if not battle_bench: hud.toast("◆ %s溃逃了！" % battle.sides.get(side, side), 3.0))
+			if not battle_bench: hud.toast(I18n.t("◆ %s溃逃了！") % battle.sides.get(side, side), 3.0))
 		battle.wave_arrived.connect(func(side: String, count: int):
-			if not battle_bench: hud.toast("◆ %s来了 %d 个援军" % [battle.sides.get(side, side), count], 3.0))
+			if not battle_bench: hud.toast(I18n.t("◆ %s来了 %d 个援军") % [battle.sides.get(side, side), count], 3.0))
 		battle.wave_note.connect(func(text: String): hud.toast(text, 4.0))
 		if area == "battle" and battle_autostart and _query("perf") != "1":       # 试验场开局 3 秒自己开打；基准测试自己开打（不存档）；堤道夜战走到守点才开打（4.9a）
 			get_tree().create_timer(BATTLE_DELAY).timeout.connect(func():
@@ -595,13 +603,13 @@ func _ready() -> void:
 	if arrived_by != "":
 		pass                          # 换区域进来的：_arrive() 已经提示过区域名
 	elif loaded_from != "":
-		hud.toast("已读取：%s%s" % [Saves.SLOT_NAMES.get(loaded_from, loaded_from), ("（%s）" % pending.note) if str(pending.get("note", "")) != "" else ""], 3.0)
+		hud.toast(I18n.t("已读取：%s%s") % [Saves.SLOT_NAMES.get(loaded_from, loaded_from), ("（%s）" % pending.note) if str(pending.get("note", "")) != "" else ""], 3.0)
 		if Origins.current() == "" and not Engine.get_meta("ic_skip_opening", false) and Opening.SKIP_QUERY.all(func(k): return _query(k) == ""):
 			ask_origin.call_deferred()            # 出身三选一以前的存档（O.1）：问一次（网址带截图 / 测试参数时不问：冒烟在训练场里存档读档）
 		if GameState.chapter == 0 and GameState.has_flag("prologue_done") and playable_chapter >= 1:
 			hud.toast(CH1_LATER, 6.0)        # 序章打完以后的存档：告诉玩家怎么进第一章（4.3）
-	elif Saves.has_any():
-		hud.toast("有存档：%s里「存档 / 读档」可以继续（F9 读快速存档）" % ("点「菜单」，" if touch_mode else "按 Esc 打开菜单，"), 6.0)
+	elif Saves.has_any() and not want_menu:
+		hud.toast(I18n.t("有存档：%s里「存档 / 读档」可以继续（F9 读快速存档）") % (I18n.t("点「菜单」，") if touch_mode else I18n.t("按 Esc 打开菜单，")), 6.0)
 	# 给网页冒烟测试用：「菜单」按钮在窗口里的位置（窗口像素，已乘界面缩放）
 	await get_tree().process_frame
 	var c := hud.menu_btn.get_global_rect().get_center() * get_tree().root.content_scale_factor
@@ -891,16 +899,16 @@ func perf_probe(seconds := 1.0) -> Dictionary:
 ## 基准测试（路线图 1.5）：依次站到 3 个固定机位，等 settle 秒再测 sample 秒，结果表显示在性能浮层上
 func run_benchmark(settle := 1.5, sample := 3.0) -> Array:
 	bench_results.clear()
-	perf_overlay.bench_text = "基准测试进行中……（%s画质，不要操作）" % PerfOverlay.tier_name(quality)
+	perf_overlay.bench_text = I18n.t("基准测试进行中……（%s画质，不要操作）") % PerfOverlay.tier_name(quality)
 	for i in Frostford.VIEW_NAMES.size():
 		set_view(i)
 		await get_tree().create_timer(settle).timeout
 		var r := await perf_probe(sample)
 		r["view"] = i
 		bench_results.append(r)
-	var lines := ["基准测试结果（%s画质，%s）" % [PerfOverlay.tier_name(quality), "电脑" if not touch_mode else "触屏设备"]]
+	var lines := [I18n.t("基准测试结果（%s画质，%s）") % [PerfOverlay.tier_name(quality), I18n.t("电脑") if not touch_mode else I18n.t("触屏设备")]]
 	for r in bench_results:
-		lines.append("机位 %d %s：平均 %.0f 帧，最慢一帧 %.0f 毫秒，绘制调用 %.0f" % [r.view, Frostford.VIEW_NAMES[r.view], r.fps, r.worst_ms, r.draw_calls])
+		lines.append(I18n.t("机位 %d %s：平均 %.0f 帧，最慢一帧 %.0f 毫秒，绘制调用 %.0f") % [r.view, Frostford.VIEW_NAMES[r.view], r.fps, r.worst_ms, r.draw_calls])
 	lines.append(bench_done_line())
 	perf_overlay.bench_text = "\n".join(lines)
 	set_view(0)
@@ -918,7 +926,7 @@ func run_battle_benchmark(only_view := -1, warm := BATTLE_BENCH_WARM, sample := 
 	battle.morale_on = false
 	var n := get_tree().get_nodes_in_group("soldier").size()      # 在场上的兵（不算还没到的援军）
 	if only_view < 0:
-		perf_overlay.bench_text = "军阵基准测试进行中……（%d 人，%s画质，不要操作）" % [n, PerfOverlay.tier_name(quality)]
+		perf_overlay.bench_text = I18n.t("军阵基准测试进行中……（%d 人，%s画质，不要操作）") % [n, PerfOverlay.tier_name(quality)]
 	if not battle.started:
 		battle.start()
 	await get_tree().create_timer(warm).timeout
@@ -931,10 +939,10 @@ func run_battle_benchmark(only_view := -1, warm := BATTLE_BENCH_WARM, sample := 
 		var r := await perf_probe(sample)
 		r["view"] = v
 		bench_results.append(r)
-	var lines := ["军阵基准测试结果（%d 人，%s画质，%s）" % [n, PerfOverlay.tier_name(quality), "电脑" if not touch_mode else "触屏设备"]]
+	var lines := [I18n.t("军阵基准测试结果（%d 人，%s画质，%s）") % [n, PerfOverlay.tier_name(quality), I18n.t("电脑") if not touch_mode else I18n.t("触屏设备")]]
 	for r in bench_results:
-		lines.append("%s：平均 %.0f 帧，最慢一帧 %.0f 毫秒" % [BattleArena.VIEW_NAMES[r.view], r.fps, r.worst_ms])      # 分两行：手机上一行放不下（B.5 截图）
-		lines.append("　　绘制调用 %.0f，逻辑约 %s 毫秒" % [r.draw_calls, "%.1f" % r.logic_ms if r.logic_ms >= 0.0 else "—"])
+		lines.append(I18n.t("%s：平均 %.0f 帧，最慢一帧 %.0f 毫秒") % [BattleArena.VIEW_NAMES[r.view], r.fps, r.worst_ms])      # 分两行：手机上一行放不下（B.5 截图）
+		lines.append(I18n.t("　　绘制调用 %.0f，逻辑约 %s 毫秒") % [r.draw_calls, "%.1f" % r.logic_ms if r.logic_ms >= 0.0 else "—"])
 	lines.append(bench_done_line())
 	perf_overlay.bench_text = "\n".join(lines)
 	print("IC_BENCH done battle=%d quality=%s %s" % [n, quality, " | ".join(bench_results.map(func(r): return "v%d fps=%.1f worst=%.0f dc=%.0f logic=%.1f" % [r.view, r.fps, r.worst_ms, r.draw_calls, r.logic_ms]))])
@@ -943,7 +951,7 @@ func run_battle_benchmark(only_view := -1, warm := BATTLE_BENCH_WARM, sample := 
 
 ## 基准测试的最后一行：手机上没有 Esc（2026-10-04 手机实测）；分两行，手机竖屏上一行放不下（B.5 截图）
 func bench_done_line() -> String:
-	return "测完了：请截图发给开发者。\n%s可换画质，换完刷新页面再测。" % ("点右上角「菜单」" if touch_mode else "按 Esc 打开菜单")
+	return I18n.t("测完了：请截图发给开发者。\n%s可换画质，换完刷新页面再测。") % (I18n.t("点右上角「菜单」") if touch_mode else I18n.t("按 Esc 打开菜单"))
 
 
 ## 性能浮层的位置：触屏上生命 / 体力条在左上角，浮层放到它们下面，不压住（2026-10-04 手机实测）
@@ -1037,16 +1045,16 @@ func _build_ui() -> void:
 	hud.map_pressed.connect(open_map)
 	GameState.skill_up.connect(_on_skill_up)
 	GameState.perk_unlocked.connect(func(s: String, p: Dictionary):
-		hud.toast("◆ 解锁专长：%s ·「%s」%s" % [GameState.SKILL_NAMES[s], p.name, p.desc], 4.0))
+		hud.toast(I18n.t("◆ 解锁专长：%s ·「%s」%s") % [GameState.SKILL_NAMES[s], p.name, p.desc], 4.0))
 	GameState.level_up.connect(func(lv: int):
-		hud.toast("▲ 升到 %d 级：获得 1 个属性点（%s）" % [lv, "点「角色」分配" if touch_mode else "按 K 分配"], 4.0)
+		hud.toast(I18n.t("▲ 升到 %d 级：获得 1 个属性点（%s）") % [lv, I18n.t("点「角色」分配") if touch_mode else I18n.t("按 K 分配")], 4.0)
 		print("IC_LEVEL %d" % lv))
 	GameState.rep_changed.connect(_on_rep_changed)
 	GameState.inventory_changed.connect(func(): show_tip("bag"))
 	loot_panel = LootPanel.new()
 	layer.add_child(loot_panel)
 	loot_panel.closed.connect(_on_loot_closed)
-	loot_panel.took.connect(func(names: Array): hud.toast("拿到：" + "、".join(names), 2.5))
+	loot_panel.took.connect(func(names: Array): hud.toast(I18n.t("拿到：") + "、".join(names), 2.5))
 	GameState.quest_event.connect(_on_quest_event)
 	pause_menu = PauseMenu.new()
 	layer.add_child(pause_menu)
@@ -1059,6 +1067,7 @@ func _build_ui() -> void:
 	save_panel.main = self
 	layer.add_child(save_panel)
 	pause_menu.saves_requested.connect(func(): save_panel.open())
+	pause_menu.main_menu_requested.connect(_back_to_menu)
 	GameState.quest_event.connect(_autosave_on_quest)
 	pause_menu.resume_requested.connect(close_pause)
 	defeat_panel = DefeatPanel.new()
@@ -1125,7 +1134,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("minimap"):                     # 小地图（C.4）：小 → 大 → 隐藏
 		var i := Settings.MINIMAP_SIZES.find(Settings.minimap)
 		Settings.set_value("minimap", Settings.MINIMAP_SIZES[(i + 1) % Settings.MINIMAP_SIZES.size()])
-		hud.toast("小地图：%s（N 键换）" % {"small": "小", "large": "大", "off": "隐藏"}[Settings.minimap], 1.5)
+		hud.toast(I18n.t("小地图：%s（N 键换）") % {"small": I18n.t("小"), "large": I18n.t("大"), "off": I18n.t("隐藏")}[Settings.minimap], 1.5)
 		get_viewport().set_input_as_handled()
 		return
 	for o in Battle.ORDERS:              # 小队命令（B.2）：1 跟随我 · 2 原地坚守 · 3 冲锋 · 4 去那儿（6.7c）
@@ -1227,7 +1236,7 @@ func _on_guarded(result: String, info: Dictionary) -> void:
 		"perfect":
 			hud.toast("◆ 完美格挡！对方失衡", 1.2)
 		"block":
-			hud.toast("挡住了（体力 −%d）" % roundi(player.melee.guard_cost(info)), 1.0)
+			hud.toast(I18n.t("挡住了（体力 −%d）") % roundi(player.melee.guard_cost(info)), 1.0)
 		"guard_break":
 			hud.toast("× 格挡被打破！", 1.2)
 	print("IC_BLOCK result=%s dmg=%d stamina=%.0f" % [result, info.damage, player.melee.stamina])
@@ -1262,7 +1271,7 @@ func _retry() -> void:
 ## 第一 / 第三人称切换（2.9，D6）：设置里记住，下次打开还是这个视角
 func toggle_camera() -> void:
 	Settings.set_value("third_person", not Settings.third_person)
-	hud.toast("视角：%s" % ("第三人称（越肩）" if Settings.third_person else "第一人称"), 1.5)
+	hud.toast(I18n.t("视角：%s") % (I18n.t("第三人称（越肩）") if Settings.third_person else I18n.t("第一人称")), 1.5)
 	print("IC_CAMERA mode=%s" % ("third" if Settings.third_person else "first"))
 
 
@@ -1462,12 +1471,12 @@ func save_game(slot: String, quiet := false) -> bool:
 	if why == "":
 		if Saves.write_slot(slot, collect_save()):
 			if not quiet:
-				hud.toast("✓ 已存档：%s" % Saves.SLOT_NAMES[slot], 2.0)
+				hud.toast(I18n.t("✓ 已存档：%s") % Saves.SLOT_NAMES[slot], 2.0)
 			print("IC_SAVE slot=%s" % slot)
 			return true
 		why = Saves.last_error
 	if not quiet:
-		hud.toast("× 没有存档：%s" % why, 3.0)
+		hud.toast(I18n.t("× 没有存档：%s") % why, 3.0)
 	print("IC_SAVE_FAIL slot=%s %s" % [slot, why])
 	return false
 
@@ -1487,7 +1496,7 @@ func load_game(slot: String) -> bool:
 	var r := Saves.read_slot(slot)
 	if not r.has("data"):
 		var why := str(r.get("error", "这个栏位是空的"))
-		hud.toast("× 读不了%s：%s" % [Saves.SLOT_NAMES.get(slot, slot), why], 3.0)
+		hud.toast(I18n.t("× 读不了%s：%s") % [Saves.SLOT_NAMES.get(slot, slot), why], 3.0)
 		print("IC_LOAD_FAIL slot=%s %s" % [slot, why])
 		return false
 	var d: Dictionary = r.data
@@ -1510,7 +1519,7 @@ func _load_after_pack(slot: String, d: Dictionary, note: String, ch: int) -> voi
 	if await ensure_chapter(ch):
 		_finish_load(slot, d, note)
 	else:
-		hud.toast("× 没能载入%s，存档没读" % Chapters.name_of(ch), 3.0)
+		hud.toast(I18n.t("× 没能载入%s，存档没读") % Chapters.name_of(ch), 3.0)
 		print("IC_LOAD_FAIL slot=%s 章节包没到" % slot)
 
 
@@ -1666,7 +1675,7 @@ func _on_skill_up(skill: String, value: int) -> void:
 
 ## 声望变化：「瓦伦家 · 声望上升 ↑（友善）」（文字 + 箭头，GDD 7.3；字体里没有 ▼，用 ↑ ↓）
 func _on_rep_changed(faction: String, delta: int, value: int) -> void:
-	hud.toast("%s · 声望%s %s（%s）" % [GameState.faction_name(faction), "上升" if delta > 0 else "下降", "↑" if delta > 0 else "↓", GameState.rep_tier(value)], 3.0)
+	hud.toast(I18n.t("%s · 声望%s %s（%s）") % [GameState.faction_name(faction), I18n.t("上升") if delta > 0 else I18n.t("下降"), "↑" if delta > 0 else "↓", GameState.rep_tier(value)], 3.0)
 	show_tip("rep")
 	print("IC_REP %s %+d = %d" % [faction, delta, value])
 
@@ -1718,11 +1727,11 @@ func _on_quest_event(kind: String, id: String) -> void:
 	var text := ""
 	match kind:
 		"started":
-			text = "◆ 新任务：%s（按 J 查看）" % qd.quests[id].title if not touch_mode else "◆ 新任务：%s（点「任务」查看）" % qd.quests[id].title
+			text = I18n.t("◆ 新任务：%s（按 J 查看）") % qd.quests[id].title if not touch_mode else I18n.t("◆ 新任务：%s（点「任务」查看）") % qd.quests[id].title
 		"advanced":
-			text = "◆ 任务更新：%s" % qd.quests[id].title
+			text = I18n.t("◆ 任务更新：%s") % qd.quests[id].title
 		"done":
-			text = "✓ 任务完成：%s" % qd.quests[id].title
+			text = I18n.t("✓ 任务完成：%s") % qd.quests[id].title
 		"clue":
 			text = "◇ 新线索已记入任务日志"
 	if text != "":
@@ -1825,7 +1834,7 @@ func start_brawl(npc: Npc, spec: Dictionary) -> void:
 	brawl.begin(world, player, npc, str(spec.brawl), str(spec.get("win", "")), str(spec.get("lose", "")))
 	brawl.enemy.state_changed.connect(_on_enemy_state)
 	hud.show_prompt("")
-	hud.toast("◆ 和%s徒手打一架" % npc.display_name, 2.5)
+	hud.toast(I18n.t("◆ 和%s徒手打一架") % npc.display_name, 2.5)
 	hud.set_hint(HINT_BRAWL_TOUCH if touch_mode else HINT_BRAWL_DESKTOP)     # 底部的操作提示换成打架的（不许动刀）
 	hint_left = HINT_SECONDS
 	print("IC_BRAWL start kind=%s with=%s" % [spec.brawl, npc.display_name])
@@ -1834,9 +1843,9 @@ func start_brawl(npc: Npc, spec: Dictionary) -> void:
 func _on_brawl_ended(won: bool) -> void:
 	var who := brawl.npc.display_name if is_instance_valid(brawl) else ""
 	if won:
-		hud.toast("✓ %s认输了。" % who, 3.0)
+		hud.toast(I18n.t("✓ %s认输了。") % who, 3.0)
 	else:
-		hud.toast("× 你被%s打倒了。（生命 %d）" % [who, player.melee.health], 3.5)
+		hud.toast(I18n.t("× 你被%s打倒了。（生命 %d）") % [who, player.melee.health], 3.5)
 		if not Settings.reduced_motion:
 			fade.color.a = 0.85                     # 眼前一黑，再慢慢缓过来
 			create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).tween_property(fade, "color:a", 0.0, 1.2)     # 暂停时也淡完（同 _arrive）
@@ -2110,7 +2119,7 @@ func depart(id: String) -> String:
 		print("IC_DEPART_FAIL to=%s %s" % [id, why])
 		return why
 	if not save_game("auto", true):
-		hud.toast("× 自动存档没存上（%s），照样出发。" % Saves.last_error, 3.0)
+		hud.toast(I18n.t("× 自动存档没存上（%s），照样出发。") % Saves.last_error, 3.0)
 	var p := Travel.place(id)
 	var dp := str((c.route as Dictionary).get("daypart", ""))
 	print("IC_DEPART from=%s to=%s daypart=%s" % [here, id, dp if Daypart.valid(dp) else GameState.daypart])
@@ -2205,7 +2214,7 @@ func give_order(o: String) -> bool:
 	var at := order_point() if o == "goto" else Vector3.INF
 	if battle == null or not is_instance_valid(battle) or not battle.order(o, at):
 		return false
-	hud.toast("◆ 小队：%s" % Battle.ORDERS[o] + ("（%.0f 米外）" % player.global_position.distance_to(at) if o == "goto" else ""), 2.0)
+	hud.toast(I18n.t("◆ 小队：%s") % Battle.ORDERS[o] + (I18n.t("（%.0f 米外）") % player.global_position.distance_to(at) if o == "goto" else ""), 2.0)
 	hud.refresh_squad()
 	return true
 
@@ -2264,11 +2273,11 @@ func _on_battle_ended(winner: String) -> void:
 		return
 	var refresh := "（刷新页面再来一次）"
 	if winner == "":
-		hud.toast("两边都打光了。" + refresh, 6.0)
+		hud.toast(I18n.t("两边都打光了。") + refresh, 6.0)
 	elif winner == battle.player_side:
-		hud.toast("✓ %s赢了！%s" % [battle.sides.get(winner, winner), refresh], 6.0)
+		hud.toast(I18n.t("✓ %s赢了！%s") % [battle.sides.get(winner, winner), refresh], 6.0)
 	else:
-		hud.toast("× %s赢了……%s" % [battle.sides.get(winner, winner), refresh], 6.0)
+		hud.toast(I18n.t("× %s赢了……%s") % [battle.sides.get(winner, winner), refresh], 6.0)
 
 
 ## 长眠者第一次露面（4.10b）：他从你身边走过去；有人说「又一个」；过一会儿第一章完
@@ -2282,7 +2291,7 @@ func _sleeper_seen() -> void:
 
 func _sleeper_after(end_after: float) -> void:
 	var nm := str(Sleeper.who()[1])
-	hud.toast("「%s？」……眼睛闭着，从你身边走了过去。叫不醒。" % nm, 5.0)
+	hud.toast(I18n.t("「%s？」……眼睛闭着，从你身边走了过去。叫不醒。") % nm, 5.0)
 	get_tree().create_timer(5.0).timeout.connect(func():
 		if is_inside_tree() and area == "marsh":
 			hud.toast("客栈门口有人看着他的背影，低声说了一句：「又一个。」", 5.0))
@@ -2418,7 +2427,7 @@ func _mill_tick() -> void:
 
 ## 磨坊之战真开打了：提示命令；截图用的快进
 func _mill_go() -> void:
-	hud.toast("◆ 他们来了！按 1 让小队跟着你、2 原地坚守、3 冲锋、4 去准星指的地方（触屏「令」）。%s" % ("别让六个人冲进粮仓那片。" if not MillBattle.raiding() else "冲进粮仓那片院子！"), 5.0)
+	hud.toast(I18n.t("◆ 他们来了！按 1 让小队跟着你、2 原地坚守、3 冲锋、4 去准星指的地方（触屏「令」）。%s") % (I18n.t("别让六个人冲进粮仓那片。") if not MillBattle.raiding() else I18n.t("冲进粮仓那片院子！")), 5.0)
 	if _query("cwskip").is_valid_float():         # 截图用（同堤道夜战）：快进到开打后第 N 秒
 		Engine.time_scale = 8.0
 		Engine.max_physics_steps_per_frame = 64
@@ -2441,7 +2450,7 @@ func _ambush_tick() -> void:
 				var to := ConvoyAmbush.leg_point(ConvoyAmbush.CART_T[2]) - player.global_position
 				player.rotation.y = atan2(-to.x, -to.z)
 	if ConvoyAmbush.due() and (battle == null or not is_instance_valid(battle)):
-		Engine.set_meta("ic_arrive_note", "天黑透了。粮车点着火把出了村，往盘山路上来。马蒂亚斯的十个人跟着你，伏在%s。" % ("车头前那棵锯倒的枯松后面" if ConvoyAmbush.ambush() == "head" else "车尾后面的弯道上"))
+		Engine.set_meta("ic_arrive_note", I18n.t("天黑透了。粮车点着火把出了村，往盘山路上来。马蒂亚斯的十个人跟着你，伏在%s。") % (I18n.t("车头前那棵锯倒的枯松后面") if ConvoyAmbush.ambush() == "head" else I18n.t("车尾后面的弯道上")))
 		travel("highland", "ambush", "night")
 		return
 	if ca and battle and is_instance_valid(battle) and not battle.started and cutscene == null and (ConvoyAmbush.at_post(player.global_position) or _query("cwskip").is_valid_float()):
@@ -2470,7 +2479,7 @@ func ask_origin() -> void:
 	get_tree().paused = false
 	if not touch_mode:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	hud.toast("出身：%s（%s）" % [Origins.name_of(id), Origins.bonus_text(id)], 5.0)
+	hud.toast(I18n.t("出身：%s（%s）") % [Origins.name_of(id), Origins.bonus_text(id)], 5.0)
 
 
 ## 第二夜 · 护粮（5.7b，world/convoy_escort.gd）：主线到「护车」时天黑透——把你放到伏击段下头的车队后面（重新载入高地）；到了几秒以后先自动存档、车队动身
@@ -2699,6 +2708,90 @@ func _train_stealth(delta: float) -> void:
 			return
 
 
+# ---------------- 开始主菜单（2026-11-08） ----------------
+
+func _open_start_menu() -> void:
+	var layer := hud.get_parent()
+	start_menu = StartMenu.new()
+	start_menu.name = "StartMenu"
+	layer.add_child(start_menu)
+	layer.move_child(start_menu, pause_menu.get_index())             # 菜单在设置、存档面板底下（从菜单打开它们时盖在上面）
+	credits_panel = CreditsPanel.new()
+	layer.add_child(credits_panel)
+	credits_panel.closed.connect(func(): start_menu.credits_btn.grab_focus())
+	start_menu.continue_requested.connect(func():
+		var slot := Saves.latest_slot()
+		if slot != "":
+			Engine.set_meta("ic_menu_done", true)
+			print("IC_MENU continue slot=%s" % slot)
+			load_game.call_deferred(slot))
+	start_menu.new_game_requested.connect(_menu_new_game)
+	start_menu.load_requested.connect(func():
+		save_panel.load_only = true
+		save_panel.open())
+	start_menu.settings_requested.connect(func():
+		pause_menu.set_menu_mode(true)
+		pause_menu.open())
+	start_menu.credits_requested.connect(func(): credits_panel.open())
+	start_menu.exit_requested.connect(func():
+		print("IC_MENU exit")
+		if OS.has_feature("web"):
+			JavaScriptBridge.eval("location.href = '/games/hub/';")
+		else:
+			get_tree().quit())
+	save_panel.closed.connect(func():
+		save_panel.load_only = false
+		if start_menu and start_menu.visible:
+			start_menu.refresh()
+			start_menu.load_btn.grab_focus())
+	get_tree().paused = true
+	get_viewport().disable_3d = true                 # 游戏世界先不画（菜单有自己的 3D 场景）
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	hud.hide()
+	if touch:
+		touch.hide()
+	start_menu.open()
+	Music.play("keep")
+
+
+func menu_open() -> bool:
+	return start_menu != null and is_instance_valid(start_menu) and start_menu.visible
+
+
+## 主菜单「新游戏」：关掉菜单，画游戏世界，演开场（出身三选一、标题卡、钟声）
+func _menu_new_game() -> void:
+	Engine.set_meta("ic_menu_done", true)
+	print("IC_MENU new")
+	start_menu.close()
+	credits_panel.hide()
+	get_viewport().disable_3d = false
+	get_tree().paused = false
+	hud.show()
+	if touch:
+		touch.visible = touch_mode
+	if menu_opening:
+		opening = Opening.new()
+		opening.name = "Opening"
+		opening.main = self
+		add_child(opening)
+		hud.set_hint("")
+		hint_left = 0.0
+		opening.start(title_card, touch_mode)
+		Music.play("")
+		opening.called.connect(func(): Music.play_area(area))
+	else:
+		Music.play_area(area)
+
+
+## 暂停菜单「回到主菜单」：没存的进度不要了，重新载入一个新的开局（打开网页时那样先到主菜单）
+func _back_to_menu() -> void:
+	Engine.remove_meta("ic_menu_done")
+	print("IC_MENU back")
+	GameState.new_game()
+	get_tree().paused = false
+	_reload()
+
+
 func _start() -> void:
 	if not started:
 		started = true
@@ -2723,6 +2816,10 @@ func open_pause() -> void:
 
 func close_pause() -> void:
 	pause_menu.hide()
+	if menu_open():                   # 从主菜单打开的设置：回到主菜单，游戏还是停着
+		pause_menu.set_menu_mode(false)
+		start_menu.settings_btn.grab_focus()
+		return
 	get_tree().paused = false
 	if not touch_mode:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED   # 「继续」按钮是一次点击，浏览器允许重新锁定
@@ -2816,7 +2913,7 @@ func _process(delta: float) -> void:
 		_sleeper_seen()                                 # 长眠者第一次露面（4.10b）
 	if area == "marsh" and battle != null and is_instance_valid(battle) and not battle.started and CausewayBattle.at_post(player.global_position):
 		start_battle()                                  # 堤道夜战（4.9a）：走到和赫尔曼定下的守点，开打（先自动存档）
-		hud.toast("◆ 他们上来了！守住%s——按 2 让小队原地坚守（触屏「令」）。" % ("断口" if CausewayBattle.hold() == "gap" else "石拱"), 5.0)
+		hud.toast(I18n.t("◆ 他们上来了！守住%s——按 2 让小队原地坚守（触屏「令」）。") % (I18n.t("断口") if CausewayBattle.hold() == "gap" else I18n.t("石拱")), 5.0)
 		if _query("cwskip").is_valid_float():         # 截图用（4.9a）：快进到开打后第 N 秒（软件渲染的浏览器一秒只有一两帧）
 			Engine.time_scale = 8.0
 			Engine.max_physics_steps_per_frame = 64

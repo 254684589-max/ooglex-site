@@ -108,16 +108,16 @@ func _download(url: String) -> Dictionary:
 	if err != OK:
 		req.queue_free()
 		req = null
-		return {"ok": false, "detail": "下载没能开始（错误 %d）" % err}
+		return {"ok": false, "detail": I18n.t("下载没能开始（错误 %d）") % err}
 	var res: Array = await req.request_completed
 	req.queue_free()
 	req = null
 	if res[0] == HTTPRequest.RESULT_TIMEOUT:
 		return {"ok": false, "detail": "网络太慢，下载超时了"}
 	if res[0] != HTTPRequest.RESULT_SUCCESS:
-		return {"ok": false, "detail": "网络出错了（%d），请检查网络后重试" % res[0]}
+		return {"ok": false, "detail": I18n.t("网络出错了（%d），请检查网络后重试") % res[0]}
 	if res[1] != 200:
-		return {"ok": false, "detail": "服务器没给这一章（HTTP %d）" % res[1]}
+		return {"ok": false, "detail": I18n.t("服务器没给这一章（HTTP %d）") % res[1]}
 	return {"ok": true, "body": res[3]}
 
 

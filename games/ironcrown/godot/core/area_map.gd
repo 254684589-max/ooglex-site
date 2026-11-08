@@ -235,9 +235,9 @@ static func bearing_text(from: Vector2, to: Vector2, compass := true) -> String:
 	if d.length() < NEAR:
 		return "就在你旁边"
 	if not compass:
-		return "离你约 %d 米" % roundi(d.length())
+		return I18n.t("离你约 %d 米") % roundi(d.length())
 	var yaw := rad_to_deg(atan2(-d.x, -d.y))          # 朝向 yaw 的方向是 (-sin yaw, -cos yaw)
-	return "%s边约 %d 米" % [heading_text(yaw), roundi(d.length())]
+	return I18n.t("%s边约 %d 米") % [heading_text(yaw), roundi(d.length())]
 
 
 ## 这张图说不说东南西北：室外说；室内的平面图按屋子自己的朝向画，不说（见 bearing_text）

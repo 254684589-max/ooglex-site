@@ -75,10 +75,10 @@ func check_save(d) -> String:
 	if not d.has("version"):
 		return "存档缺少版本号"
 	if int(d.version) > VERSION:
-		return "这是更新版本的游戏写的存档（版本 %d），当前版本 %d 读不了" % [int(d.version), VERSION]
+		return I18n.t("这是更新版本的游戏写的存档（版本 %d），当前版本 %d 读不了") % [int(d.version), VERSION]
 	for k in ["scene", "player", "state"]:
 		if not d.has(k):
-			return "存档缺少 %s" % k
+			return I18n.t("存档缺少 %s") % k
 	if not SCENE_NAMES.has(str(d.scene)):
 		return "存档里的场景不认识"
 	var p = d.player
@@ -96,7 +96,7 @@ func migrate(d: Dictionary) -> Dictionary:
 	while int(out.get("version", 0)) < VERSION:
 		var v := int(out.get("version", 0))
 		if not migrations.has(v):
-			last_error = "没有从版本 %d 升级的办法" % v
+			last_error = I18n.t("没有从版本 %d 升级的办法") % v
 			return {}
 		out = (migrations[v] as Callable).call(out)
 		out.version = v + 1
@@ -154,7 +154,7 @@ func read_slot(slot: String) -> Dictionary:
 		return {"data": cur, "note": ""}
 	var prev := _parse(_read_raw(_key(slot) + ".prev"))
 	if not prev.is_empty() and not prev.has("_bad"):
-		return {"data": prev, "note": "这一份存档坏了（%s），已退回上一份" % cur.get("_bad", "")} if cur.has("_bad") else {"data": prev, "note": ""}
+		return {"data": prev, "note": I18n.t("这一份存档坏了（%s），已退回上一份") % cur.get("_bad", "")} if cur.has("_bad") else {"data": prev, "note": ""}
 	if cur.has("_bad"):
 		return {"error": cur._bad}
 	return {}
@@ -197,19 +197,19 @@ func delete_slot(slot: String) -> void:
 func describe(d: Dictionary) -> String:
 	var s: Dictionary = d.get("state", {})
 	var scene := str(d.get("scene", ""))
-	var place := str(SCENE_NAMES.get(scene, "?"))
+	var place := I18n.t(str(SCENE_NAMES.get(scene, "?")))
 	var pos: Variant = (d.get("player", {}) as Dictionary).get("pos", []) if d.get("player") is Dictionary else []
 	if pos is Array and (pos as Array).size() == 3 and SCENE_NAMES.has(scene):
 		var z := AreaMap.zone_at(scene, Vector2(float(pos[0]), float(pos[2])))      # 连片地图（4.4 鹭沼）：写上在哪一块
 		if z != "":
-			place += " · " + z
-	var parts := [place, "%d 级" % int(s.get("level", 1))]
+			place += " · " + I18n.t(z)
+	var parts := [place, I18n.t("%d 级") % int(s.get("level", 1))]
 	var qd := GameState.quest_data()
 	for q in s.get("quests", {}):
 		if qd.quests.has(q) and str(qd.quests[q].kind) == "main" and not bool(s.quests[q].get("done", false)):
-			parts.append(str(qd.quests[q].title))
+			parts.append(I18n.t(str(qd.quests[q].title)))
 			break
-	parts.append("游戏时间 %d 分钟" % int(float(s.get("playtime", 0.0)) / 60.0))
+	parts.append(I18n.t("游戏时间 %d 分钟") % int(float(s.get("playtime", 0.0)) / 60.0))
 	return " · ".join(parts)
 
 

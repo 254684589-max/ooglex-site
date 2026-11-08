@@ -31,7 +31,7 @@ func _ready() -> void:
 	var tip := Label.new()
 	tip.text = "举剑格挡能把伤害换成体力；对方劈下前一瞬间格挡，能让他失衡。"
 	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tip.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	tip.autowrap_mode = UiKit.wrap_mode()
 	tip.custom_minimum_size = Vector2(300, 0)
 	tip.add_theme_color_override("font_color", Color("c8bca0"))
 	box.add_child(tip)

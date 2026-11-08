@@ -73,7 +73,7 @@ func _ready() -> void:
 	add_child(title_label)
 	hint_label = Label.new()
 	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint_label.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	hint_label.autowrap_mode = UiKit.wrap_mode()
 	hint_label.add_theme_color_override("font_color", Color("e8dcc0"))
 	hint_label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
 	hint_label.add_theme_constant_override("outline_size", 6)
@@ -115,7 +115,7 @@ func _ready() -> void:
 	subtitle_panel.add_theme_stylebox_override("panel", sb)
 	subtitle_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	subtitle_label = Label.new()
-	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	subtitle_label.autowrap_mode = UiKit.wrap_mode()
 	subtitle_label.add_theme_color_override("font_color", Color("e8dcc0"))
 	subtitle_panel.add_child(subtitle_label)
 	subtitle_panel.hide()
@@ -155,7 +155,7 @@ func _ready() -> void:
 func _center_label(fs: int) -> Label:
 	var l := Label.new()
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	l.autowrap_mode = UiKit.wrap_mode()
 	l.add_theme_font_size_override("font_size", fs)
 	l.add_theme_color_override("font_color", Color("e8dcc0"))
 	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
@@ -225,12 +225,12 @@ func _process(delta: float) -> void:
 		var show := stamina_visible()
 		stamina_label.visible = show
 		if show:
-			stamina_label.text = "体力 %d / %d%s" % [roundi(melee.stamina), roundi(melee.stamina_max()), " · 喘息中" if melee.exhausted else ""]
+			stamina_label.text = I18n.t("体力 %d / %d%s") % [roundi(melee.stamina), roundi(melee.stamina_max()), I18n.t(" · 喘息中") if melee.exhausted else ""]
 			stamina_label.position = bar_rect().position - Vector2(0, 22)
 		var hs := health_visible()
 		health_label.visible = hs
 		if hs:
-			health_label.text = "生命 %d / %d%s" % [melee.health, melee.health_max(), " · 失衡" if melee.staggered() else ""]
+			health_label.text = I18n.t("生命 %d / %d%s") % [melee.health, melee.health_max(), I18n.t(" · 失衡") if melee.staggered() else ""]
 			health_label.position = health_rect().position - Vector2(0, 22)
 		queue_redraw()
 	refresh_squad()
@@ -254,7 +254,7 @@ func _process(delta: float) -> void:
 func squad_text() -> String:
 	if battle == null or not is_instance_valid(battle) or battle.squad.is_empty():
 		return ""
-	return "◆ 小队 %d 人：%s · %s" % [battle.squad_alive(), Battle.ORDERS.get(battle.squad_order, ""),
+	return I18n.t("◆ 小队 %d 人：%s · %s") % [battle.squad_alive(), Battle.ORDERS.get(battle.squad_order, ""),
 		"1 跟随 2 坚守 3 冲锋 4 去那儿" if key_hint != "" else "点「令」下命令"]
 
 
@@ -284,14 +284,14 @@ func battle_text() -> String:
 	if battle.finished:
 		if battle.winner == "":
 			return "战况：两边都打光了"
-		var why := "（%s溃逃）" % battle.sides.get(battle.routed, "") if battle.routed != "" and battle.routed != battle.winner else ""
-		return "战况：%s胜%s" % [battle.sides.get(battle.winner, battle.winner), why]
+		var why := I18n.t("（%s溃逃）") % battle.sides.get(battle.routed, "") if battle.routed != "" and battle.routed != battle.winner else ""
+		return I18n.t("战况：%s胜%s") % [battle.sides.get(battle.winner, battle.winner), why]
 	var parts: Array = []
 	for side in battle.sides:
 		var here := battle.side_count(side, false)
 		var later := battle.side_count(side) - here
-		parts.append("%s %d 人%s（士气 %s）" % [battle.sides[side], here, " +%d 援军" % later if later > 0 else "", Battle.morale_word(battle.side_morale(side))])
-	return "战况：" + "· ".join(parts)
+		parts.append(I18n.t("%s %d 人%s（士气 %s）") % [battle.sides[side], here, I18n.t(" +%d 援军") % later if later > 0 else "", Battle.morale_word(battle.side_morale(side))])
+	return I18n.t("战况：") + "· ".join(parts)
 
 
 ## 脚下的地面（Surface.label；"" = 藏起来）：电脑在左下角生命条上面，触屏在左上角体力条下面（左下角是摇杆）

@@ -24,9 +24,10 @@ var music := true                # 背景音乐（M.1；暂停菜单可以关；
 var music_volume := 0.6          # 背景音乐音量 0..1（M.1）
 var minimap := "small"           # 右上角的圆形小地图（C.4）：small / large / off（暂停菜单、N 键换）
 var tips := true                 # 教学提示（3.8；每条只显示一次，暂停菜单可以关）
+var lang := "zh"                 # 界面语言（2026-11-08 主菜单「中文 / English」）：zh / en；英文对照表在 data/i18n/en.json（core/i18n.gd）
 var loaded := false              # 读到过保存的设置（那就不再按系统「减少动态效果」改镜头摆动）
 
-const SAVED_KEYS := ["fov", "sensitivity", "invert_y", "head_bob", "quality", "third_person", "sound", "tips", "music", "music_volume", "minimap"]
+const SAVED_KEYS := ["fov", "sensitivity", "invert_y", "head_bob", "quality", "third_person", "sound", "tips", "music", "music_volume", "minimap", "lang"]
 
 
 func _ready() -> void:
@@ -35,6 +36,7 @@ func _ready() -> void:
 		if d.has(k):
 			_apply(k, d[k])
 	loaded = not d.is_empty()
+	I18n.apply(lang)
 
 
 func to_dict() -> Dictionary:
@@ -78,6 +80,9 @@ func _apply(key: String, value) -> bool:
 			quality = str(value) if str(value) in ["", "low", "medium", "high"] else ""
 		"minimap":
 			minimap = str(value) if str(value) in MINIMAP_SIZES else "small"
+		"lang":
+			lang = str(value) if str(value) in I18n.LANGS else "zh"
+			I18n.apply(lang)
 		_:
 			push_warning("未知设置项：" + key)
 			return false
