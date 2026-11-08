@@ -13929,12 +13929,14 @@ func test_startmenu() -> void:
 	var main := await make_main(true)
 	check(main.start_menu == null and not get_tree().paused, "测试场（网址带参数的那些）：不出主菜单，直接进游戏")
 	await free_main(main)
+	await frames(3)
+	wipe_test_saves()                                   # 前面的组、上面那一局延后写的自动存档都清掉（整套跑时实测有残留）
 	# —— 打开网页：主菜单，游戏停着、世界不画；没存档时「继续游戏」「读取存档」灰着
 	main = await make_main(false)
 	var m: StartMenu = main.start_menu
 	check(m != null and m.visible and get_tree().paused and main.get_viewport().disable_3d and main.opening == null and not main.hud.visible,
 		"打开网页先到主菜单：游戏停着、游戏世界不画、HUD 藏着、开场还没演")
-	check(m.continue_btn.disabled and m.load_btn.disabled and not m.new_btn.disabled and m.continue_note.text == "还没有存档", "没存档：「继续游戏」「读取存档」灰着，写着「还没有存档」")
+	check(m.continue_btn.disabled and m.load_btn.disabled and not m.new_btn.disabled and m.continue_note.text == "还没有存档", "没存档：「继续游戏」「读取存档」灰着，写着「还没有存档」（最近的存档：%s）" % Saves.latest_slot())
 	var labels := [m.continue_btn, m.new_btn, m.load_btn, m.settings_btn, m.credits_btn, m.exit_btn].map(func(b): return b.text)
 	check(labels == ["继续游戏", "新游戏", "读取存档", "设置", "制作人员", "退出游戏"], "按钮：%s" % " / ".join(labels))
 	check(m.stage != null and m.stage.get_node_or_null("Throne") != null and m.stage.crown != null and m.stage.walkers.multimesh.instance_count == TitleStage.WALKERS and m.stage.cam.current,
