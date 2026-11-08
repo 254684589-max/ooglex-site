@@ -25,7 +25,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords", "minimap", "cutscene", "dread", "wild"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords", "minimap", "cutscene", "dread", "wild", "battleend"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -13848,3 +13848,69 @@ func _edges_wild(main: Node, a: String, rect: Rect2, n_exits: int) -> void:
 		w.update_around(south, 40)
 		check(WildBirch.height(south.x, south.y, rect, Ferry.SHORE_Z) < -2.0 and main.world.find_children("DeepWalls", "StaticBody3D", true, false).size() > 0, "渡口：南边的河在荒野里照样走不进去（深水边有墙）")
 
+
+
+## 打输以后卡住（2026-11-08 所有者截图：磨坊守输了，天亮没来，一直「附近有敌人在和你打，走不开」，抄经室的门打不开）：
+## 你这边溃逃以后，过一会儿要能换到天亮；不再算战斗中
+func _rout_side(main: Node3D, side: String, by: Node3D) -> void:
+	var b: Battle = main.battle
+	var n := 0
+	while b.routed == "" and n < 40:
+		var left := soldiers_of(main, side).filter(func(x): return x.fighting())
+		if left.is_empty():
+			break
+		left[0].take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": by})
+		n += 1
+
+
+func _combat_why(main: Node3D) -> String:
+	var out := []
+	for e in main.get_tree().get_nodes_in_group("enemy"):
+		if e.state in [Enemy.State.ALERT, Enemy.State.COMBAT, Enemy.State.RETREAT, Enemy.State.STAGGER]:
+			out.append("%s:%s" % [e.name, e.state_name()])
+	return ",".join(out)
+
+
+func test_battleend() -> void:
+	Settings.set_value("third_person", false)
+	wipe_test_saves()
+	# —— 磨坊：守方溃逃
+	mill_state("lomond")
+	var main := await make_mill("mill_night")
+	var b: Battle = main.battle
+	await seconds(MillBattle.START_AFTER + 0.5)
+	await seconds(3.0)
+	var atk := soldiers_of(main, MillBattle.ATK)
+	_rout_side(main, MillBattle.DEF, atk[0])
+	await seconds(0.6)
+	check(b.finished and b.winner == MillBattle.ATK, "磨坊：守方溃逃，仗打输了")
+	var standing := atk.filter(func(x): return is_instance_valid(x) and x.alive())
+	standing.sort_custom(func(x, y): return x.global_position.distance_to(main.player.global_position) < y.global_position.distance_to(main.player.global_position))
+	standing[0].take_hit({"damage": 3, "kind": "light", "stop": 0.0})      # 打输了还在砍：砍了一个收了手的兵
+	for i in 20:
+		await seconds(0.5)
+	check(not main.in_combat(), "磨坊打输以后 10 秒：不再算战斗中（%s）" % _combat_why(main))
+	check(standing[0].state == Enemy.State.PATROL and standing.all(func(x): return not is_instance_valid(x) or x.state not in [Enemy.State.ALERT, Enemy.State.COMBAT]), "打完了砍收了手的兵：他不喊人、不回到战斗")
+	check(main.leaving, "磨坊打输以后：天亮换场景走得了")
+	await free_main(main)
+	# —— 堤道：守方溃逃
+	causeway_state("gap")
+	main = await make_causeway()
+	b = main.battle
+	await seconds(1.0)
+	if not b.started:
+		b.start()
+	await seconds(3.0)
+	_rout_side(main, CausewayBattle.DEF, soldiers_of(main, CausewayBattle.ATK)[0])
+	await seconds(0.6)
+	check(b.finished and b.winner == CausewayBattle.ATK, "堤道：守方溃逃，仗打输了")
+	main.player.melee.down = true                      # 打输的时候人还倒着：天亮那一下走不了，过一会儿起来了再走
+	for i in 16:
+		await seconds(0.5)
+	check(not main.leaving, "人还倒着：先不换场景")
+	main.player.melee.down = false
+	for i in 20:
+		await seconds(0.5)
+	check(not main.in_combat(), "堤道打输以后 10 秒：不再算战斗中（%s）" % _combat_why(main))
+	check(main.leaving, "堤道打输以后：天亮换场景走得了")
+	await free_main(main)

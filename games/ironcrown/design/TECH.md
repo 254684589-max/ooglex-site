@@ -1223,6 +1223,7 @@ godot/
 
 - 只拉开波次间隔、加后到的波次，不加同时在场的人数（同屏上限照旧）：`CausewayBattle` WAVE2_AT 35→50、WAVE3_AT 70→105，新增 `RELIEF`（守方 4 人，130 秒，堡门）和 `WAVE4`（攻方后队 8 人，150 秒）；`MillBattle` WAVE1B 22、WAVE_TEN 42、WAVE2 85，新增 `WAVE3`（10 人，145 秒）和南门援手（125 秒；护院走了的话换成佃农）；`ConvoyAmbush` TIDE_AT 55，新增洛蒙德家接应（6 人，85 秒）和 `OATH_EXTRA`（我方 3 人，100 秒）；`ConvoyEscort.SPEED` 1.05→0.8。
 - 溃败照旧按 `side_total`（含未到的波次）算，溃了就撤掉那边没到的波次。测试按新波次改写。
+- 打输以后卡住（同日所有者截图）：`Soldier.alert` 在军阵打完（`battle.finished`）以后不响应（原来砍一个收了手的兵会喊起 CALL_RADIUS 里一片人，都进 COMBAT 又没有 target，永远不出来）；`Soldier._physics_process` 打完以后还在打的收手；`main.in_combat` 不算打完了的军阵里的兵；天亮换场景改成 `main._dawn_travel`：倒着或还在打就每秒再试。测试组 `battleend`。
 
 ## 五、画质分档
 

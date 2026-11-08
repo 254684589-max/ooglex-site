@@ -1282,9 +1282,22 @@ func in_combat() -> bool:
 	if brawl_active() or encounter_active() or (battle != null and is_instance_valid(battle) and battle.active()):
 		return true
 	for e in get_tree().get_nodes_in_group("enemy"):
+		if e is Soldier and e.battle != null and is_instance_valid(e.battle) and e.battle.finished:
+			continue                            # 军阵打完了收了手的兵不算（2026-11-08：打输以后卡在「走不开」）
 		if e.state in [Enemy.State.ALERT, Enemy.State.COMBAT, Enemy.State.RETREAT, Enemy.State.STAGGER]:
 			return true
 	return false
+
+
+## 仗打完以后天亮换场景（4.10a / 5.7a / 6.7b）：一时走不了（比如还倒着）就每秒再试，不让天亮卡住
+func _dawn_travel(at_area: String, to: String, spawn_id: String, note: String) -> void:
+	while is_inside_tree() and not leaving and area == at_area:
+		if not player.melee.down and not in_combat():
+			Engine.set_meta("ic_arrive_note", note)
+			GameState.daypart = "dawn"
+			travel(to, spawn_id)
+			return
+		await get_tree().create_timer(1.0).timeout
 
 
 ## 换区域（3.1）：从门走进另一个区域。先淡出，记下去哪、站哪、生命与体力，再重新载入本场景（和读档同一条路）。
@@ -2237,9 +2250,7 @@ func _on_battle_ended(winner: String) -> void:
 		get_tree().create_timer(DAWN_DELAY).timeout.connect(func():
 			if is_inside_tree() and not leaving and area == "plain":
 				var to := MillBattle.dawn_arrival(str(GameState.get_flag("ch3_mill", "")))
-				Engine.set_meta("ic_arrive_note", to[1])
-				GameState.daypart = "dawn"
-				travel("plain", str(to[0])))
+				_dawn_travel("plain", "plain", str(to[0]), str(to[1])))
 		return
 	if area == "marsh":                                 # 堤道夜战（4.9a）：写旗标、推进主线、自动存档；过一会儿天亮（4.10a）
 		var held := winner == battle.player_side
@@ -2249,9 +2260,7 @@ func _on_battle_ended(winner: String) -> void:
 		get_tree().create_timer(DAWN_DELAY).timeout.connect(func():
 			if is_inside_tree() and not leaving and area == "marsh":
 				var to := CausewayBattle.dawn_arrival(held)
-				Engine.set_meta("ic_arrive_note", to[1])
-				GameState.daypart = "dawn"              # 过了一夜：第二天的清晨（旅行地图的「时段只往前走」管不到这里）
-				travel("castle", str(to[0])))
+				_dawn_travel("marsh", "castle", str(to[0]), str(to[1])))     # 过了一夜：第二天的清晨（旅行地图的「时段只往前走」管不到这里）
 		return
 	var refresh := "（刷新页面再来一次）"
 	if winner == "":
