@@ -10,6 +10,7 @@ var f: Dictionary
 var box: VBoxContainer
 var main: Node
 var status: Label
+var load_only := false             # 从主菜单打开（2026-11-08）：只能读，不能存
 
 
 func _ready() -> void:
@@ -21,6 +22,7 @@ func _ready() -> void:
 
 
 func open() -> void:
+	(f.title as Label).text = "读取存档" if load_only else "存档 / 读档"
 	show()
 	refresh()
 	(f.close as Button).grab_focus()
@@ -36,27 +38,27 @@ func close() -> void:
 
 func refresh(message := "") -> void:
 	UiKit.clear(box)
-	var why: String = main.can_save() if main else ""
-	status = UiKit.label(box, message if message != "" else ("× " + why if why != "" else "存在这台设备的浏览器里；清除浏览器数据会把存档一起清掉。"), why != "" and message == "", 14)
+	var why: String = (main.can_save() if main else "") if not load_only else ""
+	status = UiKit.label(box, message if message != "" else ("× " + I18n.t(why) if why != "" else "存在这台设备的浏览器里；清除浏览器数据会把存档一起清掉。"), why != "" and message == "", 14)
 	var slots := Saves.list_slots()
 	for s in Saves.SLOTS:
 		var info: Dictionary = slots[s]
-		var text: String = str(Saves.SLOT_NAMES[s]) + "  "
+		var text: String = I18n.t(str(Saves.SLOT_NAMES[s])) + "  "
 		if info.has("summary"):
 			text += "%s\n%s" % [info.summary, _time_text(str(info.saved_at))]
 			if str(info.note) != "":
 				text += "\n" + str(info.note)
 		elif info.has("error"):
-			text += "（损坏，读不了：%s）" % info.error
+			text += I18n.t("（损坏，读不了：%s）") % I18n.t(str(info.error))
 		else:
-			text += "（空）"
+			text += I18n.t("（空）")
 		UiKit.label(box, text, not info.has("summary"))
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", 8)
-		if s in Saves.MANUAL:
+		if s in Saves.MANUAL and not load_only:
 			var sb := _btn(row, "覆盖" if info.has("summary") else "存到这里", func():
 				var ok: bool = main.save_game(s)
-				refresh(("✓ 已存到" + Saves.SLOT_NAMES[s]) if ok else ("× " + Saves.last_error if Saves.last_error != "" else "× " + main.can_save())))
+				refresh((I18n.t("✓ 已存到") + I18n.t(str(Saves.SLOT_NAMES[s]))) if ok else ("× " + I18n.t(Saves.last_error) if Saves.last_error != "" else "× " + I18n.t(main.can_save()))))
 			sb.disabled = why != ""
 		var lb := _btn(row, "读取", func(): main.load_game.call_deferred(s))     # 读档会重载场景：等按钮的信号发完
 		lb.disabled = not info.has("summary")

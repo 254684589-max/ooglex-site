@@ -88,7 +88,7 @@ static func text() -> String:
 	var out := ""
 	for lv in LEVELS:
 		if GameState.cold >= float(lv[0]):
-			out = "寒冷：" + str(lv[1])
+			out = I18n.t("寒冷：") + str(lv[1])
 	return out
 
 

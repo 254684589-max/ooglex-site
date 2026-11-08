@@ -129,14 +129,14 @@ static func check(chapter: int, from: String, to: String, at_departure: bool) ->
 	elif to == from:
 		why = "你就在这里。"
 	elif not built(to):
-		why = str(place(to).get("pending", "%s还没做好。" % name_of(to)))
+		why = str(place(to).get("pending", I18n.t("%s还没做好。") % name_of(to)))
 	elif from == "":
 		why = "要先回到地图上的地方才能出发。"
 	elif r.is_empty():
 		var mid := via(from, to)
-		why = ("从这里去不了，先到%s。" % name_of(mid)) if mid != "" else "从这里没有路过去。"
+		why = (I18n.t("从这里去不了，先到%s。") % name_of(mid)) if mid != "" else I18n.t("从这里没有路过去。")
 	elif not at_departure:
-		why = "走到%s那里才能出发。" % str(place(from).get("depart_at", "出发的地方"))
+		why = I18n.t("走到%s那里才能出发。") % str(place(from).get("depart_at", I18n.t("出发的地方")))
 	elif not needs_met(r):
 		why = str((r.needs as Dictionary).get("why", "现在还去不了。"))
 	return {"ok": why == "", "why": why, "route": r}

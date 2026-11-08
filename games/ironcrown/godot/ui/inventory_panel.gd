@@ -41,7 +41,7 @@ func close() -> void:
 
 
 func summary_text() -> String:
-	var t := "护甲 %d · 负重 %.1f / %.0f 斤 · 银币 %d" % [GameState.armor_total(), GameState.carry_weight(), GameState.carry_limit(), GameState.silver]
+	var t := I18n.t("护甲 %d · 负重 %.1f / %.0f 斤 · 银币 %d") % [GameState.armor_total(), GameState.carry_weight(), GameState.carry_limit(), GameState.silver]
 	if GameState.over_encumbered():
 		t += " · 超重：不能跑"
 	return t
@@ -141,18 +141,18 @@ func detail_text(id: String) -> String:
 		return "选一件东西看看。"
 	var it := GameState.item(id)
 	var lines := [GameState.item_name(id), str(it.get("desc", ""))]
-	var facts := ["%s" % GameState.KIND_NAMES.get(str(it.kind), ""), "%.1f 斤" % float(it.weight)]
+	var facts := ["%s" % GameState.KIND_NAMES.get(str(it.kind), ""), I18n.t("%.1f 斤") % float(it.weight)]
 	match str(it.kind):
 		"weapon":
-			facts.append("伤害 %d" % int(it.base))
+			facts.append(I18n.t("伤害 %d") % int(it.base))
 		"armor":
-			facts.append("%s部 · 护甲 %d" % [GameState.SLOT_NAMES[it.slot], int(it.armor)])
+			facts.append(I18n.t("%s部 · 护甲 %d") % [GameState.SLOT_NAMES[it.slot], int(it.armor)])
 			if float(it.noise) > 0.0:
 				facts.append("走动更吵")
 		"quest":
 			facts.append("不能丢弃")
 	if int(it.get("value", 0)) > 0:
-		facts.append("值 %d 银币" % int(it.value))
+		facts.append(I18n.t("值 %d 银币") % int(it.value))
 	lines.append(" · ".join(facts))
 	return "\n".join(lines)
 

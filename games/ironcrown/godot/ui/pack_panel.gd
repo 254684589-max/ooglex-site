@@ -43,7 +43,7 @@ func _ready() -> void:
 	box.add_child(bar)
 	detail = Label.new()
 	detail.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	detail.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	detail.autowrap_mode = UiKit.wrap_mode()
 	detail.custom_minimum_size = Vector2(280, 0)
 	detail.add_theme_color_override("font_color", Color("c8bca0"))
 	box.add_child(detail)
@@ -67,7 +67,7 @@ func _ready() -> void:
 ## 开始下载：章节名，进度清零，按钮藏起来
 func open(chapter_name: String, reduced_motion := false) -> void:
 	failed = false
-	title.text = "正在载入 %s" % chapter_name
+	title.text = I18n.t("正在载入 %s") % chapter_name
 	bar.value = 0.0
 	bar.visible = true
 	detail.text = "正在下载这一章的内容……"
@@ -88,16 +88,16 @@ func set_progress(done: int, total: int) -> void:
 		return
 	if total > 0:
 		bar.value = clampf(float(done) / total, 0.0, 1.0)
-		detail.text = "已下载 %.1f / %.1f MB" % [done / 1048576.0, total / 1048576.0]
+		detail.text = I18n.t("已下载 %.1f / %.1f MB") % [done / 1048576.0, total / 1048576.0]
 	else:
-		detail.text = "已下载 %.1f MB" % (done / 1048576.0)
+		detail.text = I18n.t("已下载 %.1f MB") % (done / 1048576.0)
 
 
 ## 失败：写明原因，给「重试」「返回」
 func fail(why: String) -> void:
 	failed = true
 	bar.visible = false
-	detail.text = "× 没能载入：%s" % why
+	detail.text = I18n.t("× 没能载入：%s") % why
 	retry_btn.visible = true
 	cancel_btn.visible = true
 	retry_btn.grab_focus.call_deferred()

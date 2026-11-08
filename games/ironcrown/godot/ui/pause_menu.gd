@@ -6,10 +6,16 @@ extends Control
 signal resume_requested
 signal quality_selected(tier: String)
 signal saves_requested
+signal main_menu_requested           # 回到主菜单（2026-11-08）
 
 var panel: PanelContainer
 var resume_btn: Button
 var saves_btn: Button
+var menu_btn: Button
+var title_label: Label
+var lang_btns := {}
+var menu_mode := false             # 从主菜单打开（只当「设置」用）：没有「存档」「回到主菜单」，「继续游戏」变成「返回」
+var menu_armed := false
 var help_label: Label
 var sound_check: CheckButton
 var tips_check: CheckButton
@@ -61,6 +67,7 @@ func _ready() -> void:
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(box)
 	var title := Label.new()
+	title_label = title
 	title.text = "已暂停"
 	title.add_theme_font_size_override("font_size", 24)
 	title.add_theme_color_override("font_color", Color("e8dcc0"))
@@ -73,6 +80,35 @@ func _ready() -> void:
 	saves_btn.text = "存档 / 读档"
 	saves_btn.pressed.connect(func(): saves_requested.emit())
 	box.add_child(saves_btn)
+	menu_btn = Button.new()
+	menu_btn.text = "回到主菜单"
+	menu_btn.pressed.connect(func():
+		if not menu_armed:                      # 先确认一下：没存的进度会丢
+			menu_armed = true
+			menu_btn.text = "再点一次回到主菜单（没存的进度会丢）"
+			return
+		main_menu_requested.emit())
+	box.add_child(menu_btn)
+	var lrow := HBoxContainer.new()                     # 语言（2026-11-08）：中文 / English
+	lrow.name = "LangRow"
+	var ll := Label.new()
+	ll.text = "语言 Language"
+	ll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lrow.add_child(ll)
+	var lgroup := ButtonGroup.new()
+	for k in I18n.LANGS:
+		var b := Button.new()
+		b.name = "Lang_" + k
+		b.text = "中文" if k == "zh" else "English"
+		b.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		b.toggle_mode = true
+		b.button_group = lgroup
+		b.button_pressed = Settings.lang == k
+		b.custom_minimum_size = Vector2(72, 32)
+		b.pressed.connect(func(): Settings.set_value("lang", k))
+		lrow.add_child(b)
+		lang_btns[k] = b
+	box.add_child(lrow)
 	fov_value = Label.new()
 	fov_slider = _slider(box, "视野角", fov_value, Settings.FOV_MIN, Settings.FOV_MAX, 1.0, Settings.fov, "fov")
 	sens_value = Label.new()
@@ -123,18 +159,22 @@ func _ready() -> void:
 	music_slider = _slider(box, "音乐音量", music_value, 0.0, 1.0, 0.05, Settings.music_volume, "music_volume")
 	tips_check = _check(box, "教学提示", Settings.tips, "tips")
 	perf_check = _check(box, "显示性能数据（F3）", Settings.show_perf, "show_perf")
+	var help := Label.new()
+	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if I18n.en() else TextServer.AUTOWRAP_ARBITRARY
+	help.add_theme_color_override("font_color", Color("a9b4c0"))
+	help.text = HELP_DESKTOP + "\n" + HELP_TOUCH
+	box.add_child(help)
+	help_label = help
 	Settings.changed.connect(func():
 		music_check.disabled = not Settings.sound
 		perf_check.set_pressed_no_signal(Settings.show_perf)
 		tp_check.set_pressed_no_signal(Settings.third_person)
 		if minimap_btns.has(Settings.minimap):
-			minimap_btns[Settings.minimap].set_pressed_no_signal(true))
-	var help := Label.new()
-	help.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
-	help.add_theme_color_override("font_color", Color("a9b4c0"))
-	help.text = HELP_DESKTOP + "\n" + HELP_TOUCH
-	box.add_child(help)
-	help_label = help
+			minimap_btns[Settings.minimap].set_pressed_no_signal(true)
+		if lang_btns.has(Settings.lang):
+			lang_btns[Settings.lang].set_pressed_no_signal(true)
+		help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if I18n.en() else TextServer.AUTOWRAP_ARBITRARY
+		_refresh_values())
 	get_tree().root.size_changed.connect(_fit)
 	_fit()
 	_refresh_values()
@@ -153,7 +193,18 @@ func show_quality(tier: String) -> void:
 
 func open() -> void:
 	show()
+	menu_armed = false
+	menu_btn.text = "回到主菜单"
 	resume_btn.grab_focus()
+
+
+## 从主菜单打开时只当「设置」用
+func set_menu_mode(on: bool) -> void:
+	menu_mode = on
+	title_label.text = "设置" if on else "已暂停"
+	resume_btn.text = "返回" if on else "继续游戏"
+	saves_btn.visible = not on
+	menu_btn.visible = not on
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -194,7 +245,7 @@ func _check(box: VBoxContainer, text: String, v: bool, key: String) -> CheckButt
 
 func _refresh_values() -> void:
 	fov_value.text = "%d°" % roundi(Settings.fov)
-	sens_value.text = "%.1f 倍" % Settings.sensitivity
+	sens_value.text = I18n.t("%.1f 倍") % Settings.sensitivity
 	if music_value:
 		music_value.text = "%d%%" % roundi(Settings.music_volume * 100.0)
 

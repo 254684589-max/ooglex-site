@@ -20,12 +20,13 @@ func _ready() -> void:
 	dog.start()
 	get_tree().root.size = Vector2i(1280, 720)   # 无头模式默认窗口只有 64×64，界面与触屏测试按电脑窗口算
 	Settings.set_value("third_person", false)    # 上一次测试被中断时，设置文件里可能留着第三人称（Settings 在测试开始前已经读过它）
+	Engine.set_meta("ic_skip_menu", true)        # 开始主菜单（2026-11-08）只在 startmenu 组里测
 	Engine.set_meta("ic_skip_opening", true)     # 开场（3.8）只在 opening 组里测，其余测试照旧从主街南头开始
 	Engine.set_meta("ic_skip_film", true)        # 过场（C.5：开场影片、渡口对峙……）只在 cutscene 组里测；别的组照原来的流程走（opening 组测钟声和管家那一段）
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords", "minimap", "cutscene", "dread", "wild", "battleend"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords", "minimap", "cutscene", "dread", "wild", "battleend", "startmenu", "i18n"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -13914,3 +13915,152 @@ func test_battleend() -> void:
 	check(not main.in_combat(), "堤道打输以后 10 秒：不再算战斗中（%s）" % _combat_why(main))
 	check(main.leaving, "堤道打输以后：天亮换场景走得了")
 	await free_main(main)
+
+
+## 开始主菜单（2026-11-08 所有者「做开始主菜单页面……加入中英文切换、制作人员……存档等」）
+func test_startmenu() -> void:
+	Settings.set_value("third_person", false)
+	Settings.set_value("lang", "zh")
+	wipe_test_saves()
+	GameState.new_game()
+	Engine.set_meta("ic_skip_menu", false)
+	Engine.remove_meta("ic_menu_done")
+	# —— 截图、测试场：不出主菜单
+	var main := await make_main(true)
+	check(main.start_menu == null and not get_tree().paused, "测试场（网址带参数的那些）：不出主菜单，直接进游戏")
+	await free_main(main)
+	await frames(3)
+	wipe_test_saves()                                   # 前面的组、上面那一局延后写的自动存档都清掉（整套跑时实测有残留）
+	# —— 打开网页：主菜单，游戏停着、世界不画；没存档时「继续游戏」「读取存档」灰着
+	main = await make_main(false)
+	var m: StartMenu = main.start_menu
+	check(m != null and m.visible and get_tree().paused and main.get_viewport().disable_3d and main.opening == null and not main.hud.visible,
+		"打开网页先到主菜单：游戏停着、游戏世界不画、HUD 藏着、开场还没演")
+	check(m.continue_btn.disabled and m.load_btn.disabled and not m.new_btn.disabled and m.continue_note.text == "还没有存档", "没存档：「继续游戏」「读取存档」灰着，写着「还没有存档」（最近的存档：%s）" % Saves.latest_slot())
+	var labels := [m.continue_btn, m.new_btn, m.load_btn, m.settings_btn, m.credits_btn, m.exit_btn].map(func(b): return b.text)
+	check(labels == ["继续游戏", "新游戏", "读取存档", "设置", "制作人员", "退出游戏"], "按钮：%s" % " / ".join(labels))
+	check(m.stage != null and m.stage.get_node_or_null("Throne") != null and m.stage.crown != null and m.stage.walkers.multimesh.instance_count == TitleStage.WALKERS and m.stage.cam.current,
+		"背后的 3D 场景：断王座、铁冠、%d 个往北走的长眠者，自己的镜头" % TitleStage.WALKERS)
+	m.stage.motion = true                                # 无头测试里「减少动态效果」可能是开着的：这里只看暂停时动不动（无头模式读不回多实例的位置，看场景的时钟）
+	var t0: float = m.stage.t
+	await seconds(1.0)
+	check(m.stage.t - t0 > 0.5 and get_tree().paused, "游戏停着，菜单的场景照样动（场景时钟走了 %.2f 秒）" % (m.stage.t - t0))
+	var r: Rect2 = m.panel.get_global_rect()
+	var sz := UiKit.logical_size(m)
+	check(r.end.x <= sz.x and r.position.y >= 0.0 and r.end.y <= sz.y and r.position.x > sz.x * 0.5, "菜单在右半边、整块在窗口里（%s）" % str(r))
+	# 设置：从主菜单打开是「设置」，没有存档、回主菜单；返回以后还在主菜单
+	m.settings_btn.pressed.emit()
+	await frames(2)
+	check(main.pause_menu.visible and main.pause_menu.title_label.text == "设置" and not main.pause_menu.saves_btn.visible and not main.pause_menu.menu_btn.visible and main.pause_menu.resume_btn.text == "返回",
+		"设置：标题「设置」，没有「存档 / 读档」「回到主菜单」，按钮是「返回」")
+	main.pause_menu.resume_btn.pressed.emit()
+	await frames(2)
+	check(not main.pause_menu.visible and m.visible and get_tree().paused and main.pause_menu.title_label.text == "已暂停", "设置返回：回到主菜单，游戏还停着")
+	# 制作人员
+	m.credits_btn.pressed.emit()
+	await frames(2)
+	var names: Array = main.credits_panel.box.get_children().filter(func(c): return c is Label).map(func(c): return c.text)
+	check(main.credits_panel.visible and names.has("郑翊") and names.find("出品人 · 制作人 · 总策划") == names.find("郑翊") - 1 and names.has("Godot Engine（MIT 许可）\nJuan Linietsky、Ariel Manzur 与 Godot 社区的贡献者"),
+		"制作人员：郑翊（出品人 · 制作人 · 总策划）排在最前，后面是引擎、素材、字体")
+	var v0: int = main.credits_panel.scroll.scroll_vertical
+	await seconds(1.0)
+	check(main.credits_panel.scroll.scroll_vertical > v0, "名单自己往上滚（%d → %d）" % [v0, main.credits_panel.scroll.scroll_vertical])
+	main.credits_panel.back_btn.pressed.emit()
+	await frames(2)
+	check(not main.credits_panel.visible and m.visible, "制作人员「返回」：回到主菜单")
+	# 语言：English
+	m.lang_btns.en.pressed.emit()
+	await frames(2)
+	check(Settings.lang == "en" and I18n.en() and m.new_btn.atr(m.new_btn.text) == "New Game" and m.continue_note.text == "No saves yet" and m.title_zh.text == "铁冠之争",
+		"切到 English：按钮换成英文（New Game），标题照旧是「铁冠之争」")
+	check(main.pause_menu.lang_btns.en.button_pressed, "设置里的语言跟着变成 English")
+	m.lang_btns.zh.pressed.emit()
+	await frames(2)
+	check(Settings.lang == "zh" and not I18n.en() and m.new_btn.atr(m.new_btn.text) == "新游戏", "切回中文")
+	# 新游戏（没存档：不用确认）
+	m.new_btn.pressed.emit()
+	await frames(3)
+	check(not m.visible and not get_tree().paused and not main.get_viewport().disable_3d and main.hud.visible and Engine.get_meta("ic_menu_done", false) and m.stage == null,
+		"新游戏：主菜单关掉、游戏走起来、世界画出来、HUD 出来；菜单的 3D 场景拿掉")
+	check(main.save_game("slot2"), "存一份档")
+	await free_main(main)
+	# —— 这次打开页面已经离开过主菜单：换区域、读档重新载入不再出
+	main = await make_main(false)
+	check(main.start_menu == null, "这次打开页面已经进过游戏：再载入不出主菜单")
+	await free_main(main)
+	# —— 有存档：继续游戏读最近那份；新游戏先问一句
+	Engine.remove_meta("ic_menu_done")
+	main = await make_main(false)
+	m = main.start_menu
+	check(not m.continue_btn.disabled and not m.load_btn.disabled and m.continue_note.text.begins_with("栏位 2 · 霜渡镇"), "有存档：「继续游戏」能点，写着最近那份（%s）" % m.continue_note.text)
+	m.new_btn.pressed.emit()
+	await frames(2)
+	check(m.confirm.visible and m.visible, "有存档时点新游戏：先问「开始新游戏？」")
+	m._unhandled_input(_esc())
+	check(not m.confirm.visible, "Esc：不开始，回到菜单")
+	m.load_btn.pressed.emit()
+	await frames(2)
+	var save_btns: Array = main.save_panel.box.find_children("", "Button", true, false).map(func(b): return b.text)
+	check(main.save_panel.visible and main.save_panel.load_only and not save_btns.has("存到这里") and not save_btns.has("覆盖") and save_btns.has("读取") and (main.save_panel.f.title as Label).text == "读取存档",
+		"读取存档：只能读，不能存")
+	main.save_panel.close()
+	await frames(2)
+	check(not main.save_panel.load_only and m.visible, "关掉读档：回到主菜单")
+	var reloads := [0]
+	main.reload_requested.connect(func(): reloads[0] += 1)
+	m.continue_btn.pressed.emit()
+	await seconds(1.2)
+	check(reloads[0] == 1 and str(GameState.pending_load.get("slot", "")) == "slot2", "继续游戏：读最近那份存档（栏位 2），重新载入")
+	await free_main(main)
+	GameState.pending_load = {}
+	# —— 暂停菜单「回到主菜单」：点两下（第一下提醒没存的会丢）
+	Engine.set_meta("ic_menu_done", true)
+	main = await make_main(false)
+	main.open_pause()
+	await frames(2)
+	check(main.pause_menu.menu_btn.visible and main.pause_menu.saves_btn.visible, "游戏里的暂停菜单：有「存档 / 读档」「回到主菜单」")
+	reloads = [0]
+	main.reload_requested.connect(func(): reloads[0] += 1)
+	main.pause_menu.menu_btn.pressed.emit()
+	check(reloads[0] == 0 and main.pause_menu.menu_btn.text.contains("再点一次"), "第一下：提醒没存的进度会丢")
+	main.pause_menu.menu_btn.pressed.emit()
+	await frames(2)
+	check(reloads[0] == 1 and not Engine.has_meta("ic_menu_done"), "第二下：回到主菜单（重新载入，主菜单再出来）")
+	await free_main(main)
+	Engine.set_meta("ic_skip_menu", true)
+	Engine.remove_meta("ic_menu_done")
+	get_tree().paused = false
+	wipe_test_saves()
+	GameState.new_game()
+
+
+func _esc() -> InputEventAction:
+	var e := InputEventAction.new()
+	e.action = "pause"
+	e.pressed = true
+	return e
+
+
+## 中英文对照表（2026-11-08）：能读、占位符对得上；中文时原样；界面的句子都有英文
+func test_i18n() -> void:
+	Settings.set_value("lang", "zh")
+	var f := FileAccess.open(I18n.TABLE, FileAccess.READ)
+	var d: Variant = JSON.parse_string(f.get_as_text())
+	check(d is Dictionary and (d as Dictionary).size() > 400, "对照表 data/i18n/en.json 能读（%d 句）" % (d as Dictionary).size())
+	var re := RegEx.create_from_string("%[-0-9.]*[sdf%]")
+	var bad := []
+	for k in d:
+		if str(k).begins_with("_"):
+			continue
+		var a := re.search_all(str(k)).map(func(x): return x.get_string())
+		var b := re.search_all(str(d[k])).map(func(x): return x.get_string())
+		if a != b:
+			bad.append(k)
+	check(bad.is_empty(), "每一句英文的占位符（%%s %%d %%.1f）和中文一样、顺序一样（不对的：%s）" % str(bad.slice(0, 3)))
+	check(I18n.t("新游戏") == "新游戏" and tr("新游戏") == "新游戏", "中文时：原样（回退语言是 zh，不会被英文表换掉）")
+	Settings.set_value("lang", "en")
+	check(I18n.t("新游戏") == "New Game" and tr("新游戏") == "New Game" and I18n.t("对照表里没有的句子") == "对照表里没有的句子", "英文时：有的换成英文，没有的照旧显示中文")
+	check(I18n.t("%d 级") % 3 == "Level 3" and Saves.describe({"scene": "frostford", "state": {"level": 2, "playtime": 600.0}}).begins_with("Frostford · Level 2"), "带数的句子先翻再填数；存档说明也是英文（%s）" % Saves.describe({"scene": "frostford", "state": {"level": 2, "playtime": 600.0}}))
+	check(UiKit.wrap_mode() == TextServer.AUTOWRAP_WORD_SMART, "英文按词换行")
+	Settings.set_value("lang", "zh")
+	check(UiKit.wrap_mode() == TextServer.AUTOWRAP_ARBITRARY and Saves.describe({"scene": "frostford", "state": {"level": 2, "playtime": 600.0}}).begins_with("霜渡镇 · 2 级"), "切回中文：存档说明是中文")

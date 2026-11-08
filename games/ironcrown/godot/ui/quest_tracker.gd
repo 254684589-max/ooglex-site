@@ -69,7 +69,7 @@ func _label(fs: int, c: Color) -> Label:
 	l.add_theme_color_override("font_color", c)
 	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
 	l.add_theme_constant_override("outline_size", 4)
-	l.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	l.autowrap_mode = UiKit.wrap_mode()
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return l
 
@@ -119,7 +119,7 @@ func update_marker(world: Node, cam: Camera3D, from: Vector3, area: String, delt
 		arrow.hide()
 		return
 	if target.has("elsewhere"):
-		marker_text = "目标在%s（打开地图出发）" % target.elsewhere
+		marker_text = I18n.t("目标在%s（打开地图出发）") % target.elsewhere
 		marker.text = marker_text
 		marker.reset_size()
 		marker.position = Vector2((size.x - marker.size.x) * 0.5, size.y - 150.0)

@@ -36,9 +36,9 @@ func close() -> void:
 
 func header_text() -> String:
 	var left := GameState.LEVEL_EVERY - GameState.skill_ups % GameState.LEVEL_EVERY
-	var t := ("%s · " % Origins.name_of(Origins.current()) if Origins.current() != "" else "") + "等级 %d · 再提升 %d 次技能升级" % [GameState.level, left]
+	var t := ("%s · " % Origins.name_of(Origins.current()) if Origins.current() != "" else "") + I18n.t("等级 %d · 再提升 %d 次技能升级") % [GameState.level, left]
 	if GameState.attr_points > 0:
-		t += " · 可分配属性点 %d" % GameState.attr_points
+		t += I18n.t(" · 可分配属性点 %d") % GameState.attr_points
 	return t
 
 
@@ -54,14 +54,14 @@ func refresh() -> void:
 		if GameState.attr_points > 0:
 			var b := Button.new()
 			b.text = "＋"
-			b.tooltip_text = "给%s加 1 点" % GameState.attr_name(a)
+			b.tooltip_text = I18n.t("给%s加 1 点") % GameState.attr_name(a)
 			b.custom_minimum_size = Vector2(44, 34)
 			b.pressed.connect(func():
 				GameState.raise_attr(a)
 				refresh())
 			row.add_child(b)
 		box.add_child(row)
-	UiKit.label(box, "生命上限 %d · 体力上限 %d · 负重上限 %.0f 斤 · 护甲 %d" % [GameState.health_max(), GameState.stamina_max(), GameState.carry_limit(), GameState.armor_total()], true, 14)
+	UiKit.label(box, I18n.t("生命上限 %d · 体力上限 %d · 负重上限 %.0f 斤 · 护甲 %d") % [GameState.health_max(), GameState.stamina_max(), GameState.carry_limit(), GameState.armor_total()], true, 14)
 	box.add_child(HSeparator.new())
 	_sword_styles()
 	box.add_child(HSeparator.new())
@@ -74,7 +74,7 @@ func refresh() -> void:
 		UiKit.label(box, "    %s" % sk.desc, true, 14)     # 说明单独一行：加了数字以后窄屏上一行放不下（2026-10-04）
 		for p in sk.perks:
 			var got := v >= int(p.at)
-			UiKit.label(box, "    %s %d「%s」%s%s" % ["◆" if got else "◇", int(p.at), p.name, p.desc, "" if got else "（%s到 %d 解锁）" % [sk.name, int(p.at)]], not got, 14)
+			UiKit.label(box, "    %s %d「%s」%s%s" % ["◆" if got else "◇", int(p.at), p.name, p.desc, "" if got else I18n.t("（%s到 %d 解锁）") % [sk.name, int(p.at)]], not got, 14)
 	box.add_child(HSeparator.new())
 	UiKit.label(box, "声望", true)
 	UiKit.label(box, "竖线「｜」是 0：右边是好感、左边是敌意，每格约 20 点（−100 到 +100）", true, 14)

@@ -153,7 +153,7 @@ func _draw_wild(c: Vector2, r: float) -> void:
 	var side := Vector2(-dir.y, dir.x)
 	overlay.draw_colored_polygon(PackedVector2Array([tip + dir * 7.0, tip - dir * 5.0 + side * 6.0, tip - dir * 5.0 - side * 6.0]), GOLD)
 	var font := get_theme_default_font()
-	var label := "%d 米" % int(round(dist / 10.0) * 10.0)
+	var label := I18n.t("%d 米") % int(round(dist / 10.0) * 10.0)
 	var lp := c + dir * (r - 28.0) - Vector2(font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x * 0.5, -4.0)
 	overlay.draw_string(font, lp + Vector2(1, 1), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, RING_DARK)
 	overlay.draw_string(font, lp, label, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, GOLD)

@@ -100,12 +100,12 @@ func _ready() -> void:
 	info.add_theme_constant_override("separation", 6)
 	body.add_child(info)
 	where_label = Label.new()
-	where_label.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	where_label.autowrap_mode = UiKit.wrap_mode()
 	where_label.add_theme_font_size_override("font_size", 18)
 	where_label.add_theme_color_override("font_color", UiKit.TEXT)
 	info.add_child(where_label)
 	detail_label = Label.new()
-	detail_label.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	detail_label.autowrap_mode = UiKit.wrap_mode()
 	detail_label.add_theme_color_override("font_color", Color("c8a060"))
 	info.add_child(detail_label)
 	scroll = ScrollContainer.new()
@@ -121,7 +121,7 @@ func _ready() -> void:
 	list.add_theme_constant_override("separation", 6)
 	inner.add_child(list)
 	legend = Label.new()
-	legend.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	legend.autowrap_mode = UiKit.wrap_mode()
 	legend.add_theme_color_override("font_color", UiKit.TEXT_DIM)
 	inner.add_child(legend)
 	zoom_row = HBoxContainer.new()
@@ -274,13 +274,13 @@ func _build_region() -> void:
 func where_text() -> String:
 	if not AreaMap.has_map(area):
 		return NO_MAP
-	var t := "你在：" + Areas.display_name(area)
+	var t := I18n.t("你在：") + Areas.display_name(area)
 	var z := AreaMap.zone_at(area, player_xz)
 	if z != "":
 		t += " · " + z
 	if view == "region" or not AreaMap.has_compass(area):
 		return t                                         # 室内不说朝向（屋里的图和镇上的东南西北对不上）
-	return t + "，面朝" + AreaMap.heading_text(player_yaw)
+	return t + I18n.t("，面朝") + AreaMap.heading_text(player_yaw)
 
 
 ## 图例：这张图里真有的几种
@@ -308,8 +308,8 @@ func select_exit(i: int) -> void:
 	var e: Dictionary = ex[i]
 	var compass := AreaMap.has_compass(area)
 	var b := AreaMap.bearing_text(player_xz, e.at, compass)
-	var where := "就在你旁边。" if b == "就在你旁边" else (("在你" + b + "。") if compass else (b + "。"))
-	detail_label.text = "%s：通往%s。%s" % [e.name, Areas.display_name(str(e.to)), where]
+	var where := "就在你旁边。" if b == "就在你旁边" else ((I18n.t("在你") + b + "。") if compass else (b + "。"))
+	detail_label.text = I18n.t("%s：通往%s。%s") % [e.name, Areas.display_name(str(e.to)), where]
 	canvas.queue_redraw()
 
 
@@ -728,7 +728,7 @@ class MapCanvas extends Control:
 		draw_line(a, a + Vector2(len, 0), INK, 2.0)
 		for x in [0.0, len]:
 			draw_line(a + Vector2(x, -5), a + Vector2(x, 3), INK, 2.0)
-		draw_string(font, a + Vector2(0, -8), "%d 米" % m, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, INK)
+		draw_string(font, a + Vector2(0, -8), I18n.t("%d 米") % m, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, INK)
 
 	## 标签往哪儿摆：出口编号先占位，再按「有名字的房子 → 地标 → 其余」摆，和已经摆好的重叠就不写（记在 skipped 里）
 	func place_labels() -> Dictionary:

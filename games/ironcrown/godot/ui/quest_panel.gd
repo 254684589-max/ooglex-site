@@ -59,7 +59,7 @@ func _ready() -> void:
 	box.add_child(list_box)
 	box.add_child(HSeparator.new())
 	detail = Label.new()
-	detail.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	detail.autowrap_mode = UiKit.wrap_mode()
 	detail.add_theme_color_override("font_color", Color("d8d0bc"))
 	box.add_child(detail)
 	get_tree().root.size_changed.connect(_fit)
@@ -135,13 +135,13 @@ func refresh() -> void:
 
 func detail_text(id: String) -> String:
 	if id == "":
-		return "还没有%s任务。" % ("主线" if kind == "main" else "支线")
+		return I18n.t("还没有%s任务。") % (I18n.t("主线") if kind == "main" else I18n.t("支线"))
 	var q: Dictionary = GameState.quest_data().quests[id]
 	var lines := [str(q.title) + ("（已完成）" if GameState.quest_done(id) else ""), str(q.summary), ""]
 	if GameState.quest_done(id):
 		lines.append("这件事已经办完了。")
 	else:
-		lines.append("当前目标：" + str(q.stages[GameState.quest_stage(id)].objective))
+		lines.append(I18n.t("当前目标：") + str(q.stages[GameState.quest_stage(id)].objective))
 	var cl := GameState.clues_for(id)
 	if not cl.is_empty():
 		lines.append("")

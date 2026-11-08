@@ -44,16 +44,16 @@ func refresh() -> void:
 	UiKit.clear(box)
 	var c := container.contents()
 	if int(c.silver) > 0:
-		UiKit.button(box, "银币 ×%d" % int(c.silver), func(): _take(-1))
+		UiKit.button(box, I18n.t("银币 ×%d") % int(c.silver), func(): _take(-1))
 	var items: Array = c.items
 	for i in items.size():
 		var it := GameState.item(str(items[i]))
 		var idx := i
-		UiKit.button(box, "%s（%s · %.1f 斤）" % [GameState.item_name(str(items[i])), GameState.KIND_NAMES.get(str(it.get("kind", "")), ""), float(it.get("weight", 0))], func(): _take(idx))
+		UiKit.button(box, I18n.t("%s（%s · %.1f 斤）") % [GameState.item_name(str(items[i])), GameState.KIND_NAMES.get(str(it.get("kind", "")), ""), float(it.get("weight", 0))], func(): _take(idx))
 	if container.is_empty():
 		UiKit.label(box, "什么都没有了。", true)
 	box.add_child(HSeparator.new())
-	var foot := "负重 %.1f / %.0f 斤 · 银币 %d" % [GameState.carry_weight(), GameState.carry_limit(), GameState.silver]
+	var foot := I18n.t("负重 %.1f / %.0f 斤 · 银币 %d") % [GameState.carry_weight(), GameState.carry_limit(), GameState.silver]
 	if GameState.over_encumbered():
 		foot += " · 超重：不能跑"
 	UiKit.label(box, foot, true, 15)
