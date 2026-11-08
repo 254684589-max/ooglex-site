@@ -13939,10 +13939,11 @@ func test_startmenu() -> void:
 	check(labels == ["继续游戏", "新游戏", "读取存档", "设置", "制作人员", "退出游戏"], "按钮：%s" % " / ".join(labels))
 	check(m.stage != null and m.stage.get_node_or_null("Throne") != null and m.stage.crown != null and m.stage.walkers.multimesh.instance_count == TitleStage.WALKERS and m.stage.cam.current,
 		"背后的 3D 场景：断王座、铁冠、%d 个往北走的长眠者，自己的镜头" % TitleStage.WALKERS)
-	var w0: Transform3D = m.stage.walkers.multimesh.get_instance_transform(0)
+	m.stage.motion = true                                # 无头测试里「减少动态效果」可能是开着的：这里只看暂停时动不动（无头模式读不回多实例的位置，看场景的时钟）
+	var t0: float = m.stage.t
 	await seconds(1.0)
-	check(m.stage.walkers.multimesh.get_instance_transform(0).origin.distance_to(w0.origin) > 0.2, "游戏停着，菜单的场景照样动（长眠者在走）")
-	var r := m.panel.get_global_rect()
+	check(m.stage.t - t0 > 0.5 and get_tree().paused, "游戏停着，菜单的场景照样动（场景时钟走了 %.2f 秒）" % (m.stage.t - t0))
+	var r: Rect2 = m.panel.get_global_rect()
 	var sz := UiKit.logical_size(m)
 	check(r.end.x <= sz.x and r.position.y >= 0.0 and r.end.y <= sz.y and r.position.x > sz.x * 0.5, "菜单在右半边、整块在窗口里（%s）" % str(r))
 	# 设置：从主菜单打开是「设置」，没有存档、回主菜单；返回以后还在主菜单
@@ -13956,7 +13957,7 @@ func test_startmenu() -> void:
 	# 制作人员
 	m.credits_btn.pressed.emit()
 	await frames(2)
-	var names := main.credits_panel.box.get_children().filter(func(c): return c is Label).map(func(c): return c.text)
+	var names: Array = main.credits_panel.box.get_children().filter(func(c): return c is Label).map(func(c): return c.text)
 	check(main.credits_panel.visible and names.has("郑翊") and names.find("出品人 · 制作人 · 总策划") == names.find("郑翊") - 1 and names.has("Godot Engine（MIT 许可）\nJuan Linietsky、Ariel Manzur 与 Godot 社区的贡献者"),
 		"制作人员：郑翊（出品人 · 制作人 · 总策划）排在最前，后面是引擎、素材、字体")
 	var v0: int = main.credits_panel.scroll.scroll_vertical
@@ -13997,7 +13998,7 @@ func test_startmenu() -> void:
 	check(not m.confirm.visible, "Esc：不开始，回到菜单")
 	m.load_btn.pressed.emit()
 	await frames(2)
-	var save_btns := main.save_panel.box.find_children("", "Button", true, false).map(func(b): return b.text)
+	var save_btns: Array = main.save_panel.box.find_children("", "Button", true, false).map(func(b): return b.text)
 	check(main.save_panel.visible and main.save_panel.load_only and not save_btns.has("存到这里") and not save_btns.has("覆盖") and save_btns.has("读取") and (main.save_panel.f.title as Label).text == "读取存档",
 		"读取存档：只能读，不能存")
 	main.save_panel.close()

@@ -7,9 +7,11 @@ extends Node3D
 ## 只用代码搭（同游戏里别的场景），原创构图：主体放在画面偏左，右边留给菜单。
 
 const THRONE := Vector3(0.0, 2.1, 0.0)        # 王座台阶顶面的中心
-const CAM_BASE := Vector3(5.6, 2.6, 8.8)
-const CAM_LOOK := Vector3(3.0, 4.0, -3.0)
-const WELL := Vector3(14.0, 0.0, -420.0)
+const CAM_BASE := Vector3(4.2, 2.5, 9.6)
+const CAM_LOOK := Vector3(0.2, 4.6, -3.0)
+const CAM_BASE_TALL := Vector3(2.2, 3.4, 13.5)      # 竖屏：往后退、对准王座
+const CAM_LOOK_TALL := Vector3(-0.2, 4.2, -2.0)
+const WELL := Vector3(-70.0, 0.0, -420.0)
 const WALKERS := 64
 const WALK_SPEED := 0.55
 
@@ -56,6 +58,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if not motion:
+		_place_cam()                # 不动也要跟着窗口横竖换机位
 		return
 	t += delta
 	_place_cam()
@@ -65,9 +68,13 @@ func _process(delta: float) -> void:
 
 
 func _place_cam() -> void:
-	var p := CAM_BASE + Vector3(sin(t * 0.045) * 1.1, sin(t * 0.06) * 0.18, cos(t * 0.045) * 0.5 - 0.5)
+	var vp := get_viewport()
+	var tall := vp != null and vp.get_visible_rect().size.x < vp.get_visible_rect().size.y
+	cam.keep_aspect = Camera3D.KEEP_WIDTH if tall else Camera3D.KEEP_HEIGHT
+	cam.fov = 62.0 if tall else 50.0
+	var p := (CAM_BASE_TALL if tall else CAM_BASE) + Vector3(sin(t * 0.045) * 1.1, sin(t * 0.06) * 0.18, cos(t * 0.045) * 0.5 - 0.5)
 	cam.position = p
-	cam.look_at(CAM_LOOK + Vector3(sin(t * 0.03) * 0.25, 0.0, 0.0), Vector3.UP)
+	cam.look_at((CAM_LOOK_TALL if tall else CAM_LOOK) + Vector3(sin(t * 0.03) * 0.25, 0.0, 0.0), Vector3.UP)
 
 
 # ---------------- 天、光、雾 ----------------
@@ -418,7 +425,7 @@ func _beam() -> void:
 ## 一队光着脚的人从王座右后方的雪原上排成一线往北走，越走越远、越走越小，没进地平线那点光里
 func _walkers() -> void:
 	route = Curve3D.new()
-	for p in [Vector3(16, 0, 12), Vector3(11, 0, -14), Vector3(4, 0, -50), Vector3(9, 0, -120), Vector3(2, 0, -230), Vector3(14, 0, -380)]:
+	for p in [Vector3(-16, 0, 14), Vector3(-13, 0, -12), Vector3(-20, 0, -50), Vector3(-26, 0, -120), Vector3(-40, 0, -230), Vector3(-66, 0, -380)]:
 		route.add_point(p)
 	route.bake_interval = 1.0
 	route_len = route.get_baked_length()
@@ -523,9 +530,25 @@ func _snow() -> void:
 	pm.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
 	pm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	pm.albedo_color = Color(0.92, 0.95, 1.0, 0.85)
+	pm.albedo_texture = _dot_texture()            # 圆的雪花（贴近镜头的那几片不是方块）
 	q.material = pm
 	snow.mesh = q
 	snow.position = Vector3(2.0, 12.0, 0.0)
 	snow.emitting = true
 	snow.speed_scale = 1.0 if motion else 0.0
 	add_child(snow)
+
+
+static func _dot_texture() -> GradientTexture2D:
+	var g := Gradient.new()
+	g.set_color(0, Color(1, 1, 1, 1))
+	g.set_color(1, Color(1, 1, 1, 0))
+	g.add_point(0.55, Color(1, 1, 1, 0.8))
+	var gt := GradientTexture2D.new()
+	gt.gradient = g
+	gt.fill = GradientTexture2D.FILL_RADIAL
+	gt.fill_from = Vector2(0.5, 0.5)
+	gt.fill_to = Vector2(1.0, 0.5)
+	gt.width = 32
+	gt.height = 32
+	return gt

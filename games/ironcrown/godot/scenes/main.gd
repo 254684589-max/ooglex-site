@@ -2752,6 +2752,13 @@ func _open_start_menu() -> void:
 		touch.hide()
 	start_menu.open()
 	Music.play("keep")
+	await get_tree().process_frame                   # 给网页冒烟测试用：「新游戏」「继续游戏」按钮在窗口里的位置（窗口像素）
+	await get_tree().process_frame
+	if is_instance_valid(start_menu) and start_menu.visible:
+		var f := get_tree().root.content_scale_factor
+		var nc := start_menu.new_btn.get_global_rect().get_center() * f
+		var cc := start_menu.continue_btn.get_global_rect().get_center() * f
+		print("IC_MENU_SCREEN new=%d,%d continue=%d,%d" % [nc.x, nc.y, cc.x, cc.y])
 
 
 func menu_open() -> bool:

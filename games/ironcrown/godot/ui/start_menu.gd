@@ -106,6 +106,7 @@ func open() -> void:
 		var tw := create_tween()
 		tw.tween_property(shade, "color:a", 0.0, 1.6).set_trans(Tween.TRANS_SINE)
 	(continue_btn if not continue_btn.disabled else new_btn).grab_focus.call_deferred()
+	_relayout_later()
 	print("IC_MENU open saves=%s lang=%s" % [Saves.has_any(), Settings.lang])
 
 
@@ -138,6 +139,15 @@ func _refresh_lang() -> void:
 	if visible:
 		refresh()
 		_layout()
+		_relayout_later()
+
+
+## 字的大小改了以后，容器要过一帧才算出新的最小尺寸：再排一次
+func _relayout_later() -> void:
+	await get_tree().process_frame
+	_layout()
+	await get_tree().process_frame
+	_layout()
 
 
 # ---------------- 搭界面 ----------------
@@ -176,7 +186,8 @@ func _logo() -> void:
 	logo.add_theme_constant_override("separation", 2)
 	add_child(logo)
 	var emblem := CrownEmblem.new()
-	emblem.custom_minimum_size = Vector2(84, 58)
+	emblem.custom_minimum_size = Vector2(72, 48)
+	emblem.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	logo.add_child(emblem)
 	title_zh = Label.new()
 	title_zh.text = "铁冠之争"
@@ -200,6 +211,7 @@ func _logo() -> void:
 	logo.add_child(title_en)
 	var rule := Ornament.new()
 	rule.custom_minimum_size = Vector2(360, 18)
+	rule.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	logo.add_child(rule)
 	tagline = Label.new()
 	tagline.text = "王已死，冠未落。雪原上的人，一个接一个往北走去。"
@@ -450,12 +462,16 @@ func _layout() -> void:
 		for c in logo.get_children():
 			if c is Label:
 				c.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			elif c is Control:
+				c.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		panel.position = Vector2((sz.x - ps.x) * 0.5, maxf(logo.position.y + ls.y + 10.0, sz.y - ps.y - 44.0))
 	else:
 		logo.position = Vector2(maxf(28.0, sz.x * 0.055), maxf(18.0, sz.y * (0.09 if not short else 0.05)))
 		for c in logo.get_children():
 			if c is Label:
 				c.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+			elif c is Control:
+				c.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		panel.position = Vector2(sz.x - ps.x - maxf(24.0, sz.x * 0.06), (sz.y - ps.y) * 0.5)
 	footer.position = Vector2(16.0, sz.y - 26.0)
 	footer.visible = not narrow or sz.y - (panel.position.y + ps.y) > 30.0

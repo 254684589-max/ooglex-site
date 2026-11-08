@@ -1,6 +1,7 @@
 // 《铁冠之争》网页导出冒烟测试（TECH.md 第七节；结构沿用 games/emberfall3d/tools/smoke_web.js）。
 // 在 1280 / 768 / 360 三个宽度下打开 play/：
 //   O.1  新游戏的标题卡上先选出身（点 IC_ORIGIN_SCREEN 那个位置：第一个出身，IC_ORIGIN id=knight；这一下也开始开场）。
+//   主菜单（2026-11-08）：打开先到开始主菜单，点「新游戏」；
 //   3.8  新游戏先出开场：标题卡（IC_OPENING card，截图 ic-*.png）→ 第一下点击 / 触摸开始（IC_OPENING begin，钟声）→ 管家喊人（IC_OPENING call，截图 ic-*-call.png）。
 //   1.1  引擎启动（IC_READY）、兼容渲染器、控制台无报错、页面无横向溢出、加载画面消失；
 //   1.2  电脑：点击画面后按住 W 走动（IC_MOVED）、Esc 打开 / 关闭暂停菜单（IC_PAUSE）；
@@ -128,7 +129,16 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     const overlayGone = await page.evaluate(() => !document.getElementById('wl-loading'));
     const compat = !!ready && ready.includes('renderer=gl_compatibility') && ready.includes('web=true') && ready.includes('scene=frostford');
     const dpr = await page.evaluate(() => devicePixelRatio);
-    const opCard = logs.find(l => l.startsWith('IC_OPENING card')) || '';             // 3.8：新游戏先出开场的标题卡（截图 ic-*.png 就是它）
+    // 2026-11-08：打开网页先到开始主菜单（截图 ic-*-menu.png），点「新游戏」再演开场
+    const menuLine = await waitLog(logs, 'IC_MENU_SCREEN', 40);
+    if (menuLine) {
+      await page.waitForTimeout(1500);
+      await page.screenshot({ path: path.join(outDir, `ic-${name}-menu.png`) });
+      const [, nx, ny] = menuLine.match(/new=(-?\d+),(-?\d+)/).map(Number);
+      if (!mobile) await page.mouse.click(nx / dpr, ny / dpr); else await page.touchscreen.tap(nx / dpr, ny / dpr);
+      await waitLog(logs, 'IC_MENU new', 20);
+    }
+    const opCard = await waitLog(logs, 'IC_OPENING card', 20) || '';             // 3.8：新游戏先出开场的标题卡（截图 ic-*.png 就是它）
     let opBegin = '', opCall = '';
     // O.1：新游戏先在标题卡上选出身（点第一个，这一下也开始开场）
     let originPick = '';

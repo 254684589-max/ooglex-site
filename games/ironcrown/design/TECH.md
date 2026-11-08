@@ -1225,6 +1225,13 @@ godot/
 - 溃败照旧按 `side_total`（含未到的波次）算，溃了就撤掉那边没到的波次。测试按新波次改写。
 - 打输以后卡住（同日所有者截图）：`Soldier.alert` 在军阵打完（`battle.finished`）以后不响应（原来砍一个收了手的兵会喊起 CALL_RADIUS 里一片人，都进 COMBAT 又没有 target，永远不出来）；`Soldier._physics_process` 打完以后还在打的收手；`main.in_combat` 不算打完了的军阵里的兵；天亮换场景改成 `main._dawn_travel`：倒着或还在打就每秒再试。测试组 `battleend`。
 
+### 4.104 开始主菜单与中英文切换（2026-11-08 所有者「做开始主菜单页面……加入中英文切换、制作人员……存档等」）
+
+- `ui/start_menu.gd`（`StartMenu`）：`main._ready` 里 `StartMenu.wanted()`（这次打开页面第一次、没读档换区域、网址没带截图测试参数、不在测试里 `ic_skip_menu`）就先开主菜单：游戏暂停、`get_viewport().disable_3d = true`（游戏世界不画）、HUD 藏起来；开场（`Opening`）推迟到点「新游戏」。按钮只发信号，`main._open_start_menu` 接：继续游戏 = `load_game(Saves.latest_slot())`；读取存档 = `SavePanel.load_only`；设置 = `PauseMenu.set_menu_mode(true)`；制作人员 = `ui/credits_panel.gd`；返回游戏中心（网页）/ 退出游戏。离开主菜单记 `Engine` 元数据 `ic_menu_done`（换区域、读档重新载入不再出）；暂停菜单「回到主菜单」清掉它、新开一局重新载入。
+- `world/title_stage.gd`（`TitleStage`）：主菜单 `SubViewport`（`own_world_3d`）里的 3D 场景，全用代码搭：天（`shaders/title_sky.gdshader`：渐变、星、极光、月晕、冬井方向地平线的冷光）、雪原高度场、岩石和王座（`shaders/title_rock.gdshader`：朝上的面盖雪）、铁冠（`CutScenes._crown()` 放大）、光柱与光晕（`shaders/title_glow.gdshader`）、火盆（`shaders/flame.gdshader` + `Tavern.FireLight`）、往北走的长眠者（`SleeperCrowd.figure_mesh()` 多实例沿曲线走）、冠城剪影、雪（圆点贴图的粒子）。竖屏换机位（`KEEP_WIDTH`）。减少动态效果时不动。
+- 中英文：`core/i18n.gd`（`I18n`）把 `data/i18n/en.json`（中文原句 → 英文）装进 `TranslationServer`；`Settings.lang`（zh / en，存进设置）。Label / Button 的字是原句的由 Godot 自动翻；拼出来的句子在代码里 `I18n.t(原句) % 参数`；回退语言设成 zh（`project.godot`），不然中文界面也会被英文表换掉。`UiKit.wrap_mode()`：英文按词换行。译名表 `design/GLOSSARY_EN.md`；`tools/i18n_report.py` 按范围（ui / data / dialogue / world）列出还没翻的句子（这一步 ui 全翻完；data、world、dialogue 之后按章节翻）。
+- 字体子集重做（`tools/build_font.py`）：多了「翊」等十来个字。测试组 `startmenu`、`i18n`；网页冒烟 `tools/smoke_web.js` 先在主菜单点「新游戏」（`IC_MENU_SCREEN`）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |
