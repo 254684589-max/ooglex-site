@@ -426,7 +426,7 @@ func _layout() -> void:
 		return
 	var sz := UiKit.logical_size(self)
 	var narrow := sz.x < NARROW
-	var short := sz.y < 560.0
+	var short := sz.y < 560.0 or (narrow and sz.y < 900.0)          # 竖屏：标题在上、菜单在下，高度不到 900 就用紧凑的（平板竖屏 540×720 实测放不下）
 	for c in get_children():
 		if c is TextureRect and c.has_meta("frac"):
 			var f: float = c.get_meta("frac")

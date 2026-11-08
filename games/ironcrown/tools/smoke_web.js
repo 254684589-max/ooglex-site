@@ -130,7 +130,7 @@ async function touchDrag(cdp, id, x0, y0, dx, dy, ms) {
     const compat = !!ready && ready.includes('renderer=gl_compatibility') && ready.includes('web=true') && ready.includes('scene=frostford');
     const dpr = await page.evaluate(() => devicePixelRatio);
     // 2026-11-08：打开网页先到开始主菜单（截图 ic-*-menu.png），点「新游戏」再演开场
-    const menuLine = await waitLog(logs, 'IC_MENU_SCREEN', 40);
+    const menuLine = await waitLog(logs, 'IC_STARTMENU_SCREEN', 40);
     if (menuLine) {
       await page.waitForTimeout(1500);
       await page.screenshot({ path: path.join(outDir, `ic-${name}-menu.png`) });

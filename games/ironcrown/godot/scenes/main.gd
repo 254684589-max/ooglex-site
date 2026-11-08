@@ -2758,7 +2758,7 @@ func _open_start_menu() -> void:
 		var f := get_tree().root.content_scale_factor
 		var nc := start_menu.new_btn.get_global_rect().get_center() * f
 		var cc := start_menu.continue_btn.get_global_rect().get_center() * f
-		print("IC_MENU_SCREEN new=%d,%d continue=%d,%d" % [nc.x, nc.y, cc.x, cc.y])
+		print("IC_STARTMENU_SCREEN new=%d,%d continue=%d,%d" % [nc.x, nc.y, cc.x, cc.y])
 
 
 func menu_open() -> bool:
