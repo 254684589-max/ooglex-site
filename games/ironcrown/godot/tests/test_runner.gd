@@ -25,7 +25,7 @@ func _ready() -> void:
 	wipe_test_saves()
 	await frames(2)
 	only = Array(OS.get_cmdline_user_args())
-	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords", "minimap", "cutscene", "dread"]:
+	for g in ["boot", "ui", "move", "terrain", "look", "touch", "pause", "interact", "frostford", "perf", "dialogue", "checks", "quests", "melee", "enemies", "inventory", "growth", "saves", "areas", "chapel", "brawl", "nav", "birch", "ferry", "ending", "opening", "fullflow", "camera", "character", "battle", "squad", "morale", "troops", "armyperf", "chapters", "daypart", "travelmap", "ch1open", "edges", "areamap", "marsh", "reedwharf", "deepmarsh", "castle", "hall", "keep", "schedule", "ledger", "errands", "music", "outlaws", "heir", "prepare", "causeway", "dawn", "sleeper", "uniforms", "uniforms2", "looks", "highland", "flora", "yangji", "villagers", "cold", "mountainroad", "beacon19", "beaconpeople", "sleepercrowd", "torch", "firsttide", "day2", "sidequests2", "convoy", "ambush", "escort", "dawn2", "well", "ch2flow", "origin", "origin2", "origin3", "plain", "plainflora", "maidu", "abbey", "ch3open", "manor", "mill", "camp", "ch3sides", "ch3people", "ch3side", "ch3choice", "plainperf", "millbattle", "ch3evidence", "ch3vigil", "harbor", "harborrooms", "ch4people", "ch4crown", "crown", "crownpeople", "ch4side", "ch4council", "ch5archive", "ch5north", "ch5well", "ch5oath", "ch5end", "fx", "guide", "swords", "minimap", "cutscene", "dread", "wild"]:
 		if not only.is_empty() and not only.has(g):
 			continue
 		print("\n== %s" % g)
@@ -10844,14 +10844,19 @@ func test_highland() -> void:
 	await seconds(3.0)
 	Input.action_release("move_forward")
 	check(p.global_position.distance_to(from) > 6.0 and p.is_on_floor(), "顺着盘山路往前走得动（3 秒走了 %.1f 米）" % p.global_position.distance_to(from))
-	# 四边的墙挡人；天空、雾、风雪
-	p.global_position = Vector3(0.0, Highland.height_at(0.0, 120.0) + 0.3, HighlandLayout.BOUNDS.end.y - HighlandLayout.WALL_INSET - 2.0)
+	# 四边没有墙了（2026-11-08 无尽荒野）：往南走出地图边，脚下是边走边生成的荒野地面；天空、雾、风雪
+	var wild := main.world.find_child("Wild", true, false) as WildStreamer
+	p.global_position = Vector3(0.0, Highland.height_at(0.0, 128.0) + 0.3, HighlandLayout.BOUNDS.end.y - 2.0)
 	p.rotation.y = PI                                 # 面朝 +Z（往南、往地图外）
 	await physics(6)
+	wild.update_around(Vector2(0.0, HighlandLayout.BOUNDS.end.y + 10.0), 30)
+	await physics(2)
 	Input.action_press("move_forward")
-	await seconds(2.0)
+	await seconds(5.0)
 	Input.action_release("move_forward")
-	check(p.global_position.z < HighlandLayout.BOUNDS.end.y - HighlandLayout.WALL_INSET, "南边地图边上有看不见的墙（走到 z = %.1f 停住）" % p.global_position.z)
+	check(wild != null and wild.chunks.size() > 3 and p.global_position.z > HighlandLayout.BOUNDS.end.y + 2.0 and p.is_on_floor()
+		and absf(p.global_position.y - Highland.wild_height(p.global_position.x, p.global_position.z)) < 0.6,
+		"南边地图边外：没有墙，走得出去，脚下是荒野的地面（走到 z = %.1f，%d 块荒野）" % [p.global_position.z, wild.chunks.size() if wild else 0])
 	var env: Environment = main.env
 	check(env.background_mode == Environment.BG_SKY and env.sky != null and is_zero_approx(env.fog_sky_affect) and env.fog_depth_end > 150.0,
 		"天空是阴云照片（雾不盖天空）、雾远到 %.0f 米（远山一层层退进雾里）" % env.fog_depth_end)
@@ -12754,6 +12759,48 @@ func test_dread() -> void:
 	await seconds(SleeperSlump.GLANCE_HOLD + SleeperSlump.GLANCE_TURN + 0.2)
 	check(lv > 0.95 and SleeperSlump.glance_level() == 0.0, "一起转头：转过来停一会儿，再转回去（大家用同一个时钟）")
 	SleeperSlump.glance_at = -1000.0
+
+
+## 无尽荒野（2026-11-08 所有者「玩家可自由无尽探索」）：余火高地外面边走边生成、远的拆掉、远景跟着走；走很远脚下也有地
+func test_wild() -> void:
+	GameState.new_game(9)
+	GameState.chapter = 2
+	GameState.pending_load = {"scene": "highland", "spawn": "village", "player": {}}
+	var main := await make_area("highland")
+	await frames(3)
+	var w := main.world.find_child("Wild", true, false) as WildStreamer
+	check(w != null and main.world.find_child("HighlandWalls", true, false) == null, "地图外面有荒野，四边没有空气墙")
+	var p: FpController = main.player
+	var counts := []
+	var worst := 0.0
+	for spot: Vector2 in [Vector2(0, 300), Vector2(900, 400), Vector2(-1500, -900), Vector2(300, -2600)]:
+		var t0 := Time.get_ticks_usec()
+		w.update_around(spot, 1)
+		worst = maxf(worst, float(Time.get_ticks_usec() - t0) / 1000.0)
+		w.update_around(spot, 40)
+		counts.append(w.chunks.size())
+		p.global_position = Vector3(spot.x, Highland.wild_height(spot.x, spot.y) + 1.0, spot.y)
+		p.velocity = Vector3.ZERO
+		await physics(20)
+		await physics(40)
+		var q := PhysicsRayQueryParameters3D.create(Vector3(spot.x, 400, spot.y), Vector3(spot.x, -400, spot.y))
+		var hit := main.world.get_world_3d().direct_space_state.intersect_ray(q)
+		print("DBG spot=%s y=%.2f want=%.2f floor=%s hit=%s at=%s" % [str(spot), p.global_position.y, Highland.wild_height(spot.x, spot.y), p.is_on_floor(), str(hit.get("collider")), str(hit.get("position"))])
+		check(p.is_on_floor() and absf(p.global_position.y - Highland.wild_height(spot.x, spot.y)) < 0.8, "走到 (%d, %d)：站在荒野的地上（高 %.1f 米）" % [spot.x, spot.y, p.global_position.y])
+	var cap := (2 * WildStreamer.CHUNK + 1) * 0 + (2 * Highland.WILD_RADIUS + 3) * (2 * Highland.WILD_RADIUS + 3)
+	check(counts.all(func(n): return n <= cap) and counts.back() > 0, "块数一直有上限（%s，上限 %d）：远的拆掉了" % [str(counts), cap])
+	var far := main.world.find_child("FarTerrain", true, false) as MeshInstance3D
+	check(far != null and w.far_center.distance_to(Vector2(300, -2600)) < 400.0, "远景跟着走（中心在 %s）" % str(w.far_center))
+	check(worst < 400.0, "搭一块荒野 %.0f 毫秒（无头测试机上）" % worst)
+	var trees := 0
+	for n in main.world.find_children("WildTrees_near", "MultiMeshInstance3D", true, false):
+		trees += (n as MultiMeshInstance3D).multimesh.instance_count
+	w.update_around(Vector2(0, 300), 40)
+	await frames(2)
+	for n in main.world.find_children("WildTrees_near", "MultiMeshInstance3D", true, false):
+		trees += (n as MultiMeshInstance3D).multimesh.instance_count
+	check(trees > 0, "荒野里长着树（%d 棵）" % trees)
+	await free_main(main)
 
 func test_sleepercrowd() -> void:
 	var route := [Vector2(0, 0), Vector2(0, -40), Vector2(10, -70)]

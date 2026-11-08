@@ -61,6 +61,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	HighlandRoad.warm()                               # 盘山路上的倒树、废羊棚、雪杆（5.3a）
 	HighlandBeacon.warm()                             # 第十九烽：木栅的木桩（5.3b）
 	h._far()
+	h._wild()                                         # 地图外面：无尽荒野（2026-11-08）
 	HighlandFlora.far_forest(p_parent)               # 地图外面山坡上的针叶林、山脊上远处那串烽燧塔（5.1b）
 	HighlandFlora.far_beacons(p_parent)
 	HighlandVillage.stream_ice(p_parent)              # 羊脊村（5.2a）：结冰的溪、门、路牌（同步：一进场就推得开）
@@ -263,22 +264,7 @@ func _collision() -> void:
 		rc.shape = rb
 		rc.transform = so[0]
 		road.add_child(rc)
-	var wb := StaticBody3D.new()
-	wb.name = "HighlandWalls"
-	wb.collision_layer = FpController.LAYER_BOUNDARY
-	wb.collision_mask = 0
-	parent.add_child(wb)
-	var r := HighlandLayout.BOUNDS.grow(-HighlandLayout.WALL_INSET)
-	var hh := HighlandLayout.WALL_H
-	var c := r.get_center()
-	for w in [[Vector3(c.x, hh * 0.5, r.position.y), Vector3(r.size.x, hh * 2.0, 1.0)], [Vector3(c.x, hh * 0.5, r.end.y), Vector3(r.size.x, hh * 2.0, 1.0)],
-			[Vector3(r.position.x, hh * 0.5, c.y), Vector3(1.0, hh * 2.0, r.size.y)], [Vector3(r.end.x, hh * 0.5, c.y), Vector3(1.0, hh * 2.0, r.size.y)]]:
-		var ws := CollisionShape3D.new()
-		var bs := BoxShape3D.new()
-		bs.size = w[1]
-		ws.shape = bs
-		ws.position = w[0]
-		wb.add_child(ws)
+	# 四边原来的空气墙（层 5「边界」）去掉了：地图外面是边走边生成的荒野（2026-11-08，WildStreamer，见 _wild）
 
 
 # ---------------- 材质 ----------------
@@ -495,8 +481,12 @@ static func grid_mesh(i0: int, j0: int, i1: int, j1: int, step: int, skirt: floa
 
 ## 远景地形：地图外面一圈（越往外越稀），高度接着 HighlandLayout.height 往外算，再加：东西两边抬成大山、南边是起伏的山谷、北边是平的冰原。
 ## 一个网格、不投影子；颜色只有雪（远处都被雾吞了，看的是轮廓）。地图边上一圈和地形块重叠、往下压 0.4 米，不会盖住近处
-func _far() -> void:
-	var lines := _far_lines()
+func _far(center := Vector2.ZERO) -> void:
+	var old_far := parent.get_node_or_null("FarTerrain")
+	if old_far:
+		old_far.name = "FarTerrainOld"
+		old_far.queue_free()
+	var lines := _far_lines()                        # 以 center 为中心（走远了以后 WildStreamer 让它跟过去，天边一直有山）
 	var b := HighlandLayout.BOUNDS
 	var n := lines.size()
 	var verts := PackedVector3Array()
@@ -507,8 +497,8 @@ func _far() -> void:
 	colors.resize(n * n)
 	for j in n:
 		for i in n:
-			var x: float = lines[i]
-			var z: float = lines[j]
+			var x: float = float(lines[i]) + center.x
+			var z: float = float(lines[j]) + center.y
 			verts[j * n + i] = Vector3(x, far_height(x, z), z)
 			colors[j * n + i] = Color(0.0, 0.0, 1.0)
 	for j in n:
@@ -524,7 +514,7 @@ func _far() -> void:
 	var inner := b.grow(-2.0)
 	for j in n - 1:
 		for i in n - 1:
-			var cell := Rect2(lines[i], lines[j], lines[i + 1] - lines[i], lines[j + 1] - lines[j])
+			var cell := Rect2(float(lines[i]) + center.x, float(lines[j]) + center.y, lines[i + 1] - lines[i], lines[j + 1] - lines[j])
 			if inner.encloses(cell):
 				continue                                   # 地图里面由地形块画
 			var a := j * n + i
@@ -580,6 +570,106 @@ static func far_height(x: float, z: float) -> float:
 		y += 30.0 * HighlandLayout._smooth(clampf((ax - 60.0) / 300.0, 0.0, 1.0)) * clampf((z - 130.0) / 200.0, 0.0, 1.0)
 	var k2 := clampf(out / 40.0, 0.0, 1.0)          # 地图边外 40 米内慢慢接上
 	return y + mountains * k2
+
+
+## 无尽荒野（2026-11-08 所有者「地图走到边缘就走不动了……玩家可自由无尽探索」）：手工地图外面边走边生成（WildStreamer）。
+## 高度用远景那套 far_height（东西两边大山、南边山谷、北边冰原）往上抬回 0.4 米：在地图边上和手工地形接得上，远景压在它下面不打架。
+const WILD_RADIUS := 2
+const WILD_TREE_STEP := 6.0
+
+
+static func wild_height(x: float, z: float) -> float:
+	return far_height(x, z) + 0.4
+
+
+func _wild() -> void:
+	var w := WildStreamer.make(HighlandLayout.BOUNDS, Highland.wild_height, ground_material(), WILD_RADIUS)
+	w.surface = "snow"
+	w.scatter_fn = _wild_scatter
+	w.far_fn = func(c: Vector2) -> void: _far(c)
+	parent.add_child(w)
+
+
+## 荒野里一块的树和石头：林子一片一片（同地图里的噪声），林线以上、陡坡、北边冰原没有树；每块只用一种树（远处少画几次）；树干挡人
+func _wild_scatter(root: Node3D, body: StaticBody3D, r: Rect2, seed: int) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed
+	var forest := FastNoiseLite.new()
+	forest.seed = 77
+	forest.frequency = 0.022
+	forest.fractal_octaves = 3
+	var kind := 0 if rng.randf() < 0.62 else 1
+	var c := r.get_center()
+	var origin := Vector3(c.x, 0, c.y)
+	var trees := []
+	var rocks := []
+	var x := r.position.x + 2.0
+	while x < r.end.x - 1.0:
+		var z := r.position.y + 2.0
+		while z < r.end.y - 1.0:
+			var px := x + rng.randf_range(-2.4, 2.4)
+			var pz := z + rng.randf_range(-2.4, 2.4)
+			var y := wild_height(px, pz)
+			var slope := absf(wild_height(px + 1.5, pz) - wild_height(px - 1.5, pz)) / 3.0 + absf(wild_height(px, pz + 1.5) - wild_height(px, pz - 1.5)) / 3.0
+			var roll := rng.randf()
+			var dens := 0.0
+			if pz > HighlandLayout.crest_z(px) + 6.0 and y < HighlandFlora.TREELINE and slope < 0.45:
+				dens = 0.55 * clampf(forest.get_noise_2d(px, pz) * 1.8 + 0.25, 0.0, 1.0)
+			if roll < dens:
+				trees.append([Vector3(px, y - 0.15, pz), rng.randf() * TAU, rng.randf_range(7.0, 14.0), rng.randf(), rng.randf_range(0.35, 1.0), rng.randf()])
+			elif roll > 0.965 - slope * 0.1:
+				rocks.append([Vector3(px, y - 0.1, pz), rng.randf() * TAU, rng.randf_range(0.5, 1.6), rng.randf_range(-0.2, 0.2)])
+			z += WILD_TREE_STEP
+		x += WILD_TREE_STEP
+	if not trees.is_empty():
+		for lod in 2:
+			var mm := MultiMesh.new()
+			mm.transform_format = MultiMesh.TRANSFORM_3D
+			mm.use_custom_data = true
+			mm.mesh = HighlandFlora.tree_mesh(kind, lod)
+			mm.instance_count = trees.size()
+			for i in trees.size():
+				var t: Array = trees[i]
+				var h := float(t[2])
+				mm.set_instance_transform(i, Transform3D(Basis(Vector3.UP, float(t[1])).scaled(Vector3(h, h, h)), (t[0] as Vector3) - origin))
+				mm.set_instance_custom_data(i, Color(float(t[3]), float(t[4]), float(t[5]), 0.0))
+			mm.mesh.surface_set_material(0, Look.mat("bark"))
+			mm.mesh.surface_set_material(1, HighlandFlora.branch_material(reduced_motion))
+			var mi := MultiMeshInstance3D.new()
+			mi.name = "WildTrees_%s" % ("near" if lod == 0 else "far")
+			mi.multimesh = mm
+			if lod == 0:
+				mi.visibility_range_end = HighlandFlora.TREE_LOD + 6.0
+				mi.visibility_range_end_margin = 6.0
+			else:
+				mi.visibility_range_begin = HighlandFlora.TREE_LOD
+				mi.visibility_range_begin_margin = 6.0
+				mi.visibility_range_end = HighlandFlora.TREE_FAR
+				mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			root.add_child(mi)
+		var trunk := CylinderShape3D.new()
+		trunk.radius = 0.28
+		trunk.height = 3.0
+		for t in trees:
+			var tc := CollisionShape3D.new()
+			tc.shape = trunk
+			tc.position = (t[0] as Vector3) - origin + Vector3(0, 1.5, 0)
+			body.add_child(tc)
+	if not rocks.is_empty():
+		var mm := MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.mesh = HighlandFlora.rock_mesh(seed % 3 if seed >= 0 else (-seed) % 3)
+		mm.instance_count = rocks.size()
+		for i in rocks.size():
+			var rk: Array = rocks[i]
+			var s := float(rk[2])
+			mm.set_instance_transform(i, Transform3D((Basis(Vector3.UP, float(rk[1])) * Basis(Vector3.RIGHT, float(rk[3]))).scaled(Vector3(s, s, s)), (rk[0] as Vector3) - origin))
+		var rmi := MultiMeshInstance3D.new()
+		rmi.name = "WildRocks"
+		rmi.multimesh = mm
+		rmi.material_override = ground_material()
+		rmi.visibility_range_end = HighlandFlora.TREE_FAR
+		root.add_child(rmi)
 
 
 ## 地图册（3.11）「本地」页：路、溪、村里的房子、羊圈、田间石墙、石圈、两座烽燧、路牌；驿站的门是出口。
