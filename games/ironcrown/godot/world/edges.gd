@@ -39,11 +39,12 @@ const LOW_SHARE := 0.6           # 低画质近圈画几成
 ## ground：地面和路用哪种材质（Look.surface；默认雪地，鹭沼东头的干岸用 "bank"，4.4）
 ## 返回地面、路、栅栏、门框合并成的网格（已挂在 parent 下，元数据 exits 记着出口）；树是另外几个多实例节点（组 edge_trees），
 ## 栅栏和门柱的碰撞是另外一个 StaticBody3D（EdgeSolids）
-static func dress(parent: Node3D, area: Rect2, exits: Array, skip: Array, seed_value: int, ground := "snow") -> MeshInstance3D:
+static func dress(parent: Node3D, area: Rect2, exits: Array, skip: Array, seed_value: int, ground := "snow", wild := false) -> MeshInstance3D:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	var kit := MeshKit.new()
-	_ground(kit, area, skip, ground)
+	if not wild:                                               # 外面接了无尽荒野（WildBirch，2026-11-08）：荒野自己有地、有树
+		_ground(kit, area, skip, ground)
 	for e in exits:
 		_road(kit, e, ground)
 	var trees := 0
@@ -51,7 +52,7 @@ static func dress(parent: Node3D, area: Rect2, exits: Array, skip: Array, seed_v
 	for k in NEAR_KINDS:
 		meshes.append(tree_mesh(k))
 	var far_mesh := tree_mesh(-1)
-	for band in [NEAR, FAR]:
+	for band in ([] if wild else [NEAR, FAR]):
 		var far: bool = band == FAR
 		var spots := _ring(area, exits, skip, rng, band)
 		var size := CHUNK * (2.0 if far else 1.0)

@@ -67,9 +67,10 @@ static func build(parent: Node3D, reduced_motion := false) -> Transform3D:
 	_bounds(parent)
 	_lamps(parent, reduced_motion)
 	_fog(parent, reduced_motion)
-	Edges.dress(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SHORE_Z - NORTH), [      # 北头的路口：门柱、地名、栅栏、灯笼，路伸进白桦林（3.10）
-		{"at": Vector3(0, 0, NORTH + 0.6), "out": Vector3(0, 0, -1), "half": 1.6, "fence": true, "lantern": true, "frame": "桦林"}],
-		[Rect2(-400.0, SHORE_Z, 800.0, 400.0)], 3611)                                # 南边是河：不种树、不铺雪（雪地铺到岸边，和水接上）
+	var exits := [{"at": Vector3(0, 0, NORTH + 0.6), "out": Vector3(0, 0, -1), "half": 1.6, "fence": true, "lantern": true, "frame": "桦林"}]
+	Edges.dress(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SHORE_Z - NORTH), exits,      # 北头的路口：门柱、地名、栅栏、灯笼，路伸进白桦林（3.10）
+		[Rect2(-400.0, SHORE_Z, 800.0, 400.0)], 3611, "snow", true)                    # 南边是河：不种树、不铺雪（雪地铺到岸边，和水接上）
+	WildBirch.attach(parent, Rect2(-HALF_X, NORTH, HALF_X * 2, SHORE_Z - NORTH), exits, SHORE_Z, "ferry")   # 东西北三面的围墙去掉：外面是白桦林；南边的河照样走不进去（2026-11-08）
 	var exit := Door.make(EXIT_NAME, 1.9, 2.0, false)
 	exit.verb = "回到"
 	exit.to_area = "birch"
@@ -190,10 +191,7 @@ static func _trees(kit: MeshKit, parent: Node3D) -> void:
 
 ## 看不见的围墙：东西两边和北头（北头留路口，靠门回桦林）；岸边一道（码头上另有栏杆）
 static func _bounds(parent: Node3D) -> void:
-	var len_z := SHORE_Z - NORTH
-	_solid(parent, Vector3(HALF_X + 0.2, 3, (SHORE_Z + NORTH) * 0.5), Vector3(0.4, 6, len_z))
-	_solid(parent, Vector3(-HALF_X - 0.2, 3, (SHORE_Z + NORTH) * 0.5), Vector3(0.4, 6, len_z))
-	_solid(parent, Vector3(0, 3, NORTH - 0.2), Vector3(HALF_X * 2, 6, 0.4))
+	# 东西北三面原来的围墙去掉了（2026-11-08 无尽荒野，WildBirch）；岸边（码头两边）这两段还在：河走不进去
 	var left := (-HALF_X + PIER_X0 - 0.2) * 0.5
 	var right := (HALF_X + PIER_X1 + 0.2) * 0.5
 	_solid(parent, Vector3(left, 3, SHORE_Z + 0.25), Vector3(PIER_X0 - 0.2 + HALF_X, 6, 0.3))

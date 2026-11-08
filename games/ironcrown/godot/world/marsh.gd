@@ -47,7 +47,7 @@ static func build(p_parent: Node3D, p_reduced_motion := false) -> Transform3D:
 	m.floors = MarshLayout.floors()
 	m.grid = make_index(m.floors, MarshLayout.SHORE + 1.0)
 	_warm()
-	m._water()
+	m._wild()                                          # 地图外面：无尽荒野（2026-11-08）——芦苇荡；水面跟着人走（代替原来那块固定的水面）
 	m._collision()
 	m._interactables()
 	m._people()
@@ -175,6 +175,97 @@ func _water() -> void:
 	parent.add_child(mi)
 
 
+## 无尽荒野（2026-11-08 所有者「玩家可自由无尽探索」）：鹭沼外面是一望无际的芦苇荡——
+##   地图边外 20–60 米先是水（和地图里的水连成一片），再往外泥滩、小土墩一片接一片，中间夹着一道道深水沟（深水边立墙，走不进去）；
+##   营地往西那道土堤（MarshLayout.DEEP 的 west_dike）出了地图接着往西伸 80 米，是走进芦苇荡的路；
+##   水面一大块跟着人走；泥滩上长芦苇（同地图里的芦苇）。
+const WILD_RADIUS := 2
+const DIKE_Z := Vector2(27.0, 32.0)
+const DIKE_LEN := 80.0
+
+
+static func wild_height(x: float, z: float) -> float:
+	var b := MarshLayout.BOUNDS
+	var dx := maxf(maxf(b.position.x - x, x - b.end.x), 0.0)
+	var dz := maxf(maxf(b.position.y - z, z - b.end.y), 0.0)
+	var out := sqrt(dx * dx + dz * dz)
+	if x < b.position.x and x > b.position.x - DIKE_LEN and z > DIKE_Z.x - 0.5 and z < DIKE_Z.y + 0.5:
+		return MarshLayout.BANK_Y                     # 土堤接着往西
+	var n1 := sin(x / 23.0 + 0.3) * sin(z / 29.0) + 0.6 * sin(x / 11.0 - z / 13.0 + 1.1) + 0.4 * sin(x / 71.0 + z / 53.0)
+	var flats := MarshLayout.MUD_Y - 0.02 + clampf(n1 * 0.18, -0.05, 0.2)
+	if n1 < -0.75:
+		flats = -1.3                                  # 深水沟
+	var k := clampf((out - 20.0) / 40.0, 0.0, 1.0)      # 土堤穿过地图边外那一圈水，走到 60 米外就上了泥滩
+	return lerpf(-1.3, flats, k * k * (3.0 - 2.0 * k))
+
+
+static func ground_at(x: float, z: float) -> float:
+	return MarshLayout.MUD_Y if MarshLayout.BOUNDS.has_point(Vector2(x, z)) else wild_height(x, z)
+
+
+func _wild() -> void:
+	var w := WildStreamer.make(MarshLayout.BOUNDS, Marsh.wild_height, Look.ground("mud"), WILD_RADIUS)
+	w.surface = "mud"
+	w.ground_fn = Marsh.ground_at
+	w.deep_y = -0.8
+	w.deep_wall_top = 0.6
+	w.region = "forest"
+	w.area_id = "marsh"
+	w.color_fn = func(_x: float, _z: float, _s: float) -> Color: return Color(0.9, 0.9, 0.9)
+	var meshes := []
+	for k in REED_KINDS:
+		meshes.append(reed_mesh(k))
+	w.scatter_fn = func(root: Node3D, _body: StaticBody3D, r: Rect2, seed: int) -> void: Marsh._wild_reeds(root, r, seed, meshes)
+	parent.add_child(w)
+	var water := MeshInstance3D.new()                  # 水面：一大块跟着人走（WildWater，600 米见方，按 50 米跳）
+	water.name = "MarshWater"
+	var pm := PlaneMesh.new()
+	pm.size = Vector2(600, 600)
+	water.mesh = pm
+	water.material_override = Look.water(true)
+	water.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	water.position = Vector3(0, MarshLayout.WATER_Y, 0)
+	water.set_script(load("res://world/follow_cam.gd"))
+	parent.add_child(water)
+
+
+static func _wild_reeds(root: Node3D, r: Rect2, seed: int, meshes: Array) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed
+	var c := r.get_center()
+	var per := [[], [], []]
+	var x := r.position.x
+	while x < r.end.x:
+		var z := r.position.y
+		while z < r.end.y:
+			var p := Vector2(x + rng.randf_range(-1.2, 1.2), z + rng.randf_range(-1.2, 1.2))
+			var y := wild_height(p.x, p.y)
+			if y > MarshLayout.WATER_Y - 0.5 and y < MarshLayout.MUD_Y + 0.1 and rng.randf() < 0.45:
+				per[rng.randi() % 3].append(Vector3(p.x - c.x, maxf(y, MarshLayout.WATER_Y) - 0.05, p.y - c.y))
+			z += 2.2
+		x += 2.2
+	for k in 3:
+		var spots: Array = per[k]
+		if spots.is_empty():
+			continue
+		var mm := MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.use_colors = true
+		mm.mesh = meshes[k]
+		mm.instance_count = spots.size()
+		for i in spots.size():
+			var sc := rng.randf_range(0.8, 1.25)
+			mm.set_instance_transform(i, Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3(sc, sc * rng.randf_range(0.85, 1.15), sc)), spots[i]))
+			var v := rng.randf_range(0.85, 1.12)
+			mm.set_instance_color(i, Color(v, v, v * 0.95))
+		var mmi := MultiMeshInstance3D.new()
+		mmi.name = "WildReeds%d" % k
+		mmi.multimesh = mm
+		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		mmi.visibility_range_end = 120.0
+		root.add_child(mmi)
+
+
 func _body(node_name: String, layer: int) -> StaticBody3D:
 	var b := StaticBody3D.new()
 	b.name = node_name
@@ -202,7 +293,8 @@ func _collision() -> void:
 		var b := MarshLayout.box_of(f, float(THICK[f.k]))
 		_shape(mud if f.k == "mud" else ground, b[0], b[1])
 	var wb := _body("MarshWalls", FpController.LAYER_BOUNDARY)
-	walls = wall_segments(floors, grid)
+	walls = wall_segments(floors, grid).filter(func(w: Dictionary) -> bool:   # 西边土堤到了地图边上那一头不立墙：从那儿走进荒野（2026-11-08）
+		return not ((w.a as Vector2).x < MarshLayout.BOUNDS.position.x + 0.6 and (w.b as Vector2).x < MarshLayout.BOUNDS.position.x + 0.6))
 	for w in walls:
 		var a: Vector2 = w.a
 		var b: Vector2 = w.b

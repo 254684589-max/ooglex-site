@@ -1212,6 +1212,13 @@ godot/
 - `world/horse_kit.gd`（`HorseKit.build`）：营地和渡口的马；`MeshKit.tube` 是逐顶点法线的圆台（两头略伸出，接缝不漏）。
 - 任务说明 `objective_if`（`QuestGuide.objective`）：同一步里某个旗标设了就换一句说明；指引在几个名字都对得上时取名字最长的。测试组 `dread`、`ch3choice`。
 
+### 4.102 无尽荒野（2026-11-08 所有者「地图走到边缘就走不动了……玩家可自由无尽探索」）
+
+- `world/wild_streamer.gd`（`WildStreamer`，组 `wild`）：手工地图（core）外面按 64 米一块边走边搭——高度每 2 米算一次（`height_fn`），碰撞 1 米一格（双线性插值，`HeightMapShape3D`）、地形网格带裙边和世界坐标 UV；你周围 `radius` 块，远了拆掉；`far_fn` 走远了让远景跟着走；`deep_y` 深水边立墙（凹多边形碰撞体，层 5）；`carve_core = false` 给比一块还小的林中空地；`scatter_fn` 撒树石；`region` 放小发现（`world/wild_finds.gd`）；`sleepers` 走出地图 `SLEEPER_FROM` 米以外放一队往北走的 `SleeperCrowd`（`sleeper_count`）。
+- 各区域：`Highland/Plain/Harbor._wild`（高度 = 远景 `far_height` 抬回一点；`ground_at` 给 `FpController.ground_fn`：掉出地图按脚下的地算）；`WildBirch.attach`（霜渡镇、桦林、渡口；`Edges.dress(..., wild = true)` 不铺大雪地、不种墙外两圈树）；`Marsh._wild`（土堤 `west_dike`、芦苇荡、`follow_cam.gd` 跟着人走的水面）。四边的空气墙去掉（冠城、黑鹭堡、墓园照旧）。
+- `Cold.wild_rate`：离地图边 `WILD_FROM` 米以外每 `WILD_PER` 米冷一倍（最多 `WILD_MAX`），本来不冷的区域按 `WILD_BASE`。小地图 `Minimap._draw_wild`：附近的小发现、走出地图时圈边上指回地图的箭头和米数。`?nofilm=1` 截图参数。
+- 测试组 `wild`；`edges` 按新行为改写（三片荒野、墓园还是围墙）。
+
 ## 五、画质分档
 
 | 档位 | 3D 分辨率 | 月光阴影 | 实时点光源 | 泛光 | 雾面片 |

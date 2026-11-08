@@ -428,6 +428,9 @@ static func far_forest(parent: Node3D) -> void:
 	var m := StandardMaterial3D.new()
 	m.albedo_color = Color("1c2420")
 	m.roughness = 1.0
+	m.distance_fade_mode = BaseMaterial3D.DISTANCE_FADE_PIXEL_DITHER      # 无尽荒野（2026-11-08）：走得进这片林子了——离近了这些远景小圆锥化掉，近处是荒野里真的树
+	m.distance_fade_min_distance = 120.0
+	m.distance_fade_max_distance = 170.0
 	cone.material = m
 	var mm := MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_3D

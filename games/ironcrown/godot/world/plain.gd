@@ -64,6 +64,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	water_material()
 	pl._river()
 	pl._far()
+	pl._wild()                                       # 地图外面：无尽荒野（2026-11-08）
 	PlainFlora.far_ring(p_parent)                    # 地平线上的树（6.1b）
 	PlainVillage.interactables(p_parent)             # 麦渡（6.2a）：长屋的门、村口的路牌（同步：一进场就推得开）
 	PlainAbbey.interactables(p_parent)               # 坠星院（6.2b）：宿舍、抄经室的门、门房外的路牌
@@ -231,22 +232,7 @@ func _collision() -> void:
 		vs.shape = vb
 		vs.transform = so[0]
 		village.add_child(vs)
-	var wb := StaticBody3D.new()
-	wb.name = "PlainWalls"
-	wb.collision_layer = FpController.LAYER_BOUNDARY
-	wb.collision_mask = 0
-	parent.add_child(wb)
-	var r := PlainLayout.BOUNDS.grow(-PlainLayout.WALL_INSET)
-	var hh := PlainLayout.WALL_H
-	var c := r.get_center()
-	for w in [[Vector3(c.x, hh * 0.5, r.position.y), Vector3(r.size.x, hh * 2.0, 1.0)], [Vector3(c.x, hh * 0.5, r.end.y), Vector3(r.size.x, hh * 2.0, 1.0)],
-			[Vector3(r.position.x, hh * 0.5, c.y), Vector3(1.0, hh * 2.0, r.size.y)], [Vector3(r.end.x, hh * 0.5, c.y), Vector3(1.0, hh * 2.0, r.size.y)]]:
-		var ws := CollisionShape3D.new()
-		var bs := BoxShape3D.new()
-		bs.size = w[1]
-		ws.shape = bs
-		ws.position = w[0]
-		wb.add_child(ws)
+	# 四边原来的空气墙去掉了：地图外面是边走边生成的荒野（2026-11-08，WildStreamer，见 _wild）
 
 
 # ---------------- 材质 ----------------
@@ -544,8 +530,12 @@ static func grid_mesh(i0: int, j0: int, i1: int, j1: int, step: int, skirt: floa
 
 ## 远景：地图外面一圈（越往外越稀），平原接着往外铺、慢慢起伏；东北方向远处抬成砧山（一排黑的山，雾里还看得见轮廓）。
 ## 颜色：田（g = 1，着色器在远处不画垄，只是雪和土的斑驳）
-func _far() -> void:
-	var lines := _far_lines()
+func _far(center := Vector2.ZERO) -> void:
+	var old_far := parent.get_node_or_null("FarTerrain")
+	if old_far:
+		old_far.name = "FarTerrainOld"
+		old_far.queue_free()
+	var lines := _far_lines()                        # 以 center 为中心（走远了 WildStreamer 让它跟过去）
 	var b := PlainLayout.BOUNDS
 	var n := lines.size()
 	var verts := PackedVector3Array()
@@ -556,8 +546,8 @@ func _far() -> void:
 	colors.resize(n * n)
 	for j in n:
 		for i in n:
-			var x: float = lines[i]
-			var z: float = lines[j]
+			var x: float = float(lines[i]) + center.x
+			var z: float = float(lines[j]) + center.y
 			verts[j * n + i] = Vector3(x, far_height(x, z), z)
 			colors[j * n + i] = Color(0.0, 0.6, 1.0)
 	for j in n:
@@ -569,7 +559,7 @@ func _far() -> void:
 	var inner := b.grow(-2.0)
 	for j in n - 1:
 		for i in n - 1:
-			var cell := Rect2(lines[i], lines[j], lines[i + 1] - lines[i], lines[j + 1] - lines[j])
+			var cell := Rect2(float(lines[i]) + center.x, float(lines[j]) + center.y, lines[i + 1] - lines[i], lines[j + 1] - lines[j])
 			if inner.encloses(cell):
 				continue
 			var a := j * n + i
@@ -622,6 +612,108 @@ static func far_height(x: float, z: float) -> float:
 		anvil = ridge * k * PlainLayout._smooth(clampf(1.0 - side / 1300.0, 0.0, 1.0))
 	var k2 := clampf(out / 60.0, 0.0, 1.0)
 	return y + (hills * clampf(out / 200.0, 0.0, 1.0) + anvil) * k2
+
+
+## 无尽荒野（2026-11-08 所有者「玩家可自由无尽探索」）：地图外面边走边生成（WildStreamer）。高度用远景那套 far_height（缓缓起伏的雪田、东北方向砧山那排黑山）往上抬回 0.4 米。
+## 撒的东西：沿着田的分块线（同 plain_ground.gdshader 的田）一段一段的篱笆，篱笆上隔一阵一棵落叶树；田里零星的树和麦垛
+const WILD_RADIUS := 2
+
+
+static func wild_height(x: float, z: float) -> float:
+	return far_height(x, z) + 0.4
+
+
+static func ground_at(x: float, z: float) -> float:
+	return height_at(x, z) if PlainLayout.BOUNDS.has_point(Vector2(x, z)) else wild_height(x, z)
+
+
+func _wild() -> void:
+	var w := WildStreamer.make(PlainLayout.BOUNDS, Plain.wild_height, ground_material(), WILD_RADIUS)
+	w.surface = "snow"
+	w.ground_fn = Plain.ground_at
+	w.region = "plain"                                   # 荒野里的小发现（WildFinds）
+	w.area_id = "plain"
+	w.color_fn = func(_x: float, _z: float, slope: float) -> Color: return Color(0.0, 0.6 * (1.0 - clampf(slope * 3.0, 0.0, 1.0)), 1.0)
+	w.scatter_fn = _wild_scatter
+	w.far_fn = func(c: Vector2) -> void: _far(c)
+	parent.add_child(w)
+
+
+func _wild_scatter(root: Node3D, body: StaticBody3D, r: Rect2, seed: int) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed
+	var c := r.get_center()
+	var origin := Vector3(c.x, 0, c.y)
+	var hedges := []
+	var trees := []
+	var ricks := []
+	var cell := PlainFlora.FIELD_CELL
+	var off := PlainFlora.FIELD_OFF
+	var gx := ceilf((r.position.x - off.x) / cell.x) * cell.x + off.x                 # 竖着的田界（x = 常数）
+	while gx < r.end.x:
+		var z := r.position.y
+		var keep := rng.randf() < 0.7
+		while z < r.end.y:
+			if keep and wild_height(gx, z) < 60.0:
+				hedges.append([Vector3(gx + rng.randf_range(-0.3, 0.3), wild_height(gx, z) - 0.05, z), rng.randf() * TAU, rng.randf_range(0.8, 1.25), 0, rng.randf(), rng.randf_range(0.5, 1.0), 0.0])
+				if rng.randf() < 0.05:
+					trees.append([Vector3(gx, wild_height(gx, z) - 0.1, z), rng.randf() * TAU, rng.randf_range(8.0, 12.0), rng.randi() % 3, rng.randf(), rng.randf_range(0.5, 1.0), rng.randf()])
+			z += PlainFlora.HEDGE_GAP
+			if rng.randf() < 0.02:
+				keep = not keep
+		gx += cell.x
+	var gz := ceilf((r.position.y - off.y) / cell.y) * cell.y + off.y                 # 横着的田界（z = 常数）
+	while gz < r.end.y:
+		var x := r.position.x
+		var keep := rng.randf() < 0.6
+		while x < r.end.x:
+			if keep and wild_height(x, gz) < 60.0:
+				hedges.append([Vector3(x, wild_height(x, gz) - 0.05, gz + rng.randf_range(-0.3, 0.3)), rng.randf() * TAU, rng.randf_range(0.8, 1.25), 0, rng.randf(), rng.randf_range(0.5, 1.0), 0.0])
+			x += PlainFlora.HEDGE_GAP
+			if rng.randf() < 0.02:
+				keep = not keep
+		gz += cell.y
+	for k in rng.randi_range(0, 3):                                                   # 田里零星的树
+		var p := Vector2(rng.randf_range(r.position.x + 3, r.end.x - 3), rng.randf_range(r.position.y + 3, r.end.y - 3))
+		trees.append([Vector3(p.x, wild_height(p.x, p.y) - 0.1, p.y), rng.randf() * TAU, rng.randf_range(7.5, 11.5), rng.randi() % 3, rng.randf(), rng.randf_range(0.5, 1.0), rng.randf()])
+	if rng.randf() < 0.35:                                                             # 麦垛：几个挨着
+		var base := Vector2(rng.randf_range(r.position.x + 8, r.end.x - 8), rng.randf_range(r.position.y + 8, r.end.y - 8))
+		for k in rng.randi_range(1, 3):
+			var p := base + Vector2(rng.randf_range(-6, 6), rng.randf_range(-6, 6))
+			ricks.append([Vector3(p.x, wild_height(p.x, p.y) - 0.1, p.y), rng.randf() * TAU, rng.randf_range(0.9, 1.15), false, rng.randf(), rng.randf_range(0.6, 1.0), 0.0])
+	var bark := PlainFlora.material("bark", reduced_motion)
+	var twig := PlainFlora.material("twig", reduced_motion)
+	for v in 3:
+		var list := trees.filter(func(t: Array) -> bool: return int(t[3]) == v)
+		var m := PlainFlora.tree_mesh(v)
+		m.surface_set_material(0, bark)
+		m.surface_set_material(1, twig)
+		PlainFlora._mm(root, "WildTrees%d" % v, m, list, origin, PlainFlora._scaled, 0.0, PlainFlora.TREE_LOD + 6.0, true)
+	var fm := PlainFlora.far_card_mesh()
+	fm.surface_set_material(0, twig)
+	PlainFlora._mm(root, "WildTreesFar", fm, trees, origin, PlainFlora._scaled, PlainFlora.TREE_LOD, PlainFlora.TREE_FAR, false)
+	var sm := PlainFlora.shrub_mesh()
+	sm.surface_set_material(0, twig)
+	PlainFlora._mm(root, "WildHedges", sm, hedges, origin, PlainFlora._scaled, 0.0, PlainFlora.HEDGE_FAR, false)
+	var rm := PlainFlora.rick_mesh(false)
+	rm.surface_set_material(0, PlainFlora.material("straw", reduced_motion))
+	PlainFlora._mm(root, "WildRicks", rm, ricks, origin, PlainFlora._scaled, 0.0, PlainFlora.RICK_FAR, true)
+	var trunk := CylinderShape3D.new()
+	trunk.radius = 0.25
+	trunk.height = 3.0
+	for t: Array in trees:
+		var tc := CollisionShape3D.new()
+		tc.shape = trunk
+		tc.position = (t[0] as Vector3) - origin + Vector3(0, 1.5, 0)
+		body.add_child(tc)
+	var rick := CylinderShape3D.new()
+	rick.radius = 1.6
+	rick.height = 3.0
+	for k: Array in ricks:
+		var kc := CollisionShape3D.new()
+		kc.shape = rick
+		kc.position = (k[0] as Vector3) - origin + Vector3(0, 1.5, 0)
+		body.add_child(kc)
 
 
 ## 地图册（3.11）「本地」页：麦河、路、几处地点（6.2 起换成真的房子）
