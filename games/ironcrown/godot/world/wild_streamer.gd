@@ -22,6 +22,9 @@ var color_fn: Callable                  # (x, z, slope) -> Color（地面着色�
 var scatter_fn: Callable                # (root: Node3D, body: StaticBody3D, rect: Rect2, seed: int) -> void
 var material: Material
 var surface := "snow"
+var carve_core := true                 # 和手工地图重叠的块切掉重叠那条（大地图）；false：整块照搭（小的林中空地比一块还小，切不成矩形；荒野在空地里面压到空地自己的地面底下）
+var deep_y := -INF                      # 比这个低的是深水（海、河）：荒野里同样在深水边立看不见的墙（层 5「边界」），浅滩走得下去，深水走不进去
+var deep_wall_top := 1.5
 var far_fn: Callable                    # (center: Vector2) -> void
 var far_center := Vector2.ZERO
 var chunks := {}                        # "i_j" → Node3D
@@ -76,7 +79,7 @@ func update_around(p: Vector2, budget: int) -> void:
 ## 第 (i, j) 块在 core 外面的那部分（core 里面由手工地图画；和 core 只沾一条边的块把重叠那一条切掉）
 func _rect(i: int, j: int) -> Rect2:
 	var r := Rect2(origin.x + i * CHUNK, origin.y + j * CHUNK, CHUNK, CHUNK)
-	if not r.intersects(core):
+	if not r.intersects(core) or not carve_core:
 		return r
 	if core.encloses(r):
 		return Rect2()
@@ -136,6 +139,8 @@ func _build(i: int, j: int) -> void:
 	cs.shape = hm
 	cs.position = Vector3(r.position.x + (nx - 1) * 0.5 - c.x, 0, r.position.y + (nz - 1) * 0.5 - c.y)
 	body.add_child(cs)
+	if deep_y > -INF:
+		_deep_walls(root, r, g, sx, sz)
 	var mi := MeshInstance3D.new()
 	mi.name = "WildTerrain"
 	mi.mesh = _mesh(r, g, sx, sz)
@@ -153,6 +158,7 @@ func _mesh(r: Rect2, g: PackedFloat32Array, sx: int, sz: int) -> ArrayMesh:
 	var verts := PackedVector3Array()
 	var norms := PackedVector3Array()
 	var colors := PackedColorArray()
+	var uvs := PackedVector2Array()             # 世界坐标（米）当 UV：普通贴图材质（序章的雪地，Look.mat）按米平铺
 	var H := func(xx: int, zz: int) -> float: return g[clampi(zz, 0, sz - 1) * sx + clampi(xx, 0, sx - 1)]
 	for rj in nr:
 		for ci in nc:
@@ -160,6 +166,7 @@ func _mesh(r: Rect2, g: PackedFloat32Array, sx: int, sz: int) -> ArrayMesh:
 			var wz := r.position.y + rj * SAMPLE
 			var y: float = H.call(ci, rj)
 			verts.append(Vector3(wx - c.x, y, wz - c.y))
+			uvs.append(Vector2(wx, wz))
 			var dx: float = (H.call(ci + 1, rj) - H.call(ci - 1, rj)) / (2.0 * SAMPLE)
 			var dz: float = (H.call(ci, rj + 1) - H.call(ci, rj - 1)) / (2.0 * SAMPLE)
 			var n := Vector3(-dx, 1.0, -dz).normalized()
@@ -189,6 +196,7 @@ func _mesh(r: Rect2, g: PackedFloat32Array, sx: int, sz: int) -> ArrayMesh:
 			verts.append(verts[k] - Vector3(0, SKIRT, 0))
 			norms.append(norms[k])
 			colors.append(colors[k])
+			uvs.append(uvs[k])
 		for n in e.size() - 1:
 			var a := e[n]
 			var b := e[n + 1]
@@ -198,7 +206,45 @@ func _mesh(r: Rect2, g: PackedFloat32Array, sx: int, sz: int) -> ArrayMesh:
 	arr[Mesh.ARRAY_VERTEX] = verts
 	arr[Mesh.ARRAY_NORMAL] = norms
 	arr[Mesh.ARRAY_COLOR] = colors
+	arr[Mesh.ARRAY_TEX_UV] = uvs
 	arr[Mesh.ARRAY_INDEX] = idx
 	var m := ArrayMesh.new()
 	m.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr)
 	return m
+
+
+## 深水边的墙：采样格（SAMPLE 米）里深、浅相邻的地方立一面竖的（一个凹多边形碰撞体、两面都挡；同 Harbor._deep_walls）
+func _deep_walls(root: Node3D, r: Rect2, g: PackedFloat32Array, sx: int, sz: int) -> void:
+	var c := r.get_center()
+	var faces := PackedVector3Array()
+	var lo := deep_y - 4.0
+	var hi := deep_wall_top
+	var D := func(i: int, j: int) -> bool: return g[j * sx + i] < deep_y
+	var wall := func(a: Vector2, b: Vector2) -> void:
+		var a0 := Vector3(a.x - c.x, lo, a.y - c.y)
+		var b0 := Vector3(b.x - c.x, lo, b.y - c.y)
+		var a1 := Vector3(a.x - c.x, hi, a.y - c.y)
+		var b1 := Vector3(b.x - c.x, hi, b.y - c.y)
+		faces.append_array(PackedVector3Array([a0, b0, b1, a0, b1, a1]))
+	for j in sz:
+		for i in sx:
+			var here: bool = D.call(i, j)
+			var x := r.position.x + i * SAMPLE
+			var z := r.position.y + j * SAMPLE
+			if i + 1 < sx and here != D.call(i + 1, j):
+				wall.call(Vector2(x + SAMPLE * 0.5, z - SAMPLE * 0.5), Vector2(x + SAMPLE * 0.5, z + SAMPLE * 0.5))
+			if j + 1 < sz and here != D.call(i, j + 1):
+				wall.call(Vector2(x - SAMPLE * 0.5, z + SAMPLE * 0.5), Vector2(x + SAMPLE * 0.5, z + SAMPLE * 0.5))
+	if faces.is_empty():
+		return
+	var body := StaticBody3D.new()
+	body.name = "DeepWalls"
+	body.collision_layer = FpController.LAYER_BOUNDARY
+	body.collision_mask = 0
+	root.add_child(body)
+	var cs := CollisionShape3D.new()
+	var sh := ConcavePolygonShape3D.new()
+	sh.backface_collision = true
+	sh.set_faces(faces)
+	cs.shape = sh
+	body.add_child(cs)

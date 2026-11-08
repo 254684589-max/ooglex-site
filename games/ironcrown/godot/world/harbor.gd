@@ -64,6 +64,7 @@ static func build(p_parent: Node3D, reduced_motion := false) -> Transform3D:
 	water_material()
 	hb._water()
 	hb._far()
+	hb._wild()                                        # 地图外面：无尽荒野（2026-11-08）
 	HarborTown.interactables(p_parent)               # 双钥港的城（7.2）：门、路牌、钥楼门口的告示（同步：一进场就看得见、推得开）
 	HarborTown.ships(p_parent)                       # 河口停着的两条船（跟着潮位上下）
 	HarborPeople.build(p_parent)                     # 城里的人（7.4）：码头、鱼市、钥楼街上只说一句的
@@ -241,22 +242,7 @@ func _collision() -> void:
 		scs.shape = sbs
 		scs.transform = so[0]
 		tb.add_child(scs)
-	var wb := StaticBody3D.new()
-	wb.name = "HarborWalls"
-	wb.collision_layer = FpController.LAYER_BOUNDARY
-	wb.collision_mask = 0
-	parent.add_child(wb)
-	var r := HarborLayout.BOUNDS.grow(-HarborLayout.WALL_INSET)
-	var hh := HarborLayout.WALL_H
-	var c := r.get_center()
-	for w in [[Vector3(c.x, hh * 0.5, r.position.y), Vector3(r.size.x, hh * 2.0, 1.0)], [Vector3(c.x, hh * 0.5, r.end.y), Vector3(r.size.x, hh * 2.0, 1.0)],
-			[Vector3(r.position.x, hh * 0.5, c.y), Vector3(1.0, hh * 2.0, r.size.y)], [Vector3(r.end.x, hh * 0.5, c.y), Vector3(1.0, hh * 2.0, r.size.y)]]:
-		var ws := CollisionShape3D.new()
-		var bs := BoxShape3D.new()
-		bs.size = w[1]
-		ws.shape = bs
-		ws.position = w[0]
-		wb.add_child(ws)
+	# 四边原来的空气墙去掉了：地图外面是边走边生成的荒野（2026-11-08，WildStreamer，见 _wild）；深水边照样有墙（_deep_walls、荒野里 WildStreamer.deep_y）
 
 
 ## 深水边一圈看不见的墙（层 5「边界」）：每 2 米一格，比 DEEP_Y 低的格子和不低的格子之间立一面竖的（一个凹多边形碰撞体，两面都挡）。
@@ -609,8 +595,12 @@ static func grid_mesh(i0: int, j0: int, i1: int, j1: int, step: int, skirt: floa
 
 
 ## 远景：地图外面一圈（越往外越稀）。南边、东南一直是海底（被海面盖住），北边、西边是低低的岸、慢慢起伏，河往北接着流
-func _far() -> void:
-	var lines := _far_lines()
+func _far(center := Vector2.ZERO) -> void:
+	var old_far := parent.get_node_or_null("FarTerrain")
+	if old_far:
+		old_far.name = "FarTerrainOld"
+		old_far.queue_free()
+	var lines := _far_lines()                         # 以 center 为中心（走远了 WildStreamer 让它跟过去）
 	var b := HarborLayout.BOUNDS
 	var n := lines.size()
 	var verts := PackedVector3Array()
@@ -621,8 +611,8 @@ func _far() -> void:
 	colors.resize(n * n)
 	for j in n:
 		for i in n:
-			var x: float = lines[i]
-			var z: float = lines[j]
+			var x: float = float(lines[i]) + center.x
+			var z: float = float(lines[j]) + center.y
 			var y := far_height(x, z)
 			verts[j * n + i] = Vector3(x, y, z)
 			colors[j * n + i] = Color(0.0, 0.25 if y < 0.5 else 0.0, 1.0)
@@ -635,7 +625,7 @@ func _far() -> void:
 	var inner := b.grow(-2.0)
 	for j in n - 1:
 		for i in n - 1:
-			var cell := Rect2(lines[i], lines[j], lines[i + 1] - lines[i], lines[j + 1] - lines[j])
+			var cell := Rect2(float(lines[i]) + center.x, float(lines[j]) + center.y, lines[i + 1] - lines[i], lines[j + 1] - lines[j])
 			if inner.encloses(cell):
 				continue
 			var a := j * n + i
@@ -655,6 +645,30 @@ func _far() -> void:
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mi.extra_cull_margin = 50.0
 	parent.add_child(mi)
+
+
+## 无尽荒野（2026-11-08 所有者「玩家可自由无尽探索」）：地图外面边走边生成（WildStreamer）。高度用远景那套 far_height（北边、西边低岸和缓坡，往南是海）往上抬回 0.3 米；
+## 南边的海、河照样走不进去：荒野里比 DEEP_Y 低的地方边上同样立墙（WildStreamer.deep_y）。不撒东西：海边盐沼、泥滩，空旷
+const WILD_RADIUS := 2
+
+
+static func wild_height(x: float, z: float) -> float:
+	return far_height(x, z) + 0.3
+
+
+static func ground_at(x: float, z: float) -> float:
+	return height_at(x, z) if HarborLayout.BOUNDS.has_point(Vector2(x, z)) else wild_height(x, z)
+
+
+func _wild() -> void:
+	var w := WildStreamer.make(HarborLayout.BOUNDS, Harbor.wild_height, ground_material(), WILD_RADIUS)
+	w.surface = "mud"
+	w.ground_fn = Harbor.ground_at
+	w.deep_y = HarborLayout.DEEP_Y
+	w.deep_wall_top = DEEP_WALL_TOP
+	w.color_fn = func(x: float, z: float, _slope: float) -> Color: return Color(0.0, 0.25 if wild_height(x, z) < 0.5 else 0.0, 1.0)
+	w.far_fn = func(c: Vector2) -> void: _far(c)
+	parent.add_child(w)
 
 
 static func _far_lines() -> Array:

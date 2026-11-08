@@ -767,11 +767,11 @@ func test_frostford() -> void:
 	await hold("move_forward", 10.0)
 	Input.action_release("sprint")
 	check(p.global_position.z > Frostford.NORTH_END and p.global_position.z < Frostford.NORTH_END + 3.0, "沿街往北跑到尽头，停在领主宅邸门前（门口站着管家，z = %.2f）" % p.global_position.z)
-	# 从小广场钻到房子背后，往西一直走：被看不见的围墙挡住
+	# 从小广场钻到房子背后，往西一直走：原来被看不见的围墙挡住；2026-11-08 起墙去掉了，走进镇子外面的白桦林（无尽荒野）
 	await place(p, -6.0, -23.0)
 	p.rotation.y = PI / 2
 	await hold("move_forward", 6.0)
-	check(p.global_position.x > -15.5 and p.global_position.x < -13.0, "走到房子背后，被区域边界挡住（x = %.2f）" % p.global_position.x)
+	check(p.global_position.x < -15.5, "走到房子背后，再往西走出镇子边、走进林子（x = %.2f）" % p.global_position.x)
 	# 更夫在灯下，可以交谈
 	await aim(p, Frostford.WATCH_POS + Vector3(0, 0, 1.8), Frostford.WATCH_POS + Vector3(0, 1.4, 0))
 	check(p.interactor.target is Npc and p.interactor.target.display_name == "更夫", "更夫站在第一盏街灯下，可以交谈")
@@ -5456,10 +5456,15 @@ func test_edges() -> void:
 		"birch": [Rect2(-18.0, -36.0, 36.0, 72.0), 2],
 		"ferry": [Rect2(-16.0, -30.0, 32.0, 30.0), 1],
 	}
+	var wild_areas := ["frostford", "birch", "ferry"]       # 2026-11-08 无尽荒野：这三片外面是走得进去的白桦林（WildBirch），墓园还是围墙
 	for a in spec:
 		GameState.new_game(70)
 		var t0 := Time.get_ticks_msec()
 		var main := await make_area(a)
+		if a in wild_areas:
+			await _edges_wild(main, a, spec[a][0], int(spec[a][1]))
+			await free_main(main)
+			continue
 		var ms := Time.get_ticks_msec() - t0
 		var edge := main.world.get_node_or_null("Edges") as MeshInstance3D
 		var trees := int(edge.get_meta("trees", 0)) if edge else 0
@@ -5531,7 +5536,7 @@ func test_edges() -> void:
 		await free_main(main)
 	# 画多少树：夜里、黄昏雾近，远圈不画；清晨、白天画；低画质近圈只画六成、远圈不画
 	GameState.new_game(73)
-	var m3 := await make_area("birch")
+	var m3 := await make_area("churchyard")                # 墓园外面还是 Edges 那两圈树（别的三片外面是荒野）
 	m3.apply_quality("medium")                          # 前面的测试组可能把画质设置留在低档（单独跑 perf edges 时出过）
 	await m3.set_daypart("night", false)
 	var fars: Array = m3.world.find_children("EdgeTreesFar_*", "MultiMeshInstance3D", true, false)
@@ -12798,6 +12803,28 @@ func test_wild() -> void:
 		trees += (n as MultiMeshInstance3D).multimesh.instance_count
 	check(trees > 0, "荒野里长着树（%d 棵）" % trees)
 	await free_main(main)
+	# 金穗平原、双钥港：一样没有墙，走远了脚下有地；双钥港南边的海走不进去（荒野里深水边也有墙）
+	for spec: Array in [["plain", "dock", 3, Plain.wild_height, Vector2(40, 520), "PlainWalls"], ["harbor", "quay", 4, Harbor.wild_height, Vector2(-60, -520), "HarborWalls"]]:
+		GameState.new_game(10)
+		GameState.chapter = int(spec[2])
+		GameState.pending_load = {"scene": spec[0], "spawn": spec[1], "player": {}}
+		main = await make_area(str(spec[0]))
+		await frames(3)
+		w = main.world.find_child("Wild", true, false) as WildStreamer
+		var spot: Vector2 = spec[4]
+		var hf: Callable = spec[3]
+		w.update_around(spot, 40)
+		p = main.player
+		p.global_position = Vector3(spot.x, float(hf.call(spot.x, spot.y)) + 1.0, spot.y)
+		p.velocity = Vector3.ZERO
+		await physics(60)
+		check(w != null and main.world.find_child(str(spec[5]), true, false) == null and p.is_on_floor() and absf(p.global_position.y - float(hf.call(spot.x, spot.y))) < 0.8,
+			"%s：没有空气墙，走到 %s 站在荒野的地上" % [spec[0], str(spot)])
+		if spec[0] == "harbor":
+			var south := Vector2(20, HarborLayout.BOUNDS.end.y + 150.0)
+			w.update_around(south, 40)
+			check(Harbor.wild_height(south.x, south.y) < HarborLayout.DEEP_Y and main.world.find_children("DeepWalls", "StaticBody3D", true, false).size() > 0, "双钥港南边是海：荒野里深水边也立着墙")
+		await free_main(main)
 
 func test_sleepercrowd() -> void:
 	var route := [Vector2(0, 0), Vector2(0, -40), Vector2(10, -70)]
@@ -13695,4 +13722,56 @@ func test_cutscene() -> void:
 	check(GameState.has_flag("cut_plain_first") and CutScenes.on_enter(main) == "", "只演一次")
 	await free_main(main)
 	Engine.set_meta("ic_skip_film", true)
+
+## 外面是无尽荒野的那几片（霜渡镇、桦林、渡口；2026-11-08）：没有墙外那两圈走不到的树，外面是走得进去的白桦林；出口照样是真的门、路上没有树、栅栏挡人
+func _edges_wild(main: Node, a: String, rect: Rect2, n_exits: int) -> void:
+	var edge := main.world.get_node_or_null("Edges") as MeshInstance3D
+	var w := main.world.find_child("Wild", true, false) as WildStreamer
+	var exits: Array = edge.get_meta("exits", []) if edge else []
+	for e in exits:
+		w.update_around(Vector2(e.at.x, e.at.z) + Vector2(e.out.x, e.out.z) * 40.0, 40)
+	w.update_around(rect.get_center() + Vector2(rect.size.x * 0.5 + 30.0, 0), 40)
+	await frames(2)                                      # 走远了拆掉的块这时才真的放掉（queue_free）
+	var birches: Array = []
+	for c in w.chunks.values():
+		birches.append_array((c as Node).find_children("WildBirches*", "MultiMeshInstance3D", true, false))
+	var count := 0
+	var clear := true
+	for n in birches:
+		var spots: PackedVector3Array = n.get_meta("spots", PackedVector3Array())
+		count += spots.size()
+		for o in spots:
+			for e in exits:
+				var out: Vector3 = e.out
+				var d: Vector3 = o - e.at
+				var along := d.dot(out)
+				if along > -1.0 and along < Edges.ROAD_LEN and (d - out * along).length() < float(e.half) + 1.0:
+					clear = false
+	check(edge != null and w != null and main.world.find_children("EdgeTrees*", "MultiMeshInstance3D", true, false).is_empty() and count > 100,
+		"%s：外面是走得进去的白桦林（荒野里 %d 棵、%d 块），不再有墙外那两圈走不到的树" % [Areas.display_name(a), count, w.chunks.size() if w else 0])
+	var trunks := 0
+	for c in w.chunks.values():
+		var body := (c as Node).get_node_or_null("Ground") as StaticBody3D
+		if body:
+			trunks += body.get_child_count() - 1
+	check(trunks >= count - 2, "%s：荒野里的白桦都有碰撞（%d 个树干），走不穿" % [Areas.display_name(a), trunks])
+	check(clear, "%s：出口外的路中间、路边一米都没有树（一条穿过林子的小路）" % Areas.display_name(a))
+	var doors: Array = main.world.find_children("*", "Door", true, false).filter(func(d): return (d as Door).to_area != "")
+	check(exits.size() == n_exits and exits.all(func(e): return doors.any(func(d): return Vector2(d.global_position.x - e.at.x, d.global_position.z - e.at.z).length() < 1.5)),
+		"%s：%d 个出口，每个都站着一扇通往别处的门" % [Areas.display_name(a), exits.size()])
+	var solids := main.world.get_node_or_null("EdgeSolids") as StaticBody3D
+	var want := exits.filter(func(e): return bool(e.get("fence", false))).size() * 2 + exits.filter(func(e): return str(e.get("frame", "")) != "").size() * 2
+	check((solids.get_child_count() if solids else 0) == want, "%s：出口两边的栅栏、门柱有碰撞" % Areas.display_name(a))
+	var p: FpController = main.player
+	var e0: Dictionary = exits[0]
+	var side := Vector2(e0.at.x, e0.at.z) + Vector2(e0.out.x, e0.out.z) * 30.0       # 出口外 30 米的林间小路上（路上没有树）
+	w.update_around(side, 40)
+	p.global_position = Vector3(side.x, WildBirch.height(side.x, side.y, rect, Ferry.SHORE_Z if a == "ferry" else INF, exits) + 1.0, side.y)
+	p.velocity = Vector3.ZERO
+	await physics(60)
+	check(p.is_on_floor() and not rect.grow(10.0).has_point(Vector2(p.global_position.x, p.global_position.z)), "%s：走得出区域边，站在林子里的雪地上（%s，高 %.2f）" % [Areas.display_name(a), str(Vector2(p.global_position.x, p.global_position.z)), p.global_position.y])
+	if a == "ferry":
+		var south := Vector2(rect.end.x + 30.0, Ferry.SHORE_Z + 20.0)
+		w.update_around(south, 40)
+		check(WildBirch.height(south.x, south.y, rect, Ferry.SHORE_Z) < -2.0 and main.world.find_children("DeepWalls", "StaticBody3D", true, false).size() > 0, "渡口：南边的河在荒野里照样走不进去（深水边有墙）")
 
