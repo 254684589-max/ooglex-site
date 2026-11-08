@@ -5956,9 +5956,9 @@ func test_marsh() -> void:
 			var y: float = (hit.position.y if not hit.is_empty() else 0.0) + 0.9
 			var from := cp - Vector2(d) * 0.45                     # 格子正好在地面边上时，从里面一点打（射线从墙面上起头打不中墙）
 			var q := PhysicsRayQueryParameters3D.create(Vector3(from.x, y, from.y), Vector3(np.x, y, np.y), 1 | FpController.LAYER_BOUNDARY)
-			if space.intersect_ray(q).is_empty():
-				leaks.append(np)
-	check(leaks.is_empty() and seen.size() > 3000, "走得到的地方（%d 个 1 米格子）的 %d 条边上都有墙，掉不进深水（漏的：%s）" % [seen.size(), edges, str(leaks.slice(0, 6))])
+			if space.intersect_ray(q).is_empty() and not (np.x < MarshLayout.BOUNDS.position.x and np.y > Marsh.DIKE_Z.x - 1.0 and np.y < Marsh.DIKE_Z.y + 1.0):
+				leaks.append(np)                               # 西边土堤到地图边上那一头不算漏：故意开着，接着走进荒野的芦苇荡（2026-11-08）
+	check(leaks.is_empty() and seen.size() > 3000, "走得到的地方（%d 个 1 米格子）的 %d 条边上都有墙，掉不进深水；只有西边土堤那头开着，通到荒野（漏的：%s）" % [seen.size(), edges, str(leaks.slice(0, 6))])
 	var gate := Vector2i(roundi(MarshLayout.SPAWNS.castle_gate[0].x), roundi(MarshLayout.SPAWNS.castle_gate[0].z))
 	check(seen.has(gate) or seen.has(gate + Vector2i(1, 0)), "从村口沿栈道、堤道走得到堡门前")
 	var campc := Vector2i(roundi(MarshLayout.CAMP_FIRE.x) + 3, roundi(MarshLayout.CAMP_FIRE.z) + 4)
@@ -12840,6 +12840,7 @@ func test_wild() -> void:
 	await frames(2)
 	check(w.crowd == null and not is_instance_valid(sc), "走远了：那一队拆掉，隔一阵再来")
 	# 越走越冷
+	# 越走越冷
 	var near_r := Cold.wild_rate(Cold.rate("highland", "day", 10.0, 5, false, false), get_tree(), Vector3(0, 0, HighlandLayout.BOUNDS.end.y + 20.0), "day")
 	var far_r := Cold.wild_rate(Cold.rate("highland", "day", 10.0, 5, false, false), get_tree(), Vector3(0, 0, HighlandLayout.BOUNDS.end.y + 600.0), "day")
 	check(far_r > near_r * 2.0, "走出地图越远越冷（地图边外 20 米 %.2f、600 米 %.2f 每秒）" % [near_r, far_r])
@@ -12873,6 +12874,28 @@ func test_wild() -> void:
 			w.update_around(south, 40)
 			check(Harbor.wild_height(south.x, south.y) < HarborLayout.DEEP_Y and main.world.find_children("DeepWalls", "StaticBody3D", true, false).size() > 0, "双钥港南边是海：荒野里深水边也立着墙")
 		await free_main(main)
+	# 鹭沼：从营地往西那道土堤走出地图，接着走到芦苇荡的泥滩上；深水沟走不进去；水面跟着人走
+	GameState.new_game(11)
+	GameState.chapter = 1
+	GameState.pending_load = {"scene": "marsh", "spawn": "reedwharf", "player": {}}
+	main = await make_area("marsh")
+	await frames(3)
+	w = main.world.find_child("Wild", true, false) as WildStreamer
+	p = main.player
+	var dike := Vector2(MarshLayout.BOUNDS.position.x - 40.0, (Marsh.DIKE_Z.x + Marsh.DIKE_Z.y) * 0.5)
+	w.update_around(dike, 40)
+	p.global_position = Vector3(dike.x, Marsh.wild_height(dike.x, dike.y) + 1.0, dike.y)
+	p.velocity = Vector3.ZERO
+	await physics(60)
+	check(w != null and p.is_on_floor() and absf(p.global_position.y - MarshLayout.BANK_Y) < 0.5, "鹭沼：营地往西的土堤出了地图接着往西，站得住（%s）" % str(p.global_position))
+	var flats := Vector2.INF
+	for k in 400:
+		var q := Vector2(MarshLayout.BOUNDS.position.x - 120.0 - k * 3.0, 30.0 + (k % 20) * 4.0)
+		if Marsh.wild_height(q.x, q.y) > MarshLayout.WATER_Y:
+			flats = q
+			break
+	check(flats != Vector2.INF and main.world.find_child("MarshWater", true, false) != null, "芦苇荡里有露出水面的泥滩（%s），水面跟着人走" % str(flats))
+	await free_main(main)
 
 func test_sleepercrowd() -> void:
 	var route := [Vector2(0, 0), Vector2(0, -40), Vector2(10, -70)]
