@@ -407,6 +407,9 @@ func _ready() -> void:
 	Daypart.apply(self, daypart)
 	print("IC_DAYPART id=%s area=%s" % [daypart, area])
 	player = FpController.new()
+	var wild := world.get_node_or_null("Wild") as WildStreamer
+	if wild:
+		player.ground_fn = wild.ground_fn                # 无尽荒野（2026-11-08）：掉出地图按脚下的地算（荒野的山谷比 -6 米低）
 	player.name = "Player"
 	add_child(player)
 	player.global_transform = t
@@ -487,6 +490,8 @@ func _ready() -> void:
 	hud.tracker.refresh()                         # 左上角的任务追踪（C.2）
 	var q := _query("q")
 	apply_quality(q if q in Look.TIERS else (Settings.quality if Settings.quality in Look.TIERS else Look.default_tier()))
+	if _query("nofilm") == "1":
+		Engine.set_meta("ic_skip_film", true)                 # 截图用（2026-11-08）：?nofilm=1 不演进区域时的过场（机位 ?cam= 不被过场盖住）
 	if _query("cutscene") in CutScenes.IDS:
 		_auto_cutscene.call_deferred(_query("cutscene"))         # 截图 / 录视频用（C.5）：?cutscene=norbert_vial 进场两秒后播
 	elif CutScenes.on_enter(self) != "":

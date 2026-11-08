@@ -12781,11 +12781,7 @@ func test_wild() -> void:
 		counts.append(w.chunks.size())
 		p.global_position = Vector3(spot.x, Highland.wild_height(spot.x, spot.y) + 1.0, spot.y)
 		p.velocity = Vector3.ZERO
-		await physics(20)
-		await physics(40)
-		var q := PhysicsRayQueryParameters3D.create(Vector3(spot.x, 400, spot.y), Vector3(spot.x, -400, spot.y))
-		var hit := main.world.get_world_3d().direct_space_state.intersect_ray(q)
-		print("DBG spot=%s y=%.2f want=%.2f floor=%s hit=%s at=%s" % [str(spot), p.global_position.y, Highland.wild_height(spot.x, spot.y), p.is_on_floor(), str(hit.get("collider")), str(hit.get("position"))])
+		await physics(60)
 		check(p.is_on_floor() and absf(p.global_position.y - Highland.wild_height(spot.x, spot.y)) < 0.8, "走到 (%d, %d)：站在荒野的地上（高 %.1f 米）" % [spot.x, spot.y, p.global_position.y])
 	var cap := (2 * WildStreamer.CHUNK + 1) * 0 + (2 * Highland.WILD_RADIUS + 3) * (2 * Highland.WILD_RADIUS + 3)
 	check(counts.all(func(n): return n <= cap) and counts.back() > 0, "块数一直有上限（%s，上限 %d）：远的拆掉了" % [str(counts), cap])
@@ -12795,6 +12791,7 @@ func test_wild() -> void:
 	var trees := 0
 	for n in main.world.find_children("WildTrees_near", "MultiMeshInstance3D", true, false):
 		trees += (n as MultiMeshInstance3D).multimesh.instance_count
+	p.global_position = Vector3(0, Highland.wild_height(0, 300) + 1.0, 300)    # 回到南边的山谷（镜头在哪，荒野就跟着哪）
 	w.update_around(Vector2(0, 300), 40)
 	await frames(2)
 	for n in main.world.find_children("WildTrees_near", "MultiMeshInstance3D", true, false):

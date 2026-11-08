@@ -51,6 +51,7 @@ var bob_time := 0.0
 var surface := ""                   # 脚下的地面（Surface.KINDS；"" = 普通地面，4.4）
 var surface_left := 0.0
 var last_safe := Vector3.INF        # 最近一次站稳的位置（INF = 还没站稳过）
+var ground_fn: Callable             # 有无尽荒野的区域（2026-11-08）：(x, z) -> 地面高度；掉出地图按「比脚下的地低 5 米」算，不按 FALL_Y（荒野的山谷比 -6 米还低）
 var knocked_left := 0.0             # 被推倒在地上还要躺多久（5.4a 长眠者群：挡在前面的人被推倒）；躺着不能走、镜头贴着地
 var shove := Vector3.ZERO           # 被推倒那一下往哪边滑（很快减掉）
 const EYE_DOWN := 0.35
@@ -256,7 +257,8 @@ func _update_ground(delta: float) -> void:
 	if safe_left <= 0.0 and is_on_floor():
 		safe_left = SAFE_STEP
 		last_safe = global_position
-	if global_position.y < FALL_Y and last_safe != Vector3.INF:
+	var fall_at := FALL_Y if not ground_fn.is_valid() else float(ground_fn.call(global_position.x, global_position.z)) - 5.0
+	if global_position.y < fall_at and last_safe != Vector3.INF:
 		global_position = last_safe + Vector3(0, 0.2, 0)
 		velocity = Vector3.ZERO
 		rescued.emit(last_safe)

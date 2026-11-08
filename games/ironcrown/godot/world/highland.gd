@@ -582,9 +582,15 @@ static func wild_height(x: float, z: float) -> float:
 	return far_height(x, z) + 0.4
 
 
+## 脚下的地面：手工地图里按高度场，外面按荒野
+static func ground_at(x: float, z: float) -> float:
+	return height_at(x, z) if HighlandLayout.BOUNDS.has_point(Vector2(x, z)) else wild_height(x, z)
+
+
 func _wild() -> void:
 	var w := WildStreamer.make(HighlandLayout.BOUNDS, Highland.wild_height, ground_material(), WILD_RADIUS)
 	w.surface = "snow"
+	w.ground_fn = Highland.ground_at
 	w.scatter_fn = _wild_scatter
 	w.far_fn = func(c: Vector2) -> void: _far(c)
 	parent.add_child(w)

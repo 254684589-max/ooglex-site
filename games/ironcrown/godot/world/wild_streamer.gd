@@ -16,7 +16,8 @@ const FAR_RECENTER := 600.0
 var core := Rect2()
 var origin := Vector2.ZERO              # 分块对齐的原点（手工地图的左上角）
 var radius := 3
-var height_fn: Callable                 # (x, z) -> float
+var height_fn: Callable                 # (x, z) -> float（荒野）
+var ground_fn: Callable                 # (x, z) -> float（手工地图里外都对的地面高度：玩家掉出地图的判断用，main 交给 FpController）
 var color_fn: Callable                  # (x, z, slope) -> Color（地面着色器的顶点色）；没给就 (0, 坡度, 1)
 var scatter_fn: Callable                # (root: Node3D, body: StaticBody3D, rect: Rect2, seed: int) -> void
 var material: Material
@@ -164,7 +165,7 @@ func _mesh(r: Rect2, g: PackedFloat32Array, sx: int, sz: int) -> ArrayMesh:
 			var n := Vector3(-dx, 1.0, -dz).normalized()
 			norms.append(n)
 			var slope := 1.0 - n.y
-			colors.append(color_fn.call(wx, wz, slope) if color_fn.is_valid() else Color(0.0, clampf(slope * 4.0, 0.0, 1.0), 1.0))
+			colors.append(color_fn.call(wx, wz, slope) if color_fn.is_valid() else Color(0.0, clampf((slope - 0.12) * 2.2, 0.0, 0.85), 1.0))
 	var idx := PackedInt32Array()
 	for rj in nr - 1:
 		for ci in nc - 1:
