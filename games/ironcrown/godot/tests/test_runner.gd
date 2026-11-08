@@ -12814,6 +12814,31 @@ func test_wild() -> void:
 	var r1 := WildFinds.use("wild_test_1", "一具冻僵的旅人。", [["silver", 9], ["bread", 1]])
 	var r2 := WildFinds.use("wild_test_1", "一具冻僵的旅人。", [["silver", 9], ["bread", 1]])
 	check(GameState.silver == silver0 + 9 and GameState.has_item("bread") and str(r1.toast).contains("拿到") and not str(r2.toast).contains("拿到"), "翻一次拿到东西（9 枚银币、面包），再翻只是看看")
+	# 荒野里的长眠者：走出地图 220 米以外前面会有一队往北走，越远人越多；走远了拆掉
+	check(WildStreamer.sleeper_count(100.0) == 0 and WildStreamer.sleeper_count(230.0) == WildStreamer.SLEEPER_MIN and WildStreamer.sleeper_count(900.0) > 12 and WildStreamer.sleeper_count(5000.0) == WildStreamer.SLEEPER_MAX,
+		"荒野里的长眠者：地图边外 220 米以内没有，再往外一队 %d 个，900 米 %d 个，最多 %d 个" % [WildStreamer.sleeper_count(230.0), WildStreamer.sleeper_count(900.0), WildStreamer.SLEEPER_MAX])
+	var here := Vector2(0, HighlandLayout.BOUNDS.end.y + 700.0)
+	w.update_around(here, 40)
+	p.global_position = Vector3(here.x, Highland.wild_height(here.x, here.y) + 1.0, here.y)
+	p.velocity = Vector3.ZERO
+	if w.crowd != null:
+		w.crowd.queue_free()
+		w.crowd = null
+	var sc := w.spawn_sleepers(here, WildStreamer.sleeper_count(w.out_of_core(here)))
+	sc.near_enabled = false
+	await physics(10)
+	var zs0 := 0.0
+	for a: Dictionary in sc.agents:
+		zs0 += (a.p as Vector2).y
+	await seconds(3.0)
+	var zs1 := 0.0
+	for a: Dictionary in sc.agents:
+		zs1 += (a.p as Vector2).y
+	check(sc.agents.size() == WildStreamer.sleeper_count(w.out_of_core(here)) and zs1 < zs0, "一队 %d 个长眠者在荒野里往北走" % sc.agents.size())
+	p.global_position = Vector3(3000, Highland.wild_height(3000, 3000) + 1.0, 3000)
+	w._sleeper_tick(Vector2(3000, 3000), 0.1)
+	await frames(2)
+	check(w.crowd == null and not is_instance_valid(sc), "走远了：那一队拆掉，隔一阵再来")
 	# 越走越冷
 	var near_r := Cold.wild_rate(Cold.rate("highland", "day", 10.0, 5, false, false), get_tree(), Vector3(0, 0, HighlandLayout.BOUNDS.end.y + 20.0), "day")
 	var far_r := Cold.wild_rate(Cold.rate("highland", "day", 10.0, 5, false, false), get_tree(), Vector3(0, 0, HighlandLayout.BOUNDS.end.y + 600.0), "day")

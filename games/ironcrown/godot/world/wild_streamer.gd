@@ -29,6 +29,17 @@ var far_fn: Callable                    # (center: Vector2) -> void
 var region := ""                        # 荒野里的小发现（WildFinds）按哪一套：highland / plain / harbor / forest；"" = 不放
 var area_id := ""                       # 区域名（小发现拿过东西的旗标用）
 var finds := {}                         # 块 → 这块里的小发现 {kind, name, pos, key}（小地图画）
+## 荒野里的长眠者（2026-11-08）：走出地图 SLEEPER_FROM 米以外，前面的雪地上会有一队长眠的人往北走（同 SleeperCrowd：叫不醒、挡路的被推倒踩过）；
+## 走得越远一队人越多（SLEEPER_MIN → SLEEPER_MAX）；一队走远了、走完了就拆掉，隔一阵再来一队
+var sleepers := true
+const SLEEPER_FROM := 220.0
+const SLEEPER_MIN := 4
+const SLEEPER_MAX := 24
+const SLEEPER_PER := 60.0                   # 再远多少米多一个人
+const SLEEPER_GAP := 25.0                   # 一队走了以后隔几秒再来
+var crowd: SleeperCrowd
+var _crowd_wait := 8.0
+var _crowd_rng := RandomNumberGenerator.new()
 var far_center := Vector2.ZERO
 var chunks := {}                        # "i_j" → Node3D
 var built := 0                          # 一共搭过几块（测试看）
@@ -51,6 +62,8 @@ func _process(_delta: float) -> void:
 	if cam == null:
 		return
 	update_around(Vector2(cam.global_position.x, cam.global_position.z), 1)
+	if sleepers:
+		_sleeper_tick(Vector2(cam.global_position.x, cam.global_position.z), _delta)
 
 
 ## 你在 p：缺的块搭最多 budget 块（近的先搭），远的拆掉；必要时重搭远景
@@ -257,3 +270,51 @@ func _deep_walls(root: Node3D, r: Rect2, g: PackedFloat32Array, sx: int, sz: int
 	sh.set_faces(faces)
 	cs.shape = sh
 	body.add_child(cs)
+
+## 离地图边多远（米）
+func out_of_core(p: Vector2) -> float:
+	var dx := maxf(maxf(core.position.x - p.x, p.x - core.end.x), 0.0)
+	var dz := maxf(maxf(core.position.y - p.y, p.y - core.end.y), 0.0)
+	return sqrt(dx * dx + dz * dz)
+
+
+## 这么远该来几个人（不到 SLEEPER_FROM：0）
+static func sleeper_count(out: float) -> int:
+	if out < SLEEPER_FROM:
+		return 0
+	return clampi(SLEEPER_MIN + int((out - SLEEPER_FROM) / SLEEPER_PER), SLEEPER_MIN, SLEEPER_MAX)
+
+
+func _sleeper_tick(p: Vector2, delta: float) -> void:
+	if crowd != null and is_instance_valid(crowd):
+		var gone := crowd.alive() == 0
+		var far := true
+		for a: Dictionary in crowd.agents:
+			if not a.done and (a.p as Vector2).distance_to(p) < 260.0:
+				far = false
+				break
+		if gone or far:
+			crowd.queue_free()
+			crowd = null
+			_crowd_wait = SLEEPER_GAP
+		return
+	_crowd_wait -= delta
+	var n := sleeper_count(out_of_core(p))
+	if _crowd_wait > 0.0 or n == 0:
+		return
+	spawn_sleepers(p, n)
+
+
+## 在你南边一点、偏左或偏右的地方冒出一队，往北走过你身边（北边是冬井）
+func spawn_sleepers(p: Vector2, n: int) -> SleeperCrowd:
+	var side := 1.0 if _crowd_rng.randf() < 0.5 else -1.0
+	var start := p + Vector2(side * _crowd_rng.randf_range(10.0, 22.0), _crowd_rng.randf_range(45.0, 70.0))
+	var route := [start, start + Vector2(_crowd_rng.randf_range(-30.0, 30.0), -200.0), start + Vector2(_crowd_rng.randf_range(-60.0, 60.0), -420.0)]
+	crowd = SleeperCrowd.make(route, n, 4.0 + n * 0.15)
+	crowd.name = "WildSleepers"
+	crowd.height_fn = height_fn
+	crowd.near_cap = 3
+	add_child(crowd)
+	print("IC_WILD_SLEEPERS n=%d at=%s" % [n, str(start)])
+	return crowd
+
