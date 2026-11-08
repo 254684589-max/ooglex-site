@@ -291,6 +291,8 @@ func _physics_process(delta: float) -> void:
 		if morale_t <= 0.0:
 			morale_t = MORALE_TICK
 			battle.morale_tick(self, MORALE_TICK)
+	if battle and is_instance_valid(battle) and battle.finished and fighting() and state != State.PATROL and action not in ["windup", "strike", "recover"]:
+		stand_down()                          # 仗打完了还在打的（打完那一刻正在出招、失衡的）：收手
 	want_speed = 0.0
 	super._physics_process(delta)
 	_check_blocked(delta)
@@ -442,6 +444,14 @@ func _loose(f: Node3D) -> void:
 	var spread := 0.08 + from.distance_to(aim) * 0.02
 	aim += Vector3(rng.randf_range(-spread, spread), rng.randf_range(-spread, spread) * 0.6, rng.randf_range(-spread, spread))
 	Arrow.shoot(get_parent(), from, aim, self, float(data.weapon_base))
+
+
+## 仗打完了收了手的兵：被砍了也不再喊人、不再回到战斗（2026-11-08 所有者截图：磨坊守输了还在砍，喊起一片「在那儿！」，
+## 一群没有对手的兵一直算「附近有敌人在和你打」，天亮换不了场景、门也开不了）
+func alert(call_others := true) -> void:
+	if battle != null and is_instance_valid(battle) and battle.finished:
+		return
+	super.alert(call_others)
 
 
 ## 仗打完了：还站着的人收手，原地站着（不再算「附近有敌人在和你打」）

@@ -37,8 +37,12 @@ const WAVE2 := ["shield", "spear", "shield", "spear", "soldier", "shield", "spea
 const WAVE3 := ["shield", "soldier", "shield", "soldier", "spear", "spear"]
 const WAVE1_T := 10.0                             # 先头在堤道村子那头列队（沿堤道的米数，往村子方向一排排往后）
 const WAVE_T := 4.0                               # 援军从堤道头上来
-const WAVE2_AT := 35.0
-const WAVE3_AT := 70.0
+const WAVE2_AT := 50.0                            # 2026-11-08 所有者「每场战役时长再拉长一些」：35 → 50
+const WAVE3_AT := 105.0                           # 70 → 105
+const WAVE4 := ["levy", "soldier", "spear", "levy", "shield", "soldier", "spear", "archer"]   # 后队（2026-11-08 加）：主力和精兵都上了以后，村子那头又压上来一股
+const WAVE4_AT := 150.0
+const RELIEF := ["shield", "spear", "soldier", "spear"]     # 堡里又赶出来 4 个守军（2026-11-08 加），比后队早到一点
+const RELIEF_AT := 130.0
 const ROW_GAP := 1.6
 const LANE_HALF := 1.0                            # 兵离堤道中线超过这么远就往回走（路面半宽 2 米，断口上的木板半宽 1.2 米）
 const COLS := 2                                   # 堤道 4 米宽：两人一排
@@ -167,6 +171,14 @@ static func setup(world: Node3D) -> Battle:
 	gaspar.display_override = "「芦刀」加斯帕"
 	third.push_front(gaspar)
 	b.add_wave(ATK, third, world, WAVE3_AT)
+	var rear := _wave("rear", WAVE4)
+	b.add_wave(ATK, rear, world, WAVE4_AT, "◆ 村子那头又亮起一串火把——%s的后队压上来了！" % foe_name())
+	var relief := []
+	for i in RELIEF.size():
+		var s := _soldier(RELIEF[i], "relief_%d" % i, DEF, gate_t + 1.6 + (i / COLS) * ROW_GAP, i % COLS)
+		s.display_override = "守军 · 堡里赶来的"
+		relief.append(s)
+	b.add_wave(DEF, relief, world, RELIEF_AT, "◆ 堡门开了一道缝——堡里又赶出来四个人，提着枪往堤道上跑！")
 	if str(GameState.get_flag("ch1_outlaws", "")) == "ally":    # 奥弗：主力到时从芦苇里杀出来
 		var lead := "无旗者的头目" if GameState.dead.has("ferry_offer") else "「灰手」奥弗"
 		var outlaws := []
