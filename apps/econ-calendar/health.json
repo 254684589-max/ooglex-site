@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "econ-calendar",
-  "generatedAt": "2026-11-08T18:00:12Z",
+  "generatedAt": "2026-11-08T22:26:25Z",
   "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-11-08T18:00:12Z",
-  "lastSuccessfulAt": "2026-11-08T18:00:12Z",
+  "lastAttemptAt": "2026-11-08T22:26:25Z",
+  "lastSuccessfulAt": "2026-11-08T22:26:25Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-11-08T18:00:12Z",
+  "publishedSnapshotAt": "2026-11-08T22:26:25Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -40,8 +40,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-08T18:00:12Z",
-      "lastSuccessAt": "2026-11-08T18:00:12Z"
+      "lastAttemptAt": "2026-11-08T22:26:25Z",
+      "lastSuccessAt": "2026-11-08T22:26:25Z"
     }
   ],
   "policy": {
