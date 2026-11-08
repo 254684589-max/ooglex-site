@@ -18,7 +18,7 @@ signal note(text: String)
 const CARTS := 3
 const CART_START := [26.0, 17.0, 8.0]          # 动身时三辆车在伏击段上的米数（第一辆在前）
 const END_T := 86.0                            # 过了这里算送上山了
-const SPEED := 1.05
+const SPEED := 0.8                              # 2026-11-08 所有者「每场战役时长再拉长一些」：1.05 → 0.8（护着车走的这一段长一些）
 const GAP_MIN := 6.5                           # 跟前车至少隔这么远
 const SPAWN_T := 2.0                           # 你站在车队后头
 const START_DELAY := 4.0                       # 到了以后几秒动身（先自动存档）

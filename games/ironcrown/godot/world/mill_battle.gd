@@ -32,9 +32,12 @@ const DOOR_R := 3.0                                      # 粮仓门口这么近
 const BREACH_LIMIT := 6
 const NAV_BOUNDS := AABB(Vector3(4.0, -3.0, -58.0), Vector3(64.0, 12.0, 62.0))
 const START_AFTER := 4.0                                 # 到了以后几秒开打
-const WAVE1B_AT := 15.0
-const WAVE2_AT := 60.0
-const WAVE_TEN_AT := 30.0
+const WAVE1B_AT := 22.0                                 # 2026-11-08 所有者「每场战役时长再拉长一些」：15 → 22
+const WAVE2_AT := 85.0                                  # 60 → 85
+const WAVE_TEN_AT := 42.0                               # 30 → 42
+const WAVE3 := ["levy", "soldier", "spear", "levy", "shield", "soldier", "levy", "spear", "soldier", "archer"]   # 塞弗林家的后队（2026-11-08 加）：第二拨上了以后东边又来一股
+const WAVE3_AT := 145.0
+const RELIEF_AT := 125.0                                # 庄园那边又赶来 4 个护院（护院撤走了的：4 个佃农），比后队早到一点（2026-11-08 加）
 const ROW_GAP := 1.5
 const COLS := 4
 ## 守方的点：[位置, 朝哪边]
@@ -263,6 +266,12 @@ static func setup(world: Node3D) -> Battle:
 	var odilon := _soldier("captain", "odilon", ATK, WAVE2_FROM + Vector2(0, -2.5), Vector2(0, 1), ATK_COAT, ATK_BAND, "奥迪隆")
 	second.push_front(odilon)
 	b.add_wave(ATK, second, world, WAVE2_AT, "◆ 北墙那道缺口外头一片火把——奥迪隆带着第二拨上来了！")
+	var rear := _block(WAVE3, "rear", ATK, WAVE1_AT + Vector2(6.0, 0), west, ATK_COAT, ATK_BAND, sev_label)
+	b.add_wave(ATK, rear, world, WAVE3_AT, "◆ 东边麦茬地里又亮起一串火把——塞弗林家的后队压上来了！")
+	var gone := GameState.has_flag("ch3_guards_left")
+	var relief := _block(["levy", "levy", "levy", "levy"] if gone else ["shield", "spear", "soldier", "spear"], "relief", DEF, (SOUTH_POST[0] as Vector2) + Vector2(0, 6.0), Vector2(0, -1),
+		TEN_COAT if gone else DEF_COAT, DEF_BAND, ten_label if gone else guard_label)
+	b.add_wave(DEF, relief, world, RELIEF_AT, "◆ 南门外跑来四个人——" + ("麦渡又来了几个佃农，拿着棍棒！" if gone else "庄园那边又派来几个护院！"))
 	b.captain_down.connect(func(s: String):
 		if s == ATK:
 			GameState.set_flag("ch3_odilon_down"))

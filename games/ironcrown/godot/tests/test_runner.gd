@@ -7806,8 +7806,9 @@ func test_causeway() -> void:
 	var atk := soldiers_of(main, CausewayBattle.ATK)
 	var herman := def.filter(func(x): return x.display_name == "赫尔曼")
 	check(b.squad.size() == 6 and def.size() == 13 and herman.size() == 1 and herman[0].is_captain and herman[0].guard_post != Vector3.INF, "守方：你的小队 6 人、赫尔曼（队长）和他的 6 个人守石拱")
-	check(atk.size() == 8 and b.waves.size() == 3 and b.side_total(CausewayBattle.ATK) == 33 and b.waves[1].soldiers.any(func(x): return x.display_override == "「芦刀」加斯帕" and x.kind == "captain"),
-		"攻方：先头 8 人在村子那头，主力 14 人、加斯帕和 6 名精兵是后两波；没人提醒过水门，主力到时 4 个人从水门摸进来（一共 33 人）")
+	check(atk.size() == 8 and b.waves.size() == 5 and b.side_total(CausewayBattle.ATK) == 41 and b.waves[1].soldiers.any(func(x): return x.display_override == "「芦刀」加斯帕" and x.kind == "captain")
+		and b.waves.any(func(w): return w.side == CausewayBattle.DEF and w.soldiers.size() == CausewayBattle.RELIEF.size()),
+		"攻方：先头 8 人在村子那头，主力 14 人、加斯帕和 6 名精兵、后队 8 人是后三波；没人提醒过水门，主力到时 4 个人从水门摸进来（一共 41 人）；堡里晚些再赶出来 4 个守军（2026-11-08 拉长）")
 	check((def + atk).all(func(x): return x.collision_mask & FpController.LAYER_BOUNDARY != 0), "堤道上的兵都撞鹭沼的边墙（不走进深水）")
 	check(b.squad.all(func(x): return x.order == "follow") and atk.all(func(x): return CausewayBattle.t_of(x.global_position) < 15.0), "小队跟着你；先头在堤道村子那头")
 	await physics(30)
@@ -7855,7 +7856,7 @@ func test_causeway() -> void:
 	b.elapsed = CausewayBattle.WAVE2_AT
 	await seconds(0.5)
 	var flank := soldiers_of(main, CausewayBattle.ATK).filter(func(x): return x.fighting() and x.has_meta("flank"))
-	check(b.waves.size() == 1 and soldiers_of(main, CausewayBattle.ATK).filter(func(x): return x.fighting()).size() == 18 and flank.size() == 4, "开打 35 秒：主力 14 人上来，水门摸进来 4 个（分了人守水门，可没人提醒过——守的人不知道该守）")
+	check(b.waves.size() == 3 and soldiers_of(main, CausewayBattle.ATK).filter(func(x): return x.fighting()).size() == 18 and flank.size() == 4, "开打 %d 秒：主力 14 人上来，水门摸进来 4 个（分了人守水门，可没人提醒过——守的人不知道该守）" % int(CausewayBattle.WAVE2_AT))
 	check(flank.all(func(x): return CausewayBattle.t_of(x.global_position) > CausewayBattle.BREACH_T) and b.breached.is_empty() and main.hud.toast_label.text.contains("水门那边摸进来"), "水门摸进来的人在堡门前（堡门背后有敌人），不算「冲过石拱」")
 	var killed := 0
 	while b.routed == "" and killed < 14:
@@ -7865,7 +7866,7 @@ func test_causeway() -> void:
 		left[0].take_hit({"damage": 999, "kind": "heavy", "stop": 0.0, "attacker": main.player})
 		killed += 1
 	await seconds(0.6)
-	check(b.routed == CausewayBattle.ATK and b.waves.is_empty() and b.finished and b.winner == CausewayBattle.DEF, "攻方倒下过半（%d + %d）：剩下的溃逃，加斯帕那波不来了，守住" % [8, killed])
+	check(b.routed == CausewayBattle.ATK and b.waves.filter(func(w): return w.side == CausewayBattle.ATK).is_empty() and b.finished and b.winner == CausewayBattle.DEF, "攻方倒下过半（%d + %d）：剩下的溃逃，加斯帕那波不来了，守住" % [8, killed])
 	check(GameState.get_flag("ch1_causeway") == "held" and main.hud.toast_label.text.contains("守住了"), "写 ch1_causeway = held")
 	await free_main(main)
 	# —— 4.9b 水门：交出了钥匙不开；提醒过又分了人守，挡回去；提醒了没分人、没人提醒，都摸进来
@@ -7891,7 +7892,7 @@ func test_causeway() -> void:
 	b = main.battle
 	var cw: CausewayBattle = main.world.get_node("Causeway")
 	check(b.sides[CausewayBattle.ATK] == "阿尔里克的人" and cw.peat_fire and CausewayBattle.gate_state() == "guarded" and cw.get_node_or_null("PeatStacks") != null, "选了伊薇特：攻方是阿尔里克的人；断口边上码着泥炭垛，这一仗会点火；水门有人守")
-	var ow: Array = b.waves.filter(func(w): return w.side == CausewayBattle.DEF)
+	var ow: Array = b.waves.filter(func(w): return w.side == CausewayBattle.DEF and not str(w.soldiers[0].display_override).contains("堡里赶来"))
 	check(ow.size() == 1 and ow[0].soldiers.size() == 5 and ow[0].soldiers[0].display_override == "「灰手」奥弗" and ow[0].soldiers.all(func(x): return CausewayBattle.off_of(x.position) > CausewayBattle.REED_OFF),
 		"收编了奥弗：主力到时他带 4 个人从芦苇里杀出来（藏在堤道外面）")
 	check(cw.torches.size() == CausewayBattle.TORCHES and cw.torches.all(func(e): return (e[0] as Node3D).visible and CausewayBattle.t_of((e[0] as Node3D).position) < -20.0), "远处的火把线在村子那头的沼地上")
@@ -7942,7 +7943,7 @@ func test_causeway() -> void:
 	GameState.flags.erase("ch1_causeway")
 	GameState.set_stage("ch1_main", "to_causeway")
 	main = await make_causeway()
-	ow = main.battle.waves.filter(func(w): return w.side == CausewayBattle.DEF)
+	ow = main.battle.waves.filter(func(w): return w.side == CausewayBattle.DEF and not str(w.soldiers[0].display_override).contains("堡里赶来"))
 	check(ow.size() == 1 and ow[0].soldiers[0].display_override == "无旗者的头目", "奥弗死在渡口的：是无旗者的头目带人来")
 	await free_main(main)
 	GameState.new_game()
@@ -9363,9 +9364,9 @@ func test_millbattle() -> void:
 	var b: Battle = main.battle
 	var def := soldiers_of(main, MillBattle.DEF)
 	var atk := soldiers_of(main, MillBattle.ATK)
-	check(b != null and not b.started and b.player_side == MillBattle.DEF and b.squad.size() == 6 and def.size() == 14 and atk.size() == 10 and b.side_total(MillBattle.ATK) == 40,
-		"守磨坊：你的 6 个护院、护院头目和 7 个守东门缺口的（守方 14）；攻方第一拨前 10 个在东门外，后 10 个、第二拨 20 个晚些来（一共 40）")
-	check(b.waves.size() == 2 and b.waves.any(func(w): return w.soldiers.any(func(x): return x.display_override == "奥迪隆" and x.kind == "captain")) and main.world.find_child("Npc_captain", true, false) == null,
+	check(b != null and not b.started and b.player_side == MillBattle.DEF and b.squad.size() == 6 and def.size() == 14 and atk.size() == 10 and b.side_total(MillBattle.ATK) == 50,
+		"守磨坊：你的 6 个护院、护院头目和 7 个守东门缺口的（守方 14）；攻方第一拨前 10 个在东门外，后 10 个、第二拨 20 个、后队 10 个晚些来（一共 50；2026-11-08 拉长）")
+	check(b.waves.size() == 4 and b.waves.any(func(w): return w.soldiers.any(func(x): return x.display_override == "奥迪隆" and x.kind == "captain")) and main.world.find_child("Npc_captain", true, false) == null,
 		"第二波由奥迪隆（队长）带队；白天那个护院头目 NPC 拿掉了（在军阵里）")
 	var path := NavigationServer3D.map_get_path(main.world.get_world_3d().navigation_map, MillBattle.p3(Vector2(60, -30)), MillBattle.p3(Vector2(35, -18)), true)
 	check(not main.nav.is_empty() and path.size() > 1 and NavBuilder.path_length(path) < 45.0 and path[path.size() - 1].distance_to(MillBattle.p3(Vector2(35, -18))) < 1.5,
@@ -9412,7 +9413,7 @@ func test_millbattle() -> void:
 	main = await make_mill("mill_raid")
 	b = main.battle
 	check(b != null and b.player_side == MillBattle.ATK and b.squad.size() == 6 and soldiers_of(main, MillBattle.ATK).size() == 20 and soldiers_of(main, MillBattle.DEF).size() == 12
-		and b.waves.size() == 2 and b.waves.any(func(w): return w.side == MillBattle.DEF and w.soldiers.any(func(x): return x.display_override == "老贝恩")),
+		and b.waves.size() == 4 and b.waves.any(func(w): return w.side == MillBattle.DEF and w.soldiers.any(func(x): return x.display_override == "老贝恩")),
 		"跟塞弗林家：你和第一波 20 人（6 个跟着你）vs 护院头目和 11 个护院；老贝恩带 8 个佃农晚些从南门进来；奥迪隆的第二拨照样来")
 	var lom := GameState.get_rep("lomond")
 	check(MillBattle.finish(MillBattle.ATK).contains("抢到了") and str(GameState.get_flag("ch3_mill", "")) == "seized" and GameState.get_rep("lomond") == lom - 25, "抢到了：ch3_mill = seized，洛蒙德家 −25")

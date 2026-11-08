@@ -30,7 +30,12 @@ const GUARD_KINDS := ["shield", "spear", "soldier", "shield", "spear", "soldier"
 const COLS := 3
 const ROW_GAP := 1.5
 const LANE_HALF := 2.2
-const TIDE_AT := 35.0
+const TIDE_AT := 55.0                                   # 2026-11-08 所有者「每场战役时长再拉长一些」：35 → 55
+const RELIEF_KINDS := ["shield", "spear", "soldier", "spear", "soldier", "archer"]   # 洛蒙德家的接应（2026-11-08 加）：从山路下头追上来
+const RELIEF_AT := 85.0
+const RELIEF_T := 8.0
+const OATH_EXTRA := ["shield", "spear", "soldier"]     # 马蒂亚斯又带来 3 个人（2026-11-08 加）
+const OATH_EXTRA_AT := 100.0
 const TIDE_COUNT := 30
 const TIDE_COUNT_LIT18 := 20                            # 第十八烽点着了：第二夜的潮水小一些
 const TIDE_T := 50.0                                    # 潮水在这里横穿山路
@@ -161,6 +166,19 @@ static func setup(world: Node3D) -> Battle:
 	anselm.display_override = "安塞尔姆"
 	anselm.set_meta("anselm", true)
 	b.enlist(anselm, world)
+	var relief := []
+	for i in RELIEF_KINDS.size():
+		var s := _soldier(RELIEF_KINDS[i], "relief_%d" % i, FOE, RELIEF_T - (i / COLS) * ROW_GAP, i % COLS, ahead())
+		s.display_override = "洛蒙德家 · 接应的%s" % Enemy.types()[RELIEF_KINDS[i]].name
+		relief.append(s)
+	b.add_wave(FOE, relief, world, RELIEF_AT, "◆ 山路下头一阵马蹄——洛蒙德家接应的人追上来了！")
+	var extra := []
+	var back_t: float = POST_T[ambush()] + (6.0 if head else -6.0)
+	for i in OATH_EXTRA.size():
+		var s := _soldier(OATH_EXTRA[i], "oath_extra_%d" % i, OURS, back_t, i % COLS, -ahead() if head else ahead())
+		s.display_override = "烽誓团 · 后来的"
+		extra.append(s)
+	b.add_wave(OURS, extra, world, OATH_EXTRA_AT, "◆ 身后有人喊——马蒂亚斯又带来三个人！")
 	var ca := ConvoyAmbush.new()
 	ca.name = "ConvoyAmbush"
 	ca.battle = b
