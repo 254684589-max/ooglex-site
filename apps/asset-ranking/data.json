@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-11-08T05:48:50Z",
-  "asOf": "2026-11-08",
+  "updatedAt": "2026-11-09T01:54:28Z",
+  "asOf": "2026-11-09",
   "frequency": "daily",
   "status": "partial",
   "source": "Yahoo Finance · CoinGecko · 公开估算（世界黄金协会 / IMF / Savills 等）",
   "count": 250,
-  "totalMarketCap": 1095127.6,
+  "totalMarketCap": 1095339.7,
   "categories": [
     {
       "key": "real-estate",
@@ -86,7 +86,7 @@
         "status": "partial",
         "source": "Savills",
         "asOf": null,
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "irregular",
         "note": "慢变量或静态存量估值；原报告日期未结构化。"
       },
@@ -100,17 +100,17 @@
       "unit": "桶（探明储量）",
       "qty": 1730000000000.0,
       "note": "全球石油探明储量 × WTI 油价（储量约 1.73 万亿桶，价格为日频快照）",
-      "marketCap": 157135.9,
-      "price": 90.83,
-      "changePct": -5.47,
+      "marketCap": 156599.6,
+      "price": 90.52,
+      "changePct": -5.8,
       "static": false,
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": "2026-11-06T21:59:58Z",
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "asOf": "2026-11-09T01:44:05Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "daily",
         "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
@@ -134,7 +134,7 @@
         "status": "partial",
         "source": "公开存量基准（原始来源未结构化）",
         "asOf": null,
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "irregular",
         "note": "慢变量或静态存量估值；原报告日期未结构化。"
       },
@@ -158,7 +158,7 @@
         "status": "partial",
         "source": "IMF《财政监测》",
         "asOf": null,
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "irregular",
         "note": "慢变量或静态存量估值；原报告日期未结构化。"
       },
@@ -172,17 +172,17 @@
       "unit": "元（广义货币 M2）",
       "qty": 353670000000000.0,
       "note": "中国广义货币 M2（约 353 万亿元）× 美元汇率，汇率为日频快照",
-      "marketCap": 53016.0,
-      "price": 0.149903,
-      "changePct": -0.15,
+      "marketCap": 52985.1,
+      "price": 0.149815,
+      "changePct": -0.4,
       "static": false,
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": "2026-11-08T03:30:53Z",
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "asOf": "2026-11-09T01:54:15Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "daily",
         "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
@@ -206,7 +206,7 @@
         "status": "partial",
         "source": "公开存量基准（原始来源未结构化）",
         "asOf": null,
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "irregular",
         "note": "慢变量或静态存量估值；原报告日期未结构化。"
       },
@@ -220,17 +220,17 @@
       "unit": "盎司（地面存量）",
       "qty": 6720000000.0,
       "note": "全球地面黄金存量 × 金价（约 6.72 亿盎司/21.6 万吨，来源世界黄金协会，价格为日频快照）",
-      "marketCap": 27383.3,
-      "price": 4074.9,
-      "changePct": 3.41,
+      "marketCap": 27761.7,
+      "price": 4131.2,
+      "changePct": 4.84,
       "static": false,
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 世界黄金协会",
-        "asOf": "2026-11-06T21:59:59Z",
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "asOf": "2026-11-09T01:44:23Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "daily",
         "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
@@ -254,7 +254,7 @@
         "status": "partial",
         "source": "公开存量基准（原始来源未结构化）",
         "asOf": null,
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "irregular",
         "note": "慢变量或静态存量估值；原报告日期未结构化。"
       },
@@ -278,7 +278,7 @@
         "status": "partial",
         "source": "公开存量基准（原始来源未结构化）",
         "asOf": null,
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "irregular",
         "note": "慢变量或静态存量估值；原报告日期未结构化。"
       },
@@ -292,17 +292,17 @@
       "unit": "吨（储量）",
       "qty": 5800000000.0,
       "note": "全球铝储量 × 期货铝价（以 LME/COMEX 期货代理，价格为日频快照）",
-      "marketCap": 18510.7,
-      "price": 3191.5,
-      "changePct": -1.35,
+      "marketCap": 18551.3,
+      "price": 3198.5,
+      "changePct": -1.14,
       "static": false,
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": "2026-11-06T21:52:50Z",
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "asOf": "2026-11-09T01:01:42Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "daily",
         "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
@@ -316,17 +316,17 @@
       "unit": "欧元（广义货币 M3）",
       "qty": 16380000000000.0,
       "note": "欧元区广义货币 M3（约 16.4 万亿欧元）× 美元汇率，汇率为日频快照",
-      "marketCap": 18252.2,
-      "price": 1.1143,
-      "changePct": -0.13,
+      "marketCap": 18276.8,
+      "price": 1.1158,
+      "changePct": -0.3,
       "static": false,
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": "2026-11-06T22:29:32Z",
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "asOf": "2026-11-09T01:53:33Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "daily",
         "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
@@ -340,17 +340,17 @@
       "unit": "磅（储量）",
       "qty": 2860000000000.0,
       "note": "全球铜储量 × COMEX 铜价（储量约 13 亿吨，价格为日频快照）",
-      "marketCap": 17840.7,
-      "price": 6.238,
-      "changePct": -2.2,
+      "marketCap": 18119.5,
+      "price": 6.3355,
+      "changePct": -0.67,
       "static": false,
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": "2026-11-06T21:59:48Z",
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "asOf": "2026-11-09T01:44:23Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "daily",
         "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
@@ -364,17 +364,17 @@
       "unit": "日元（广义货币 M2）",
       "qty": 1250000000000000.0,
       "note": "日本广义货币 M2（约 1250 万亿日元）× 美元汇率，汇率为日频快照",
-      "marketCap": 7890.2,
-      "price": 0.006312,
-      "changePct": -0.47,
+      "marketCap": 7901.5,
+      "price": 0.006321,
+      "changePct": -0.18,
       "static": false,
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": "2026-11-08T05:21:16Z",
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "asOf": "2026-11-09T01:54:28Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "daily",
         "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
@@ -401,7 +401,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 14
@@ -427,7 +427,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 15
@@ -440,17 +440,17 @@
       "unit": "英镑（广义货币 M2）",
       "qty": 3000000000000.0,
       "note": "英国广义货币 M2（约 3 万亿英镑）× 美元汇率，汇率为日频快照",
-      "marketCap": 4006.8,
-      "price": 1.3356,
-      "changePct": -0.22,
+      "marketCap": 4011.3,
+      "price": 1.3371,
+      "changePct": -0.29,
       "static": false,
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": "2026-11-06T22:29:32Z",
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "asOf": "2026-11-09T01:53:33Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "daily",
         "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
@@ -477,7 +477,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 17
@@ -503,7 +503,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 18
@@ -529,7 +529,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 19
@@ -542,17 +542,17 @@
       "unit": "盎司（地面存量）",
       "qty": 50000000000.0,
       "note": "全球地面白银存量 × 银价（约 500 亿盎司，价格为日频快照）",
-      "marketCap": 2597.1,
-      "price": 51.942,
-      "changePct": 4.75,
+      "marketCap": 2665.0,
+      "price": 53.3,
+      "changePct": 7.49,
       "static": false,
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": "2026-11-06T21:59:59Z",
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "asOf": "2026-11-09T01:44:28Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "daily",
         "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
@@ -579,7 +579,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 21
@@ -605,7 +605,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 22
@@ -614,10 +614,10 @@
       "name": "沙特阿美",
       "nameEn": "Saudi Aramco",
       "category": "company",
-      "marketCap": 1687.6,
-      "price": 26.16,
+      "marketCap": 1682.4,
+      "price": 26.08,
       "priceCur": "SAR",
-      "changePct": 0.93,
+      "changePct": -0.08,
       "country": "沙特",
       "flag": "🇸🇦",
       "sector": "能源",
@@ -630,8 +630,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-11-05T12:19:44Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "asOf": "2026-11-08T12:18:57Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 23
@@ -657,7 +657,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 24
@@ -668,16 +668,16 @@
       "category": "crypto",
       "emoji": "₿",
       "symbol": "BTC",
-      "marketCap": 1522.9,
-      "price": 75731,
-      "changePct": -0.28,
+      "marketCap": 1512.8,
+      "price": 75228,
+      "changePct": -0.57,
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "CoinGecko",
-        "asOf": "2026-11-08T05:46:48.000Z",
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "asOf": "2026-11-09T01:53:49.000Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "daily"
       },
       "rank": 25
@@ -703,7 +703,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 26
@@ -729,7 +729,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 27
@@ -755,7 +755,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 28
@@ -781,7 +781,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:03:23Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 29
@@ -807,7 +807,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 30
@@ -833,7 +833,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2026-05-01",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -860,7 +860,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T06:30:08Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 32
@@ -886,7 +886,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 33
@@ -912,7 +912,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2026-04-01",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -939,7 +939,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 35
@@ -965,7 +965,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 36
@@ -991,7 +991,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 37
@@ -1017,7 +1017,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:29Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 38
@@ -1043,7 +1043,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 39
@@ -1069,7 +1069,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 40
@@ -1095,7 +1095,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 41
@@ -1121,7 +1121,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:45Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 42
@@ -1147,7 +1147,7 @@
         "status": "partial",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": null,
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "irregular",
         "note": "未记录可核验的最近融资月份。"
       },
@@ -1174,7 +1174,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 44
@@ -1200,7 +1200,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2025-11-01",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -1227,7 +1227,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 46
@@ -1253,7 +1253,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:05Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 47
@@ -1279,7 +1279,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 48
@@ -1305,7 +1305,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:06Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 49
@@ -1331,7 +1331,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 50
@@ -1357,7 +1357,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 51
@@ -1383,7 +1383,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 52
@@ -1409,7 +1409,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:03:31Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 53
@@ -1435,7 +1435,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 54
@@ -1461,7 +1461,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 55
@@ -1487,7 +1487,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 56
@@ -1513,7 +1513,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 57
@@ -1539,7 +1539,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:03:15Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 58
@@ -1565,7 +1565,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 59
@@ -1591,7 +1591,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 60
@@ -1617,7 +1617,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 61
@@ -1643,7 +1643,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 62
@@ -1669,7 +1669,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:26Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 63
@@ -1695,7 +1695,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 64
@@ -1721,7 +1721,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 65
@@ -1747,30 +1747,10 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 66
-    },
-    {
-      "name": "以太坊",
-      "nameEn": "Ethereum",
-      "category": "crypto",
-      "emoji": "₿",
-      "symbol": "ETH",
-      "marketCap": 272.7,
-      "price": 2231.52,
-      "changePct": -0.67,
-      "stale": false,
-      "dataMeta": {
-        "mode": "market",
-        "status": "ok",
-        "source": "CoinGecko",
-        "asOf": "2026-11-08T05:46:48.000Z",
-        "updatedAt": "2026-11-08T05:48:50Z",
-        "frequency": "daily"
-      },
-      "rank": 67
     },
     {
       "name": "SAP",
@@ -1793,10 +1773,10 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
-      "rank": 68
+      "rank": 67
     },
     {
       "name": "雀巢",
@@ -1819,10 +1799,10 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
-      "rank": 69
+      "rank": 68
     },
     {
       "name": "奈飞",
@@ -1845,10 +1825,10 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
-      "rank": 70
+      "rank": 69
     },
     {
       "name": "应用材料",
@@ -1871,10 +1851,10 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
-      "rank": 71
+      "rank": 70
     },
     {
       "name": "阿里巴巴",
@@ -1897,7 +1877,27 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:59Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
+        "frequency": "daily"
+      },
+      "rank": 71
+    },
+    {
+      "name": "以太坊",
+      "nameEn": "Ethereum",
+      "category": "crypto",
+      "emoji": "₿",
+      "symbol": "ETH",
+      "marketCap": 262.1,
+      "price": 2144.87,
+      "changePct": -3.89,
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "CoinGecko",
+        "asOf": "2026-11-09T01:53:49.000Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "daily"
       },
       "rank": 72
@@ -1923,7 +1923,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 73
@@ -1949,7 +1949,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 74
@@ -1975,7 +1975,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 75
@@ -2001,7 +2001,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 76
@@ -2027,7 +2027,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 77
@@ -2053,7 +2053,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 78
@@ -2079,7 +2079,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 79
@@ -2105,7 +2105,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 80
@@ -2131,7 +2131,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 81
@@ -2157,7 +2157,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 82
@@ -2183,7 +2183,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 83
@@ -2209,7 +2209,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 84
@@ -2235,7 +2235,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 85
@@ -2261,7 +2261,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 86
@@ -2287,7 +2287,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:39Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 87
@@ -2313,7 +2313,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:49Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 88
@@ -2339,7 +2339,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 89
@@ -2365,7 +2365,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 90
@@ -2391,7 +2391,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 91
@@ -2417,7 +2417,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 92
@@ -2443,7 +2443,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:14Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 93
@@ -2469,7 +2469,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:03:07Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 94
@@ -2495,7 +2495,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 95
@@ -2521,7 +2521,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:39Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 96
@@ -2547,7 +2547,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 97
@@ -2573,7 +2573,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 98
@@ -2599,7 +2599,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 99
@@ -2625,7 +2625,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 100
@@ -2651,7 +2651,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:41Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 101
@@ -2677,7 +2677,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 102
@@ -2703,7 +2703,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 103
@@ -2729,7 +2729,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 104
@@ -2755,7 +2755,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 105
@@ -2781,7 +2781,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 106
@@ -2807,7 +2807,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 107
@@ -2833,7 +2833,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 108
@@ -2859,7 +2859,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 109
@@ -2871,15 +2871,15 @@
       "emoji": "₿",
       "symbol": "USDT",
       "marketCap": 176.9,
-      "price": 0.99901,
-      "changePct": -0.02,
+      "price": 0.999117,
+      "changePct": 0.02,
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "CoinGecko",
-        "asOf": "2026-11-08T05:46:48.000Z",
-        "updatedAt": "2026-11-08T05:48:50Z",
+        "asOf": "2026-11-09T01:53:49.000Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "daily"
       },
       "rank": 110
@@ -2905,7 +2905,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 111
@@ -2931,7 +2931,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 112
@@ -2957,7 +2957,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 113
@@ -2983,7 +2983,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:47Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 114
@@ -3009,7 +3009,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 115
@@ -3035,7 +3035,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 116
@@ -3061,7 +3061,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:32Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 117
@@ -3087,7 +3087,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 118
@@ -3113,7 +3113,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:24Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 119
@@ -3139,7 +3139,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 120
@@ -3165,7 +3165,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 121
@@ -3191,7 +3191,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 122
@@ -3217,7 +3217,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 123
@@ -3243,7 +3243,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 124
@@ -3269,7 +3269,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2026-02-01",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -3296,7 +3296,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 126
@@ -3322,7 +3322,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:33Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 127
@@ -3348,7 +3348,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2018-06-01",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -3375,7 +3375,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:50Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 129
@@ -3401,7 +3401,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 130
@@ -3427,7 +3427,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:19Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 131
@@ -3453,7 +3453,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 132
@@ -3479,7 +3479,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 133
@@ -3505,7 +3505,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 134
@@ -3531,7 +3531,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 135
@@ -3557,7 +3557,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 136
@@ -3583,7 +3583,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 137
@@ -3609,7 +3609,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 138
@@ -3635,7 +3635,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 139
@@ -3661,7 +3661,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 140
@@ -3687,7 +3687,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2025-12-01",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -3714,7 +3714,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 142
@@ -3740,7 +3740,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 143
@@ -3766,7 +3766,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 144
@@ -3792,7 +3792,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 145
@@ -3818,7 +3818,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 146
@@ -3844,7 +3844,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 147
@@ -3870,7 +3870,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 148
@@ -3896,7 +3896,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 149
@@ -3922,7 +3922,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 150
@@ -3948,7 +3948,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 151
@@ -3974,7 +3974,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 152
@@ -4000,7 +4000,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2026-02-01",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -4027,7 +4027,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:08Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 154
@@ -4053,7 +4053,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:03:14Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 155
@@ -4079,7 +4079,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 156
@@ -4105,7 +4105,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 157
@@ -4131,7 +4131,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 158
@@ -4157,7 +4157,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 159
@@ -4183,7 +4183,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 160
@@ -4209,7 +4209,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 161
@@ -4235,7 +4235,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 162
@@ -4261,7 +4261,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 163
@@ -4287,7 +4287,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 164
@@ -4313,7 +4313,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:57Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 165
@@ -4339,7 +4339,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 166
@@ -4365,7 +4365,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 167
@@ -4391,7 +4391,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 168
@@ -4417,7 +4417,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 169
@@ -4443,7 +4443,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 170
@@ -4469,7 +4469,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 171
@@ -4495,7 +4495,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 172
@@ -4521,7 +4521,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 173
@@ -4547,7 +4547,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 174
@@ -4573,7 +4573,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 175
@@ -4599,7 +4599,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 176
@@ -4625,7 +4625,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 177
@@ -4651,7 +4651,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:42Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 178
@@ -4677,7 +4677,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 179
@@ -4703,7 +4703,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 180
@@ -4729,7 +4729,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 181
@@ -4755,7 +4755,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:30Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 182
@@ -4781,7 +4781,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2023-10-01",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -4808,7 +4808,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 184
@@ -4834,7 +4834,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 185
@@ -4860,7 +4860,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 186
@@ -4886,7 +4886,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:47Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 187
@@ -4912,7 +4912,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:05Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 188
@@ -4938,7 +4938,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 189
@@ -4964,7 +4964,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 190
@@ -4990,7 +4990,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:48Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 191
@@ -5016,7 +5016,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 192
@@ -5042,7 +5042,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 193
@@ -5068,7 +5068,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 194
@@ -5094,7 +5094,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 195
@@ -5120,7 +5120,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 196
@@ -5146,7 +5146,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 197
@@ -5172,7 +5172,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 198
@@ -5198,7 +5198,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:03:25Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 199
@@ -5224,30 +5224,10 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 200
-    },
-    {
-      "name": "币安币",
-      "nameEn": "BNB",
-      "category": "crypto",
-      "emoji": "₿",
-      "symbol": "BNB",
-      "marketCap": 91.5,
-      "price": 695.67,
-      "changePct": 0.14,
-      "stale": false,
-      "dataMeta": {
-        "mode": "market",
-        "status": "ok",
-        "source": "CoinGecko",
-        "asOf": "2026-11-08T05:46:48.000Z",
-        "updatedAt": "2026-11-08T05:48:50Z",
-        "frequency": "daily"
-      },
-      "rank": 201
     },
     {
       "name": "ING 集团",
@@ -5270,10 +5250,10 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
-      "rank": 202
+      "rank": 201
     },
     {
       "name": "康宁",
@@ -5296,10 +5276,10 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:59Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
-      "rank": 203
+      "rank": 202
     },
     {
       "name": "CSX 运输",
@@ -5322,10 +5302,10 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
-      "rank": 204
+      "rank": 203
     },
     {
       "name": "西部数据",
@@ -5348,10 +5328,10 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
-      "rank": 205
+      "rank": 204
     },
     {
       "name": "艾默生",
@@ -5374,7 +5354,27 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:59Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
+        "frequency": "daily"
+      },
+      "rank": 205
+    },
+    {
+      "name": "币安币",
+      "nameEn": "BNB",
+      "category": "crypto",
+      "emoji": "₿",
+      "symbol": "BNB",
+      "marketCap": 90.6,
+      "price": 689.19,
+      "changePct": -0.76,
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "CoinGecko",
+        "asOf": "2026-11-09T01:53:49.000Z",
+        "updatedAt": "2026-11-09T01:54:28Z",
         "frequency": "daily"
       },
       "rank": 206
@@ -5400,7 +5400,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 207
@@ -5426,7 +5426,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 208
@@ -5452,7 +5452,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 209
@@ -5478,7 +5478,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 210
@@ -5504,7 +5504,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:38Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 211
@@ -5530,7 +5530,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 212
@@ -5556,7 +5556,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 213
@@ -5582,7 +5582,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 214
@@ -5608,7 +5608,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:01:55Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 215
@@ -5634,7 +5634,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 216
@@ -5660,7 +5660,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 217
@@ -5686,7 +5686,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 218
@@ -5712,7 +5712,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 219
@@ -5738,7 +5738,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:04Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 220
@@ -5764,7 +5764,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 221
@@ -5790,7 +5790,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 222
@@ -5816,7 +5816,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 223
@@ -5842,7 +5842,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:25Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 224
@@ -5867,8 +5867,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-11-06T20:59:57Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "asOf": "2026-11-06T21:00:01Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 225
@@ -5894,7 +5894,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 226
@@ -5920,7 +5920,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 227
@@ -5946,7 +5946,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 228
@@ -5972,7 +5972,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 229
@@ -5998,7 +5998,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:03:41Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 230
@@ -6024,7 +6024,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 231
@@ -6050,7 +6050,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 232
@@ -6076,7 +6076,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 233
@@ -6102,7 +6102,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:02:16Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 234
@@ -6128,7 +6128,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 235
@@ -6154,7 +6154,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 236
@@ -6180,7 +6180,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:00Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 237
@@ -6206,7 +6206,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 238
@@ -6232,7 +6232,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 239
@@ -6258,7 +6258,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-10-05T20:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 240
@@ -6284,7 +6284,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 241
@@ -6310,7 +6310,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:03Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 242
@@ -6336,7 +6336,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 243
@@ -6362,7 +6362,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 244
@@ -6388,7 +6388,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 245
@@ -6414,7 +6414,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2025-11-01",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -6441,7 +6441,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 247
@@ -6467,7 +6467,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:02Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 248
@@ -6493,7 +6493,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 249
@@ -6519,7 +6519,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-11-06T21:00:01Z",
-        "updatedAt": "2026-11-07T23:53:34Z",
+        "updatedAt": "2026-11-08T22:25:05Z",
         "frequency": "daily"
       },
       "rank": 250
