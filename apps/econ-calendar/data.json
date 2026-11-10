@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-10T02:41:25Z",
+  "updatedAt": "2026-11-10T19:54:57Z",
   "asOf": "2026-11-10",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-11-08 ~ 2026-11-14",
@@ -259,19 +259,7 @@
       "actual": null
     },
     {
-      "ts": "2026-11-10T03:03:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "贸易帐",
-      "titleEn": "Trade Balance",
-      "impact": "low",
-      "forecast": "855B",
-      "previous": "906B",
-      "actual": null
-    },
-    {
-      "ts": "2026-11-10T03:04:00Z",
+      "ts": "2026-11-10T02:32:00Z",
       "ccy": "CNY",
       "country": "中国",
       "flag": "🇨🇳",
@@ -280,6 +268,18 @@
       "impact": "low",
       "forecast": "126.5B",
       "previous": "133.5B",
+      "actual": null
+    },
+    {
+      "ts": "2026-11-10T02:33:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "贸易帐",
+      "titleEn": "Trade Balance",
+      "impact": "low",
+      "forecast": "855B",
+      "previous": "906B",
       "actual": null
     },
     {
@@ -331,30 +331,6 @@
       "actual": null
     },
     {
-      "ts": "2026-11-10T09:03:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "货币供应 同比",
-      "titleEn": "M2 Money Supply y/y",
-      "impact": "low",
-      "forecast": "7.2%",
-      "previous": "7.2%",
-      "actual": null
-    },
-    {
-      "ts": "2026-11-10T09:03:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "New Loans",
-      "titleEn": "New Loans",
-      "impact": "low",
-      "forecast": "80B",
-      "previous": "1080B",
-      "actual": null
-    },
-    {
       "ts": "2026-11-10T09:45:00Z",
       "ccy": "All",
       "country": "全球",
@@ -364,6 +340,18 @@
       "impact": "low",
       "forecast": null,
       "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-11-10T10:02:00Z",
+      "ccy": "GBP",
+      "country": "英国",
+      "flag": "🇬🇧",
+      "title": "国债拍卖",
+      "titleEn": "30-y Bond Auction",
+      "impact": "low",
+      "forecast": null,
+      "previous": "5.52|3.8",
       "actual": null
     },
     {
@@ -379,18 +367,6 @@
       "actual": null
     },
     {
-      "ts": "2026-11-10T11:32:00Z",
-      "ccy": "GBP",
-      "country": "英国",
-      "flag": "🇬🇧",
-      "title": "国债拍卖",
-      "titleEn": "30-y Bond Auction",
-      "impact": "low",
-      "forecast": null,
-      "previous": "5.52|3.8",
-      "actual": null
-    },
-    {
       "ts": "2026-11-10T12:30:00Z",
       "ccy": "GBP",
       "country": "英国",
@@ -403,19 +379,7 @@
       "actual": null
     },
     {
-      "ts": "2026-11-10T13:15:00Z",
-      "ccy": "USD",
-      "country": "美国",
-      "flag": "🇺🇸",
-      "title": "就业人数变化",
-      "titleEn": "ADP Weekly Employment Change",
-      "impact": "low",
-      "forecast": null,
-      "previous": null,
-      "actual": null
-    },
-    {
-      "ts": "2026-11-10T13:16:00Z",
+      "ts": "2026-11-10T13:14:00Z",
       "ccy": "USD",
       "country": "美国",
       "flag": "🇺🇸",
@@ -424,6 +388,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "16.8K",
+      "actual": null
+    },
+    {
+      "ts": "2026-11-10T13:15:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "就业人数变化",
+      "titleEn": "ADP Weekly Employment Change",
+      "impact": "low",
+      "forecast": null,
+      "previous": "19.5K",
       "actual": null
     },
     {
@@ -628,6 +604,30 @@
       "impact": "low",
       "forecast": "0.7%",
       "previous": "-1.3%",
+      "actual": null
+    },
+    {
+      "ts": "2026-11-11T09:03:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "货币供应 同比",
+      "titleEn": "M2 Money Supply y/y",
+      "impact": "low",
+      "forecast": "7.2%",
+      "previous": "7.2%",
+      "actual": null
+    },
+    {
+      "ts": "2026-11-11T09:03:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "New Loans",
+      "titleEn": "New Loans",
+      "impact": "low",
+      "forecast": "80B",
+      "previous": "1080B",
       "actual": null
     },
     {
