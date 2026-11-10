@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-11-09T22:37:23Z",
-  "asOf": "2026-11-09",
+  "updatedAt": "2026-11-10T02:41:25Z",
+  "asOf": "2026-11-10",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-11-08 ~ 2026-11-14",
   "count": 105,
@@ -878,7 +878,7 @@
       "title": "成屋销售",
       "titleEn": "Existing Home Sales",
       "impact": "low",
-      "forecast": "3.86M",
+      "forecast": "3.89M",
       "previous": "3.99M",
       "actual": null
     },
@@ -998,7 +998,7 @@
       "title": "Federal Budget Balance",
       "titleEn": "Federal Budget Balance",
       "impact": "low",
-      "forecast": null,
+      "forecast": "-286.3B",
       "previous": "-26.9B",
       "actual": null
     },
@@ -1082,7 +1082,7 @@
       "title": "贸易帐",
       "titleEn": "Italian Trade Balance",
       "impact": "low",
-      "forecast": "1.85B",
+      "forecast": "2.84B",
       "previous": "1.77B",
       "actual": null
     },
