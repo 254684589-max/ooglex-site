@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-11-10T02:40:34Z",
+  "updatedAt": "2026-11-10T23:42:14Z",
   "asOf": "2026-11-10",
   "source": "CNN Business Fear & Greed Index",
-  "score": 32,
+  "score": 33,
   "rating": "fear",
   "ratingZh": "恐惧",
   "refs": {
     "now": {
-      "score": 32,
+      "score": 33,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
     "close": {
-      "score": 22,
-      "rating": "extreme fear",
-      "ratingZh": "极度恐惧"
+      "score": 32,
+      "rating": "fear",
+      "ratingZh": "恐惧"
     },
     "week": {
-      "score": 19,
+      "score": 24,
       "rating": "extreme fear",
       "ratingZh": "极度恐惧"
     },
@@ -27,14 +27,14 @@
       "ratingZh": "恐惧"
     },
     "year": {
-      "score": 20,
-      "rating": "extreme fear",
-      "ratingZh": "极度恐惧"
+      "score": 30,
+      "rating": "fear",
+      "ratingZh": "恐惧"
     }
   },
   "indicators": [
     {
-      "score": 14,
+      "score": 13,
       "rating": "extreme fear",
       "ratingZh": "极度恐惧",
       "key": "market_momentum_sp500",
@@ -42,15 +42,15 @@
       "desc": "标普500 相对125日均线"
     },
     {
-      "score": 45,
-      "rating": "fear",
-      "ratingZh": "恐惧",
+      "score": 48,
+      "rating": "neutral",
+      "ratingZh": "中性",
       "key": "stock_price_strength",
       "name": "股价强度",
       "desc": "创52周新高 vs 新低个股"
     },
     {
-      "score": 48,
+      "score": 50,
       "rating": "neutral",
       "ratingZh": "中性",
       "key": "stock_price_breadth",
@@ -58,7 +58,7 @@
       "desc": "麦克莱伦成交量总和指数"
     },
     {
-      "score": 17,
+      "score": 16,
       "rating": "extreme fear",
       "ratingZh": "极度恐惧",
       "key": "put_call_options",
@@ -74,7 +74,7 @@
       "desc": "VIX 及其50日均线"
     },
     {
-      "score": 5,
+      "score": 11,
       "rating": "extreme fear",
       "ratingZh": "极度恐惧",
       "key": "safe_haven_demand",
@@ -82,9 +82,9 @@
       "desc": "股票 vs 国债 20日收益差"
     },
     {
-      "score": 42,
-      "rating": "fear",
-      "ratingZh": "恐惧",
+      "score": 46,
+      "rating": "neutral",
+      "ratingZh": "中性",
       "key": "junk_bond_demand",
       "name": "垃圾债需求",
       "desc": "投资级 vs 垃圾债收益利差"
