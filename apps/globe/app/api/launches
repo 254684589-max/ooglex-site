@@ -1,5 +1,5 @@
 {
- "count": 22,
+ "count": 23,
  "next": null,
  "previous": null,
  "results": [
@@ -2005,7 +2005,7 @@
     "abbrev": "Success",
     "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
    },
-   "last_updated": "2026-11-10T02:05:29Z",
+   "last_updated": "2026-11-11T02:04:29Z",
    "net": "2026-10-13T10:33:44Z",
    "net_precision": {
     "id": 0,
@@ -3240,8 +3240,8 @@
         "variants": []
        },
        "in_space": true,
-       "time_in_space": "P302DT23H27M36S",
-       "time_docked": "P294DT13H56M53S",
+       "time_in_space": "P303DT23H26M45S",
+       "time_docked": "P295DT13H56M2S",
        "flights_count": 4,
        "mission_ends_count": 3,
        "status": {
@@ -3640,7 +3640,7 @@
         "description": "Unpowered landing using parachute(s)."
        }
       },
-      "duration": "P27DT15H31M45.105545S",
+      "duration": "P28DT15H30M45.682409S",
       "turn_around_time": "P228DT2H49M44S",
       "response_mode": "detailed",
       "launch_crew": [],
@@ -26500,6 +26500,756 @@
    ],
    "timeline": [],
    "pad_turnaround": "P30DT57M",
+   "mission_patches": []
+  },
+  {
+   "id": "d66590ab-b273-47ff-b85a-608b62851b4b",
+   "url": "https://ll.thespacedevs.com/2.3.0/launches/d66590ab-b273-47ff-b85a-608b62851b4b/",
+   "name": "Long March 2D | Unknown Payload",
+   "response_mode": "detailed",
+   "slug": "long-march-2d-unknown-payload",
+   "launch_designator": null,
+   "status": {
+    "id": 1,
+    "name": "Go for Launch",
+    "abbrev": "Go",
+    "description": "Current T-0 confirmed by official or reliable sources."
+   },
+   "last_updated": "2026-11-05T06:42:19Z",
+   "net": "2026-11-11T11:40:00Z",
+   "net_precision": {
+    "id": 2,
+    "name": "Hour",
+    "abbrev": "HR",
+    "description": "The T-0 is accurate to the hour."
+   },
+   "window_end": "2026-11-11T12:05:00Z",
+   "window_start": "2026-11-11T11:32:00Z",
+   "image": {
+    "id": 1768,
+    "name": "[AUTO] Long March 2D - image",
+    "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/long2520march25202d_image_20190222031211.jpeg",
+    "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193719.jpeg",
+    "credit": null,
+    "license": {
+     "id": 1,
+     "name": "Unknown",
+     "priority": 9,
+     "link": null
+    },
+    "single_use": true,
+    "variants": []
+   },
+   "infographic": null,
+   "probability": null,
+   "weather_concerns": null,
+   "failreason": "",
+   "hashtag": null,
+   "launch_service_provider": {
+    "response_mode": "normal",
+    "id": 88,
+    "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+    "name": "China Aerospace Science and Technology Corporation",
+    "abbrev": "CASC",
+    "type": {
+     "id": 1,
+     "name": "Government"
+    },
+    "featured": true,
+    "country": [
+     {
+      "id": 6,
+      "name": "China",
+      "alpha_2_code": "CN",
+      "alpha_3_code": "CHN",
+      "nationality_name": "Chinese",
+      "nationality_name_composed": "Sino"
+     }
+    ],
+    "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+    "administrator": "Chairman & President: Lei Fanpei",
+    "founding_year": 1999,
+    "launchers": "Long March",
+    "spacecraft": "",
+    "parent": null,
+    "image": {
+     "id": 8,
+     "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+     "credit": null,
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": true,
+     "variants": []
+    },
+    "logo": {
+     "id": 124,
+     "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+     "credit": null,
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": true,
+     "variants": []
+    },
+    "social_logo": {
+     "id": 50,
+     "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+     "credit": null,
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": true,
+     "variants": []
+    },
+    "total_launch_count": 623,
+    "consecutive_successful_launches": 14,
+    "successful_launches": 607,
+    "failed_launches": 16,
+    "pending_launches": 8,
+    "consecutive_successful_landings": 1,
+    "successful_landings": 1,
+    "failed_landings": 1,
+    "attempted_landings": 2,
+    "successful_landings_spacecraft": 3,
+    "failed_landings_spacecraft": 0,
+    "attempted_landings_spacecraft": 3,
+    "successful_landings_payload": 2,
+    "failed_landings_payload": 0,
+    "attempted_landings_payload": 2,
+    "info_url": "https://english.spacechina.com/",
+    "wiki_url": "https://en.wikipedia.org/wiki/China_Aerospace_Science_and_Technology_Corporation",
+    "social_media_links": []
+   },
+   "rocket": {
+    "id": 9295,
+    "configuration": {
+     "response_mode": "detailed",
+     "id": 17,
+     "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/17/",
+     "name": "Long March 2D",
+     "families": [
+      {
+       "response_mode": "detailed",
+       "id": 106,
+       "name": "Long March",
+       "manufacturer": [
+        {
+         "response_mode": "normal",
+         "id": 88,
+         "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+         "name": "China Aerospace Science and Technology Corporation",
+         "abbrev": "CASC",
+         "type": {
+          "id": 1,
+          "name": "Government"
+         },
+         "featured": true,
+         "country": [
+          {
+           "id": 6,
+           "name": "China",
+           "alpha_2_code": "CN",
+           "alpha_3_code": "CHN",
+           "nationality_name": "Chinese",
+           "nationality_name_composed": "Sino"
+          }
+         ],
+         "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+         "administrator": "Chairman & President: Lei Fanpei",
+         "founding_year": 1999,
+         "launchers": "Long March",
+         "spacecraft": "",
+         "parent": null,
+         "image": {
+          "id": 8,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "logo": {
+          "id": 124,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "social_logo": {
+          "id": 50,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "total_launch_count": 623,
+         "consecutive_successful_launches": 14,
+         "successful_launches": 607,
+         "failed_launches": 16,
+         "pending_launches": 8,
+         "consecutive_successful_landings": 1,
+         "successful_landings": 1,
+         "failed_landings": 1,
+         "attempted_landings": 2,
+         "successful_landings_spacecraft": 3,
+         "failed_landings_spacecraft": 0,
+         "attempted_landings_spacecraft": 3,
+         "successful_landings_payload": 2,
+         "failed_landings_payload": 0,
+         "attempted_landings_payload": 2,
+         "info_url": "https://english.spacechina.com/",
+         "wiki_url": "https://en.wikipedia.org/wiki/China_Aerospace_Science_and_Technology_Corporation",
+         "social_media_links": []
+        }
+       ],
+       "parent": null,
+       "description": "",
+       "active": true,
+       "maiden_flight": "1970-04-24",
+       "total_launch_count": 676,
+       "consecutive_successful_launches": 14,
+       "successful_launches": 656,
+       "failed_launches": 20,
+       "pending_launches": 8,
+       "attempted_landings": 2,
+       "successful_landings": 1,
+       "failed_landings": 1,
+       "consecutive_successful_landings": 1
+      },
+      {
+       "response_mode": "detailed",
+       "id": 109,
+       "name": "Long March 2",
+       "manufacturer": [
+        {
+         "response_mode": "normal",
+         "id": 88,
+         "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+         "name": "China Aerospace Science and Technology Corporation",
+         "abbrev": "CASC",
+         "type": {
+          "id": 1,
+          "name": "Government"
+         },
+         "featured": true,
+         "country": [
+          {
+           "id": 6,
+           "name": "China",
+           "alpha_2_code": "CN",
+           "alpha_3_code": "CHN",
+           "nationality_name": "Chinese",
+           "nationality_name_composed": "Sino"
+          }
+         ],
+         "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+         "administrator": "Chairman & President: Lei Fanpei",
+         "founding_year": 1999,
+         "launchers": "Long March",
+         "spacecraft": "",
+         "parent": null,
+         "image": {
+          "id": 8,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "logo": {
+          "id": 124,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "social_logo": {
+          "id": 50,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "total_launch_count": 623,
+         "consecutive_successful_launches": 14,
+         "successful_launches": 607,
+         "failed_launches": 16,
+         "pending_launches": 8,
+         "consecutive_successful_landings": 1,
+         "successful_landings": 1,
+         "failed_landings": 1,
+         "attempted_landings": 2,
+         "successful_landings_spacecraft": 3,
+         "failed_landings_spacecraft": 0,
+         "attempted_landings_spacecraft": 3,
+         "successful_landings_payload": 2,
+         "failed_landings_payload": 0,
+         "attempted_landings_payload": 2,
+         "info_url": "https://english.spacechina.com/",
+         "wiki_url": "https://en.wikipedia.org/wiki/China_Aerospace_Science_and_Technology_Corporation",
+         "social_media_links": []
+        }
+       ],
+       "parent": {
+        "response_mode": "normal",
+        "id": 106,
+        "name": "Long March",
+        "manufacturer": [
+         {
+          "response_mode": "normal",
+          "id": 88,
+          "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+          "name": "China Aerospace Science and Technology Corporation",
+          "abbrev": "CASC",
+          "type": {
+           "id": 1,
+           "name": "Government"
+          },
+          "featured": true,
+          "country": [
+           {
+            "id": 6,
+            "name": "China",
+            "alpha_2_code": "CN",
+            "alpha_3_code": "CHN",
+            "nationality_name": "Chinese",
+            "nationality_name_composed": "Sino"
+           }
+          ],
+          "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+          "administrator": "Chairman & President: Lei Fanpei",
+          "founding_year": 1999,
+          "launchers": "Long March",
+          "spacecraft": "",
+          "parent": null,
+          "image": {
+           "id": 8,
+           "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+           "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+           "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+           "credit": null,
+           "license": {
+            "id": 1,
+            "name": "Unknown",
+            "priority": 9,
+            "link": null
+           },
+           "single_use": true,
+           "variants": []
+          },
+          "logo": {
+           "id": 124,
+           "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+           "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+           "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+           "credit": null,
+           "license": {
+            "id": 1,
+            "name": "Unknown",
+            "priority": 9,
+            "link": null
+           },
+           "single_use": true,
+           "variants": []
+          },
+          "social_logo": {
+           "id": 50,
+           "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+           "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+           "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+           "credit": null,
+           "license": {
+            "id": 1,
+            "name": "Unknown",
+            "priority": 9,
+            "link": null
+           },
+           "single_use": true,
+           "variants": []
+          }
+         }
+        ],
+        "parent": null
+       },
+       "description": "",
+       "active": true,
+       "maiden_flight": "1974-11-05",
+       "total_launch_count": 234,
+       "consecutive_successful_launches": 40,
+       "successful_launches": 228,
+       "failed_launches": 6,
+       "pending_launches": 2,
+       "attempted_landings": 0,
+       "successful_landings": 0,
+       "failed_landings": 0,
+       "consecutive_successful_landings": 0
+      }
+     ],
+     "full_name": "Long March 2D",
+     "variant": "D",
+     "active": true,
+     "is_placeholder": false,
+     "manufacturer": {
+      "response_mode": "normal",
+      "id": 88,
+      "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+      "name": "China Aerospace Science and Technology Corporation",
+      "abbrev": "CASC",
+      "type": {
+       "id": 1,
+       "name": "Government"
+      },
+      "featured": true,
+      "country": [
+       {
+        "id": 6,
+        "name": "China",
+        "alpha_2_code": "CN",
+        "alpha_3_code": "CHN",
+        "nationality_name": "Chinese",
+        "nationality_name_composed": "Sino"
+       }
+      ],
+      "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+      "administrator": "Chairman & President: Lei Fanpei",
+      "founding_year": 1999,
+      "launchers": "Long March",
+      "spacecraft": "",
+      "parent": null,
+      "image": {
+       "id": 8,
+       "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "logo": {
+       "id": 124,
+       "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "social_logo": {
+       "id": 50,
+       "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "total_launch_count": 623,
+      "consecutive_successful_launches": 14,
+      "successful_launches": 607,
+      "failed_launches": 16,
+      "pending_launches": 8,
+      "consecutive_successful_landings": 1,
+      "successful_landings": 1,
+      "failed_landings": 1,
+      "attempted_landings": 2,
+      "successful_landings_spacecraft": 3,
+      "failed_landings_spacecraft": 0,
+      "attempted_landings_spacecraft": 3,
+      "successful_landings_payload": 2,
+      "failed_landings_payload": 0,
+      "attempted_landings_payload": 2,
+      "info_url": "https://english.spacechina.com/",
+      "wiki_url": "https://en.wikipedia.org/wiki/China_Aerospace_Science_and_Technology_Corporation",
+      "social_media_links": []
+     },
+     "program": [],
+     "reusable": false,
+     "image": {
+      "id": 1768,
+      "name": "[AUTO] Long March 2D - image",
+      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/long2520march25202d_image_20190222031211.jpeg",
+      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193719.jpeg",
+      "credit": null,
+      "license": {
+       "id": 1,
+       "name": "Unknown",
+       "priority": 9,
+       "link": null
+      },
+      "single_use": true,
+      "variants": []
+     },
+     "info_url": null,
+     "wiki_url": "https://en.wikipedia.org/wiki/Long_March_(rocket_family)",
+     "description": "The Long March 2D, also known as the Chang Zheng 2D, CZ-2D and LM-2D, is a Chinese orbital carrier rocket. It is a 2-stage carrier rocket mainly used for launching LEO and SSO satellites.",
+     "alias": "",
+     "min_stage": 1,
+     "max_stage": 2,
+     "length": 38.3,
+     "diameter": 3.35,
+     "maiden_flight": "1992-08-09",
+     "launch_cost": 30000000,
+     "launch_mass": 232.0,
+     "leo_capacity": 3500.0,
+     "gto_capacity": 0.0,
+     "geo_capacity": null,
+     "sso_capacity": 1300.0,
+     "to_thrust": 2962.0,
+     "apogee": 500.0,
+     "total_launch_count": 101,
+     "consecutive_successful_launches": 69,
+     "successful_launches": 100,
+     "failed_launches": 1,
+     "pending_launches": 1,
+     "attempted_landings": 0,
+     "successful_landings": 0,
+     "failed_landings": 0,
+     "consecutive_successful_landings": 0,
+     "fastest_turnaround": "P1DT20H14M"
+    },
+    "launcher_stage": [],
+    "spacecraft_stage": [],
+    "payloads": []
+   },
+   "mission": {
+    "id": 7894,
+    "name": "Unknown Payload",
+    "type": "Unknown",
+    "description": "Details TBD.",
+    "image": null,
+    "orbit": {
+     "id": 25,
+     "name": "Unknown",
+     "abbrev": "N/A",
+     "celestial_body": {
+      "response_mode": "list",
+      "id": 1,
+      "name": "Earth"
+     }
+    },
+    "agencies": [],
+    "info_urls": [],
+    "vid_urls": []
+   },
+   "pad": {
+    "id": 22,
+    "url": "https://ll.thespacedevs.com/2.3.0/pads/22/",
+    "active": true,
+    "agencies": [],
+    "name": "Launch Area 94 (SLS-2 / 603)",
+    "image": {
+     "id": 1375,
+     "name": "Long March 2D liftoff from Launch Area 4 (Yaogan 37 & Shiyan 22A/B)",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/long2520march_image_20230907133532.jpeg",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305192550.jpeg",
+     "credit": "Xinhua/Wang Jiangbo",
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": false,
+     "variants": []
+    },
+    "description": "",
+    "info_url": null,
+    "wiki_url": "https://en.wikipedia.org/wiki/Jiuquan_Launch_Area_4",
+    "map_url": "https://www.google.com/maps?q=40.960482,100.298059",
+    "latitude": 40.960482,
+    "longitude": 100.298059,
+    "country": {
+     "id": 6,
+     "name": "China",
+     "alpha_2_code": "CN",
+     "alpha_3_code": "CHN",
+     "nationality_name": "Chinese",
+     "nationality_name_composed": "Sino"
+    },
+    "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_22_20200803143437.jpg",
+    "total_launch_count": 139,
+    "orbital_launch_attempt_count": 139,
+    "fastest_turnaround": "P10DT18H22M",
+    "location": {
+     "response_mode": "normal",
+     "id": 17,
+     "url": "https://ll.thespacedevs.com/2.3.0/locations/17/",
+     "name": "Jiuquan Satellite Launch Center, People's Republic of China",
+     "celestial_body": {
+      "response_mode": "normal",
+      "id": 1,
+      "name": "Earth",
+      "type": {
+       "id": 1,
+       "name": "Planet"
+      },
+      "diameter": 12742000.0,
+      "mass": 5.972168e+24,
+      "gravity": 9.80655,
+      "length_of_day": "1 00:00:00",
+      "atmosphere": true,
+      "image": {
+       "id": 2040,
+       "name": "Earth (Apollo 17)",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
+       "credit": "NASA",
+       "license": {
+        "id": 4,
+        "name": "NASA Image and Media Guidelines",
+        "priority": 0,
+        "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
+      "wiki_url": "https://en.wikipedia.org/wiki/Earth",
+      "total_attempted_launches": 7658,
+      "successful_launches": 7101,
+      "failed_launches": 557,
+      "total_attempted_landings": 1385,
+      "successful_landings": 1336,
+      "failed_landings": 49
+     },
+     "active": true,
+     "country": {
+      "id": 6,
+      "name": "China",
+      "alpha_2_code": "CN",
+      "alpha_3_code": "CHN",
+      "nationality_name": "Chinese",
+      "nationality_name_composed": "Sino"
+     },
+     "description": "Jiuquan Satellite Launch Center is a Chinese spaceport located between the Ejin, Alxa, Inner Mongolia and Hangtian Town, Jinta County, Jiuquan, Gansu Province. It is part of the Dongfeng Aerospace City (Base 10).",
+     "image": {
+      "id": 1374,
+      "name": "Long March 2F/G liftoff (Shenzhou 16)",
+      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/long2520march_image_20240101085213.jpeg",
+      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305192548.jpeg",
+      "credit": "CMS",
+      "license": {
+       "id": 1,
+       "name": "Unknown",
+       "priority": 9,
+       "link": null
+      },
+      "single_use": false,
+      "variants": []
+     },
+     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/location_17_20200803142429.jpg",
+     "longitude": 100.291111,
+     "latitude": 40.958056,
+     "timezone_name": "Asia/Shanghai",
+     "total_launch_count": 302,
+     "total_landing_count": 3
+    }
+   },
+   "webcast_live": false,
+   "program": [],
+   "orbital_launch_attempt_count": 7435,
+   "location_launch_attempt_count": 303,
+   "pad_launch_attempt_count": 140,
+   "agency_launch_attempt_count": 624,
+   "orbital_launch_attempt_count_year": 262,
+   "location_launch_attempt_count_year": 30,
+   "pad_launch_attempt_count_year": 8,
+   "agency_launch_attempt_count_year": 54,
+   "flightclub_url": null,
+   "updates": [
+    {
+     "id": 16666,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
+     "comment": "Added launch per NOTAMs; Payload and launch vehicle identities extremely uncertain.",
+     "info_url": "https://forum.nasaspaceflight.com/index.php?topic=57867.msg2838306#msg2838306",
+     "created_by": "Cosmic_Penguin",
+     "created_on": "2026-11-05T06:42:00Z"
+    }
+   ],
+   "info_urls": [],
+   "vid_urls": [],
+   "timeline": [],
+   "pad_turnaround": "P18DT16H15M",
    "mission_patches": []
   }
  ]
