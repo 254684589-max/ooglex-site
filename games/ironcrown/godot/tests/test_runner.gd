@@ -14011,8 +14011,54 @@ func test_startmenu() -> void:
 	m.continue_btn.pressed.emit()
 	await seconds(1.2)
 	check(reloads[0] == 1 and str(GameState.pending_load.get("slot", "")) == "slot2", "继续游戏：读最近那份存档（栏位 2），重新载入")
+	check(main.get_viewport().disable_3d, "点「继续游戏」时根视口的 3D 还关着（主菜单关的，不跟着场景走）")
+	await free_main(main)
+	main = await make_main(false)                  # 测试里 main 不是当前场景，重新载入改由这里再搭一局（根视口还是刚才那个，3D 仍关着）
+	var meshes := main.find_children("*", "MeshInstance3D", true, false).size()
+	check(not main.get_viewport().disable_3d and main.start_menu == null and main.area == "frostford" and meshes > 10 and main.camera.current and main.cutscene == null,
+		"重新载入以后世界重新画出来，进到霜渡镇这份存档（网格 %d）" % meshes)
 	await free_main(main)
 	GameState.pending_load = {}
+	# 渡口的自动存档：序章「雾里的少爷」还在，第一次到渡口会演「渡口对峙」。3D 没打开时只剩上下黑边和「空格 跳过」（2026-11-12）
+	Engine.remove_meta("ic_menu_done")
+	GameState.new_game(11)
+	GameState.start_quest("edric_missing", "to_ferry")
+	var fp: Vector3 = (Ferry.SPAWNS.north as Array)[0]
+	var ferry_save := {
+		"version": Saves.VERSION,
+		"saved_at": "2099-01-01T00:00:00Z",
+		"scene": "ferry",
+		"player": {"pos": [fp.x, fp.y + 0.05, fp.z], "yaw": 0.0, "pitch": 0.0, "health": 40, "stamina": 100.0, "crouch": false},
+		"state": GameState.to_dict(),
+	}
+	check(Saves.write_slot("auto", ferry_save) and Saves.latest_slot() == "auto" and Saves.describe(ferry_save).begins_with("渡口 · 1 级 · 雾里的少爷"),
+		"渡口自动存档是最近一份：渡口、1 级、雾里的少爷（%s）" % Saves.describe(ferry_save))
+	main = await make_main(false)
+	m = main.start_menu
+	check(m != null and m.visible and main.get_viewport().disable_3d and m.continue_note.text.contains("自动存档") and m.continue_note.text.contains("渡口") and m.continue_note.text.contains("雾里的少爷"),
+		"主菜单「继续游戏」写着这份渡口存档（%s）" % m.continue_note.text)
+	reloads = [0]
+	main.reload_requested.connect(func(): reloads[0] += 1)
+	m.continue_btn.pressed.emit()
+	await seconds(0.4)
+	check(reloads[0] == 1 and str(GameState.pending_load.get("scene", "")) == "ferry" and main.get_viewport().disable_3d, "继续：要重新载入渡口，这一刻 3D 仍关着")
+	Engine.set_meta("ic_skip_film", false)
+	await free_main(main)
+	main = await make_main(false)
+	meshes = main.find_children("*", "MeshInstance3D", true, false).size()
+	check(not main.get_viewport().disable_3d and main.area == "ferry" and main.start_menu == null and main.world.find_child("Ferry", true, false) != null and meshes > 10,
+		"重新载入渡口：3D 打开，渡口的地面在（网格 %d）" % meshes)
+	await seconds(1.4)
+	check(main.cutscene != null and main.cutscene.id == "ferry_standoff" and main.cutscene.cam.current and main.cutscene.skip_btn.text.contains("跳过") and not main.hud.visible and not main.get_viewport().disable_3d,
+		"第一次到渡口演「渡口对峙」：过场镜头是当前镜头，右上角能跳过，世界仍在画")
+	if main.cutscene:
+		main.cutscene.skip()
+	await frames(3)
+	check(main.cutscene == null and main.hud.visible and main.camera.current and not main.get_viewport().disable_3d and GameState.quest_active("edric_missing") and main.area == "ferry",
+		"跳过以后回到渡口的游戏里，主线「雾里的少爷」还在")
+	await free_main(main)
+	GameState.pending_load = {}
+	Engine.set_meta("ic_skip_film", true)
 	# —— 暂停菜单「回到主菜单」：点两下（第一下提醒没存的会丢）
 	Engine.set_meta("ic_menu_done", true)
 	main = await make_main(false)
