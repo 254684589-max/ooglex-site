@@ -513,6 +513,11 @@ func _ready() -> void:
 		menu_opening = want_opening
 		want_opening = false
 		_open_start_menu()
+	else:
+		# 主菜单把根视口的 3D 关了（菜单自己的场景在 SubViewport 里）。继续游戏、从菜单读档都会重新载入本场景，
+		# 这个开关在根视口上，不跟着场景走。不在这里打开的话，读进来的世界不画：进区域时的过场只剩上下黑边和「空格 跳过」，
+		# 中间是空的（2026-11-12 线上：主菜单「继续游戏」停在灰屏上）。
+		get_viewport().disable_3d = false
 	if want_opening:
 		opening = Opening.new()
 		opening.name = "Opening"
