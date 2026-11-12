@@ -22,7 +22,7 @@ func _ready() -> void:
 
 func open(c: LootContainer) -> void:
 	container = c
-	(f.title as Label).text = ("搜刮：" if c.corpse else "") + c.display_name
+	(f.title as Label).text = (I18n.t("搜刮：") if c.corpse else "") + I18n.t(str(c.display_name))
 	show()
 	refresh()
 	if take_all_btn and not take_all_btn.disabled:

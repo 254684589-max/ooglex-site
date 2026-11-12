@@ -80,7 +80,7 @@ func refresh() -> void:
 		var k := str(it.get("kind", "misc"))
 		if k != last_kind:
 			last_kind = k
-			UiKit.label(box, str(GameState.KIND_NAMES.get(k, k)), true)
+			UiKit.label(box, I18n.t(str(GameState.KIND_NAMES.get(k, k))), true)
 		var n := GameState.count_item(id)
 		var text := "%s%s%s" % [GameState.item_name(id), " ×%d" % n if n > 1 else "", "（已装备）" if GameState.is_equipped(id) else ""]
 		var b := UiKit.button(box, ("▶ " if id == selected else "    ") + text, func():
@@ -140,7 +140,7 @@ func detail_text(id: String) -> String:
 	if id == "" or not GameState.has_item(id):
 		return "选一件东西看看。"
 	var it := GameState.item(id)
-	var lines := [GameState.item_name(id), str(it.get("desc", ""))]
+	var lines := [GameState.item_name(id), I18n.t(str(it.get("desc", "")))]
 	var facts := ["%s" % GameState.KIND_NAMES.get(str(it.kind), ""), I18n.t("%.1f 斤") % float(it.weight)]
 	match str(it.kind):
 		"weapon":

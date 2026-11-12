@@ -214,7 +214,7 @@ static func item(id: String) -> Dictionary:
 
 
 static func item_name(id: String) -> String:
-	return str(item(id).get("name", id))
+	return I18n.t(str(item(id).get("name", id)))
 
 
 ## 物品数据校验（自动化测试用）：返回错误列表
@@ -520,7 +520,7 @@ static func validate_progression(d: Dictionary) -> Array:
 
 
 static func attr_name(a: String) -> String:
-	return str(progression().get("attributes", {}).get(a, {}).get("name", a))
+	return I18n.t(str(progression().get("attributes", {}).get(a, {}).get("name", a)))
 
 
 func attr(a: String) -> int:
@@ -601,7 +601,7 @@ func has_perk(skill: String, effect: String) -> bool:
 
 
 static func faction_name(f: String) -> String:
-	return str(progression().get("factions", {}).get(f, {}).get("name", f))
+	return I18n.t(str(progression().get("factions", {}).get(f, {}).get("name", f)))
 
 
 func get_rep(f: String) -> int:
@@ -620,14 +620,14 @@ func change_rep(f: String, delta: int) -> void:
 ## 声望五档（GDD 7.3）
 static func rep_tier(v: int) -> String:
 	if v <= -50:
-		return "敌视"
+		return I18n.t("敌视")
 	if v <= -15:
-		return "冷淡"
+		return I18n.t("冷淡")
 	if v < 15:
-		return "中立"
+		return I18n.t("中立")
 	if v < 50:
-		return "友善"
-	return "信任"
+		return I18n.t("友善")
+	return I18n.t("信任")
 
 
 # ---------------- 存档转换（2.8） ----------------

@@ -28,7 +28,7 @@ static func spec(id: String) -> Dictionary:
 
 
 static func name_of(id: String) -> String:
-	return str(spec(id).get("name", ""))
+	return I18n.t(str(spec(id).get("name", "")))
 
 
 ## 现在的出身（"" = 还没选）
@@ -41,12 +41,12 @@ static func bonus_text(id: String) -> String:
 	var s := spec(id)
 	var parts := []
 	for k in s.get("skills", {}):
-		parts.append("%s +%d" % [GameState.SKILL_NAMES.get(k, k), int(s.skills[k])])
+		parts.append("%s +%d" % [I18n.t(str(GameState.SKILL_NAMES.get(k, k))), int(s.skills[k])])
 	for k in s.get("attrs", {}):
-		parts.append("%s +%d" % [ATTR_NAMES.get(k, k), int(s.attrs[k])])
+		parts.append("%s +%d" % [I18n.t(str(ATTR_NAMES.get(k, k))), int(s.attrs[k])])
 	for k in s.get("rep", {}):
 		var v := int(s.rep[k])
-		parts.append("%s %s%d" % [str(GameState.progression().get("factions", {}).get(k, {}).get("name", k)), "+" if v > 0 else "−", absi(v)])
+		parts.append("%s %s%d" % [GameState.faction_name(k), "+" if v > 0 else "−", absi(v)])
 	return " · ".join(parts)
 
 

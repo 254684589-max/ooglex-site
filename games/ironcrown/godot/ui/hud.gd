@@ -345,7 +345,10 @@ func _layout() -> void:
 		minimap.position = Vector2(size.x - minimap.size.x - 12.0, 10.0 + BTN_MIN.y + 10.0)    # 右上角按钮下面
 	if tracker:
 		tracker.size = size
-		tracker.place(title_label.position.y + title_label.get_minimum_size().y + 6.0, size.x < 700.0)
+		var ttop := title_label.position.y + title_label.get_minimum_size().y + 6.0
+		if bars_top:
+			ttop = maxf(ttop, bar_rect().end.y + 10.0)      # 触屏：生命 / 体力条在标题下面，任务追踪放到它们下面（2026-11-12 所有者手机截图：两行压在一起）
+		tracker.place(ttop, size.x < 700.0)
 	var w := minf(size.x - 32.0, 760.0)
 	for l in [prompt_label, toast_label]:
 		l.size = Vector2(w, 0)

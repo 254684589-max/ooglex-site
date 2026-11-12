@@ -49,7 +49,7 @@ func refresh() -> void:
 	var pd := GameState.progression()
 	for a in GameState.ATTRS:
 		var row := HBoxContainer.new()
-		var l := UiKit.label(row, "%s %d　%s" % [GameState.attr_name(a), GameState.attr(a), pd.attributes[a].desc])
+		var l := UiKit.label(row, "%s %d　%s" % [GameState.attr_name(a), GameState.attr(a), I18n.t(str(pd.attributes[a].desc))])
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		if GameState.attr_points > 0:
 			var b := Button.new()
@@ -70,17 +70,17 @@ func refresh() -> void:
 	for s in GameState.SKILL_NAMES:
 		var sk: Dictionary = pd.skills[s]
 		var v := int(GameState.skills.get(s, 0))
-		UiKit.label(box, "%s %d　%s %s" % [sk.name, v, _bar(GameState.skill_progress(s), 10), progress_text(s, v)])
-		UiKit.label(box, "    %s" % sk.desc, true, 14)     # 说明单独一行：加了数字以后窄屏上一行放不下（2026-10-04）
+		UiKit.label(box, "%s %d　%s %s" % [I18n.t(str(sk.name)), v, _bar(GameState.skill_progress(s), 10), progress_text(s, v)])
+		UiKit.label(box, "    %s" % I18n.t(str(sk.desc)), true, 14)     # 说明单独一行：加了数字以后窄屏上一行放不下（2026-10-04）
 		for p in sk.perks:
 			var got := v >= int(p.at)
-			UiKit.label(box, "    %s %d「%s」%s%s" % ["◆" if got else "◇", int(p.at), p.name, p.desc, "" if got else I18n.t("（%s到 %d 解锁）") % [sk.name, int(p.at)]], not got, 14)
+			UiKit.label(box, "    %s %d「%s」%s%s" % ["◆" if got else "◇", int(p.at), I18n.t(str(p.name)), I18n.t(str(p.desc)), "" if got else I18n.t("（%s到 %d 解锁）") % [I18n.t(str(sk.name)), int(p.at)]], not got, 14)
 	box.add_child(HSeparator.new())
 	UiKit.label(box, "声望", true)
 	UiKit.label(box, "竖线「｜」是 0：右边是好感、左边是敌意，每格约 20 点（−100 到 +100）", true, 14)
 	for fid in pd.factions:
 		var v := GameState.get_rep(fid)
-		UiKit.label(box, "%s　%s（%+d）　%s" % [pd.factions[fid].name, GameState.rep_tier(v), v, _rep_bar(v)])
+		UiKit.label(box, "%s　%s（%+d）　%s" % [GameState.faction_name(fid), GameState.rep_tier(v), v, _rep_bar(v)])
 	_fit()
 
 
@@ -107,7 +107,7 @@ func _sword_styles() -> void:
 			print("IC_SWORD style=%s" % d)
 			refresh())
 		grid.add_child(b)
-	UiKit.label(box, SwordKit.DESCS[GameState.sword_style], true, 14)
+	UiKit.label(box, I18n.t(str(SwordKit.DESCS[GameState.sword_style])), true, 14)
 
 
 ## 进度条后面的数字：「1.5/5」（打木桩只算半次，所以会有小数）；练满了写「已满」

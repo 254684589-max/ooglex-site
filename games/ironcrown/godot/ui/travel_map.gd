@@ -163,7 +163,7 @@ func select(id: String) -> void:
 	var r: Dictionary = c.route
 	var line := ""
 	if not r.is_empty():
-		line = I18n.t("路：%s") % str(r.get("text", ""))
+		line = I18n.t("路：%s") % I18n.t(str(r.get("text", "")))
 		var dp := str(r.get("daypart", ""))
 		if Daypart.valid(dp):
 			line += I18n.t("，到了是%s") % Daypart.display_name(dp)

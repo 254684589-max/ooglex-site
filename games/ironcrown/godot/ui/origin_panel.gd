@@ -46,8 +46,8 @@ func _ready() -> void:
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.add_theme_constant_override("line_spacing", 2)
 		b.pressed.connect(func(): _pick(id))
-		b.focus_entered.connect(func(): desc.text = str(Origins.spec(id).get("desc", "")))
-		b.mouse_entered.connect(func(): desc.text = str(Origins.spec(id).get("desc", "")))
+		b.focus_entered.connect(func(): desc.text = I18n.t(str(Origins.spec(id).get("desc", ""))))
+		b.mouse_entered.connect(func(): desc.text = I18n.t(str(Origins.spec(id).get("desc", ""))))
 		box.add_child(b)
 		buttons[id] = b
 	desc = Label.new()
@@ -71,7 +71,7 @@ func open(prompt := false) -> void:
 	for id in buttons:
 		(buttons[id] as Button).custom_minimum_size = Vector2(w, 78)
 	desc.custom_minimum_size = Vector2(w, 0)
-	desc.text = str(Origins.spec(Origins.ids()[0]).get("desc", ""))
+	desc.text = I18n.t(str(Origins.spec(Origins.ids()[0]).get("desc", "")))
 	show()
 	(buttons[Origins.ids()[0]] as Button).grab_focus.call_deferred()
 	print("IC_ORIGIN open prompt=%s" % prompt)

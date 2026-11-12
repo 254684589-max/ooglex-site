@@ -115,6 +115,7 @@ signal reload_requested         # 测试里 main 不是当前场景，读档时�
 
 func _ready() -> void:
 	touch_mode = DisplayServer.is_touchscreen_available()
+	get_viewport().disable_3d = false               # 主菜单开着时关了游戏世界的绘制；窗口在重新载入以后还是同一个，读档进来要打开（2026-11-08 所有者截图：手机上「继续游戏」以后一片灰）
 	var pending := GameState.pending_load
 	GameState.pending_load = {}
 	GameState.pending_brawl = {}
@@ -998,6 +999,7 @@ func _build_ui() -> void:
 	hud.menu_pressed.connect(open_pause)
 	hud.melee = player.melee
 	hud.bars_top = touch_mode               # 触屏上左下角是摇杆，体力条放到左上
+	hud._layout()                           # 任务追踪跟着让到体力条下面
 	player.melee.swung.connect(func(k: String): print("IC_ATTACK kind=%s stamina=%.0f" % [k, player.melee.stamina]))
 	player.melee.swung.connect(_swing_fx)
 	player.melee.hit.connect(_on_hit)
@@ -1045,7 +1047,7 @@ func _build_ui() -> void:
 	hud.map_pressed.connect(open_map)
 	GameState.skill_up.connect(_on_skill_up)
 	GameState.perk_unlocked.connect(func(s: String, p: Dictionary):
-		hud.toast(I18n.t("◆ 解锁专长：%s ·「%s」%s") % [GameState.SKILL_NAMES[s], p.name, p.desc], 4.0))
+		hud.toast(I18n.t("◆ 解锁专长：%s ·「%s」%s") % [I18n.t(str(GameState.SKILL_NAMES[s])), I18n.t(str(p.name)), I18n.t(str(p.desc))], 4.0))
 	GameState.level_up.connect(func(lv: int):
 		hud.toast(I18n.t("▲ 升到 %d 级：获得 1 个属性点（%s）") % [lv, I18n.t("点「角色」分配") if touch_mode else I18n.t("按 K 分配")], 4.0)
 		print("IC_LEVEL %d" % lv))
@@ -1727,11 +1729,11 @@ func _on_quest_event(kind: String, id: String) -> void:
 	var text := ""
 	match kind:
 		"started":
-			text = I18n.t("◆ 新任务：%s（按 J 查看）") % qd.quests[id].title if not touch_mode else I18n.t("◆ 新任务：%s（点「任务」查看）") % qd.quests[id].title
+			text = I18n.t("◆ 新任务：%s（按 J 查看）") % I18n.t(str(qd.quests[id].title)) if not touch_mode else I18n.t("◆ 新任务：%s（点「任务」查看）") % I18n.t(str(qd.quests[id].title))
 		"advanced":
-			text = I18n.t("◆ 任务更新：%s") % qd.quests[id].title
+			text = I18n.t("◆ 任务更新：%s") % I18n.t(str(qd.quests[id].title))
 		"done":
-			text = I18n.t("✓ 任务完成：%s") % qd.quests[id].title
+			text = I18n.t("✓ 任务完成：%s") % I18n.t(str(qd.quests[id].title))
 		"clue":
 			text = "◇ 新线索已记入任务日志"
 	if text != "":
@@ -2852,7 +2854,7 @@ func _show_tip(id: String) -> void:
 		return
 	GameState.tips_seen.append(id)
 	var d: Dictionary = GameState.tips_data()[id]
-	hud.set_hint(str(d.touch if touch_mode else d.desktop))
+	hud.set_hint(I18n.t(str(d.touch if touch_mode else d.desktop)))
 	hint_left = float(d.get("sec", 7))
 	tip_now = id
 	print("IC_TIP %s" % id)
@@ -2864,7 +2866,7 @@ func _on_dialogue_node(has_check: bool) -> void:
 		return
 	GameState.tips_seen.append("check")
 	var d: Dictionary = GameState.tips_data().get("check", {})
-	dialogue.show_tip(str(d.get("touch" if touch_mode else "desktop", "")))
+	dialogue.show_tip(I18n.t(str(d.get("touch" if touch_mode else "desktop", ""))))
 	print("IC_TIP check")
 
 

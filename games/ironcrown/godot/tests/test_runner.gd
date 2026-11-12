@@ -14011,6 +14011,11 @@ func test_startmenu() -> void:
 	m.continue_btn.pressed.emit()
 	await seconds(1.2)
 	check(reloads[0] == 1 and str(GameState.pending_load.get("slot", "")) == "slot2", "继续游戏：读最近那份存档（栏位 2），重新载入")
+	check(get_viewport().disable_3d, "（重新载入以前，窗口的 3D 绘制还关着）")
+	await free_main(main)
+	main = await make_main(false)                    # 重新载入：读档进来
+	check(not get_viewport().disable_3d and main.start_menu == null and str(main.loaded_from) == "slot2" and not get_tree().paused,
+		"读档进来：游戏世界照常画（原来窗口的 3D 绘制一直关着，手机上一片灰）、不出主菜单、游戏走着")
 	await free_main(main)
 	GameState.pending_load = {}
 	# —— 暂停菜单「回到主菜单」：点两下（第一下提醒没存的会丢）
@@ -14030,6 +14035,12 @@ func test_startmenu() -> void:
 	Engine.set_meta("ic_skip_menu", true)
 	Engine.remove_meta("ic_menu_done")
 	get_tree().paused = false
+	# —— 触屏：生命 / 体力条在左上，任务追踪放在它们下面，不压在一起（2026-11-12 所有者手机截图）
+	main = await make_main(false)
+	main.hud.bars_top = true
+	main.hud._layout()
+	check(main.hud.tracker.panel.position.y >= main.hud.bar_rect().end.y, "触屏：任务追踪在生命 / 体力条下面（追踪 y=%d，体力条底 y=%d）" % [main.hud.tracker.panel.position.y, main.hud.bar_rect().end.y])
+	await free_main(main)
 	wipe_test_saves()
 	GameState.new_game()
 

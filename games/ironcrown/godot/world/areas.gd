@@ -29,7 +29,7 @@ static func known(area: String) -> bool:
 
 
 static func display_name(area: String) -> String:
-	return str(NAMES.get(area, area))
+	return I18n.t(str(NAMES.get(area, area)))
 
 
 static func is_indoor(area: String) -> bool:

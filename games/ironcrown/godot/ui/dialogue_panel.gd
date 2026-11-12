@@ -85,7 +85,7 @@ func close() -> void:
 func _refresh() -> void:
 	name_label.text = runner.speaker()
 	if not runner.last_check.is_empty():     # 2.2：刚做过的检定结果（文字 + 符号，不只靠颜色）
-		name_label.text += I18n.t("  %s %s检定%s") % ["√" if runner.last_check.ok else "×", GameState.SKILL_NAMES.get(runner.last_check.skill, ""), I18n.t("成功") if runner.last_check.ok else I18n.t("失败")]
+		name_label.text += I18n.t("  %s %s检定%s") % ["√" if runner.last_check.ok else "×", I18n.t(str(GameState.SKILL_NAMES.get(runner.last_check.skill, ""))), I18n.t("成功") if runner.last_check.ok else I18n.t("失败")]
 	text_label.text = runner.text()
 	tip_label.hide()
 	for b in buttons + locked_buttons:

@@ -114,7 +114,7 @@ static func valid(id: String) -> bool:
 
 
 static func display_name(id: String) -> String:
-	return str(NAMES.get(id, id))
+	return I18n.t(str(NAMES.get(id, id)))
 
 
 ## 这个区域受不受时段影响：室外的剧情区域（和军阵试验场）受；室内、灰盒测试场、训练场不受

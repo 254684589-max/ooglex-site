@@ -99,7 +99,7 @@ func refresh() -> void:
 	var w := (WIDTH_NARROW if narrow else WIDTH) - 16
 	for s: Array in QuestGuide.steps(quest_id, 1 if narrow else 2):
 		var l := _label(13 if narrow else 14, DONE if s[1] else TEXT)
-		l.text = ("✓ " if s[1] else "▶ 进行中：") + str(s[0])
+		l.text = ("✓ " if s[1] else I18n.t("▶ 进行中：")) + str(s[0])
 		l.custom_minimum_size = Vector2(w, 0)
 		box.add_child(l)
 		lines.append(l)
@@ -129,7 +129,7 @@ func update_marker(world: Node, cam: Camera3D, from: Vector3, area: String, delt
 	var at: Vector3 = (target.node as Node3D).global_position if target.has("node") else target.pos
 	at += Vector3(0, 2.3, 0)
 	var d := Vector2(at.x - from.x, at.z - from.z).length()
-	marker_text = "◆ %s · %s" % [str(target.get("label", "")), QuestGuide.distance_text(d)]
+	marker_text = "◆ %s · %s" % [I18n.t(str(target.get("label", ""))), QuestGuide.distance_text(d)]
 	marker.text = marker_text
 	marker.reset_size()
 	var local := cam.global_transform.affine_inverse() * at          # 相机坐标：-Z 是前方

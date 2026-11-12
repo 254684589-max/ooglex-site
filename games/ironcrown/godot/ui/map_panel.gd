@@ -309,7 +309,7 @@ func select_exit(i: int) -> void:
 	var compass := AreaMap.has_compass(area)
 	var b := AreaMap.bearing_text(player_xz, e.at, compass)
 	var where := "就在你旁边。" if b == "就在你旁边" else ((I18n.t("在你") + b + "。") if compass else (b + "。"))
-	detail_label.text = I18n.t("%s：通往%s。%s") % [e.name, Areas.display_name(str(e.to)), where]
+	detail_label.text = I18n.t("%s：通往%s。%s") % [I18n.t(str(e.name)), Areas.display_name(str(e.to)), where]
 	canvas.queue_redraw()
 
 
@@ -318,7 +318,7 @@ func select_node(a: String) -> void:
 	selected_node = a
 	var parts := []
 	for e in AreaMap.exits(a):
-		parts.append("%s → %s" % [e.name, Areas.display_name(str(e.to))])
+		parts.append("%s → %s" % [I18n.t(str(e.name)), Areas.display_name(str(e.to))])
 	detail_label.text = "%s：%s" % [Areas.display_name(a), "；".join(parts)]
 	canvas.queue_redraw()
 

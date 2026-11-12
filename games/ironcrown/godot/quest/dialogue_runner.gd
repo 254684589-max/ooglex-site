@@ -338,7 +338,7 @@ func start(area: String, dialogue_id: String, at_node := "") -> bool:
 
 
 func speaker() -> String:
-	return str(data.get("speaker", ""))
+	return I18n.t(str(data.get("speaker", "")))            # 中英文（2026-11-12）：显示的地方翻
 
 
 func node() -> Dictionary:
@@ -348,8 +348,8 @@ func node() -> Dictionary:
 func text() -> String:
 	for t in node().get("text_if", []):
 		if conds_ok(t.get("if", [])):
-			return str(t.text)
-	return str(node().get("text", ""))
+			return I18n.t(str(t.text))
+	return I18n.t(str(node().get("text", "")))
 
 
 ## 现在能选的选项（条件全部满足的）；choose(i) 的 i 是这里的下标
@@ -390,10 +390,10 @@ static func option_needs(o: Dictionary) -> String:
 	var parts: Array = []
 	for c in o.get("if", []):
 		if c.has("silver") and GameState.silver < int(c.silver):
-			parts.append("%d 枚银币（身上 %d 枚）" % [int(c.silver), GameState.silver])
+			parts.append(I18n.t("%d 枚银币（身上 %d 枚）") % [int(c.silver), GameState.silver])
 		elif c.has("has_item") and not GameState.has_item(str(c.has_item)):
-			parts.append(str(GameState.item(str(c.has_item)).get("name", c.has_item)))
-	return "、".join(parts)
+			parts.append(I18n.t(str(GameState.item(str(c.has_item)).get("name", c.has_item))))
+	return I18n.t("、").join(parts)
 
 
 ## 选项显示的文字：检定选项前面加「[口才检定 · 约 50%]」
@@ -402,8 +402,8 @@ static func option_label(o: Dictionary) -> String:
 	if o.has("check"):
 		var c: Dictionary = o.check
 		var chance := GameState.check_chance(str(c.skill), int(c.dc))
-		return "[%s检定 · 约 %d%%] %s" % [GameState.SKILL_NAMES.get(str(c.skill), c.skill), roundi(chance * 100.0), o.text]
-	return str(o.text)
+		return I18n.t("[%s检定 · 约 %d%%] %s") % [I18n.t(str(GameState.SKILL_NAMES.get(str(c.skill), c.skill))), roundi(chance * 100.0), I18n.t(str(o.text))]
+	return I18n.t(str(o.text))
 
 
 ## 选第 i 个选项：返回 true 表示对话继续，false 表示结束

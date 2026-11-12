@@ -123,7 +123,7 @@ func refresh() -> void:
 	var qd: Dictionary = GameState.quest_data().quests
 	for id in ids:
 		var b := Button.new()
-		b.text = ("▶ " if id == selected else "    ") + str(qd[id].title) + ("（已完成）" if GameState.quest_done(id) else "")
+		b.text = ("▶ " if id == selected else "    ") + I18n.t(str(qd[id].title)) + (I18n.t("（已完成）") if GameState.quest_done(id) else "")
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.custom_minimum_size.y = 32
 		b.pressed.connect(func():
@@ -137,17 +137,17 @@ func detail_text(id: String) -> String:
 	if id == "":
 		return I18n.t("还没有%s任务。") % (I18n.t("主线") if kind == "main" else I18n.t("支线"))
 	var q: Dictionary = GameState.quest_data().quests[id]
-	var lines := [str(q.title) + ("（已完成）" if GameState.quest_done(id) else ""), str(q.summary), ""]
+	var lines := [I18n.t(str(q.title)) + (I18n.t("（已完成）") if GameState.quest_done(id) else ""), I18n.t(str(q.summary)), ""]
 	if GameState.quest_done(id):
-		lines.append("这件事已经办完了。")
+		lines.append(I18n.t("这件事已经办完了。"))
 	else:
-		lines.append(I18n.t("当前目标：") + str(q.stages[GameState.quest_stage(id)].objective))
+		lines.append(I18n.t("当前目标：") + QuestGuide.objective(id, GameState.quest_stage(id)))
 	var cl := GameState.clues_for(id)
 	if not cl.is_empty():
 		lines.append("")
-		lines.append("线索：")
+		lines.append(I18n.t("线索："))
 		for c in cl:
-			lines.append("· " + str(GameState.quest_data().clues[c].text))
+			lines.append("· " + I18n.t(str(GameState.quest_data().clues[c].text)))
 	return "\n".join(lines)
 
 

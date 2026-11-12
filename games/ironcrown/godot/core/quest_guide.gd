@@ -49,7 +49,7 @@ static func _chapter_of(id: String) -> int:
 
 
 static func title_of(id: String) -> String:
-	return str(GameState.quest_data().get("quests", {}).get(id, {}).get("title", id))
+	return I18n.t(str(GameState.quest_data().get("quests", {}).get(id, {}).get("title", id)))
 
 
 static func objective(id: String, stage: String) -> String:
@@ -57,8 +57,8 @@ static func objective(id: String, stage: String) -> String:
 	if GameState.quest_stage(id) == stage:
 		for o: Dictionary in st.get("objective_if", []):                 # 同一步里做完了一半，说明跟着变（2026-11-07：开仓那一步，护院头目说过以后指向粮仓的门）
 			if GameState.has_flag(str(o.get("flag", ""))):
-				return str(o.get("text", ""))
-	return str(st.get("objective", ""))
+				return I18n.t(str(o.get("text", "")))
+	return I18n.t(str(st.get("objective", "")))
 
 
 ## 步骤：[[文字, 做完了没有], …]，最后一条是现在这一步
@@ -76,7 +76,7 @@ static func steps(id: String, keep_done := 2) -> Array:
 
 ## 做完的那一步只留第一句（左上角地方小）
 static func short(text: String) -> String:
-	for sep in ["。", "：", "；"]:
+	for sep in ["。", "：", "；", ". ", ": ", "; "]:
 		var i := text.find(sep)
 		if i > 0 and i < 40:
 			return text.substr(0, i)
@@ -119,9 +119,9 @@ static func target(world: Node, from: Vector3, id: String, area: String) -> Dict
 ## 距离怎么写：500 米以上按 50 米、100 米以上按 10 米、再近按 5 米，5 米以内写「就在附近」
 static func distance_text(d: float) -> String:
 	if d < 5.0:
-		return "就在附近"
+		return I18n.t("就在附近")
 	var step := 50.0 if d >= 500.0 else (10.0 if d >= 100.0 else 5.0)
-	return "%d 米" % int(roundf(d / step) * step)
+	return I18n.t("%d 米") % int(roundf(d / step) * step)
 
 
 static func _target_data() -> Dictionary:
