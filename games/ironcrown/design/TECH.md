@@ -1108,7 +1108,7 @@ godot/
 - **城**（`CrownTown`）：房子沿斜街和三条小巷两边自动摆、后排背对背，再拿一张网格把街巷背后的空地挤满（共 101 栋；`_fits` 查离石岸、街、广场、议事厅、钟楼、城墙、两栋认得出的房子、出生点、机位）；房子用 `HarborTown._merchant` 搭、一块最多 8 栋合一个网格，坡上靠下那头补一圈石墙基。两栋认得出的（面包坊、玛蒂尔达的小酒馆）由 `CrownLayout.street_front(段, 段上位置, 哪边, 宽, 深)` 算正面；`matilda_door` 出生点按它重算。城墙 `wall_runs()`（西岸一道、往北往南拐一截、收口砌到石岸边），桥门两座塔、门洞上的铁闸；石桥 `bridge_spans()` 每 3 米一段跟着 `CrownCity.bridge_y()` 拱起来；岛南北石岸上沿一圈栏石（碰撞高 1.05 米）。王宫和东头的城（`palace()`）是地图外一个不投影的网格。
 - **人**（`CrownPeople`）：同步放（远了不画）。进 `crown_city` 或冠城的两间屋：主线 `to_city → in_city`（`arrived()`）；对话结束查 `matilda_heard()`（`ch4_seats_heard` + `ch4_drinks_heard` → `council`）。斜街伏击：`ambush_due()`（有 `iron_crown`、没有 `ch4_ambush`），组 `encounter:crown_ambush`（领头 swordsman、其余 clubber），`ch1_outlaws = ally` 少一个；`StreetTrigger`（Area3D，层 2 的玩家走进来就 `main.open_dialogue`，只开一次，正在对话 / 打的时候不开）。
 - **室内**：`HarborRooms.SPEC` 加 `council_hall`、`matilda_inn`，新键 `out`（出口回哪个区域，默认 harbor）；陈设在 `CrownRooms`，人在 `CrownPeople.room_people`（对话文件 `crown`）。
-- **旅行**：路线可以带 `needs = {quest, stages, why}`（`Travel.needs_met`，读自动加载里的 GameState）：木栈码头 → 冠城要主线在 to_city / in_city / council，到了是 dawn。
+- **旅行**：路线可以带 `needs = {quest, stages, why}`（`Travel.needs_met`，读自动加载里的 GameState）：木栈码头 → 冠城要主线在 to_city / in_city / council，到了是 dawn。2026-11-12：`Harbor.map_spec` 的分块原先没有 `place`，码头路牌只落在「双钥港」兜底里，`AreaMap.place_at` 是空的，人站在牌前仍写「要先回到地图上的地方才能出发」。钥楼街标 `keyhouse_street`；新的「木栈码头」一块（码头街、路牌、栈桥）和鱼市、其余城里标 `harbor_quay`；沙嘴不标（灯塔坐小船去）。
 - **时段**：`Daypart.AREA_ALIAS = {crown_city: harbor}`（同一套预设），`Daypart.apply` 给冠城换阴云天空（`CrownCity.apply_sky`）。
 - **测试**：`crown` 组（登记、高度场一致、地形、出生点、碰撞、块、河面与远景、石桥与桥门、房子、晾衣绳、门和路牌、告示、出生点不卡、栏石、时段、本地地图、两间室内与出口、旅行门槛）、`crownpeople` 组（到了 in_city、人站在空地上、排队七人、玛蒂尔达推进到 council、伏击三人 / 两人、走进去自己开对话、说走与了结）。
 

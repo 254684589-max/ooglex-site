@@ -9749,7 +9749,7 @@ func test_harbor() -> void:
 	for sh: Dictionary in spec.get("shapes", []):
 		if sh.has("label"):
 			labels.append(str(sh.label))
-	check(labels.has("灰鲸河") and labels.has("钥楼") and labels.has("泥滩") and labels.has("灯塔") and labels.has("债牢") and labels.has("渡工行会会馆") and spec.get("zones", []).size() == 4
+	check(labels.has("灰鲸河") and labels.has("钥楼") and labels.has("泥滩") and labels.has("灯塔") and labels.has("债牢") and labels.has("渡工行会会馆") and spec.get("zones", []).size() == 5
 		and spec.shapes.filter(func(x): return str(x.k) == "house").size() >= 60, "本地地图：灰鲸河、潮沟、海、钥楼、会馆、债牢、泥滩、灯塔、房子（%s）" % "、".join(labels))
 	# 城（7.2）
 	var hs := HarborTown.houses()
@@ -9781,6 +9781,37 @@ func test_harbor() -> void:
 	check(doors and signs and notice != null and str(notice.on_use.call(p).toast).contains("冬至日") and GameState.has_flag("ch4_notice_read")
 		and main.world.find_children("HarborDoor_*", "Door", true, false).size() >= 10,
 		"钥楼、会馆、债牢、灯塔的门（锁着、各一句话）、街上一些人家的门；码头、钥楼前的路牌（旅行地图出发的地方）；钥楼门口清账的告示")
+	# 码头路牌原先不在任何带 place 的分块里：人站在牌前，旅行地图仍写「要先回到地图上的地方才能出发」
+	var stage_was := GameState.quest_stage("ch4_main")
+	GameState.set_stage("ch4_main", "to_city")
+	var quay_y := Harbor.height_at(HarborTown.SIGN_QUAY.x, HarborTown.SIGN_QUAY.y)
+	p.global_position = Vector3(HarborTown.SIGN_QUAY.x, quay_y + 0.35, HarborTown.SIGN_QUAY.y)
+	p.velocity = Vector3.ZERO
+	await physics(8)
+	var from_quay := Travel.place_of_area("harbor", HarborTown.SIGN_QUAY)
+	var at_quay: bool = main.near_travel_point()
+	var close_enough := flat(p.global_position).distance_to(HarborTown.SIGN_QUAY) <= Travel.DEPART_RADIUS
+	main._unhandled_input(key_ev(KEY_M))
+	await frames(4)
+	var tm: TravelMap = main.travel_map
+	tm.select("crown_city")
+	var go := Travel.check(4, from_quay, "crown_city", at_quay and close_enough)
+	check(AreaMap.place_at("harbor", HarborTown.SIGN_QUAY) == "harbor_quay" and AreaMap.zone_at("harbor", HarborTown.SIGN_QUAY) == "木栈码头"
+		and AreaMap.place_at("harbor", HarborTown.SIGN_KEY) == "keyhouse_street" and from_quay == "harbor_quay" and at_quay and close_enough
+		and tm.visible and tm.at_departure and tm.here == "harbor_quay" and tm.go_btn.text == "出发去冠城" and not tm.go_btn.disabled and tm.status.text == "" and go.ok,
+		"站在码头路牌上：是木栈码头、在出发范围内，冠的事定了能去冠城%s" % (("（" + go.why + tm.status.text + "）") if not go.ok or tm.status.text != "" else ""))
+	if tm.visible:
+		tm._unhandled_input(key_ev(KEY_ESCAPE))
+	if main.map_panel.visible:
+		main.map_panel._unhandled_input(key_ev(KEY_ESCAPE))
+	await frames(2)
+	var fish_why := str(Travel.check(4, Travel.place_of_area("harbor", HarborLayout.FISH), "crown_city", false).why)
+	check(AreaMap.place_at("harbor", HarborLayout.FISH) == "harbor_quay" and AreaMap.place_at("harbor", HarborLayout.PRISON) == "harbor_quay"
+		and AreaMap.place_at("harbor", HarborLayout.SPAWN_XZ.quay[0]) == "harbor_quay" and AreaMap.place_at("harbor", HarborLayout.LIGHTHOUSE) == ""
+		and fish_why == "走到码头上的路牌那里才能出发。" and not tm.visible and not get_tree().paused,
+		"鱼市、码头出生点和城里其余地方也算木栈码头（没站在路牌上要走到码头）；沙嘴灯塔不是旅行地点（%s）" % fish_why)
+	if stage_was != "" and stage_was != "to_city":
+		GameState.set_stage("ch4_main", stage_was)
 	var pier: Array = HarborTown.piers()[2]
 	var pm: Vector2 = ((pier[0] as Vector2) + (pier[1] as Vector2)) * 0.5 + Vector2(3.0, 0.0)
 	var pq := PhysicsRayQueryParameters3D.create(Vector3(pm.x, 10.0, pm.y), Vector3(pm.x, -10.0, pm.y), 1)
@@ -10242,9 +10273,12 @@ func test_crown() -> void:
 	var r0 := Travel.check(4, "harbor_quay", "crown_city", true)
 	ch4_state({}, "to_city")
 	var r1 := Travel.check(4, "harbor_quay", "crown_city", true)
+	var from_sign := Travel.place_of_area("harbor", HarborTown.SIGN_QUAY)
 	check(not r0.ok and str(r0.why).contains("冠的事定了") and r1.ok and str((r1.route as Dictionary).daypart) == "dawn" and Travel.check(4, "crown_city", "harbor_quay", true).ok
-		and not Travel.check(4, "keyhouse_street", "crown_city", true).ok and Travel.validate().is_empty(),
-		"坐行会的船上冠城：冠的事没定走不了（%s），定了就走，天亮到；回双钥港随时走" % r0.why)
+		and not Travel.check(4, "keyhouse_street", "crown_city", true).ok and Travel.validate().is_empty()
+		and AreaMap.place_at("harbor", HarborTown.SIGN_QUAY) == "harbor_quay" and AreaMap.place_at("harbor", HarborTown.SIGN_KEY) == "keyhouse_street"
+		and from_sign == "harbor_quay" and Travel.check(4, from_sign, "crown_city", true).ok,
+		"坐行会的船上冠城：冠的事没定走不了（%s），定了就走，天亮到；回双钥港随时走。码头路牌算木栈码头，钥楼前的路牌算钥楼街" % r0.why)
 	GameState.chapter = 0
 	GameState.pending_load = {}
 

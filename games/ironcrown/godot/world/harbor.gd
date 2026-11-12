@@ -734,11 +734,14 @@ static func map_spec() -> Dictionary:
 	shapes.append_array(HarborTown.map_shapes())                   # 房子、钥楼、会馆、债牢、盐仓、栈桥（7.2）
 	for m in [[HarborLayout.QUAY, "木栈码头"], [HarborLayout.FISH, "鱼市"], [HarborLayout.LIGHTHOUSE, "灯塔"], [Vector2(-20.0, 66.0), "泥滩"], [HarborTown.WRECK[0], "搁浅的粮船"]]:
 		shapes.append({"k": "mark", "at": m[0], "label": m[1]})
+	# place = 旅行地图上的地点（AreaMap.place_at）。原先这几块只有名字：码头路牌 (14, -15) 只落在「双钥港」兜底里，
+	# place 是空的，打开旅行地图就写「要先回到地图上的地方才能出发」（同 6.3c 磨坊南门）。沙嘴不标：灯塔还没做成旅行地点，坐小船过去。
 	return {"bounds": HarborLayout.BOUNDS, "shapes": shapes, "exits": [], "zones": [
-		{"name": "钥楼街", "pts": _rect(Rect2(-100, -74, 120, 22))},
-		{"name": "鱼市", "pts": _rect(Rect2(-70, 24, 80, 26))},
+		{"name": "钥楼街", "place": "keyhouse_street", "pts": _rect(Rect2(-100, -74, 120, 22))},
+		{"name": "鱼市", "place": "harbor_quay", "pts": _rect(Rect2(-70, 24, 80, 26))},
 		{"name": "沙嘴", "pts": _rect(Rect2(56, 0, 60, 110))},
-		{"name": "双钥港", "pts": _rect(HarborLayout.BOUNDS)},
+		{"name": "木栈码头", "place": "harbor_quay", "pts": _rect(Rect2(-16, -104, 70, 150))},   # 码头街、路牌 (14, -15)、栈桥
+		{"name": "双钥港", "place": "harbor_quay", "pts": _rect(HarborLayout.BOUNDS)},          # 城里其余地方：没站在路牌上就写「走到码头上的路牌那里才能出发」
 	]}
 
 
