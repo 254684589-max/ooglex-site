@@ -497,8 +497,8 @@ func _ready() -> void:
 		Engine.set_meta("ic_skip_film", true)                 # 截图用（2026-11-08）：?nofilm=1 不演进区域时的过场（机位 ?cam= 不被过场盖住）
 	if _query("cutscene") in CutScenes.IDS:
 		_auto_cutscene.call_deferred(_query("cutscene"))         # 截图 / 录视频用（C.5）：?cutscene=norbert_vial 进场两秒后播
-	elif CutScenes.on_enter(self) != "":
-		_auto_cutscene.call_deferred(CutScenes.on_enter(self), 1.0)          # 进区域时演的过场（C.5：渡口对峙……），每段只演一次
+	elif loaded_from == "" and CutScenes.on_enter(self) != "":
+		_auto_cutscene.call_deferred(CutScenes.on_enter(self), 1.0)  # 读档是恢复现场，不重播区域入场过场；避免旧存档重新进入时用过场相机覆盖玩家视角          # 进区域时演的过场（C.5：渡口对峙……），每段只演一次
 	print("IC_READY renderer=%s web=%s scene=%s touch=%s quality=%s size=%s" % [
 		ProjectSettings.get_setting("rendering/renderer/rendering_method"), OS.has_feature("web"),
 		scene_name(), touch_mode, quality, get_viewport().get_visible_rect().size])
