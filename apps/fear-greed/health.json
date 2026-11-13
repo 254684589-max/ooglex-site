@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "fear-greed",
-  "generatedAt": "2026-11-12T23:50:54Z",
+  "generatedAt": "2026-11-13T21:23:32Z",
   "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-11-12T23:50:54Z",
-  "lastSuccessfulAt": "2026-11-12T23:50:54Z",
+  "lastAttemptAt": "2026-11-13T21:23:32Z",
+  "lastSuccessfulAt": "2026-11-13T21:23:32Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-11-12T23:50:54Z",
+  "publishedSnapshotAt": "2026-11-13T21:23:32Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -40,8 +40,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-12T23:50:54Z",
-      "lastSuccessAt": "2026-11-12T23:50:54Z"
+      "lastAttemptAt": "2026-11-13T21:23:32Z",
+      "lastSuccessAt": "2026-11-13T21:23:32Z"
     }
   ],
   "policy": {
