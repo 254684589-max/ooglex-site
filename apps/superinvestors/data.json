@@ -1,6 +1,6 @@
 {
- "updatedAt": "2026-11-06T07:28:07Z",
- "asOf": "2026-11-06",
+ "updatedAt": "2026-11-13T07:19:27Z",
+ "asOf": "2026-11-13",
  "source": "SEC EDGAR 13F-HR · AAII Investor Sentiment Survey",
  "investors": [
   {
@@ -185,18 +185,27 @@
    "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAAY1BMVEUASj3///8ASTwARzqOr6kGTkGTs621y8e4zMlplY3N3NkOVEh9o5xplI1lkoqrw7/y9vUtal8dXlPf6Ofs8vGcuLM4cmgZXFBbioJwmpNvmZHV4d/c5uQybWOpwr7H19RPgnm8HYK9AAABQElEQVRIie2U2XKEIBBF6VbABcUNXCYu//+VwaV0gk6CT6mpmusLdPXBpoFLyEfvLfRs/QyilU8b0YZpmiahUbJ8NWIu2s4Ew06IwiJoKkswekRGj68MoMoReyarOVoOvg0QJL0hxiKeVWuVGYAgksmwpZ5HZw0AAcVFHlVZPudgHAFIer1tNgPbxNOlXhalAYB60Sf/CcCYbwAHYFf1WAAhxTp0B7YkV2DviiOAhb4HeIJTR2A9ByKl2x/Gej3pqVJuQLbepTLbk/4AKuUzxpS5iI7AtgeiXUvaz2Fw3PTe1kS5tnWbxPXNku5ejUP/C5gnOp6B10+USIAothZbTIBfmAAi1cZmsok+G4qJNovNUNtmsPb5YmQVV+kR7VmwGhm3jQzrVsymmIataI5oLkRnDDRpz1Z5bbu/mPFHb6ZvExoQvDnSX3cAAAAASUVORK5CYII=",
    "imgAlt": "",
    "imgLogo": true,
-   "period": "2026-06-30",
-   "filed": "2026-08-04",
-   "value": 335827609549,
-   "stocks": 865,
-   "top10pct": 36.3,
+   "period": "2026-09-30",
+   "filed": "2026-11-06",
+   "value": 348264167857,
+   "stocks": 883,
+   "top10pct": 36.9,
    "holdings": [
     {
      "name": "Nvidia Corp",
      "zh": "英伟达",
      "ticker": "NVDA",
-     "value": 18195373846,
-     "pct": 5.42,
+     "value": 21201005507,
+     "pct": 6.09,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Apple Inc",
+     "zh": "苹果",
+     "ticker": "AAPL",
+     "value": 19463779038,
+     "pct": 5.59,
      "chg": "hold",
      "chgPct": null
     },
@@ -204,35 +213,17 @@
      "name": "Ishares Core Us Aggregate Bond",
      "zh": "安硕ETF",
      "ticker": "IVV",
-     "value": 16714399245,
-     "pct": 4.98,
+     "value": 17229109394,
+     "pct": 4.95,
      "chg": "add",
-     "chgPct": 8.0
-    },
-    {
-     "name": "Apple Inc",
-     "zh": "苹果",
-     "ticker": "AAPL",
-     "value": 16670059955,
-     "pct": 4.96,
-     "chg": "hold",
-     "chgPct": null
+     "chgPct": 13.0
     },
     {
      "name": "Alphabet Inc A类",
      "zh": "谷歌",
      "ticker": "GOOG",
-     "value": 14889605021,
-     "pct": 4.43,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Caterpillar Inc",
-     "zh": "卡特彼勒",
-     "ticker": "CAT",
-     "value": 10587791364,
-     "pct": 3.15,
+     "value": 14572612631,
+     "pct": 4.18,
      "chg": "hold",
      "chgPct": null
     },
@@ -240,26 +231,8 @@
      "name": "Microsoft Corp",
      "zh": "微软",
      "ticker": "MSFT",
-     "value": 9926707366,
-     "pct": 2.96,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Asml Hldg Nv Nys",
-     "zh": "阿斯麦",
-     "ticker": "ASML",
-     "value": 9425199953,
-     "pct": 2.81,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Taiwan Semiconductor Manuf ADR",
-     "zh": "台积电",
-     "ticker": "TSM",
-     "value": 9009930721,
-     "pct": 2.68,
+     "value": 13921965408,
+     "pct": 4.0,
      "chg": "hold",
      "chgPct": null
     },
@@ -267,85 +240,112 @@
      "name": "Amazon Inc",
      "zh": "亚马逊",
      "ticker": "AMZN",
-     "value": 8336759712,
+     "value": 8863118039,
+     "pct": 2.54,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Asml Hldg Nv Nys",
+     "zh": "阿斯麦",
+     "ticker": "ASML",
+     "value": 8767039793,
+     "pct": 2.52,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Taiwan Semiconductor Manuf ADR",
+     "zh": "台积电",
+     "ticker": "TSM",
+     "value": 8636857621,
      "pct": 2.48,
      "chg": "hold",
      "chgPct": null
     },
     {
-     "name": "Vanguard Scottsdale Fds Lg Ter",
+     "name": "Caterpillar Inc",
+     "zh": "卡特彼勒",
+     "ticker": "CAT",
+     "value": 8088836782,
+     "pct": 2.32,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Vanguard Scottsdale Fds Long T",
      "zh": "先锋ETF",
      "ticker": "",
-     "value": 8138627564,
-     "pct": 2.42,
-     "chg": "add",
-     "chgPct": 7.0
+     "value": 7882868179,
+     "pct": 2.26,
+     "chg": "hold",
+     "chgPct": null
     }
    ],
    "moves": [
     {
-     "type": "add",
-     "name": "Ge Aerospace",
-     "zh": "通用电气",
-     "ticker": "GE",
-     "value": 4326354117,
-     "delta": 73850.5
-    },
-    {
-     "type": "add",
-     "name": "Ge Vernova Inc",
-     "zh": "GE维诺瓦(能源)",
+     "type": "new",
+     "name": "Exxonmobil Holdings Corporatio",
+     "zh": "埃克森美孚",
      "ticker": "",
-     "value": 4178442530,
-     "delta": 90036.2
+     "value": 5197180970,
+     "delta": null
     },
     {
-     "type": "add",
-     "name": "Cisco Sys Inc",
-     "zh": "思科",
-     "ticker": "CSCO",
-     "value": 2582228901,
-     "delta": 93.1
-    },
-    {
-     "type": "add",
-     "name": "Unitedhealth Group Inc",
-     "zh": "联合健康",
-     "ticker": "UNH",
-     "value": 2357593969,
-     "delta": 73.4
-    },
-    {
-     "type": "trim",
-     "name": "Canadian Nat Res Ltd Med Term",
-     "zh": "",
-     "ticker": "",
-     "value": 2128264790,
-     "delta": -96.3
+     "type": "exit",
+     "name": "Exxon Mobil Corp",
+     "zh": "埃克森美孚",
+     "ticker": "XOM",
+     "value": 4302320615,
+     "delta": null
     },
     {
      "type": "add",
      "name": "Palo Alto Networks Inc",
      "zh": "派拓网络",
      "ticker": "",
-     "value": 1921759638,
-     "delta": 2142.6
-    },
-    {
-     "type": "trim",
-     "name": "Conocophillips",
-     "zh": "康菲石油",
-     "ticker": "COP",
-     "value": 1911003652,
-     "delta": -93.8
+     "value": 1272346121,
+     "delta": 41.5
     },
     {
      "type": "add",
      "name": "Merck Co Inc",
      "zh": "默沙东",
      "ticker": "MRK",
-     "value": 1769319220,
-     "delta": 45.7
+     "value": 1110004615,
+     "delta": 8.3
+    },
+    {
+     "type": "add",
+     "name": "Sap Se ADR",
+     "zh": "",
+     "ticker": "",
+     "value": 915011884,
+     "delta": 3.3
+    },
+    {
+     "type": "add",
+     "name": "Cummins Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 617483778,
+     "delta": 4.8
+    },
+    {
+     "type": "add",
+     "name": "Johnson Johnson",
+     "zh": "强生",
+     "ticker": "JNJ",
+     "value": 548387573,
+     "delta": 11.5
+    },
+    {
+     "type": "add",
+     "name": "Ge Aerospace",
+     "zh": "通用电气",
+     "ticker": "GE",
+     "value": 534390952,
+     "delta": 4.9
     }
    ]
   },
@@ -1396,27 +1396,18 @@
    "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEX///AAAABEREC7u7CIiIDu7uAiIiBmZmCZmZAzMzDd3dARERDMzMB3d3BVVVC47uQeAAAAXklEQVQYla2PSw6AMAhEBwZKP+r9jyttauLaOAtIHp8B4A8dJHtmr1YXUEmd8JKp+QJkGQipsCxsoBjt2bFGAqKgZJgA2X+Ugm4bmDVxk2BsIDLS8Jou+j6o0799cgPPDwGN1xCL3wAAAABJRU5ErkJggg==",
    "imgAlt": "",
    "imgLogo": true,
-   "period": "2026-06-30",
-   "filed": "2026-08-06",
-   "value": 110225053010,
-   "stocks": 269,
-   "top10pct": 44.7,
+   "period": "2026-09-30",
+   "filed": "2026-11-09",
+   "value": 105895756538,
+   "stocks": 274,
+   "top10pct": 45.0,
    "holdings": [
-    {
-     "name": "Space Exploration Technologies Corp",
-     "zh": "",
-     "ticker": "",
-     "value": 8781829133,
-     "pct": 7.97,
-     "chg": "new",
-     "chgPct": null
-    },
     {
      "name": "Nvidia",
      "zh": "英伟达",
      "ticker": "NVDA",
-     "value": 8381531192,
-     "pct": 7.6,
+     "value": 9722835670,
+     "pct": 9.18,
      "chg": "hold",
      "chgPct": null
     },
@@ -1424,139 +1415,148 @@
      "name": "Amazon.",
      "zh": "亚马逊",
      "ticker": "AMZN",
-     "value": 6415604182,
-     "pct": 5.82,
+     "value": 6015836127,
+     "pct": 5.68,
      "chg": "trim",
-     "chgPct": -4.2
+     "chgPct": -10.3
+    },
+    {
+     "name": "Space Exploration Technologies Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 5884300334,
+     "pct": 5.56,
+     "chg": "trim",
+     "chgPct": -24.1
     },
     {
      "name": "Mercadolibre",
      "zh": "美客多",
      "ticker": "MELI",
-     "value": 5160761529,
-     "pct": 4.68,
+     "value": 5085171050,
+     "pct": 4.8,
      "chg": "trim",
-     "chgPct": -6.0
-    },
-    {
-     "name": "Sea Ltd ADR",
-     "zh": "冬海集团",
-     "ticker": "SE",
-     "value": 3680771365,
-     "pct": 3.34,
-     "chg": "trim",
-     "chgPct": -3.1
-    },
-    {
-     "name": "Spotify Technology SA",
-     "zh": "声田",
-     "ticker": "",
-     "value": 3640189707,
-     "pct": 3.3,
-     "chg": "trim",
-     "chgPct": -3.5
+     "chgPct": -3.2
     },
     {
      "name": "Cloudflare Inc",
      "zh": "克利夫兰-克利夫斯",
      "ticker": "CLF",
-     "value": 3580743136,
-     "pct": 3.25,
+     "value": 4457279415,
+     "pct": 4.21,
      "chg": "trim",
-     "chgPct": -8.3
+     "chgPct": -12.1
     },
     {
-     "name": "Applovin",
-     "zh": "",
-     "ticker": "",
-     "value": 3334370197,
-     "pct": 3.03,
-     "chg": "trim",
-     "chgPct": -3.4
-    },
-    {
-     "name": "Shopify 'A'",
+     "name": "Shopify Inc",
      "zh": "Shopify",
      "ticker": "SHOP",
-     "value": 3243123464,
-     "pct": 2.94,
-     "chg": "hold",
-     "chgPct": null
+     "value": 3959596686,
+     "pct": 3.74,
+     "chg": "trim",
+     "chgPct": -6.0
+    },
+    {
+     "name": "Spotify Technology SA",
+     "zh": "声田",
+     "ticker": "",
+     "value": 3677014042,
+     "pct": 3.47,
+     "chg": "trim",
+     "chgPct": -4.8
+    },
+    {
+     "name": "Sea Ltd ADR",
+     "zh": "冬海集团",
+     "ticker": "SE",
+     "value": 3616990107,
+     "pct": 3.42,
+     "chg": "trim",
+     "chgPct": -3.3
     },
     {
      "name": "Nu Holdings Ltd.",
      "zh": "Nu控股",
      "ticker": "",
-     "value": 3071869222,
-     "pct": 2.79,
+     "value": 3011925104,
+     "pct": 2.84,
+     "chg": "add",
+     "chgPct": 3.5
+    },
+    {
+     "name": "Moderna Inc",
+     "zh": "莫德纳",
+     "ticker": "MRNA",
+     "value": 2202613157,
+     "pct": 2.08,
      "chg": "trim",
-     "chgPct": -6.7
+     "chgPct": -37.2
     }
    ],
    "moves": [
     {
-     "type": "new",
+     "type": "trim",
      "name": "Space Exploration Technologies Corp",
      "zh": "",
      "ticker": "",
-     "value": 8781829133,
+     "value": 2897528799,
+     "delta": -24.1
+    },
+    {
+     "type": "trim",
+     "name": "Applovin",
+     "zh": "",
+     "ticker": "",
+     "value": 1856038514,
+     "delta": -21.3
+    },
+    {
+     "type": "new",
+     "name": "Bending Spoons Spa",
+     "zh": "",
+     "ticker": "",
+     "value": 1723002890,
      "delta": null
     },
     {
-     "type": "trim",
-     "name": "Netflix Inc",
-     "zh": "奈飞",
-     "ticker": "NFLX",
-     "value": 941804113,
-     "delta": -25.8
-    },
-    {
-     "type": "trim",
-     "name": "Coupang",
-     "zh": "酷澎",
-     "ticker": "",
-     "value": 910212006,
-     "delta": -34.7
+     "type": "add",
+     "name": "Lam Research Corp",
+     "zh": "泛林集团",
+     "ticker": "LRCX",
+     "value": 1148692866,
+     "delta": 6028782.8
     },
     {
      "type": "trim",
      "name": "Pdd Holdings Inc",
      "zh": "拼多多",
      "ticker": "PDD",
-     "value": 868488526,
-     "delta": -6.2
-    },
-    {
-     "type": "add",
-     "name": "The Royal Bank Of Canada",
-     "zh": "",
-     "ticker": "",
-     "value": 740137941,
-     "delta": 3803766.0
-    },
-    {
-     "type": "add",
-     "name": "Axon Enterprise Inc",
-     "zh": "艾克森企业",
-     "ticker": "AXON",
-     "value": 670557547,
-     "delta": 24.4
+     "value": 1122455874,
+     "delta": -56.3
     },
     {
      "type": "trim",
-     "name": "Applovin",
-     "zh": "",
-     "ticker": "",
-     "value": 667717661,
-     "delta": -3.4
+     "name": "Moderna Inc",
+     "zh": "莫德纳",
+     "ticker": "MRNA",
+     "value": 927592494,
+     "delta": -37.2
     },
     {
-     "type": "add",
-     "name": "Crh PLC",
-     "zh": "",
+     "type": "trim",
+     "name": "Cloudflare Inc",
+     "zh": "克利夫兰-克利夫斯",
+     "ticker": "CLF",
+     "value": 876536279,
+     "delta": -12.1
+    },
+    {
+     "type": "trim",
+     "name": "Coupang",
+     "zh": "酷澎",
      "ticker": "",
-     "value": 641407342,
-     "delta": 1294698.3
+     "value": 749249257,
+     "delta": -43.4
     }
    ]
   },
@@ -1915,167 +1915,167 @@
    "img": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/Jim_Simons_at_MSRI.jpg/250px-Jim_Simons_at_MSRI.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
-   "period": "2026-06-30",
-   "filed": "2026-08-13",
-   "value": 72617871974,
+   "period": "2026-09-30",
+   "filed": "2026-11-12",
+   "value": 73424247652,
    "stocks": 2931,
-   "top10pct": 12.8,
+   "top10pct": 12.7,
    "holdings": [
     {
-     "name": "Nvidia Corporation",
-     "zh": "英伟达",
-     "ticker": "NVDA",
-     "value": 1418869170,
-     "pct": 1.95,
+     "name": "Micron Technology Inc",
+     "zh": "美光科技",
+     "ticker": "MU",
+     "value": 1619650963,
+     "pct": 2.21,
      "chg": "add",
-     "chgPct": 180.6
+     "chgPct": 618.7
     },
     {
      "name": "Alphabet Inc",
      "zh": "谷歌",
      "ticker": "GOOG",
-     "value": 1384957364,
-     "pct": 1.91,
+     "value": 1375268548,
+     "pct": 1.87,
      "chg": "add",
-     "chgPct": 423.7
+     "chgPct": 3.1
     },
     {
-     "name": "Meta Platforms Inc",
-     "zh": "Meta平台",
-     "ticker": "META",
-     "value": 1139611745,
-     "pct": 1.57,
+     "name": "Advanced Micro Devices Inc",
+     "zh": "超威半导体",
+     "ticker": "AMD",
+     "value": 1205536416,
+     "pct": 1.64,
      "chg": "add",
-     "chgPct": 698.5
-    },
-    {
-     "name": "Intel Corp",
-     "zh": "英特尔",
-     "ticker": "INTC",
-     "value": 1022356867,
-     "pct": 1.41,
-     "chg": "hold",
-     "chgPct": null
+     "chgPct": 140.5
     },
     {
      "name": "United Therapeutics Corp",
      "zh": "",
      "ticker": "",
-     "value": 925846052,
-     "pct": 1.27,
-     "chg": "trim",
-     "chgPct": -4.4
+     "value": 908152909,
+     "pct": 1.24,
+     "chg": "hold",
+     "chgPct": null
     },
     {
-     "name": "Palantir Technologies Inc",
-     "zh": "帕兰提尔",
-     "ticker": "",
-     "value": 883001728,
-     "pct": 1.22,
+     "name": "Intel Corp",
+     "zh": "英特尔",
+     "ticker": "INTC",
+     "value": 834545560,
+     "pct": 1.14,
+     "chg": "trim",
+     "chgPct": -5.2
+    },
+    {
+     "name": "Unitedhealth Group Inc",
+     "zh": "联合健康",
+     "ticker": "UNH",
+     "value": 817384838,
+     "pct": 1.11,
      "chg": "add",
-     "chgPct": 8.3
+     "chgPct": 506.7
     },
     {
      "name": "Exelixis Inc",
      "zh": "",
      "ticker": "",
-     "value": 730617099,
-     "pct": 1.01,
-     "chg": "hold",
-     "chgPct": null
+     "value": 747221198,
+     "pct": 1.02,
+     "chg": "trim",
+     "chgPct": -4.7
     },
     {
      "name": "Verisign Inc",
      "zh": "威瑞信",
      "ticker": "",
-     "value": 616264393,
-     "pct": 0.85,
+     "value": 648925033,
+     "pct": 0.88,
      "chg": "trim",
-     "chgPct": -13.1
+     "chgPct": -6.1
     },
     {
-     "name": "Kinross Gold Corp",
+     "name": "Space Exploration Techn Corp",
      "zh": "",
      "ticker": "",
-     "value": 584529171,
-     "pct": 0.8,
-     "chg": "trim",
-     "chgPct": -3.1
-    },
-    {
-     "name": "Crowdstrike Hldgs Inc",
-     "zh": "卡骆驰",
-     "ticker": "CROX",
-     "value": 571561334,
-     "pct": 0.79,
+     "value": 620517529,
+     "pct": 0.85,
      "chg": "new",
      "chgPct": null
+    },
+    {
+     "name": "Corcept Therapeutics Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 558875064,
+     "pct": 0.76,
+     "chg": "trim",
+     "chgPct": -7.8
     }
    ],
    "moves": [
     {
-     "type": "add",
-     "name": "Alphabet Inc",
-     "zh": "谷歌",
-     "ticker": "GOOG",
-     "value": 1171306434,
-     "delta": 423.7
-    },
-    {
-     "type": "add",
-     "name": "Meta Platforms Inc",
-     "zh": "Meta平台",
-     "ticker": "META",
-     "value": 994650366,
-     "delta": 698.5
-    },
-    {
-     "type": "add",
+     "type": "trim",
      "name": "Nvidia Corporation",
      "zh": "英伟达",
      "ticker": "NVDA",
-     "value": 978173104,
-     "delta": 180.6
-    },
-    {
-     "type": "new",
-     "name": "Crowdstrike Hldgs Inc",
-     "zh": "卡骆驰",
-     "ticker": "CROX",
-     "value": 571561334,
-     "delta": null
-    },
-    {
-     "type": "new",
-     "name": "Amazon Inc",
-     "zh": "亚马逊",
-     "ticker": "AMZN",
-     "value": 545974975,
-     "delta": null
-    },
-    {
-     "type": "trim",
-     "name": "Sandisk Corp",
-     "zh": "",
-     "ticker": "",
-     "value": 496674358,
-     "delta": -99.4
-    },
-    {
-     "type": "trim",
-     "name": "Micron Technology Inc",
-     "zh": "美光科技",
-     "ticker": "MU",
-     "value": 486514723,
-     "delta": -90.2
+     "value": 1413541901,
+     "delta": -99.7
     },
     {
      "type": "add",
-     "name": "Netflix Inc.",
-     "zh": "奈飞",
-     "ticker": "NFLX",
-     "value": 484420461,
-     "delta": 275718.1
+     "name": "Micron Technology Inc",
+     "zh": "美光科技",
+     "ticker": "MU",
+     "value": 1375426285,
+     "delta": 618.7
+    },
+    {
+     "type": "trim",
+     "name": "Meta Platforms Inc",
+     "zh": "Meta平台",
+     "ticker": "META",
+     "value": 1138456592,
+     "delta": -99.9
+    },
+    {
+     "type": "add",
+     "name": "Advanced Micro Devices Inc",
+     "zh": "超威半导体",
+     "ticker": "AMD",
+     "value": 741718223,
+     "delta": 140.5
+    },
+    {
+     "type": "add",
+     "name": "Unitedhealth Group Inc",
+     "zh": "联合健康",
+     "ticker": "UNH",
+     "value": 664842854,
+     "delta": 506.7
+    },
+    {
+     "type": "new",
+     "name": "Space Exploration Techn Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 620517529,
+     "delta": null
+    },
+    {
+     "type": "trim",
+     "name": "Amazon Inc",
+     "zh": "亚马逊",
+     "ticker": "AMZN",
+     "value": 543188564,
+     "delta": -99.5
+    },
+    {
+     "type": "add",
+     "name": "Sandisk Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 469686814,
+     "delta": 5451.4
     }
    ]
   },
@@ -5460,9 +5460,9 @@
    "img": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Thomas_A._Russo.JPG/250px-Thomas_A._Russo.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
-   "period": "2026-06-30",
-   "filed": "2026-08-13",
-   "value": 8925889600,
+   "period": "2026-09-30",
+   "filed": "2026-11-12",
+   "value": 8417209775,
    "stocks": 82,
    "top10pct": 84.6,
    "holdings": [
@@ -5470,157 +5470,157 @@
      "name": "Berkshire Hathaway Inc A类",
      "zh": "伯克希尔·哈撒韦",
      "ticker": "BRK.B",
-     "value": 1612456152,
-     "pct": 18.06,
-     "chg": "hold",
-     "chgPct": null
+     "value": 1555349134,
+     "pct": 18.48,
+     "chg": "trim",
+     "chgPct": -4.1
     },
     {
      "name": "Alphabet Inc A类",
      "zh": "谷歌",
      "ticker": "GOOG",
-     "value": 1080948856,
-     "pct": 12.11,
+     "value": 997028397,
+     "pct": 11.85,
      "chg": "trim",
-     "chgPct": -9.0
+     "chgPct": -4.4
     },
     {
      "name": "Philip Morris International In",
      "zh": "菲利普莫里斯",
      "ticker": "PM",
-     "value": 819675318,
-     "pct": 9.18,
-     "chg": "hold",
-     "chgPct": null
+     "value": 836903112,
+     "pct": 9.94,
+     "chg": "trim",
+     "chgPct": -3.2
     },
     {
      "name": "Mastercard Inc A类",
      "zh": "万事达",
      "ticker": "MA",
-     "value": 781901965,
-     "pct": 8.76,
-     "chg": "hold",
-     "chgPct": null
+     "value": 806292068,
+     "pct": 9.58,
+     "chg": "trim",
+     "chgPct": -4.0
     },
     {
      "name": "Compagnie Financiere Richemont",
      "zh": "",
      "ticker": "",
-     "value": 773661807,
-     "pct": 8.67,
-     "chg": "hold",
-     "chgPct": null
+     "value": 688899961,
+     "pct": 8.18,
+     "chg": "trim",
+     "chgPct": -4.0
     },
     {
      "name": "Heineken Holding Nv",
      "zh": "",
      "ticker": "",
-     "value": 679639647,
-     "pct": 7.61,
-     "chg": "hold",
-     "chgPct": null
+     "value": 635034395,
+     "pct": 7.54,
+     "chg": "trim",
+     "chgPct": -3.9
     },
     {
      "name": "Nestle SA ADR",
      "zh": "",
      "ticker": "",
-     "value": 545786866,
-     "pct": 6.11,
+     "value": 463575596,
+     "pct": 5.51,
      "chg": "trim",
-     "chgPct": -3.0
+     "chgPct": -3.9
     },
     {
      "name": "Sunbelt Rentals Holdings Inc",
      "zh": "",
      "ticker": "",
-     "value": 441216288,
-     "pct": 4.94,
-     "chg": "hold",
-     "chgPct": null
+     "value": 411965262,
+     "pct": 4.89,
+     "chg": "trim",
+     "chgPct": -4.6
     },
     {
      "name": "Netflix Inc",
      "zh": "奈飞",
      "ticker": "NFLX",
-     "value": 407700283,
-     "pct": 4.57,
+     "value": 387704352,
+     "pct": 4.61,
      "chg": "hold",
      "chgPct": null
     },
     {
-     "name": "Martin Marietta Materials",
-     "zh": "",
-     "ticker": "",
-     "value": 406784959,
-     "pct": 4.56,
-     "chg": "hold",
-     "chgPct": null
+     "name": "Uber Technologies Inc",
+     "zh": "优步",
+     "ticker": "UBER",
+     "value": 337078449,
+     "pct": 4.0,
+     "chg": "trim",
+     "chgPct": -3.2
     }
    ],
    "moves": [
     {
      "type": "trim",
+     "name": "Compagnie Financiere Richemont",
+     "zh": "",
+     "ticker": "",
+     "value": 84761846,
+     "delta": -4.0
+    },
+    {
+     "type": "trim",
      "name": "Alphabet Inc A类",
      "zh": "谷歌",
      "ticker": "GOOG",
-     "value": 116532612,
-     "delta": -9.0
-    },
-    {
-     "type": "add",
-     "name": "Eurofins Scientific",
-     "zh": "",
-     "ticker": "",
-     "value": 97358793,
-     "delta": 32.2
-    },
-    {
-     "type": "add",
-     "name": "Doordash Inc A类",
-     "zh": "",
-     "ticker": "",
-     "value": 68542342,
-     "delta": 18.5
-    },
-    {
-     "type": "trim",
-     "name": "J.P. Morgan Chase",
-     "zh": "摩根大通",
-     "ticker": "JPM",
-     "value": 35679150,
-     "delta": -83.4
-    },
-    {
-     "type": "exit",
-     "name": "Exxon Mobil Corp",
-     "zh": "埃克森美孚",
-     "ticker": "XOM",
-     "value": 32905526,
-     "delta": null
-    },
-    {
-     "type": "new",
-     "name": "Exxon Mobil Corp",
-     "zh": "埃克森美孚",
-     "ticker": "",
-     "value": 24773668,
-     "delta": null
-    },
-    {
-     "type": "trim",
-     "name": "Pernod Ricard",
-     "zh": "",
-     "ticker": "",
-     "value": 11804901,
-     "delta": -5.2
+     "value": 83920459,
+     "delta": -4.4
     },
     {
      "type": "trim",
      "name": "Nestle SA ADR",
      "zh": "",
      "ticker": "",
-     "value": 2548986,
-     "delta": -3.0
+     "value": 82211270,
+     "delta": -3.9
+    },
+    {
+     "type": "trim",
+     "name": "Martin Marietta Materials",
+     "zh": "",
+     "ticker": "",
+     "value": 78714366,
+     "delta": -3.1
+    },
+    {
+     "type": "trim",
+     "name": "Berkshire Hathaway Inc A类",
+     "zh": "伯克希尔·哈撒韦",
+     "ticker": "BRK.B",
+     "value": 57107018,
+     "delta": -4.1
+    },
+    {
+     "type": "trim",
+     "name": "Heineken Holding Nv",
+     "zh": "",
+     "ticker": "",
+     "value": 44605252,
+     "delta": -3.9
+    },
+    {
+     "type": "trim",
+     "name": "Uber Technologies Inc",
+     "zh": "优步",
+     "ticker": "UBER",
+     "value": 29784073,
+     "delta": -3.2
+    },
+    {
+     "type": "trim",
+     "name": "Sunbelt Rentals Holdings Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 29251026,
+     "delta": -4.6
     }
    ]
   },
@@ -8524,18 +8524,36 @@
    "img": "",
    "imgAlt": "",
    "imgLogo": true,
-   "period": "2026-06-30",
-   "filed": "2026-08-12",
-   "value": 1444222377,
-   "stocks": 49,
-   "top10pct": 55.0,
+   "period": "2026-09-30",
+   "filed": "2026-11-12",
+   "value": 1460458640,
+   "stocks": 48,
+   "top10pct": 56.9,
    "holdings": [
     {
      "name": "Berkshire Hathaway B类 Ord",
      "zh": "伯克希尔·哈撒韦",
      "ticker": "BRK.B",
-     "value": 135905924,
-     "pct": 9.41,
+     "value": 134421603,
+     "pct": 9.2,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Danaher Ord",
+     "zh": "丹纳赫",
+     "ticker": "DHR",
+     "value": 102134550,
+     "pct": 6.99,
+     "chg": "trim",
+     "chgPct": -5.8
+    },
+    {
+     "name": "Visa A类 Ord",
+     "zh": "维萨",
+     "ticker": "V",
+     "value": 94469654,
+     "pct": 6.47,
      "chg": "hold",
      "chgPct": null
     },
@@ -8543,26 +8561,8 @@
      "name": "Alphabet C类 Ord",
      "zh": "谷歌",
      "ticker": "GOOG",
-     "value": 94727773,
-     "pct": 6.56,
-     "chg": "trim",
-     "chgPct": -17.9
-    },
-    {
-     "name": "Danaher Ord",
-     "zh": "丹纳赫",
-     "ticker": "DHR",
-     "value": 93239960,
-     "pct": 6.46,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Visa A类 Ord",
-     "zh": "维萨",
-     "ticker": "V",
-     "value": 91032070,
-     "pct": 6.3,
+     "value": 89716842,
+     "pct": 6.14,
      "chg": "hold",
      "chgPct": null
     },
@@ -8570,121 +8570,121 @@
      "name": "Mastercard A类 Ord",
      "zh": "万事达",
      "ticker": "MA",
-     "value": 74651760,
-     "pct": 5.17,
+     "value": 79453040,
+     "pct": 5.44,
      "chg": "hold",
      "chgPct": null
-    },
-    {
-     "name": "Aon A类 Ord",
-     "zh": "",
-     "ticker": "",
-     "value": 70935223,
-     "pct": 4.91,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Vulcan Materials Ord",
-     "zh": "",
-     "ticker": "",
-     "value": 60123038,
-     "pct": 4.16,
-     "chg": "trim",
-     "chgPct": -4.9
     },
     {
      "name": "Meta Platforms A类 Ord",
      "zh": "Meta平台",
      "ticker": "META",
-     "value": 57996338,
-     "pct": 4.02,
-     "chg": "hold",
-     "chgPct": null
+     "value": 71227180,
+     "pct": 4.88,
+     "chg": "trim",
+     "chgPct": -4.6
+    },
+    {
+     "name": "Microsoft Ord",
+     "zh": "微软",
+     "ticker": "MSFT",
+     "value": 71190520,
+     "pct": 4.87,
+     "chg": "trim",
+     "chgPct": -9.4
     },
     {
      "name": "Thermo Fisher Scientific Ord",
      "zh": "赛默飞世尔",
      "ticker": "TMO",
-     "value": 57756672,
-     "pct": 4.0,
+     "value": 70888351,
+     "pct": 4.85,
      "chg": "trim",
-     "chgPct": -4.8
+     "chgPct": -8.8
+    },
+    {
+     "name": "Aon A类 Ord",
+     "zh": "",
+     "ticker": "",
+     "value": 61694801,
+     "pct": 4.22,
+     "chg": "add",
+     "chgPct": 4.2
     },
     {
      "name": "Idex Ord",
      "zh": "",
      "ticker": "",
-     "value": 57282180,
-     "pct": 3.97,
+     "value": 55810872,
+     "pct": 3.82,
      "chg": "trim",
-     "chgPct": -4.5
+     "chgPct": -3.0
     }
    ],
    "moves": [
     {
      "type": "exit",
-     "name": "Old Dominion Freight Line In",
-     "zh": "",
+     "name": "Liberty Broadband Srs A Ord",
+     "zh": "自由宽带",
      "ticker": "",
-     "value": 25792800,
+     "value": 23276160,
      "delta": null
     },
     {
      "type": "trim",
-     "name": "Accenture A类 Ord",
+     "name": "Bio Techne Ord",
      "zh": "",
      "ticker": "",
-     "value": 18952635,
-     "delta": -29.9
+     "value": 20092899,
+     "delta": -53.6
     },
     {
      "type": "add",
-     "name": "Heico A类 Ord",
-     "zh": "",
-     "ticker": "",
-     "value": 12845602,
-     "delta": 8.2
-    },
-    {
-     "type": "new",
-     "name": "Netflix Ord",
-     "zh": "奈飞",
-     "ticker": "NFLX",
-     "value": 10510080,
-     "delta": null
+     "name": "Charter Communications A类 Ord",
+     "zh": "特许通讯",
+     "ticker": "CHTR",
+     "value": 17148742,
+     "delta": 23817.8
     },
     {
      "type": "trim",
-     "name": "Costar Group Ord",
-     "zh": "",
-     "ticker": "",
-     "value": 8872303,
-     "delta": -18.2
+     "name": "Microsoft Ord",
+     "zh": "微软",
+     "ticker": "MSFT",
+     "value": 14043856,
+     "delta": -9.4
     },
     {
-     "type": "new",
-     "name": "Capital One Financial Ord",
-     "zh": "",
-     "ticker": "",
-     "value": 8024800,
-     "delta": null
-    },
-    {
-     "type": "trim",
-     "name": "Texas Instruments Ord",
-     "zh": "德州仪器",
-     "ticker": "TXN",
-     "value": 7862161,
-     "delta": -51.3
+     "type": "add",
+     "name": "Taiwan Semiconductor Mnftg ADR 5 Ord",
+     "zh": "台积电",
+     "ticker": "TSM",
+     "value": 13554624,
+     "delta": 153.2
     },
     {
      "type": "trim",
-     "name": "Salesforce Ord",
-     "zh": "赛富时",
-     "ticker": "CRM",
-     "value": 7490267,
-     "delta": -39.5
+     "name": "Meta Platforms A类 Ord",
+     "zh": "Meta平台",
+     "ticker": "META",
+     "value": 13230842,
+     "delta": -4.6
+    },
+    {
+     "type": "trim",
+     "name": "Thermo Fisher Scientific Ord",
+     "zh": "赛默飞世尔",
+     "ticker": "TMO",
+     "value": 13131679,
+     "delta": -8.8
+    },
+    {
+     "type": "add",
+     "name": "Aon A类 Ord",
+     "zh": "",
+     "ticker": "",
+     "value": 9240422,
+     "delta": 4.2
     }
    ]
   },
@@ -9419,70 +9419,70 @@
    "zh": "谷歌",
    "ticker": "GOOG",
    "gurus": 40,
-   "value": 93609881353
+   "value": 93121896348
   },
   {
    "name": "Amazon. Inc - Us",
    "zh": "亚马逊",
    "ticker": "AMZN",
    "gurus": 32,
-   "value": 46068705303
-  },
-  {
-   "name": "Microsoft Corporation",
-   "zh": "微软",
-   "ticker": "MSFT",
-   "gurus": 30,
-   "value": 30396552926
+   "value": 45654854487
   },
   {
    "name": "Meta Platforms Inc",
    "zh": "Meta平台",
    "ticker": "META",
    "gurus": 30,
-   "value": 21733387496
+   "value": 21726227892
+  },
+  {
+   "name": "Microsoft Corporation",
+   "zh": "微软",
+   "ticker": "MSFT",
+   "gurus": 29,
+   "value": 34683260639
   },
   {
    "name": "Taiwan Semiconductor Manufacturing Co Ltd - Us ADR",
    "zh": "台积电",
    "ticker": "TSM",
    "gurus": 29,
-   "value": 25126103613
+   "value": 24368381247
   },
   {
    "name": "Visa Inc-A类",
    "zh": "维萨",
    "ticker": "V",
    "gurus": 25,
-   "value": 21595104670
+   "value": 21681880258
   },
   {
    "name": "Berkshire Hathaway Inc",
    "zh": "伯克希尔·哈撒韦",
    "ticker": "BRK.B",
    "gurus": 24,
-   "value": 16757685197
+   "value": 16690400897
   },
   {
    "name": "Nvidia Corporation",
    "zh": "英伟达",
    "ticker": "NVDA",
    "gurus": 23,
-   "value": 56340838179
+   "value": 59267434809
   },
   {
    "name": "Capital One Financial Corp - Us",
    "zh": "",
    "ticker": "",
    "gurus": 22,
-   "value": 9143745390
+   "value": 9017394789
   },
   {
-   "name": "Apple Inc - Us",
-   "zh": "苹果",
-   "ticker": "AAPL",
-   "gurus": 21,
-   "value": 97982442874
+   "name": "Uber Technologies Inc",
+   "zh": "优步",
+   "ticker": "UBER",
+   "gurus": 22,
+   "value": 5767715122
   }
  ],
  "biggest": [
@@ -9540,7 +9540,14 @@
    "zh": "英伟达",
    "ticker": "NVDA",
    "investor": "肯·费雪",
-   "value": 18195373846
+   "value": 21201005507
+  },
+  {
+   "name": "Apple Inc",
+   "zh": "苹果",
+   "ticker": "AAPL",
+   "investor": "肯·费雪",
+   "value": 19463779038
   },
   {
    "name": "Ge Aerospace",
@@ -9548,13 +9555,6 @@
    "ticker": "GE",
    "investor": "克里斯·霍恩",
    "value": 17725353519
-  },
-  {
-   "name": "Ishares Core Us Aggregate Bond",
-   "zh": "安硕ETF",
-   "ticker": "IVV",
-   "investor": "肯·费雪",
-   "value": 16714399245
   }
  ],
  "swfs": [
@@ -10451,45 +10451,36 @@
    "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAALVBMVEVHcEzedykPNlEPNlEPNlEPNlEPNlE7QUsPNlEPNlHedynedynedynedykPNlHL7sO7AAAADnRSTlMA/kPwIFvMD3mayY9WLR88/9wAAANsSURBVHic7ZrblqsgDIZV5OTp/R93q1MQhBCgaC92/q41F1bkmyQkAdt1JBKJRCKRSCQSKalVJr4ceYGGMfUocP5+SXw7bAViTKihGGDpp1YAO8LGdCnC1PcJwxUCnNJjyfzrDpDwQQ3AJkoIlr7v58YAGytww7wDTGtjgE1kExweSPnAAjCBitV44fBAygcWQHUS0TgocRHozJQwnwATeLcDkCGprBUyw0D2fwJ9UAawZ05rBJF1//IBAH1QCtANlgA0wTxd6o2ca54/igE6brygoTuWPi3PGuUAUhsfgIG1TonpJz8cygE6bsIwsRJhI8w37AoA+fEB44mbFsAIy91sFQCdCcMUQLfOMfOHKfkbgPQQGbrhbv5aAJ055B6L0WRUEwNZLjjk2yCeiyoARhOEaDL2wyBeDx5ahqfkzQXRpqAiERkPwInoo3sURn1QDqCyR9wXYrQ5Li9GtiCjLcnHA9NiSGI+KAWwpQiuRUbrx/CrtUXMB4UNiS5oSGZn8f+lhJgPLIAeMQ1cO10hCnyuAZt75Qz44GpKcW2O0CVwesDNvcD+oLYtx5vi+V759/IUyUV1ADlN+RyUPhleemNrhqgCgKmaU4JmAKJsb9wSYF8HQvO207t5YEA1Vp3Q5AIUdEQEQAAE0BaAPQKwdw9WPPmxLWZGIgoSEzC75No70HpMgNGGd2YHAdRb0wMA/L35o5vTN+ePWUAKfNijAMq/o6jVDq6gY0MAxwBCDehO45DZa29afq7YzS86NtJjXxu33M4pyIQXQOYTXNl/Bz07uADuDpXfAJgQYPmDnwHAt84PAVgX4FtHFKDAis7TTEQlT1HzAKoscC1DxjNt0BbATURCa+V8jj+K82DtwgBMY4qckUgnj20R7Zurm2lgAFyxaphRjAR/EkAqfJwXoa0BshoSt4p8AwAsNY4/wTlia2+BsynFSu/12vMBC5xPGWNtNNd2rDVBIg9Ut+UJrrBYNE5EqIKj9rcBgpcNbwOYcoUDVFVDXD+3gP4xgF0FTwWhTLbRgw5fdzSOASAFhnuOnERUYwB9/NYK/Fy6mtbGLsjM4862oTGABma8ze/0Uo1jIMsC3vuuH1jA3zYGAF/tDVELMLG3sl5X2tgCQ/oXmZESbn7Sqcw30jyj/KeTJBKJRCKRSCTSf6x/7wm5lwGAYcYAAAAASUVORK5CYII=",
    "imgAlt": "",
    "imgLogo": true,
-   "period": "2026-06-30",
-   "filed": "2026-07-23",
-   "value": 2255890135,
-   "stocks": 15,
-   "top10pct": 99.9,
+   "period": "2026-09-30",
+   "filed": "2026-11-12",
+   "value": 1601911967,
+   "stocks": 8,
+   "top10pct": 100.0,
    "holdings": [
-    {
-     "name": "Ssga Active Tr",
-     "zh": "",
-     "ticker": "",
-     "value": 741551980,
-     "pct": 32.87,
-     "chg": "hold",
-     "chgPct": null
-    },
     {
      "name": "Morgan Stanley ETF Trust",
      "zh": "摩根士丹利",
      "ticker": "",
-     "value": 727973611,
-     "pct": 32.27,
+     "value": 727071619,
+     "pct": 45.39,
      "chg": "hold",
      "chgPct": null
     },
     {
-     "name": "Invesco Exchange Traded Fd T",
+     "name": "Ssga Active Tr",
      "zh": "",
      "ticker": "",
-     "value": 628457898,
-     "pct": 27.86,
-     "chg": "trim",
-     "chgPct": -46.0
+     "value": 708340467,
+     "pct": 44.22,
+     "chg": "hold",
+     "chgPct": null
     },
     {
      "name": "Tidal Trust Iii",
      "zh": "",
      "ticker": "",
-     "value": 121004606,
-     "pct": 5.36,
+     "value": 123653156,
+     "pct": 7.72,
      "chg": "hold",
      "chgPct": null
     },
@@ -10497,84 +10488,75 @@
      "name": "State Str Spdr S&P 500 ETF T",
      "zh": "标普500 ETF",
      "ticker": "SPY",
-     "value": 30274056,
-     "pct": 1.34,
+     "value": 30917020,
+     "pct": 1.93,
      "chg": "hold",
      "chgPct": null
     },
     {
-     "name": "Digital Rlty Tr Inc",
+     "name": "Accelevation Holdings Corp",
      "zh": "",
      "ticker": "",
-     "value": 2693700,
-     "pct": 0.12,
+     "value": 5269205,
+     "pct": 0.33,
      "chg": "new",
      "chgPct": null
     },
     {
-     "name": "Vishay Intertechnology Inc",
+     "name": "Sysco Corp",
      "zh": "",
      "ticker": "",
-     "value": 978581,
+     "value": 3898000,
+     "pct": 0.24,
+     "chg": "new",
+     "chgPct": null
+    },
+    {
+     "name": "Proshares Tr",
+     "zh": "",
+     "ticker": "",
+     "value": 2158500,
+     "pct": 0.13,
+     "chg": "new",
+     "chgPct": null
+    },
+    {
+     "name": "Proshares Tr",
+     "zh": "",
+     "ticker": "",
+     "value": 604000,
      "pct": 0.04,
-     "chg": "new",
-     "chgPct": null
-    },
-    {
-     "name": "Legend Biotech Corp",
-     "zh": "",
-     "ticker": "",
-     "value": 670854,
-     "pct": 0.03,
-     "chg": "new",
-     "chgPct": null
-    },
-    {
-     "name": "Torm PLC",
-     "zh": "",
-     "ticker": "",
-     "value": 629401,
-     "pct": 0.03,
-     "chg": "new",
-     "chgPct": null
-    },
-    {
-     "name": "Arxis Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 461400,
-     "pct": 0.02,
      "chg": "new",
      "chgPct": null
     }
    ],
    "moves": [
     {
-     "type": "trim",
+     "type": "exit",
      "name": "Invesco Exchange Traded Fd T",
      "zh": "",
      "ticker": "",
-     "value": 421324542,
-     "delta": -46.0
-    },
-    {
-     "type": "exit",
-     "name": "Spdr Series Trust",
-     "zh": "",
-     "ticker": "",
-     "value": 30877190,
-     "delta": null
-    },
-    {
-     "type": "exit",
-     "name": "Spdr Series Trust",
-     "zh": "",
-     "ticker": "",
-     "value": 15100000,
+     "value": 628457898,
      "delta": null
     },
     {
      "type": "new",
+     "name": "Accelevation Holdings Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 5269205,
+     "delta": null
+    },
+    {
+     "type": "new",
+     "name": "Sysco Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 3898000,
+     "delta": null
+    },
+    {
+     "type": "exit",
      "name": "Digital Rlty Tr Inc",
      "zh": "",
      "ticker": "",
@@ -10583,6 +10565,14 @@
     },
     {
      "type": "new",
+     "name": "Proshares Tr",
+     "zh": "",
+     "ticker": "",
+     "value": 2158500,
+     "delta": null
+    },
+    {
+     "type": "exit",
      "name": "Vishay Intertechnology Inc",
      "zh": "",
      "ticker": "",
@@ -10591,26 +10581,18 @@
     },
     {
      "type": "exit",
-     "name": "Forgent Power Solutions Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 878100,
-     "delta": null
-    },
-    {
-     "type": "exit",
-     "name": "Solv Energy Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 750750,
-     "delta": null
-    },
-    {
-     "type": "new",
      "name": "Legend Biotech Corp",
      "zh": "",
      "ticker": "",
      "value": 670854,
+     "delta": null
+    },
+    {
+     "type": "exit",
+     "name": "Torm PLC",
+     "zh": "",
+     "ticker": "",
+     "value": 629401,
      "delta": null
     }
    ],
@@ -11691,7 +11673,7 @@
    "partyZh": "共和党",
    "roleZh": "参议院",
    "stateZh": "阿拉巴马",
-   "img": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Sen._Tommy_Tuberville_Official_Portrait%2C_118th_Congress_%28cropped%29.jpg/250px-Sen._Tommy_Tuberville_Official_Portrait%2C_118th_Congress_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "img": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/5SPD22_5G92MPCZX0_lt-1.jpg/250px-5SPD22_5G92MPCZX0_lt-1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "T000278",
    "count": 1212,
    "volume": 944000,
@@ -12745,8 +12727,14 @@
   }
  ],
  "aaii": {
-  "asOf": "2026-11-05",
+  "asOf": "2026-11-12",
   "weeks": [
+   {
+    "date": "2026-11-12",
+    "bull": 30.8,
+    "neutral": 17.8,
+    "bear": 51.4
+   },
    {
     "date": "2026-11-05",
     "bull": 34.1,
@@ -12812,12 +12800,6 @@
     "bull": 32.9,
     "neutral": 22.6,
     "bear": 44.4
-   },
-   {
-    "date": "2026-08-20",
-    "bull": 35.5,
-    "neutral": 24.6,
-    "bear": 39.9
    }
   ],
   "avg": {
@@ -12825,7 +12807,7 @@
    "neutral": 30.9,
    "bear": 31.5
   },
-  "spread": -14.3,
+  "spread": -20.6,
   "hi52": {
    "bull": 49.5,
    "date": "2026-01-15"
