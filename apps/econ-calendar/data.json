@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-11-13T21:24:26Z",
-  "asOf": "2026-11-13",
+  "updatedAt": "2026-11-14T18:23:54Z",
+  "asOf": "2026-11-14",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-11-08 ~ 2026-11-14",
-  "count": 105,
+  "count": 106,
   "highCount": 5,
   "events": [
     {
@@ -1237,6 +1237,18 @@
       "flag": "🇺🇸",
       "title": "美联储官员讲话",
       "titleEn": "FOMC Member Daly Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-11-13T21:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "FOMC Financial Stability Report",
+      "titleEn": "FOMC Financial Stability Report",
       "impact": "low",
       "forecast": null,
       "previous": null,
