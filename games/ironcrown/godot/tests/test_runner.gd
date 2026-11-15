@@ -13973,12 +13973,10 @@ func test_startmenu() -> void:
 	check(m.continue_btn.disabled and m.load_btn.disabled and not m.new_btn.disabled and m.continue_note.text == "还没有存档", "没存档：「继续游戏」「读取存档」灰着，写着「还没有存档」（最近的存档：%s）" % Saves.latest_slot())
 	var labels := [m.continue_btn, m.new_btn, m.load_btn, m.settings_btn, m.credits_btn, m.exit_btn].map(func(b): return b.text)
 	check(labels == ["继续游戏", "新游戏", "读取存档", "设置", "制作人员", "退出游戏"], "按钮：%s" % " / ".join(labels))
-	check(m.stage != null and m.stage.get_node_or_null("Throne") != null and m.stage.crown != null and m.stage.walkers.multimesh.instance_count == TitleStage.WALKERS and m.stage.cam.current,
-		"背后的 3D 场景：断王座、铁冠、%d 个往北走的长眠者，自己的镜头" % TitleStage.WALKERS)
-	m.stage.motion = true                                # 无头测试里「减少动态效果」可能是开着的：这里只看暂停时动不动（无头模式读不回多实例的位置，看场景的时钟）
-	var t0: float = m.stage.t
+	check(m.cover != null and m.cover.texture != null and m.cover.stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_COVERED and m.find_child("TitleView", true, false) == null,
+		"静态封面等比铺满，不再创建首页 3D 视口")
 	await seconds(1.0)
-	check(m.stage.t - t0 > 0.5 and get_tree().paused, "游戏停着，菜单的场景照样动（场景时钟走了 %.2f 秒）" % (m.stage.t - t0))
+	check(get_tree().paused, "静态封面菜单打开时，游戏仍暂停")
 	var r: Rect2 = m.panel.get_global_rect()
 	var sz := UiKit.logical_size(m)
 	check(r.end.x <= sz.x and r.position.y >= 0.0 and r.end.y <= sz.y and r.position.x > sz.x * 0.5, "菜单在右半边、整块在窗口里（%s）" % str(r))
@@ -13994,8 +13992,12 @@ func test_startmenu() -> void:
 	m.credits_btn.pressed.emit()
 	await frames(2)
 	var names: Array = main.credits_panel.box.get_children().filter(func(c): return c is Label).map(func(c): return c.text)
-	check(main.credits_panel.visible and names.has("郑翊") and names.find("出品人 · 制作人 · 总策划") == names.find("郑翊") - 1 and names.has("Godot Engine（MIT 许可）\nJuan Linietsky、Ariel Manzur 与 Godot 社区的贡献者"),
-		"制作人员：郑翊（出品人 · 制作人 · 总策划）排在最前，后面是引擎、素材、字体")
+	var credits_joined := "\n".join(names)
+	check(main.credits_panel.visible and names.has("郑翊") and names.find("出品人 · 制作人 · 总策划") == names.find("郑翊") - 1
+		and names.has("程序 · 关卡 · 剧本执笔 · 音效设计") and names.has("《铁冠之争》制作组\nOoglex Games")
+		and not credits_joined.contains("Claude") and not credits_joined.contains("Anthropic")
+		and names.has("Godot Engine（MIT 许可）\nJuan Linietsky、Ariel Manzur 与 Godot 社区的贡献者"),
+		"制作人员：郑翊与《铁冠之争》制作组 / Ooglex Games 正确显示，不含 Claude / Anthropic，保留引擎与素材许可")
 	var v0: int = main.credits_panel.scroll.scroll_vertical
 	await seconds(1.0)
 	check(main.credits_panel.scroll.scroll_vertical > v0, "名单自己往上滚（%d → %d）" % [v0, main.credits_panel.scroll.scroll_vertical])
@@ -14014,8 +14016,8 @@ func test_startmenu() -> void:
 	# 新游戏（没存档：不用确认）
 	m.new_btn.pressed.emit()
 	await frames(3)
-	check(not m.visible and not get_tree().paused and not main.get_viewport().disable_3d and main.hud.visible and Engine.get_meta("ic_menu_done", false) and m.stage == null,
-		"新游戏：主菜单关掉、游戏走起来、世界画出来、HUD 出来；菜单的 3D 场景拿掉")
+	check(not m.visible and not get_tree().paused and not main.get_viewport().disable_3d and main.hud.visible and Engine.get_meta("ic_menu_done", false) and m.find_child("TitleView", true, false) == null,
+		"新游戏：主菜单关掉、游戏走起来、世界画出来、HUD 出来；静态首页隐藏")
 	check(main.save_game("slot2"), "存一份档")
 	await free_main(main)
 	# —— 这次打开页面已经离开过主菜单：换区域、读档重新载入不再出
@@ -14140,7 +14142,139 @@ func test_i18n() -> void:
 	check(I18n.t("新游戏") == "新游戏" and tr("新游戏") == "新游戏", "中文时：原样（回退语言是 zh，不会被英文表换掉）")
 	Settings.set_value("lang", "en")
 	check(I18n.t("新游戏") == "New Game" and tr("新游戏") == "New Game" and I18n.t("对照表里没有的句子") == "对照表里没有的句子", "英文时：有的换成英文，没有的照旧显示中文")
+	check(I18n.t("先说抄经室里那个人。") == "First, tell me about the man in the scriptorium." and I18n.t("账房里有什么？") == "What is in the counting room?", "金穗平原补齐的对话英文可读")
 	check(I18n.t("%d 级") % 3 == "Level 3" and Saves.describe({"scene": "frostford", "state": {"level": 2, "playtime": 600.0}}).begins_with("Frostford · Level 2"), "带数的句子先翻再填数；存档说明也是英文（%s）" % Saves.describe({"scene": "frostford", "state": {"level": 2, "playtime": 600.0}}))
+	GameState.new_game(1)
+	GameState.set_flag("valen_heir", "ivette")
+	GameState.set_flag("ch1_causeway", "held")
+	var han := RegEx.create_from_string("[㐀-鿿]")
+	check(han.is_valid() and han.search(Chapter1.recap()) == null and han.search(Chapter1.hook()) == null, "第一章章末回顾与钩子在英文下无残余汉字")
+	GameState.set_flag("ch2_first_tide", "held")
+	GameState.set_flag("ch2_convoy", "taken")
+	GameState.set_flag("ch2_fire", "lit")
+	GameState.set_flag("ch2_nell", "left")
+	check(han.search(Chapter2.recap()) == null and han.search(Chapter2.hook()) == null, "第二章章末回顾与钩子在英文下无残余汉字")
+	GameState.set_flag("ch3_side", "tenants")
+	GameState.set_flag("ch3_mill", "held")
+	GameState.set_flag("south_evidence", "both")
+	GameState.set_flag("ch3_evidence_to", "tenants")
+	GameState.set_flag("ch3_ida", "witness")
+	check(han.search(Chapter3.recap()) == null and han.search(Chapter3.hook()) == null, "第三章章末回顾与钩子在英文下无残余汉字")
+	GameState.set_flag("ch4_crown_way", "bought")
+	GameState.set_flag("ch4_buyer", "north")
+	GameState.set_flag("crown_holder", "valen")
+	GameState.set_flag("ch4_debt_reader", "valen")
+	GameState.set_flag("ch4_note_read", true)
+	check(han.search(Chapter4.recap()) == null and han.search(Chapter4.hook()) == null, "第四章章末回顾与钩子在英文下无残余汉字")
+	GameState.set_flag("ending", "new_king")
+	GameState.set_flag("ch5_companion", "ivette")
+	GameState.set_flag("crown_holder", "valen")
+	GameState.set_flag("ch5_nell", "woke")
+	GameState.set_flag("ch5_oath", "sealed")
+	check(han.search(Chapter5.text()) == null and han.search(Chapter5.recap()) == null and han.search(I18n.t(Chapter5.title())) == null, "第五章结局标题、正文与回顾在英文下无残余汉字")
+	check(str(Saves.load_settings().get("lang", "")) == "en", "英文设置已持久保存")
+	Settings.lang = "zh"
+	I18n.apply("zh")
+	Settings._ready()
+	check(Settings.lang == "en" and I18n.en(), "重启后 Settings._ready() 保持英文设置")
 	check(UiKit.wrap_mode() == TextServer.AUTOWRAP_WORD_SMART, "英文按词换行")
+	Engine.set_meta("ic_skip_menu", false)
+	Engine.remove_meta("ic_menu_done")
+	var main := await make_main(false)
+	var m: StartMenu = main.start_menu
+	check(m != null and m.cover != null and m.cover.visible and m.cover.texture != null and m.cover_texture.atlas.resource_path == "res://assets/title/iron_crown_cover.png" and m.cover_texture.atlas.get_size().x > 500.0,
+		"高清雪原武士首页正常显示")
+	check(m.new_btn.atr(m.new_btn.text) == "New Game" and m.continue_btn.atr(m.continue_btn.text) == "Continue" and m.footer.atr(m.footer.text).contains("Tech prototype"),
+		"英文模式开始菜单按钮与页脚显示英文")
+	m.lang_btns.zh.pressed.emit()
+	await frames(2)
+	check(m.new_btn.atr(m.new_btn.text) == "新游戏", "开始菜单切回中文立即刷新")
+	m.lang_btns.en.pressed.emit()
+	await frames(2)
+	check(m.new_btn.atr(m.new_btn.text) == "New Game", "开始菜单切回英文立即刷新")
+	m.credits_btn.pressed.emit()
+	await frames(2)
+	var cp: CreditsPanel = main.credits_panel
+	var en_credits: Array = cp.box.get_children().filter(func(c): return c is Label and c.auto_translate_mode != Node.AUTO_TRANSLATE_MODE_DISABLED).map(func(c): return c.atr(c.text))
+	var en_joined := "\n".join(en_credits)
+	check(en_credits.has("Programming · Level Design · Writing · Sound Design") and en_credits.has("The Iron Crown Development Team\nOoglex Games")
+		and not en_joined.contains("Claude") and not en_joined.contains("Anthropic") and han.search(en_joined) == null,
+		"英文模式制作人员显示对应英文译文，除刻意保留的中文主标题外无汉字且无 Claude / Anthropic")
+	cp.back_btn.pressed.emit()
+	await frames(2)
+	get_tree().root.size = Vector2i(360, 640)
+	await frames(3)
+	var sz360 := UiKit.logical_size(m)
+	var mr := m.panel.get_global_rect()
+	check(mr.position.x >= 0.0 and mr.end.x <= sz360.x + 1.0 and mr.end.y <= sz360.y + 1.0, "360×640 开始菜单英文面板不超出屏幕（%s）" % mr)
+	m.new_btn.pressed.emit()
+	await frames(3)
+	get_tree().root.size = Vector2i(1280, 720)
+	await frames(3)
+	main.open_pause()
+	await frames(2)
+	var pm: PauseMenu = main.pause_menu
+	check(pm.title_label.atr(pm.title_label.text) == "Paused" and pm.resume_btn.atr(pm.resume_btn.text) == "Continue" and han.search(pm.sens_value.atr(pm.sens_value.text)) == null,
+		"英文暂停菜单显示英文")
+	pm.lang_btns.zh.pressed.emit()
+	await frames(2)
+	check(pm.title_label.atr(pm.title_label.text) == "已暂停" and pm.sens_value.atr(pm.sens_value.text).contains("倍"), "暂停菜单切回中文立即刷新")
+	pm.lang_btns.en.pressed.emit()
+	await frames(2)
+	check(pm.title_label.atr(pm.title_label.text) == "Paused" and pm.sens_value.atr(pm.sens_value.text).contains("×"), "暂停菜单切回英文立即刷新")
+	var pmr := pm.panel.get_global_rect()
+	check(pmr.position.x >= 0.0 and pmr.end.x <= 1280.0 and pmr.end.y <= 720.0, "1280×720 暂停菜单不溢出（%s）" % pmr)
+	main.close_pause()
+	await frames(2)
+	GameState.start_quest("ch3_main", "to_manor")
+	main.open_dialogue("plain", "isabella")
+	check(main.dialogue.visible, "能打开金穗平原伊莎贝拉对话")
+	await frames(2)
+	var dp: DialoguePanel = main.dialogue
+	var d_ok := han.search(dp.name_label.atr(dp.name_label.text)) == null and han.search(dp.text_label.atr(dp.text_label.text)) == null
+	for b: Button in dp.buttons:
+		if han.search(b.atr(b.text)) != null:
+			d_ok = false
+	var dpr := dp.panel.get_global_rect()
+	check(d_ok and dpr.position.x >= 0.0 and dpr.end.x <= 1280.0 and dpr.end.y <= 720.0, "英文对话面板与选项无汉字且不溢出（%s）" % dpr)
+	dp.close()
+	await frames(2)
+	main.open_quests()
+	await frames(2)
+	var qp: QuestPanel = main.quest_panel
+	var qpr := qp.panel.get_global_rect()
+	check(han.search(qp.detail.atr(qp.detail.text)) == null and qpr.position.x >= 0.0 and qpr.end.x <= 1280.0, "英文任务面板无汉字且不溢出（%s）" % qpr)
+	qp.close()
+	await frames(2)
+	main.open_map()
+	await frames(2)
+	var mp: MapPanel = main.map_panel
+	check(han.search(mp.title.atr(mp.title.text)) == null and han.search(mp.where_label.atr(mp.where_label.text)) == null and han.search(mp.detail_label.atr(mp.detail_label.text)) == null,
+		"英文区域地图文字无汉字")
+	mp.close()
+	await frames(2)
+	GameState.chapter = 3
+	main.open_travel_map(true)
+	await frames(2)
+	var tm: TravelMap = main.travel_map
+	check(han.search(tm.title.atr(tm.title.text)) == null and han.search(tm.name_label.atr(tm.name_label.text)) == null and han.search(tm.go_btn.atr(tm.go_btn.text)) == null,
+		"英文旅行地图文字无汉字")
+	tm.close()
+	await frames(2)
+	get_tree().root.size = Vector2i(360, 640)
+	await frames(3)
+	var h: Hud = main.get("hud")
+	var hud_sz := UiKit.logical_size(h)
+	var btns_left: float = h.char_btn.position.x
+	var btns_right: float = h.menu_btn.position.x + h.menu_btn.size.x
+	var title_right: float = h.title_label.position.x + h.title_label.size.x
+	check(btns_left >= 0.0 and btns_right <= hud_sz.x + 1.0 and title_right <= btns_left + 1.0,
+		"360×640 英文 HUD 顶部标题与按钮不重叠不溢出（title_end=%.1f char_x=%.1f menu_end=%.1f view_w=%.1f）" % [title_right, btns_left, btns_right, hud_sz.x])
+	await free_main(main)
+	get_tree().root.size = Vector2i(1280, 720)
+	Engine.set_meta("ic_skip_menu", true)
+	Engine.remove_meta("ic_menu_done")
+	get_tree().paused = false
+	GameState.new_game()
 	Settings.set_value("lang", "zh")
 	check(UiKit.wrap_mode() == TextServer.AUTOWRAP_ARBITRARY and Saves.describe({"scene": "frostford", "state": {"level": 2, "playtime": 600.0}}).begins_with("霜渡镇 · 2 级"), "切回中文：存档说明是中文")

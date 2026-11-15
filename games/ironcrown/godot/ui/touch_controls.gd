@@ -189,7 +189,9 @@ func _draw() -> void:
 		var p: Vector2 = centers[id]
 		draw_circle(p, BTN_R, Color(0.06, 0.09, 0.13, 0.5))
 		draw_arc(p, BTN_R, 0.0, TAU, 40, Color(0.72, 0.59, 0.31, 0.8), 2.0)
-		var t: String = labels.get(id, "")
+		var t: String = I18n.t(str(labels.get(id, "")))
 		var fs := 22 if t.length() == 1 else 16
+		while fs > 10 and font.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > BTN_R * 1.75:
+			fs -= 1
 		var w := font.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		draw_string(font, p + Vector2(-w * 0.5, fs * 0.35), t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("e8dcc0"))

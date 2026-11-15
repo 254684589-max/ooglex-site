@@ -174,7 +174,8 @@ func _ready() -> void:
 		if lang_btns.has(Settings.lang):
 			lang_btns[Settings.lang].set_pressed_no_signal(true)
 		help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if I18n.en() else TextServer.AUTOWRAP_ARBITRARY
-		_refresh_values())
+		_refresh_values()
+		_fit.call_deferred())
 	get_tree().root.size_changed.connect(_fit)
 	_fit()
 	_refresh_values()

@@ -64,6 +64,9 @@ func _ready() -> void:
 	minimap.open_map.connect(func(): map_pressed.emit())
 	Settings.changed.connect(func():
 		minimap.apply_size()
+		if tracker:
+			tracker.refresh()
+		refresh_squad()
 		_layout())
 	title_label = Label.new()
 	title_label.text = TITLE
@@ -329,17 +332,31 @@ func _layout() -> void:
 	# 从右往左：菜单、地图（3.11）、任务、背包、角色
 	var x := size.x - 12.0
 	for b: Button in [menu_btn, map_btn, quest_btn, bag_btn, char_btn]:
+		b.reset_size()
 		b.size = b.get_combined_minimum_size()
 		x -= b.size.x
 		b.position = Vector2(x, 10.0)
 		x -= 8.0
-	# 标题放不下就换短的，还放不下就再缩一号字
+	# 标题放不下就换短的，还放不下就再缩一号字；极窄屏只保留标题名并限制宽，防止与右上角按钮重叠
+	title_label.clip_text = false
+	title_label.custom_minimum_size.x = 0.0
 	title_label.text = TITLE
 	title_label.add_theme_font_size_override("font_size", TITLE_FS)
+	title_label.reset_size()
 	if title_label.get_minimum_size().x + 24.0 > char_btn.position.x:
 		title_label.text = TITLE_SHORT
+		title_label.reset_size()
 		if title_label.get_minimum_size().x + 24.0 > char_btn.position.x:
 			title_label.add_theme_font_size_override("font_size", TITLE_FS_SMALL)
+			title_label.reset_size()
+			if title_label.get_minimum_size().x + 24.0 > char_btn.position.x:
+				title_label.text = "铁冠之争"
+				title_label.add_theme_font_size_override("font_size", 14)
+				title_label.reset_size()
+				var avail := maxf(0.0, char_btn.position.x - 24.0)
+				if title_label.get_minimum_size().x > avail:
+					title_label.clip_text = true
+					title_label.size.x = avail
 	if minimap:
 		minimap.apply_size()
 		minimap.position = Vector2(size.x - minimap.size.x - 12.0, 10.0 + BTN_MIN.y + 10.0)    # 右上角按钮下面

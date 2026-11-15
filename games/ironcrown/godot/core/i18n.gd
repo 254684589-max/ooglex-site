@@ -6,7 +6,7 @@ extends RefCounted
 ##   · 拼出来的句子（带 %s / %d 的）—— 代码里先 I18n.t(原句) 再填数，对照表里存的是带占位符的原句；
 ##   · 对话、任务、物品这些数据 —— 显示的地方 I18n.t()。
 ## 对照表里没有的句子照旧显示中文（不会出空白）。tools/i18n_report.py 列出哪些还没翻。
-## 英文对照表只在选了英文时挂进 TranslationServer，选中文时摘下来——不然中文界面会按回退语言（默认 en）被英文表换掉。
+## 英文表只在英文时挂入；中文时改挂显示还原表，已格式化的旧英文也能即时切回中文。
 ## （不改 project.godot 的回退语言：一加 [internationalization] 设置，导出时每个包都多带 4.8 MB 的 ICU 数据，实测。）
 
 const LANGS := ["zh", "en"]
@@ -16,6 +16,21 @@ static var _loaded := false
 static var _map := {}
 static var _tr: Translation
 static var _on := false
+static var _zh_tr: Translation
+static var _reverse := {}
+static var _pieces := [{}, {}]
+static var _templates: Array = [[], []]
+static var _cache: Array = [{}, {}]
+static var _format_re := RegEx.create_from_string("%[-+0 #0-9.]*[sdiouxXfFeEgGc%]")
+
+
+## 在 Godot 的显示边界翻译；不改对话数据、交互对象名或用于找任务目标的中文。
+## 中文表只将已格式化的英文显示串还原，解决切换时保留在 Label 中的英文。
+class DisplayTranslation extends Translation:
+	var reverse := false
+
+	func _get_message(src_message: StringName, _context: StringName) -> StringName:
+		return StringName(I18n.render(str(src_message), reverse))
 
 
 static func setup() -> void:
@@ -29,7 +44,7 @@ static func setup() -> void:
 	if not d is Dictionary:
 		push_warning("i18n：对照表读不出来")
 		return
-	var tr := Translation.new()
+	var tr := DisplayTranslation.new()
 	_tr = tr
 	tr.locale = "en"
 	for k in d:
@@ -39,16 +54,22 @@ static func setup() -> void:
 		if v != "":
 			tr.add_message(str(k), v)
 			_map[str(k)] = v
+			if not _reverse.has(v):
+				_reverse[v] = str(k)
+	_zh_tr = DisplayTranslation.new()
+	_zh_tr.reverse = true
+	_zh_tr.locale = "zh"
+	_build_display_index(_map, 0)
+	_build_display_index(_reverse, 1)
 
 
 static func apply(lang: String) -> void:
 	setup()
 	var want := lang == "en"
-	if _tr and want != _on:
-		if want:
-			TranslationServer.add_translation(_tr)
-		else:
-			TranslationServer.remove_translation(_tr)
+	if _tr:
+		TranslationServer.remove_translation(_tr)
+		TranslationServer.remove_translation(_zh_tr)
+		TranslationServer.add_translation(_tr if want else _zh_tr)
 	_on = want
 	TranslationServer.set_locale("en" if want else "zh")
 
@@ -68,3 +89,103 @@ static func t(s: String) -> String:
 static func has(s: String) -> bool:
 	setup()
 	return _map.has(s)
+
+
+## 精确原句优先；然后识别已经填入参数的模板；最后翻译拼接的完整片段。
+## 索引按首字符分组，避免每次显示遍历全部词表；数字不断变化时缓存最多 2048 项。
+static func _build_display_index(table: Dictionary, direction: int) -> void:
+	var keys := table.keys()
+	keys.sort_custom(func(a, b): return str(a).length() > str(b).length())
+	for key: String in keys:
+		if key == "":
+			continue
+		var matches := _format_re.search_all(key)
+		if not matches.is_empty():
+			var pattern := "^"
+			var at := 0
+			var count := 0
+			for m: RegExMatch in matches:
+				pattern += _regex_escape(key.substr(at, m.get_start() - at))
+				var token := m.get_string()
+				if token == "%%":
+					pattern += "%"
+				else:
+					pattern += "(.*?)" if token.ends_with("s") else "([-+0-9.eE]+)"
+					count += 1
+				at = m.get_end()
+			pattern += _regex_escape(key.substr(at)) + "$"
+			if count > 0 and _format_re.sub(key, "", true).strip_edges().length() >= 2:
+				var re := RegEx.new()
+				if re.compile(pattern) == OK:
+					_templates[direction].append({"regex": re, "value": table[key]})
+			continue
+		var first := key[0]
+		if not _pieces[direction].has(first):
+			_pieces[direction][first] = []
+		_pieces[direction][first].append(key)
+
+
+static func _regex_escape(s: String) -> String:
+	var out := ""
+	for c in s:
+		if c in "\\.^$|?*+()[]{}":
+			out += "\\"
+		out += c
+	return out
+
+
+static func render(s: String, reverse := false, depth := 0) -> String:
+	var table: Dictionary = _reverse if reverse else _map
+	if table.has(s):
+		return str(table[s])
+	if s == "" or depth > 6:
+		return s
+	var direction := 1 if reverse else 0
+	if _cache[direction].has(s):
+		return _cache[direction][s]
+	for entry: Dictionary in _templates[direction]:
+		var found: RegExMatch = entry.regex.search(s)
+		if found:
+			var translated: String = entry.value
+			var result := ""
+			var at := 0
+			var group := 1
+			for token: RegExMatch in _format_re.search_all(translated):
+				result += translated.substr(at, token.get_start() - at)
+				if token.get_string() == "%%":
+					result += "%"
+				else:
+					result += render(found.get_string(group), reverse, depth + 1)
+					group += 1
+				at = token.get_end()
+			result += translated.substr(at)
+			return _remember(s, result, direction)
+	var result := ""
+	var i := 0
+	while i < s.length():
+		var matched := false
+		for key: String in _pieces[direction].get(s[i], []):
+			if s.substr(i, key.length()) != key:
+				continue
+			# 英文片段只匹配词边界，避免把 longer 中的 long 拆出来。
+			if reverse and ((i > 0 and _latin(s[i - 1]) and _latin(key[0])) or (i + key.length() < s.length() and _latin(s[i + key.length()]) and _latin(key[-1]))):
+				continue
+			result += str(table[key])
+			i += key.length()
+			matched = true
+			break
+		if not matched:
+			result += s[i]
+			i += 1
+	return _remember(s, result, direction)
+
+
+static func _latin(c: String) -> bool:
+	return (c >= "A" and c <= "Z") or (c >= "a" and c <= "z")
+
+
+static func _remember(source: String, result: String, direction: int) -> String:
+	if _cache[direction].size() >= 2048:
+		_cache[direction].clear()
+	_cache[direction][source] = result
+	return result
