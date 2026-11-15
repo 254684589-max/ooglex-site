@@ -10,6 +10,8 @@
 """
 from __future__ import annotations
 
+import argparse
+import collections
 import json
 import pathlib
 import re
@@ -55,7 +57,8 @@ def scope_files(scope: str) -> list[pathlib.Path]:
     if scope == "data":
         return sorted(p for p in GODOT.glob("data/*.json"))
     if scope == "world":
-        return sorted(GODOT.glob("world/*.gd")) + sorted(GODOT.glob("quest/*.gd")) + sorted(GODOT.glob("actors/*.gd")) + sorted(GODOT.glob("combat/*.gd")) + sorted(GODOT.glob("player/*.gd")) + sorted(GODOT.glob("chapters/*.gd")) + [GODOT / "scenes/opening.gd"]
+        covered = set(scope_files("ui"))
+        return sorted(p for p in GODOT.rglob("*.gd") if p not in covered and not any(x in p.relative_to(GODOT).parts for x in ("tests", "assets", ".godot"))) + sorted(p for p in GODOT.rglob("*.tscn") if not any(x in p.relative_to(GODOT).parts for x in ("tests", "assets", ".godot", "chapters")))
     raise SystemExit("未知范围：" + scope)
 
 
@@ -64,7 +67,7 @@ def strings_of(scope: str) -> list[str]:
     for p in scope_files(scope):
         if p.name == "en.json":
             continue
-        if p.suffix == ".gd":
+        if p.suffix in (".gd", ".tscn"):
             items = gd_strings(p)
         else:
             items = []
@@ -74,30 +77,66 @@ def strings_of(scope: str) -> list[str]:
     return list(seen)
 
 
+PLACEHOLDER = re.compile(r"%(?:[-+0 #]*[0-9]*(?:\.[0-9]+)?)?[sdiouxXfFeEgGc%]")
+
+
+def load_table(path: pathlib.Path) -> tuple[dict, list[str]]:
+    duplicates = []
+    def pairs(items):
+        out = {}
+        for key, value in items:
+            if key in out:
+                duplicates.append(key)
+            out[key] = value
+        return out
+    return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=pairs), duplicates
+
+
 def main() -> int:
-    argv = sys.argv[1:]
-    if "--json" in argv:
-        i = argv.index("--json")
-        argv = argv[:i] + argv[i + 2:]
-    args = [a for a in argv if not a.startswith("--")]
-    scopes = args or ["ui", "data", "dialogue", "world"]
-    if scopes == ["all"]:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("scopes", nargs="*", choices=["ui", "data", "dialogue", "world", "all"])
+    parser.add_argument("--list", action="store_true")
+    parser.add_argument("--json", type=pathlib.Path)
+    parser.add_argument("--check", action="store_true", help="缺译、重复、空值、占位符不符时退出 1")
+    parser.add_argument("--report", type=pathlib.Path, help="写出覆盖率、逐文件统计和未翻译清单")
+    args = parser.parse_args()
+    scopes = args.scopes or ["all"]
+    if "all" in scopes:
         scopes = ["ui", "data", "dialogue", "world"]
-    table = json.loads((GODOT / "data/i18n/en.json").read_text(encoding="utf-8"))
-    missing_all = []
-    for sc in scopes:
-        ss = strings_of(sc)
-        miss = [s for s in ss if s not in table]
-        chars = sum(len(HAN.findall(s)) for s in miss)
-        print(f"{sc}: {len(ss) - len(miss)} / {len(ss)} 句有英文；还差 {len(miss)} 句（{chars} 个汉字）")
-        missing_all += miss
-    if "--list" in sys.argv:
-        for s in missing_all:
+    table, duplicates = load_table(GODOT / "data/i18n/en.json")
+    missing = {}
+    inventory = {}
+    summary = {}
+    for scope in scopes:
+        ss = strings_of(scope)
+        miss = [s for s in ss if not isinstance(table.get(s), str) or not table[s].strip()]
+        summary[scope] = {"total": len(ss), "translated": len(ss) - len(miss), "missing": len(miss)}
+        print(f"{scope}: {len(ss) - len(miss)} / {len(ss)} 句有英文；还差 {len(miss)} 句")
+        missing.update(dict.fromkeys(miss, ""))
+        for path in scope_files(scope):
+            texts = gd_strings(path) if path.suffix in (".gd", ".tscn") else []
+            if path.suffix == ".json":
+                json_strings(json.loads(path.read_text(encoding="utf-8")), texts)
+            inventory[str(path.relative_to(GODOT))] = list(dict.fromkeys(texts))
+    invalid = {k: {"source": PLACEHOLDER.findall(k), "translation": PLACEHOLDER.findall(v)}
+               for k, v in table.items() if not k.startswith("_") and isinstance(v, str)
+               and PLACEHOLDER.findall(k) != PLACEHOLDER.findall(v)}
+    empty = [k for k, v in table.items() if not k.startswith("_") and (not isinstance(v, str) or not v.strip())]
+    residual_han = [k for k, v in table.items() if not k.startswith("_") and isinstance(v, str) and HAN.search(v)]
+    unique = set(s for texts in inventory.values() for s in texts)
+    report = {"scope": "静态文本保守超集（含内部名称/说明）；不是所有剧情路径可达性证明", "summary": summary,
+              "unique_total": len(unique), "unique_translated": sum(s in table and bool(table[s]) for s in unique),
+              "duplicates": duplicates, "empty": empty, "placeholder_errors": invalid, "residual_han": residual_han,
+              "missing": list(missing), "files": {p: {"total": len(ss), "missing": [s for s in ss if s in missing]} for p, ss in inventory.items()}}
+    if args.list:
+        for s in missing:
             print(json.dumps(s, ensure_ascii=False))
-    if "--json" in sys.argv:
-        out = pathlib.Path(sys.argv[sys.argv.index("--json") + 1])
-        out.write_text(json.dumps({s: "" for s in missing_all}, ensure_ascii=False, indent=1), encoding="utf-8")
-    return 0
+    if args.json:
+        args.json.write_text(json.dumps(missing, ensure_ascii=False, indent=1), encoding="utf-8")
+    if args.report:
+        args.report.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"去重 {len(unique)} 句；缺译 {len(missing)}；重复 {len(duplicates)}；空值 {len(empty)}；占位符错误 {len(invalid)}；英文含汉字 {len(residual_han)}")
+    return int(args.check and bool(missing or duplicates or empty or invalid or residual_han))
 
 
 if __name__ == "__main__":

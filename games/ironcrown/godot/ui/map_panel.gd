@@ -560,8 +560,8 @@ class MapCanvas extends Control:
 		for pl in lab.placed:
 			var r: Rect2 = pl[1]
 			var at := Vector2(r.position.x, r.position.y + LABEL_FS)
-			draw_string_outline(font, at, str(pl[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, 4, PARCHMENT)
-			draw_string(font, at, str(pl[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, INK)
+			draw_string_outline(font, at, I18n.t(str(pl[0])), HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, 4, PARCHMENT)
+			draw_string(font, at, I18n.t(str(pl[0])), HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, INK)
 		_draw_player(font)
 		if AreaMap.has_compass(area):
 			_draw_north(s, font)                           # 室内不画指北（屋里的图按屋子自己的朝向画）
@@ -704,16 +704,16 @@ class MapCanvas extends Control:
 		ol.append(tri[0])
 		draw_polyline(ol, INK, 2.0)
 		var at := c + Vector2(13, -10)
-		draw_string_outline(font, at, "你", HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, 4, PARCHMENT)
-		draw_string(font, at, "你", HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, INK)
+		draw_string_outline(font, at, I18n.t("你"), HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, 4, PARCHMENT)
+		draw_string(font, at, I18n.t("你"), HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, INK)
 
 	func _draw_north(s: Vector2, font: Font) -> void:
 		var n := Vector2(s.x - 22.0, 26.0)
 		draw_circle(n + Vector2(0, 6), 16.0, Color(PARCHMENT, 0.8))
 		draw_line(n + Vector2(0, 14), n + Vector2(0, -6), INK, 2.0)
 		draw_colored_polygon(PackedVector2Array([n + Vector2(0, -12), n + Vector2(-5, -3), n + Vector2(5, -3)]), INK)
-		draw_string_outline(font, n + Vector2(-7, 32), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, 4, PARCHMENT)
-		draw_string(font, n + Vector2(-7, 32), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, INK)
+		draw_string_outline(font, n + Vector2(-7, 32), I18n.t("北"), HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, 4, PARCHMENT)
+		draw_string(font, n + Vector2(-7, 32), I18n.t("北"), HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, INK)
 
 	## 比例尺：挑一档（1、2、5…100 米）画成 40–120 像素长
 	func _draw_scale(s: Vector2, font: Font) -> void:
@@ -795,8 +795,8 @@ class MapCanvas extends Control:
 			if pl.size() >= 2:
 				draw_polyline(pl, WATER, maxf(s.x / 70.0, 5.0), true)
 				var mid := pl[pl.size() / 2]
-				draw_string_outline(font, mid + Vector2(-24, -10), str(river.get("label", "")), HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, 4, PARCHMENT)
-				draw_string(font, mid + Vector2(-24, -10), str(river.get("label", "")), HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, Color("4f6578"))
+				draw_string_outline(font, mid + Vector2(-24, -10), I18n.t(str(river.get("label", ""))), HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, 4, PARCHMENT)
+				draw_string(font, mid + Vector2(-24, -10), I18n.t(str(river.get("label", ""))), HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_FS, Color("4f6578"))
 		var members: Dictionary = rd.get("areas", {})
 		for pair in AreaMap.links(region):
 			var a := str(pair[0])

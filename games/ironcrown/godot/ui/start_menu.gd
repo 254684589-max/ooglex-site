@@ -1,7 +1,7 @@
 class_name StartMenu
 extends Control
 ## 开始主菜单（2026-11-08 所有者：「做开始主菜单页面……加入中英文切换、制作人员……存档等，要求画面精美」）。
-## 打开网页先到这里（截图、测试参数照旧直接进游戏）：背后是 TitleStage（雪夜断王座上的铁冠、往北走的长眠者，自己的 3D 世界），
+## 打开网页先到这里（截图、测试参数照旧直接进游戏）：背后是静态封面 TextureRect（等比铺满，横竖屏按武士位置裁切），
 ## 左上是标题，右边一块铁框金边的菜单：继续游戏（最近的存档）/ 新游戏 / 读取存档 / 设置 / 制作人员 / 中文 · English / 返回游戏中心（电脑版是「退出游戏」）。
 ## 窄屏（手机竖屏、平板竖屏）标题放上面、菜单放下面。键盘上下键选、回车确认（Godot 的焦点）。
 ## 菜单本身不改游戏状态，只发信号，由 main 去做（读档、开新游戏、开存档面板 / 设置）。
@@ -19,8 +19,8 @@ const TEXT := Color("e8dcc0")
 const DIM := Color("8f8a80")
 const NARROW := 760.0
 
-var stage: TitleStage
-var view: SubViewportContainer
+var cover: TextureRect
+var cover_texture: AtlasTexture
 var logo: VBoxContainer
 var title_zh: Label
 var title_en: Label
@@ -62,19 +62,16 @@ func _ready() -> void:
 	bg.color = Color("05080d")
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
-	view = SubViewportContainer.new()
-	view.name = "TitleView"
-	view.stretch = true
-	view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	view.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(view)
-	var sv := SubViewport.new()
-	sv.own_world_3d = true
-	sv.process_mode = Node.PROCESS_MODE_ALWAYS
-	sv.msaa_3d = Viewport.MSAA_2X
-	view.add_child(sv)
-	stage = TitleStage.make(reduced)
-	sv.add_child(stage)
+	cover_texture = AtlasTexture.new()
+	cover_texture.atlas = preload("res://assets/title/iron_crown_cover.png")
+	cover = TextureRect.new()
+	cover.name = "TitleCover"
+	cover.texture = cover_texture
+	cover.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	cover.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	cover.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cover.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(cover)
 	_gradients()
 	_logo()
 	_panel()
@@ -113,10 +110,6 @@ func open() -> void:
 func close() -> void:
 	hide()
 	confirm.hide()
-	if stage:
-		stage.queue_free()            # 进了游戏就不再要那个 3D 场景（回主菜单是重新载入）
-		stage = null
-	view.hide()
 
 
 ## 存档变了、语言变了：继续游戏那一行的说明、底部一行
@@ -136,6 +129,9 @@ func refresh() -> void:
 
 
 func _refresh_lang() -> void:
+	reduced = Settings.reduced_motion
+	if reduced and shade:
+		shade.color.a = 0.0
 	if visible:
 		refresh()
 		_layout()
@@ -152,7 +148,7 @@ func _relayout_later() -> void:
 
 # ---------------- 搭界面 ----------------
 
-## 左边、底下、右边压暗一点：标题和菜单的字看得清，中间的王座和冠不暗
+## 仅在边缘压暗，保留封面主体的明暗层次
 func _gradients() -> void:
 	for spec in [[Control.PRESET_LEFT_WIDE, Vector2(0.0, 0.5), Vector2(1.0, 0.5), 0.62, 0.42],
 			[Control.PRESET_RIGHT_WIDE, Vector2(1.0, 0.5), Vector2(0.0, 0.5), 0.55, 0.38],
@@ -210,6 +206,7 @@ func _logo() -> void:
 	title_en.add_theme_constant_override("outline_size", 4)
 	logo.add_child(title_en)
 	var rule := Ornament.new()
+	rule.name = "TitleRule"
 	rule.custom_minimum_size = Vector2(360, 18)
 	rule.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	logo.add_child(rule)
@@ -426,7 +423,20 @@ func _layout() -> void:
 		return
 	var sz := UiKit.logical_size(self)
 	var narrow := sz.x < NARROW
-	var short := sz.y < 560.0 or (narrow and sz.y < 900.0)          # 竖屏：标题在上、菜单在下，高度不到 900 就用紧凑的（平板竖屏 540×720 实测放不下）
+	# 保留现有封面裁切算法，不改变游戏素材或电脑端构图。
+	var image_size := cover_texture.atlas.get_size()
+	var crop_size := image_size
+	var aspect := sz.x / maxf(sz.y, 1.0)
+	if aspect < image_size.x / image_size.y:
+		crop_size.x = image_size.y * aspect
+	else:
+		crop_size.y = image_size.x / aspect
+	var crop_x := clampf(image_size.x * 0.33 - crop_size.x * (0.72 if narrow else 0.33), 0.0, image_size.x - crop_size.x)
+	cover_texture.region = Rect2(Vector2(crop_x, 0.0), crop_size)
+
+	# 手机竖屏使用紧凑排版，短屏不允许菜单挤出屏幕。
+	var short := sz.y < 560.0 or (narrow and sz.y < 900.0)
+	var very_short := narrow and sz.y < 640.0
 	for c in get_children():
 		if c is TextureRect and c.has_meta("frac"):
 			var f: float = c.get_meta("frac")
@@ -439,34 +449,60 @@ func _layout() -> void:
 					c.offset_top = -sz.y * (0.55 if narrow else f)
 				Control.PRESET_TOP_WIDE:
 					c.offset_bottom = sz.y * (0.4 if narrow else f)
-	var big := 76 if not (narrow or short) else (54 if not short else 46)
-	title_zh.add_theme_font_size_override("font_size", big)
-	title_en.add_theme_font_size_override("font_size", 20 if big == 76 else 15)
-	tagline.visible = not short or not narrow
-	tagline.custom_minimum_size.x = minf(420.0, sz.x - 48.0)
-	var bh := 50.0 if not short else 38.0
-	var fs := 22 if not short else 18
-	box.add_theme_constant_override("separation", 10 if not short else 5)
+
+	# 仅手机竖屏标题更醒目；保留电脑端原有标题尺寸。
+	title_zh.add_theme_font_size_override("font_size", (29 if very_short else 44) if narrow else 56)
+	title_en.add_theme_font_size_override("font_size", (10 if very_short else 14) if narrow else 16)
+	(logo.get_node("TitleRule") as Control).custom_minimum_size.x = (150.0 if very_short else 190.0) if narrow else 260.0
+	(logo.get_child(0) as Control).custom_minimum_size = Vector2(48, 34) if narrow else Vector2(60, 40)
+	tagline.visible = not narrow
+	tagline.custom_minimum_size.x = minf(260.0, sz.x - 48.0)
+
+	var bh := (34.0 if very_short else 48.0) if narrow else (50.0 if not short else 38.0)
+	var fs := (16 if very_short else 20) if narrow else (22 if not short else 18)
+	box.add_theme_constant_override("separation", (3 if very_short else 8) if narrow else (10 if not short else 5))
 	for b in [continue_btn, new_btn, load_btn, settings_btn, credits_btn, exit_btn]:
-		b.custom_minimum_size = Vector2(minf(300.0, sz.x - 100.0) if narrow else 290.0, bh)
+		b.custom_minimum_size = Vector2(maxf(200.0, minf(320.0, sz.x - 48.0)) if narrow else 290.0, bh)
 		b.add_theme_font_size_override("font_size", fs)
+		# 金属边框使用更柔和的圆角；切回电脑视图时还原原来的按钮边角。
+		for state in ["normal", "hover", "focus", "pressed", "disabled"]:
+			var button_style := b.get_theme_stylebox(state) as StyleBoxFlat
+			if button_style != null:
+				button_style.set_corner_radius_all(10 if narrow else 2)
+
 	var sb := panel.get_theme_stylebox("panel") as StyleBoxFlat
-	sb.content_margin_top = 30 if not short else 18
-	sb.content_margin_bottom = 22 if not short else 12
+	sb.content_margin_left = 18 if narrow else 26
+	sb.content_margin_right = 18 if narrow else 26
+	sb.content_margin_top = (12 if very_short else 18) if narrow else (30 if not short else 18)
+	sb.content_margin_bottom = (9 if very_short else 14) if narrow else (22 if not short else 12)
+	sb.set_corner_radius_all(14 if narrow else 3)
+	sb.bg_color = Color(0.025, 0.035, 0.055, 0.88) if narrow else Color(0.035, 0.05, 0.075, 0.84)
+	continue_note.add_theme_font_size_override("font_size", 11 if narrow else 13)
+	for b in lang_btns.values():
+		(b as Button).custom_minimum_size = Vector2(92, 32) if narrow else Vector2(108, 36)
+
 	logo.reset_size()
 	panel.reset_size()
 	var ls := logo.get_combined_minimum_size()
 	var ps := panel.get_combined_minimum_size()
 	if narrow:
-		logo.position = Vector2((sz.x - ls.x) * 0.5, maxf(16.0, sz.y * 0.05))
+		# 宽度明确设置后，将皇冠、中文标题、英文副标题和装饰线全部居中。
+		logo.position = Vector2(12.0, maxf(16.0, minf(34.0, sz.y * 0.035)))
+		logo.size = Vector2(maxf(ls.x, sz.x - 24.0), ls.y)
 		for c in logo.get_children():
 			if c is Label:
 				c.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			elif c is Control:
 				c.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		panel.position = Vector2((sz.x - ps.x) * 0.5, maxf(logo.position.y + ls.y + 10.0, sz.y - ps.y - 44.0))
+		# 优先留出底部手势区；屏幕过短时保证面板尽可能完整可见。
+		var bottom_safe := 30.0 if not very_short else 12.0
+		var bottom_y := sz.y - ps.y - bottom_safe
+		var after_title := logo.position.y + ls.y + (12.0 if not very_short else 6.0)
+		var menu_y := maxf(after_title, bottom_y)
+		menu_y = minf(menu_y, maxf(0.0, sz.y - ps.y - 8.0))
+		panel.position = Vector2((sz.x - ps.x) * 0.5, maxf(0.0, menu_y))
 	else:
-		logo.position = Vector2(maxf(28.0, sz.x * 0.055), maxf(18.0, sz.y * (0.09 if not short else 0.05)))
+		logo.position = Vector2(maxf(28.0, sz.x * 0.035), maxf(18.0, sz.y * (0.09 if not short else 0.05)))
 		for c in logo.get_children():
 			if c is Label:
 				c.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT

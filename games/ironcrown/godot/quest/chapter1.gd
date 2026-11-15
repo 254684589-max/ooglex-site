@@ -75,38 +75,38 @@ static func recap() -> String:
 	var other := "伊薇特" if heir == "alric" else "阿尔里克"
 	var out := []
 	if heir != "":
-		out.append("你把家主的印戒交给了%s，%s带着自己的人离开了黑鹭堡。" % [name, other])
+		out.append(I18n.t("你把家主的印戒交给了%s，%s带着自己的人离开了黑鹭堡。") % [I18n.t(name), I18n.t(other)])
 	match str(GameState.get_flag("ch1_causeway", "")):
 		"held":
-			out.append("那一夜，堤道守住了，%s的人退回了沼地。" % other)
+			out.append(I18n.t("那一夜，堤道守住了，%s的人退回了沼地。") % I18n.t(other))
 		"lost":
 			if str(GameState.get_flag("ch1_sneak", "")) == "caught":
-				out.append("堤道丢了，%s入主黑鹭堡。你被押进病房——新家主从此不信你。" % other)
+				out.append(I18n.t("堤道丢了，%s入主黑鹭堡。你被押进病房——新家主从此不信你。") % I18n.t(other))
 			else:
-				out.append("堤道丢了，%s入主黑鹭堡。天亮时你从水门摸了进去，没人看见。" % other)
+				out.append(I18n.t("堤道丢了，%s入主黑鹭堡。天亮时你从水门摸了进去，没人看见。") % I18n.t(other))
 	match str(GameState.get_flag("ch1_outlaws", "")):
 		"ally":
-			out.append("奥弗那伙人从芦苇里杀出来，站在了瓦伦家这边。")
+			out.append(I18n.t("奥弗那伙人从芦苇里杀出来，站在了瓦伦家这边。"))
 		"driven":
-			out.append("你把无旗者赶出了鹭沼。")
+			out.append(I18n.t("你把无旗者赶出了鹭沼。"))
 		"beaten":
-			out.append("你打散了沼地里的无旗者。")
+			out.append(I18n.t("你打散了沼地里的无旗者。"))
 	match str(GameState.get_flag("ch1_ledger", "")):
 		"alric":
-			out.append("皮毛税账册去了南边塞弗林家的信使手里。")
+			out.append(I18n.t("皮毛税账册去了南边塞弗林家的信使手里。"))
 		"ivette":
-			out.append("皮毛税账册烧在了兵营的炉子里。")
+			out.append(I18n.t("皮毛税账册烧在了兵营的炉子里。"))
 		"kept":
-			out.append("皮毛税账册还在你身上。")
-	return "".join(out)
+			out.append(I18n.t("皮毛税账册还在你身上。"))
+	return (" " if I18n.en() else "").join(out)
 
 
 ## 章末的钩子：家主临终的话；喝过白芦根汤的多一句双钥港
 static func hook() -> String:
-	var s := "家主临终说：铁冠没有被偷，是老王自己交出去的。"
+	var out := [I18n.t("家主临终说：铁冠没有被偷，是老王自己交出去的。")]
 	if GameState.has_flag("ch1_herb"):
-		s += "交给了一户靠海的人家——双钥港。"
-	s += "当年守在门外的另一个侍从还活着，在北边的烽燧线上。"
+		out.append(I18n.t("交给了一户靠海的人家——双钥港。"))
+	out.append(I18n.t("当年守在门外的另一个侍从还活着，在北边的烽燧线上。"))
 	if GameState.has_flag("ch1_sleeper"):
-		s += "天亮以后，芦栈村又有一个人没有醒来，闭着眼睛往北走了。"
-	return s
+		out.append(I18n.t("天亮以后，芦栈村又有一个人没有醒来，闭着眼睛往北走了。"))
+	return (" " if I18n.en() else "").join(out)

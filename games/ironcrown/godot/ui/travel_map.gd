@@ -281,16 +281,19 @@ class MapCanvas extends Control:
 			y += step * 0.7
 			row += 1
 		var fs := maxi(int(s.x / 28.0), 13)
-		draw_string(font, _to(Vector2(0.09, 0.76)), "鹭 沼", HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 4, INK_SOFT)
+		draw_string(font, _to(Vector2(0.09, 0.76)), I18n.t("鹭 沼"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 4, INK_SOFT)
 		# 灰鲸河
 		var river := PackedVector2Array()
 		for p in RIVER:
 			river.append(_to(p))
 		draw_polyline(river, WATER, maxf(s.x / 90.0, 4.0), true)
-		var ry := 0.14
-		for ch in "灰鲸河":
-			draw_string(font, _to(Vector2(0.925, ry)), ch, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("4f6578"))
-			ry += 0.075
+		if I18n.en():
+			draw_string(font, _to(Vector2(0.84, 0.2)), I18n.t("灰鲸河"), HORIZONTAL_ALIGNMENT_LEFT, -1, maxi(fs - 2, 11), Color("4f6578"))
+		else:
+			var ry := 0.14
+			for ch in "灰鲸河":
+				draw_string(font, _to(Vector2(0.925, ry)), ch, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("4f6578"))
+				ry += 0.075
 		# 路：霜渡镇 → 芦栈村 是土路（虚线），芦栈村 → 黑鹭堡 是石砌堤道（粗实线）
 		for r in Travel.data().get("routes", []):
 			var a := str(r.get("from", ""))
@@ -302,7 +305,7 @@ class MapCanvas extends Control:
 			if "castle" in [str(Travel.place(a).get("icon", "")), str(Travel.place(b).get("icon", ""))]:
 				draw_line(pa, pb, INK, maxf(s.x / 80.0, 5.0))
 				draw_line(pa, pb, Color("b4a68a"), maxf(s.x / 200.0, 2.0))
-				draw_string(font, (pa + pb) * 0.5 + Vector2(6, -6), "堤道", HORIZONTAL_ALIGNMENT_LEFT, -1, fs - 1, INK)
+				draw_string(font, (pa + pb) * 0.5 + Vector2(6, -6), I18n.t("堤道"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs - 1, INK)
 			else:
 				draw_dashed_line(pa, pb, ROAD, 2.5, 9.0)
 		# 地点图标
@@ -336,12 +339,12 @@ class MapCanvas extends Control:
 		var n := Vector2(s.x * 0.68, 30.0)       # 鹭沼和灰鲸河之间的空白处（右上角是河名）
 		draw_line(n + Vector2(0, 14), n + Vector2(0, -10), INK, 2.0)
 		draw_colored_polygon(PackedVector2Array([n + Vector2(0, -16), n + Vector2(-5, -6), n + Vector2(5, -6)]), INK)
-		draw_string(font, n + Vector2(-fs * 0.5, 32), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
+		draw_string(font, n + Vector2(-fs * 0.5, 32), I18n.t("北"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
 
 	## 北境北部（5.2a，第二章）：上面是白寂（空白、只写两个字），一道东西向的山脊上二十四座烽燧（大半打了叉），山脊南边是余火高地的山谷和羊脊村
 	func _draw_north(s: Vector2, font: Font) -> void:
 		var fs := maxi(int(s.x / 28.0), 13)
-		draw_string(font, _to(Vector2(0.44, 0.1)), "白 寂", HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 4, INK_SOFT)
+		draw_string(font, _to(Vector2(0.44, 0.1)), I18n.t("白 寂"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 4, INK_SOFT)
 		var ridge := PackedVector2Array()
 		for k in 25:
 			var t := float(k) / 24.0
@@ -361,7 +364,7 @@ class MapCanvas extends Control:
 			else:
 				draw_line(c + Vector2(-4, -12), c + Vector2(4, -4), INK, 1.2)
 				draw_line(c + Vector2(4, -12), c + Vector2(-4, -4), INK, 1.2)
-		draw_string(font, _to(Vector2(0.06, 0.38)), "烽燧线", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
+		draw_string(font, _to(Vector2(0.06, 0.38)), I18n.t("烽燧线"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
 		var valley := PackedVector2Array([_to(Vector2(0.3, 0.98)), _to(Vector2(0.42, 0.62)), _to(Vector2(0.5, 0.4)), _to(Vector2(0.6, 0.4)), _to(Vector2(0.66, 0.62)), _to(Vector2(0.74, 0.98))])
 		draw_colored_polygon(valley, Color(0.42, 0.44, 0.4, 0.16))
 		for side in [0.24, 0.8]:                          # 两边的山：几道斜线
@@ -370,7 +373,7 @@ class MapCanvas extends Control:
 				var x: float = side + (0.03 if k % 2 == 0 else 0.0)
 				draw_line(_to(Vector2(x - 0.05, y + 0.05)), _to(Vector2(x, y)), INK_SOFT, 1.5)
 				draw_line(_to(Vector2(x, y)), _to(Vector2(x + 0.05, y + 0.05)), INK_SOFT, 1.5)
-		draw_string(font, _to(Vector2(0.07, 0.9)), "余火高地", HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 2, INK_SOFT)
+		draw_string(font, _to(Vector2(0.07, 0.9)), I18n.t("余火高地"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 2, INK_SOFT)
 		for r in Travel.data().get("routes", []):        # 盘山路：之字形的虚线
 			var a := str(r.get("from", ""))
 			var b := str(r.get("to", ""))
@@ -404,7 +407,7 @@ class MapCanvas extends Control:
 		var n := Vector2(s.x * 0.86, 30.0)
 		draw_line(n + Vector2(0, 14), n + Vector2(0, -10), INK, 2.0)
 		draw_colored_polygon(PackedVector2Array([n + Vector2(0, -16), n + Vector2(-5, -6), n + Vector2(5, -6)]), INK)
-		draw_string(font, n + Vector2(-fs * 0.5, 32), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
+		draw_string(font, n + Vector2(-fs * 0.5, 32), I18n.t("北"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
 
 	## 南部（6.2a，第三章）：金穗平原——一格格的麦茬地（短斜线），麦河从北往南弯过去，东北角是砧山（一串黑的山尖），南边一道矮丘
 	func _draw_south(s: Vector2, font: Font) -> void:
@@ -428,17 +431,20 @@ class MapCanvas extends Control:
 			var c := _to(peaks[k])
 			var w := s.x * 0.05
 			draw_colored_polygon(PackedVector2Array([c + Vector2(-w, s.y * 0.07), c, c + Vector2(w, s.y * 0.07)]), Color(0.2, 0.17, 0.14, 0.55))
-		draw_string(font, _to(Vector2(0.74, 0.25)), "砧 山", HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 2, INK)
+		draw_string(font, _to(Vector2(0.74, 0.25)), I18n.t("砧 山"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 2, INK)
 		draw_arc(_to(Vector2(0.6, 0.86)), s.x * 0.12, PI * 1.05, PI * 1.95, 24, INK_SOFT, 2.0, true)     # 南边的矮丘
 		var river := PackedVector2Array()
 		for p in [Vector2(0.4, 0.0), Vector2(0.43, 0.18), Vector2(0.41, 0.36), Vector2(0.47, 0.52), Vector2(0.44, 0.7), Vector2(0.49, 0.86), Vector2(0.52, 1.0)]:
 			river.append(_to(p))
 		draw_polyline(river, WATER, maxf(s.x / 70.0, 5.0), true)
-		var ry := 0.6
-		for ch in "麦河":
-			draw_string(font, _to(Vector2(0.49, ry)), ch, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("4f6578"))
-			ry += 0.06
-		draw_string(font, _to(Vector2(0.06, 0.1)), "金穗平原", HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 4, INK_SOFT)
+		if I18n.en():
+			draw_string(font, _to(Vector2(0.49, 0.64)), I18n.t("麦河"), HORIZONTAL_ALIGNMENT_LEFT, -1, maxi(fs - 2, 11), Color("4f6578"))
+		else:
+			var ry := 0.6
+			for ch in "麦河":
+				draw_string(font, _to(Vector2(0.49, ry)), ch, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("4f6578"))
+				ry += 0.06
+		draw_string(font, _to(Vector2(0.06, 0.1)), I18n.t("金穗平原"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 4, INK_SOFT)
 		for r in Travel.data().get("routes", []):
 			var a := str(r.get("from", ""))
 			var b := str(r.get("to", ""))
@@ -481,7 +487,7 @@ class MapCanvas extends Control:
 		var n := Vector2(s.x * 0.62, 30.0)
 		draw_line(n + Vector2(0, 14), n + Vector2(0, -10), INK, 2.0)
 		draw_colored_polygon(PackedVector2Array([n + Vector2(0, -16), n + Vector2(-5, -6), n + Vector2(5, -6)]), INK)
-		draw_string(font, n + Vector2(-fs * 0.5, 32), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
+		draw_string(font, n + Vector2(-fs * 0.5, 32), I18n.t("北"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
 
 	## 河口（7.1，第四章）：灰鲸河从北边（冠城那边）流下来，散成几股流进南边的海；西岸是双钥港（一格格的房子），东岸一道沙嘴伸进海里、尽头是灯塔；
 	## 海上一道道短横线是浪
@@ -503,10 +509,13 @@ class MapCanvas extends Control:
 		for p in [Vector2(0.34, 0.0), Vector2(0.38, 0.12), Vector2(0.44, 0.26), Vector2(0.5, 0.4), Vector2(0.55, 0.52), Vector2(0.6, 0.64)]:
 			river.append(_to(p))
 		draw_polyline(river, WATER, maxf(s.x / 60.0, 6.0), true)
-		var ry := 0.14
-		for ch in "灰鲸河":
-			draw_string(font, _to(Vector2(0.4, ry)), ch, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("4f6578"))
-			ry += 0.05
+		if I18n.en():
+			draw_string(font, _to(Vector2(0.42, 0.2)), I18n.t("灰鲸河"), HORIZONTAL_ALIGNMENT_LEFT, -1, maxi(fs - 2, 11), Color("4f6578"))
+		else:
+			var ry := 0.14
+			for ch in "灰鲸河":
+				draw_string(font, _to(Vector2(0.4, ry)), ch, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("4f6578"))
+				ry += 0.05
 		var spit := PackedVector2Array()                   # 东岸的沙嘴
 		for p in [Vector2(0.86, 0.46), Vector2(0.8, 0.6), Vector2(0.72, 0.78)]:
 			spit.append(_to(p))
@@ -517,9 +526,9 @@ class MapCanvas extends Control:
 			if c.x > 0.48 + (c.y - 0.3) * 0.3:
 				continue
 			draw_rect(Rect2(_to(c), Vector2(s.x * 0.025, s.y * 0.02)), town)
-		draw_string(font, _to(Vector2(0.08, 0.92)), "海", HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 4, Color("4f6578"))
-		draw_string(font, _to(Vector2(0.06, 0.12)), "灰鲸河入海口", HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 4, INK_SOFT)
-		draw_string(font, _to(Vector2(0.44, 0.03)), "往冠城（逆流一天）", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK_SOFT)
+		draw_string(font, _to(Vector2(0.08, 0.92)), I18n.t("海"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 4, Color("4f6578"))
+		draw_string(font, _to(Vector2(0.06, 0.12)), I18n.t("灰鲸河入海口"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs + 4, INK_SOFT)
+		draw_string(font, _to(Vector2(0.44, 0.03)), I18n.t("往冠城（逆流一天）"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK_SOFT)
 		for r in Travel.data().get("routes", []):
 			var a := str(r.get("from", ""))
 			var b := str(r.get("to", ""))
@@ -549,7 +558,7 @@ class MapCanvas extends Control:
 		var n := Vector2(s.x * 0.9, 30.0)
 		draw_line(n + Vector2(0, 14), n + Vector2(0, -10), INK, 2.0)
 		draw_colored_polygon(PackedVector2Array([n + Vector2(0, -16), n + Vector2(-5, -6), n + Vector2(5, -6)]), INK)
-		draw_string(font, n + Vector2(-fs * 0.5, 32), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
+		draw_string(font, n + Vector2(-fs * 0.5, 32), I18n.t("北"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK)
 
 	func _pos(id: String) -> Vector2:
 		var p: Array = Travel.pos_of(id, Travel.region_of_chapter(map.chapter))

@@ -73,6 +73,10 @@ func apply_size() -> void:
 	canvas.px_per_m = float(PX_PER_M.get(s, PX_PER_M.small))
 	_last = Vector3.INF
 	_left = 0.0
+	if overlay:
+		overlay.queue_redraw()
+	if canvas:
+		canvas.queue_redraw()
 
 
 func shown() -> bool:
@@ -123,7 +127,7 @@ func _draw_overlay() -> void:
 	var font := get_theme_default_font()
 	var n := c + Vector2(0, -r + 3.0)
 	overlay.draw_circle(n + Vector2(0, 7), 10.0, RING_DARK)
-	overlay.draw_string(font, n + Vector2(-7, 13), "北", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, GOLD)
+	overlay.draw_string(font, n + Vector2(-7, 13), I18n.t("北"), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, GOLD)
 
 
 ## 无尽荒野（2026-11-08）：附近的小发现画成小方块（拿过东西的淡一点）；走出地图 HOME_SHOW 米以外，圈边上一个箭头指回地图，写着多远

@@ -12,7 +12,7 @@ const ROLL := [
 	["", "铁冠之争"],
 	["", "THE IRON CROWN"],
 	["出品人 · 制作人 · 总策划", "郑翊"],
-	["程序 · 关卡 · 剧本执笔 · 代码作曲与音效", "Claude（Anthropic）\n在郑翊的策划与指导下完成"],
+	["程序 · 关卡 · 剧本执笔 · 音效设计", "《铁冠之争》制作组\nOoglex Games"],
 	["游戏引擎", "Godot Engine（MIT 许可）\nJuan Linietsky、Ariel Manzur 与 Godot 社区的贡献者"],
 	["人物模型与动作", "Quaternius\nUniversal Base Characters · Universal Animation Library · Modular Character Outfits – Fantasy（CC0）"],
 	["贴图", "Poly Haven（CC0）"],
