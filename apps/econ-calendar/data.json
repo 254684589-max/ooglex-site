@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-11-16T22:25:28Z",
-  "asOf": "2026-11-16",
+  "updatedAt": "2026-11-17T01:02:43Z",
+  "asOf": "2026-11-17",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-11-15 ~ 2026-11-21",
-  "count": 124,
+  "count": 125,
   "highCount": 13,
   "events": [
     {
@@ -338,6 +338,18 @@
       "title": "美联储官员讲话",
       "titleEn": "FOMC Member Goolsbee Speaks",
       "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-11-17T00:00:00Z",
+      "ccy": "NZD",
+      "country": "新西兰",
+      "flag": "🇳🇿",
+      "title": "新西兰联储官员讲话",
+      "titleEn": "RBNZ Gov Breman Speaks",
+      "impact": "medium",
       "forecast": null,
       "previous": null,
       "actual": null
