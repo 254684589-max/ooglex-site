@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-17T01:02:43Z",
+  "updatedAt": "2026-11-17T21:12:12Z",
   "asOf": "2026-11-17",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-11-15 ~ 2026-11-21",
@@ -583,6 +583,18 @@
       "actual": null
     },
     {
+      "ts": "2026-11-17T14:29:00Z",
+      "ccy": "NZD",
+      "country": "新西兰",
+      "flag": "🇳🇿",
+      "title": "GDT Price Index",
+      "titleEn": "GDT Price Index",
+      "impact": "low",
+      "forecast": null,
+      "previous": "3.0%",
+      "actual": null
+    },
+    {
       "ts": "2026-11-17T14:30:00Z",
       "ccy": "USD",
       "country": "美国",
@@ -616,18 +628,6 @@
       "impact": "low",
       "forecast": "29",
       "previous": "29",
-      "actual": null
-    },
-    {
-      "ts": "2026-11-17T15:50:00Z",
-      "ccy": "NZD",
-      "country": "新西兰",
-      "flag": "🇳🇿",
-      "title": "GDT Price Index",
-      "titleEn": "GDT Price Index",
-      "impact": "low",
-      "forecast": null,
-      "previous": "3.0%",
       "actual": null
     },
     {
@@ -926,7 +926,7 @@
       "title": "成屋签约销售 环比",
       "titleEn": "Pending Home Sales m/m",
       "impact": "low",
-      "forecast": "-2.1%",
+      "forecast": "-1.8%",
       "previous": "-7.3%",
       "actual": null
     },
@@ -938,7 +938,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "-0.3M",
       "previous": "4.7M",
       "actual": null
     },
