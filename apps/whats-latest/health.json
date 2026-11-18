@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "whats-latest",
-  "generatedAt": "2026-11-18T07:22:05Z",
+  "generatedAt": "2026-11-18T20:27:32Z",
   "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-11-18T07:22:05Z",
-  "lastSuccessfulAt": "2026-11-18T07:22:05Z",
+  "lastAttemptAt": "2026-11-18T20:27:32Z",
+  "lastSuccessfulAt": "2026-11-18T20:27:32Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-11-18T07:22:05Z",
+  "publishedSnapshotAt": "2026-11-18T20:27:32Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -46,8 +46,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-18T07:22:05Z",
-      "lastSuccessAt": "2026-11-18T07:22:05Z"
+      "lastAttemptAt": "2026-11-18T20:27:32Z",
+      "lastSuccessAt": "2026-11-18T20:27:32Z"
     },
     {
       "id": "world-news",
@@ -58,8 +58,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-18T07:22:05Z",
-      "lastSuccessAt": "2026-11-18T07:22:05Z"
+      "lastAttemptAt": "2026-11-18T20:27:32Z",
+      "lastSuccessAt": "2026-11-18T20:27:32Z"
     },
     {
       "id": "markets-news",
@@ -70,8 +70,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-18T07:22:05Z",
-      "lastSuccessAt": "2026-11-18T07:22:05Z"
+      "lastAttemptAt": "2026-11-18T20:27:32Z",
+      "lastSuccessAt": "2026-11-18T20:27:32Z"
     },
     {
       "id": "tech-news",
@@ -82,8 +82,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-18T07:22:05Z",
-      "lastSuccessAt": "2026-11-18T07:22:05Z"
+      "lastAttemptAt": "2026-11-18T20:27:32Z",
+      "lastSuccessAt": "2026-11-18T20:27:32Z"
     },
     {
       "id": "law-news",
@@ -94,8 +94,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-18T07:22:05Z",
-      "lastSuccessAt": "2026-11-18T07:22:05Z"
+      "lastAttemptAt": "2026-11-18T20:27:32Z",
+      "lastSuccessAt": "2026-11-18T20:27:32Z"
     },
     {
       "id": "risk-news",
@@ -106,8 +106,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-18T07:22:05Z",
-      "lastSuccessAt": "2026-11-18T07:22:05Z"
+      "lastAttemptAt": "2026-11-18T20:27:32Z",
+      "lastSuccessAt": "2026-11-18T20:27:32Z"
     },
     {
       "id": "market-quotes",
@@ -118,8 +118,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-18T07:22:05Z",
-      "lastSuccessAt": "2026-11-18T07:22:05Z"
+      "lastAttemptAt": "2026-11-18T20:27:32Z",
+      "lastSuccessAt": "2026-11-18T20:27:32Z"
     }
   ],
   "policy": {
