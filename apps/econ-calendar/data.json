@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-18T01:15:28Z",
+  "updatedAt": "2026-11-18T20:47:49Z",
   "asOf": "2026-11-18",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-11-15 ~ 2026-11-21",
@@ -787,18 +787,6 @@
       "actual": null
     },
     {
-      "ts": "2026-11-18T07:02:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "Foreign Direct Investment ytd/y",
-      "titleEn": "Foreign Direct Investment ytd/y",
-      "impact": "low",
-      "forecast": null,
-      "previous": "-4.3%",
-      "actual": null
-    },
-    {
       "ts": "2026-11-18T07:30:00Z",
       "ccy": "GBP",
       "country": "英国",
@@ -1396,6 +1384,18 @@
       "impact": "low",
       "forecast": "18.0B",
       "previous": "24.5B",
+      "actual": null
+    },
+    {
+      "ts": "2026-11-20T07:02:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "Foreign Direct Investment ytd/y",
+      "titleEn": "Foreign Direct Investment ytd/y",
+      "impact": "low",
+      "forecast": null,
+      "previous": "-4.3%",
       "actual": null
     },
     {
