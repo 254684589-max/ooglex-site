@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-19T00:14:38Z",
+  "updatedAt": "2026-11-19T20:53:20Z",
   "asOf": "2026-11-19",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-11-15 ~ 2026-11-21",
@@ -1219,18 +1219,6 @@
       "actual": null
     },
     {
-      "ts": "2026-11-19T15:15:00Z",
-      "ccy": "USD",
-      "country": "美国",
-      "flag": "🇺🇸",
-      "title": "Mortgage Delinquencies",
-      "titleEn": "Mortgage Delinquencies",
-      "impact": "low",
-      "forecast": null,
-      "previous": "4.37%",
-      "actual": null
-    },
-    {
       "ts": "2026-11-19T15:30:00Z",
       "ccy": "USD",
       "country": "美国",
@@ -1240,6 +1228,18 @@
       "impact": "low",
       "forecast": "25B",
       "previous": "61B",
+      "actual": null
+    },
+    {
+      "ts": "2026-11-19T15:46:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "Mortgage Delinquencies",
+      "titleEn": "Mortgage Delinquencies",
+      "impact": "low",
+      "forecast": null,
+      "previous": "4.37%",
       "actual": null
     },
     {
