@@ -4,698 +4,6 @@
  "previous": null,
  "results": [
   {
-   "id": "c6f8b6b0-6bae-460a-99bb-c12a3d29effd",
-   "url": "https://ll.thespacedevs.com/2.3.0/launches/c6f8b6b0-6bae-460a-99bb-c12a3d29effd/",
-   "name": "Ceres-1S | Xiguang-4 01",
-   "response_mode": "detailed",
-   "slug": "ceres-1s-xiguang-4-01",
-   "launch_designator": "2026-238",
-   "status": {
-    "id": 3,
-    "name": "Launch Successful",
-    "abbrev": "Success",
-    "description": "The launch vehicle successfully inserted its payload(s) into the target orbit(s)."
-   },
-   "last_updated": "2026-10-24T02:30:39Z",
-   "net": "2026-10-21T03:39:00Z",
-   "net_precision": {
-    "id": 1,
-    "name": "Minute",
-    "abbrev": "MIN",
-    "description": "The T-0 is accurate to the minute."
-   },
-   "window_end": "2026-10-21T03:50:00Z",
-   "window_start": "2026-10-21T03:29:00Z",
-   "image": {
-    "id": 1709,
-    "name": "[AUTO] Ceres-1S - image",
-    "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/ceres-1s_image_20230905114324.jpeg",
-    "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193542.jpeg",
-    "credit": null,
-    "license": {
-     "id": 1,
-     "name": "Unknown",
-     "priority": 9,
-     "link": null
-    },
-    "single_use": true,
-    "variants": []
-   },
-   "infographic": null,
-   "probability": null,
-   "weather_concerns": null,
-   "failreason": "",
-   "hashtag": null,
-   "launch_service_provider": {
-    "response_mode": "normal",
-    "id": 1021,
-    "url": "https://ll.thespacedevs.com/2.3.0/agencies/1021/",
-    "name": "Galactic Energy",
-    "abbrev": "GE",
-    "type": {
-     "id": 3,
-     "name": "Commercial"
-    },
-    "featured": false,
-    "country": [
-     {
-      "id": 6,
-      "name": "China",
-      "alpha_2_code": "CN",
-      "alpha_3_code": "CHN",
-      "nationality_name": "Chinese",
-      "nationality_name_composed": "Sino"
-     }
-    ],
-    "description": "Galactic Energy is a private aerospace company headquartered in Beijing, China. Established by senior engineers in 2018, Galactic Energy engages in low-cost commercial space launch business.",
-    "administrator": null,
-    "founding_year": 2018,
-    "launchers": "Ceres-1 | Pallas-1",
-    "spacecraft": "",
-    "parent": null,
-    "image": {
-     "id": 11,
-     "name": "[AUTO] Galactic Energy - image",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/galactic_energy_image_20201106095228.jpeg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184607.jpeg",
-     "credit": null,
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "logo": {
-     "id": 135,
-     "name": "[AUTO] Galactic Energy - logo",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/galactic2520energy_logo_20201106095229.png",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184957.png",
-     "credit": null,
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "social_logo": {
-     "id": 59,
-     "name": "[AUTO] Galactic Energy - social_logo",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/galactic2520energy_nation_20230703094321.png",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184759.png",
-     "credit": null,
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": true,
-     "variants": []
-    },
-    "total_launch_count": 27,
-    "consecutive_successful_launches": 3,
-    "successful_launches": 24,
-    "failed_launches": 3,
-    "pending_launches": 0,
-    "consecutive_successful_landings": 0,
-    "successful_landings": 0,
-    "failed_landings": 0,
-    "attempted_landings": 0,
-    "successful_landings_spacecraft": 0,
-    "failed_landings_spacecraft": 0,
-    "attempted_landings_spacecraft": 0,
-    "successful_landings_payload": 0,
-    "failed_landings_payload": 0,
-    "attempted_landings_payload": 0,
-    "info_url": "https://www.galactic-energy.cn/index.php/En",
-    "wiki_url": null,
-    "social_media_links": []
-   },
-   "rocket": {
-    "id": 9276,
-    "configuration": {
-     "response_mode": "detailed",
-     "id": 500,
-     "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/500/",
-     "name": "Ceres-1S",
-     "families": [
-      {
-       "response_mode": "detailed",
-       "id": 2,
-       "name": "Ceres-1",
-       "manufacturer": [
-        {
-         "response_mode": "normal",
-         "id": 1021,
-         "url": "https://ll.thespacedevs.com/2.3.0/agencies/1021/",
-         "name": "Galactic Energy",
-         "abbrev": "GE",
-         "type": {
-          "id": 3,
-          "name": "Commercial"
-         },
-         "featured": false,
-         "country": [
-          {
-           "id": 6,
-           "name": "China",
-           "alpha_2_code": "CN",
-           "alpha_3_code": "CHN",
-           "nationality_name": "Chinese",
-           "nationality_name_composed": "Sino"
-          }
-         ],
-         "description": "Galactic Energy is a private aerospace company headquartered in Beijing, China. Established by senior engineers in 2018, Galactic Energy engages in low-cost commercial space launch business.",
-         "administrator": null,
-         "founding_year": 2018,
-         "launchers": "Ceres-1 | Pallas-1",
-         "spacecraft": "",
-         "parent": null,
-         "image": {
-          "id": 11,
-          "name": "[AUTO] Galactic Energy - image",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/galactic_energy_image_20201106095228.jpeg",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184607.jpeg",
-          "credit": null,
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "logo": {
-          "id": 135,
-          "name": "[AUTO] Galactic Energy - logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/galactic2520energy_logo_20201106095229.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184957.png",
-          "credit": null,
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "social_logo": {
-          "id": 59,
-          "name": "[AUTO] Galactic Energy - social_logo",
-          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/galactic2520energy_nation_20230703094321.png",
-          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184759.png",
-          "credit": null,
-          "license": {
-           "id": 1,
-           "name": "Unknown",
-           "priority": 9,
-           "link": null
-          },
-          "single_use": true,
-          "variants": []
-         },
-         "total_launch_count": 27,
-         "consecutive_successful_launches": 3,
-         "successful_launches": 24,
-         "failed_launches": 3,
-         "pending_launches": 0,
-         "consecutive_successful_landings": 0,
-         "successful_landings": 0,
-         "failed_landings": 0,
-         "attempted_landings": 0,
-         "successful_landings_spacecraft": 0,
-         "failed_landings_spacecraft": 0,
-         "attempted_landings_spacecraft": 0,
-         "successful_landings_payload": 0,
-         "failed_landings_payload": 0,
-         "attempted_landings_payload": 0,
-         "info_url": "https://www.galactic-energy.cn/index.php/En",
-         "wiki_url": null,
-         "social_media_links": []
-        }
-       ],
-       "parent": null,
-       "description": "",
-       "active": true,
-       "maiden_flight": "2020-11-07",
-       "total_launch_count": 24,
-       "consecutive_successful_launches": 2,
-       "successful_launches": 22,
-       "failed_launches": 2,
-       "pending_launches": 0,
-       "attempted_landings": 0,
-       "successful_landings": 0,
-       "failed_landings": 0,
-       "consecutive_successful_landings": 0
-      }
-     ],
-     "full_name": "Ceres-1S",
-     "variant": "Ceres-1S",
-     "active": true,
-     "is_placeholder": false,
-     "manufacturer": {
-      "response_mode": "normal",
-      "id": 1021,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/1021/",
-      "name": "Galactic Energy",
-      "abbrev": "GE",
-      "type": {
-       "id": 3,
-       "name": "Commercial"
-      },
-      "featured": false,
-      "country": [
-       {
-        "id": 6,
-        "name": "China",
-        "alpha_2_code": "CN",
-        "alpha_3_code": "CHN",
-        "nationality_name": "Chinese",
-        "nationality_name_composed": "Sino"
-       }
-      ],
-      "description": "Galactic Energy is a private aerospace company headquartered in Beijing, China. Established by senior engineers in 2018, Galactic Energy engages in low-cost commercial space launch business.",
-      "administrator": null,
-      "founding_year": 2018,
-      "launchers": "Ceres-1 | Pallas-1",
-      "spacecraft": "",
-      "parent": null,
-      "image": {
-       "id": 11,
-       "name": "[AUTO] Galactic Energy - image",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/galactic_energy_image_20201106095228.jpeg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184607.jpeg",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "logo": {
-       "id": 135,
-       "name": "[AUTO] Galactic Energy - logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/galactic2520energy_logo_20201106095229.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184957.png",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "social_logo": {
-       "id": 59,
-       "name": "[AUTO] Galactic Energy - social_logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/galactic2520energy_nation_20230703094321.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184759.png",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "total_launch_count": 27,
-      "consecutive_successful_launches": 3,
-      "successful_launches": 24,
-      "failed_launches": 3,
-      "pending_launches": 0,
-      "consecutive_successful_landings": 0,
-      "successful_landings": 0,
-      "failed_landings": 0,
-      "attempted_landings": 0,
-      "successful_landings_spacecraft": 0,
-      "failed_landings_spacecraft": 0,
-      "attempted_landings_spacecraft": 0,
-      "successful_landings_payload": 0,
-      "failed_landings_payload": 0,
-      "attempted_landings_payload": 0,
-      "info_url": "https://www.galactic-energy.cn/index.php/En",
-      "wiki_url": null,
-      "social_media_links": []
-     },
-     "program": [],
-     "reusable": false,
-     "image": {
-      "id": 1709,
-      "name": "[AUTO] Ceres-1S - image",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/ceres-1s_image_20230905114324.jpeg",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193542.jpeg",
-      "credit": null,
-      "license": {
-       "id": 1,
-       "name": "Unknown",
-       "priority": 9,
-       "link": null
-      },
-      "single_use": true,
-      "variants": []
-     },
-     "info_url": "http://www.galactic-energy.cn/index.php/En/List/cid/14",
-     "wiki_url": null,
-     "description": "Ceres-1S is the sea launched version of Ceres-1 from Galactic Energy.",
-     "alias": "",
-     "min_stage": 3,
-     "max_stage": 4,
-     "length": null,
-     "diameter": null,
-     "maiden_flight": "2023-09-05",
-     "launch_cost": null,
-     "launch_mass": null,
-     "leo_capacity": 350.0,
-     "gto_capacity": null,
-     "geo_capacity": null,
-     "sso_capacity": 230.0,
-     "to_thrust": 598.0,
-     "apogee": null,
-     "total_launch_count": 7,
-     "consecutive_successful_launches": 7,
-     "successful_launches": 7,
-     "failed_launches": 0,
-     "pending_launches": 0,
-     "attempted_landings": 0,
-     "successful_landings": 0,
-     "failed_landings": 0,
-     "consecutive_successful_landings": 0,
-     "fastest_turnaround": "P91DT21H9M33S"
-    },
-    "launcher_stage": [],
-    "spacecraft_stage": [],
-    "payloads": []
-   },
-   "mission": {
-    "id": 7876,
-    "name": "Xiguang-4 01",
-    "type": "Earth Science",
-    "description": "0.5 meter resolution Earth observation satellite for the city of Guangzhou government and Guangzhou University with multi-spectral imaging capability. Prototype of a proposed 25 satellites constellation.",
-    "image": null,
-    "orbit": {
-     "id": 8,
-     "name": "Low Earth Orbit",
-     "abbrev": "LEO",
-     "celestial_body": {
-      "response_mode": "list",
-      "id": 1,
-      "name": "Earth"
-     }
-    },
-    "agencies": [],
-    "info_urls": [],
-    "vid_urls": []
-   },
-   "pad": {
-    "id": 221,
-    "url": "https://ll.thespacedevs.com/2.3.0/pads/221/",
-    "active": true,
-    "agencies": [
-     {
-      "response_mode": "normal",
-      "id": 88,
-      "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
-      "name": "China Aerospace Science and Technology Corporation",
-      "abbrev": "CASC",
-      "type": {
-       "id": 1,
-       "name": "Government"
-      },
-      "featured": true,
-      "country": [
-       {
-        "id": 6,
-        "name": "China",
-        "alpha_2_code": "CN",
-        "alpha_3_code": "CHN",
-        "nationality_name": "Chinese",
-        "nationality_name_composed": "Sino"
-       }
-      ],
-      "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
-      "administrator": "Chairman & President: Lei Fanpei",
-      "founding_year": 1999,
-      "launchers": "Long March",
-      "spacecraft": "",
-      "parent": null,
-      "image": {
-       "id": 8,
-       "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "logo": {
-       "id": 124,
-       "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "social_logo": {
-       "id": 50,
-       "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
-       "credit": null,
-       "license": {
-        "id": 1,
-        "name": "Unknown",
-        "priority": 9,
-        "link": null
-       },
-       "single_use": true,
-       "variants": []
-      }
-     }
-    ],
-    "name": "Rizhao offshore launch location",
-    "image": {
-     "id": 2645,
-     "name": "Smart Dragon 3 Launch (Geely Constellation Group 06)",
-     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/smart_dragon_3__image_20260116125655.jpg",
-     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/smart_dragon_3__image_thumbnail_20260116125656.jpeg",
-     "credit": "CASC",
-     "license": {
-      "id": 1,
-      "name": "Unknown",
-      "priority": 9,
-      "link": null
-     },
-     "single_use": false,
-     "variants": []
-    },
-    "description": "",
-    "info_url": null,
-    "wiki_url": null,
-    "map_url": "https://www.google.com/maps?q=35.391667,119.598667",
-    "latitude": 35.391667,
-    "longitude": 119.598667,
-    "country": {
-     "id": 6,
-     "name": "China",
-     "alpha_2_code": "CN",
-     "alpha_3_code": "CHN",
-     "nationality_name": "Chinese",
-     "nationality_name_composed": "Sino"
-    },
-    "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_oriental_spaceport_mobile_launch_ship_20240529085416.jpg",
-    "total_launch_count": 8,
-    "orbital_launch_attempt_count": 8,
-    "fastest_turnaround": "P15DT12H8M",
-    "location": {
-     "response_mode": "normal",
-     "id": 185,
-     "url": "https://ll.thespacedevs.com/2.3.0/locations/185/",
-     "name": "Haiyang Oriental Spaceport",
-     "celestial_body": {
-      "response_mode": "normal",
-      "id": 1,
-      "name": "Earth",
-      "type": {
-       "id": 1,
-       "name": "Planet"
-      },
-      "diameter": 12742000.0,
-      "mass": 5.972168e+24,
-      "gravity": 9.80655,
-      "length_of_day": "1 00:00:00",
-      "atmosphere": true,
-      "image": {
-       "id": 2040,
-       "name": "Earth (Apollo 17)",
-       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
-       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
-       "credit": "NASA",
-       "license": {
-        "id": 4,
-        "name": "NASA Image and Media Guidelines",
-        "priority": 0,
-        "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
-       },
-       "single_use": true,
-       "variants": []
-      },
-      "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
-      "wiki_url": "https://en.wikipedia.org/wiki/Earth",
-      "total_attempted_launches": 7665,
-      "successful_launches": 7107,
-      "failed_launches": 558,
-      "total_attempted_landings": 1388,
-      "successful_landings": 1338,
-      "failed_landings": 50
-     },
-     "active": true,
-     "country": {
-      "id": 6,
-      "name": "China",
-      "alpha_2_code": "CN",
-      "alpha_3_code": "CHN",
-      "nationality_name": "Chinese",
-      "nationality_name_composed": "Sino"
-     },
-     "description": "Chinese orbital launch vehicle launches supporting sea port located at Haiyang, Shandong Province, with dedicated piers and rocket/payload processing facilities for Chinese launch vehicles’ sea launches, and (as part of its expansion project) land based launch pads on artificial islands for various test vehicles and launch vehicles of private and government launch services providers.\r\n\r\nIn operation as a remote base of Taiyuan Satellite Launch Center since 2019.",
-     "image": {
-      "id": 1355,
-      "name": "Gravity-1 liftoff from Haiyang Spaceport (Maiden flight)",
-      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/gravity-12520_image_20240112065126.jpg",
-      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305192513.jpeg",
-      "credit": "OrienSpace",
-      "license": {
-       "id": 1,
-       "name": "Unknown",
-       "priority": 9,
-       "link": null
-      },
-      "single_use": true,
-      "variants": []
-     },
-     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/location_haiyang_oriental_spaceport_20251128181322.jpg",
-     "longitude": 121.235103,
-     "latitude": 36.676794,
-     "timezone_name": "Asia/Shanghai",
-     "total_launch_count": 29,
-     "total_landing_count": 0
-    }
-   },
-   "webcast_live": false,
-   "program": [],
-   "orbital_launch_attempt_count": 7419,
-   "location_launch_attempt_count": 29,
-   "pad_launch_attempt_count": 8,
-   "agency_launch_attempt_count": 26,
-   "orbital_launch_attempt_count_year": 246,
-   "location_launch_attempt_count_year": 8,
-   "pad_launch_attempt_count_year": 2,
-   "agency_launch_attempt_count_year": 4,
-   "flightclub_url": null,
-   "updates": [
-    {
-     "id": 16537,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Launch success.",
-     "info_url": "https://m.weibo.cn/detail/5356430018478744",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-10-21T04:12:00Z"
-    },
-    {
-     "id": 16536,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Liftoff.",
-     "info_url": "https://www.youtube.com/watch?v=KvRfNtJocuo",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-10-21T03:43:00Z"
-    },
-    {
-     "id": 16501,
-     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
-     "comment": "Added launch per NOTAMs; Payload identity uncertain, possibly the Xiguang-4 01 Earth observation satellite.",
-     "info_url": "https://forum.nasaspaceflight.com/index.php?topic=57867.msg2832786#msg2832786",
-     "created_by": "Cosmic_Penguin",
-     "created_on": "2026-10-15T21:06:00Z"
-    }
-   ],
-   "info_urls": [],
-   "vid_urls": [
-    {
-     "priority": 10,
-     "source": "youtube.com",
-     "publisher": "International Rocket Launches",
-     "title": "Live: Ceres-1S Flight 7 Launch (No Commentary)",
-     "description": "Footage courtesy of 生活帮/JBYonion/日照润泽民宿/御道日照（逐光者）/三号门山海旅拍\n\n\nInternational Rocket Launches provides commentary-free coverage of select global rocket launches.\n\nFollow @IntRocketLaunch on Twitter: https://twitter.com/IntRocketLaunch\n\nRestreaming and reuse are permitted with credit to both the original source and @IntRocketLaunch.",
-     "feature_image": "https://i.ytimg.com/vi/KvRfNtJocuo/maxresdefault_live.jpg",
-     "url": "https://www.youtube.com/watch?v=KvRfNtJocuo",
-     "type": {
-      "id": 3,
-      "name": "Unofficial Webcast"
-     },
-     "language": {
-      "id": 2,
-      "name": "Chinese",
-      "code": "zn"
-     },
-     "start_time": "2026-10-21T02:35:30Z",
-     "end_time": "2026-10-21T03:44:06Z",
-     "live": false
-    },
-    {
-     "priority": 11,
-     "source": null,
-     "publisher": "ThatSpaceDogeGuy",
-     "title": "Watch Ceres-1S Launch from Haiyang, LIVE!!",
-     "description": "Credits: TSDG Haiyang / WeChat sources (mirrored)\n-------------------------------------------------------------\nSubscribe and follow my socials for more content!!!\n▶️ Twitter/X @TestAiden [ThatSpaceDogeGuy]\n▶️ Instagram | ThatSpaceDogeGuy\n▶️ Tiktok | ThatSpaceDogeGuy\n▶️ Twitch | ThatSpaceDogeGuy\n\nFootage from TSDG may be reused only with proper credit. Credit must be clearly visible in the video or included in the description. Unauthorized use without credit may be subject to removal.\n\nFor all business inquiries, questions, or copyright matters, please contact: tsdgbusiness@gmail.com",
-     "feature_image": "https://i.ytimg.com/vi/74J2gr_yRHE/maxresdefault_live.jpg",
-     "url": "https://www.youtube.com/watch?v=74J2gr_yRHE",
-     "type": {
-      "id": 3,
-      "name": "Unofficial Webcast"
-     },
-     "language": {
-      "id": 1,
-      "name": "English",
-      "code": "en"
-     },
-     "start_time": "2026-10-21T03:14:29Z",
-     "end_time": "2026-10-21T03:45:26Z",
-     "live": false
-    }
-   ],
-   "timeline": [],
-   "pad_turnaround": "P278DT7H29M",
-   "mission_patches": []
-  },
-  {
    "id": "7766f3bb-674c-4c71-b986-963bd633fcfe",
    "url": "https://ll.thespacedevs.com/2.3.0/launches/7766f3bb-674c-4c71-b986-963bd633fcfe/",
    "name": "Electron | We're Not Hawking Around (3x HawkEye 360)",
@@ -1572,7 +880,7 @@
      "single_use": true,
      "variants": []
     },
-    "total_launch_count": 625,
+    "total_launch_count": 626,
     "consecutive_successful_launches": 16,
     "successful_launches": 609,
     "failed_launches": 16,
@@ -1676,7 +984,7 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 625,
+         "total_launch_count": 626,
          "consecutive_successful_launches": 16,
          "successful_launches": 609,
          "failed_launches": 16,
@@ -1787,7 +1095,7 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 625,
+         "total_launch_count": 626,
          "consecutive_successful_launches": 16,
          "successful_launches": 609,
          "failed_launches": 16,
@@ -1978,7 +1286,7 @@
        "single_use": true,
        "variants": []
       },
-      "total_launch_count": 625,
+      "total_launch_count": 626,
       "consecutive_successful_launches": 16,
       "successful_launches": 609,
       "failed_launches": 16,
@@ -2330,7 +1638,7 @@
      "single_use": true,
      "variants": []
     },
-    "total_launch_count": 625,
+    "total_launch_count": 626,
     "consecutive_successful_launches": 16,
     "successful_launches": 609,
     "failed_launches": 16,
@@ -2434,7 +1742,7 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 625,
+         "total_launch_count": 626,
          "consecutive_successful_launches": 16,
          "successful_launches": 609,
          "failed_launches": 16,
@@ -2545,7 +1853,7 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 625,
+         "total_launch_count": 626,
          "consecutive_successful_launches": 16,
          "successful_launches": 609,
          "failed_launches": 16,
@@ -2736,7 +2044,7 @@
        "single_use": true,
        "variants": []
       },
-      "total_launch_count": 625,
+      "total_launch_count": 626,
       "consecutive_successful_launches": 16,
       "successful_launches": 609,
       "failed_launches": 16,
@@ -5120,7 +4428,7 @@
      "single_use": true,
      "variants": []
     },
-    "total_launch_count": 625,
+    "total_launch_count": 626,
     "consecutive_successful_launches": 16,
     "successful_launches": 609,
     "failed_launches": 16,
@@ -5224,7 +4532,7 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 625,
+         "total_launch_count": 626,
          "consecutive_successful_launches": 16,
          "successful_launches": 609,
          "failed_launches": 16,
@@ -5335,7 +4643,7 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 625,
+         "total_launch_count": 626,
          "consecutive_successful_launches": 16,
          "successful_launches": 609,
          "failed_launches": 16,
@@ -5526,7 +4834,7 @@
        "single_use": true,
        "variants": []
       },
-      "total_launch_count": 625,
+      "total_launch_count": 626,
       "consecutive_successful_launches": 16,
       "successful_launches": 609,
       "failed_launches": 16,
@@ -5579,11 +4887,11 @@
      "sso_capacity": 7000.0,
      "to_thrust": 4800.0,
      "apogee": null,
-     "total_launch_count": 12,
+     "total_launch_count": 13,
      "consecutive_successful_launches": 12,
      "successful_launches": 12,
      "failed_launches": 0,
-     "pending_launches": 1,
+     "pending_launches": 0,
      "attempted_landings": 0,
      "successful_landings": 0,
      "failed_landings": 0,
@@ -5636,8 +4944,8 @@
      "nationality_name_composed": "Sino"
     },
     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_commercial_lc-1_20231225074041.jpg",
-    "total_launch_count": 15,
-    "orbital_launch_attempt_count": 15,
+    "total_launch_count": 16,
+    "orbital_launch_attempt_count": 16,
     "fastest_turnaround": "P18DT15H52M",
     "location": {
      "response_mode": "normal",
@@ -5710,7 +5018,7 @@
      "longitude": 110.951133,
      "latitude": 19.614492,
      "timezone_name": "Asia/Shanghai",
-     "total_launch_count": 77,
+     "total_launch_count": 78,
      "total_landing_count": 0
     }
    },
@@ -12088,7 +11396,7 @@
      "single_use": true,
      "variants": []
     },
-    "total_launch_count": 625,
+    "total_launch_count": 626,
     "consecutive_successful_launches": 16,
     "successful_launches": 609,
     "failed_launches": 16,
@@ -12192,7 +11500,7 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 625,
+         "total_launch_count": 626,
          "consecutive_successful_launches": 16,
          "successful_launches": 609,
          "failed_launches": 16,
@@ -12303,7 +11611,7 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 625,
+         "total_launch_count": 626,
          "consecutive_successful_launches": 16,
          "successful_launches": 609,
          "failed_launches": 16,
@@ -12494,7 +11802,7 @@
        "single_use": true,
        "variants": []
       },
-      "total_launch_count": 625,
+      "total_launch_count": 626,
       "consecutive_successful_launches": 16,
       "successful_launches": 609,
       "failed_launches": 16,
@@ -15906,7 +15214,7 @@
      "single_use": true,
      "variants": []
     },
-    "total_launch_count": 625,
+    "total_launch_count": 626,
     "consecutive_successful_launches": 16,
     "successful_launches": 609,
     "failed_launches": 16,
@@ -16010,7 +15318,7 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 625,
+         "total_launch_count": 626,
          "consecutive_successful_launches": 16,
          "successful_launches": 609,
          "failed_launches": 16,
@@ -16121,7 +15429,7 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 625,
+         "total_launch_count": 626,
          "consecutive_successful_launches": 16,
          "successful_launches": 609,
          "failed_launches": 16,
@@ -16312,7 +15620,7 @@
        "single_use": true,
        "variants": []
       },
-      "total_launch_count": 625,
+      "total_launch_count": 626,
       "consecutive_successful_launches": 16,
       "successful_launches": 609,
       "failed_launches": 16,
@@ -16496,7 +15804,7 @@
      "longitude": 110.951133,
      "latitude": 19.614492,
      "timezone_name": "Asia/Shanghai",
-     "total_launch_count": 77,
+     "total_launch_count": 78,
      "total_landing_count": 0
     }
    },
@@ -16717,7 +16025,7 @@
      "single_use": true,
      "variants": []
     },
-    "total_launch_count": 625,
+    "total_launch_count": 626,
     "consecutive_successful_launches": 16,
     "successful_launches": 609,
     "failed_launches": 16,
@@ -16821,7 +16129,7 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 625,
+         "total_launch_count": 626,
          "consecutive_successful_launches": 16,
          "successful_launches": 609,
          "failed_launches": 16,
@@ -16932,7 +16240,7 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 625,
+         "total_launch_count": 626,
          "consecutive_successful_launches": 16,
          "successful_launches": 609,
          "failed_launches": 16,
@@ -17123,7 +16431,7 @@
        "single_use": true,
        "variants": []
       },
-      "total_launch_count": 625,
+      "total_launch_count": 626,
       "consecutive_successful_launches": 16,
       "successful_launches": 609,
       "failed_launches": 16,
@@ -17180,7 +16488,7 @@
      "consecutive_successful_launches": 71,
      "successful_launches": 102,
      "failed_launches": 1,
-     "pending_launches": 0,
+     "pending_launches": 1,
      "attempted_landings": 0,
      "successful_landings": 0,
      "failed_landings": 0,
@@ -23998,7 +23306,7 @@
      "single_use": true,
      "variants": []
     },
-    "total_launch_count": 625,
+    "total_launch_count": 626,
     "consecutive_successful_launches": 16,
     "successful_launches": 609,
     "failed_launches": 16,
@@ -24102,7 +23410,7 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 625,
+         "total_launch_count": 626,
          "consecutive_successful_launches": 16,
          "successful_launches": 609,
          "failed_launches": 16,
@@ -24213,7 +23521,7 @@
           "single_use": true,
           "variants": []
          },
-         "total_launch_count": 625,
+         "total_launch_count": 626,
          "consecutive_successful_launches": 16,
          "successful_launches": 609,
          "failed_launches": 16,
@@ -24404,7 +23712,7 @@
        "single_use": true,
        "variants": []
       },
-      "total_launch_count": 625,
+      "total_launch_count": 626,
       "consecutive_successful_launches": 16,
       "successful_launches": 609,
       "failed_launches": 16,
@@ -24461,7 +23769,7 @@
      "consecutive_successful_launches": 71,
      "successful_launches": 102,
      "failed_launches": 1,
-     "pending_launches": 0,
+     "pending_launches": 1,
      "attempted_landings": 0,
      "successful_landings": 0,
      "failed_landings": 0,
@@ -24639,6 +23947,780 @@
    "vid_urls": [],
    "timeline": [],
    "pad_turnaround": "P60DT12H1M",
+   "mission_patches": []
+  },
+  {
+   "id": "a2975167-7c6f-4403-99e1-b40df17c8140",
+   "url": "https://ll.thespacedevs.com/2.3.0/launches/a2975167-7c6f-4403-99e1-b40df17c8140/",
+   "name": "Long March 8A | SatNet LEO Group TBD?",
+   "response_mode": "detailed",
+   "slug": "long-march-8a-satnet-leo-group-tbd",
+   "launch_designator": null,
+   "status": {
+    "id": 6,
+    "name": "Launch in Flight",
+    "abbrev": "In Flight",
+    "description": "The launch vehicle has lifted off from the launchpad."
+   },
+   "last_updated": "2026-11-20T12:04:15Z",
+   "net": "2026-11-20T11:59:00Z",
+   "net_precision": {
+    "id": 2,
+    "name": "Hour",
+    "abbrev": "HR",
+    "description": "The T-0 is accurate to the hour."
+   },
+   "window_end": "2026-11-20T12:17:00Z",
+   "window_start": "2026-11-20T11:51:00Z",
+   "image": {
+    "id": 2616,
+    "name": "CZ-8A Launch (SatNet LEO Group 14)",
+    "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cz-8a_launch_2_image_20251206093107.jpeg",
+    "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cz-8a_launch_2_image_thumbnail_20251206093108.jpeg",
+    "credit": "CASC",
+    "license": {
+     "id": 1,
+     "name": "Unknown",
+     "priority": 9,
+     "link": null
+    },
+    "single_use": false,
+    "variants": []
+   },
+   "infographic": null,
+   "probability": null,
+   "weather_concerns": null,
+   "failreason": "",
+   "hashtag": null,
+   "launch_service_provider": {
+    "response_mode": "normal",
+    "id": 88,
+    "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+    "name": "China Aerospace Science and Technology Corporation",
+    "abbrev": "CASC",
+    "type": {
+     "id": 1,
+     "name": "Government"
+    },
+    "featured": true,
+    "country": [
+     {
+      "id": 6,
+      "name": "China",
+      "alpha_2_code": "CN",
+      "alpha_3_code": "CHN",
+      "nationality_name": "Chinese",
+      "nationality_name_composed": "Sino"
+     }
+    ],
+    "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+    "administrator": "Chairman & President: Lei Fanpei",
+    "founding_year": 1999,
+    "launchers": "Long March",
+    "spacecraft": "",
+    "parent": null,
+    "image": {
+     "id": 8,
+     "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+     "credit": null,
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": true,
+     "variants": []
+    },
+    "logo": {
+     "id": 124,
+     "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+     "credit": null,
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": true,
+     "variants": []
+    },
+    "social_logo": {
+     "id": 50,
+     "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+     "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+     "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+     "credit": null,
+     "license": {
+      "id": 1,
+      "name": "Unknown",
+      "priority": 9,
+      "link": null
+     },
+     "single_use": true,
+     "variants": []
+    },
+    "total_launch_count": 626,
+    "consecutive_successful_launches": 16,
+    "successful_launches": 609,
+    "failed_launches": 16,
+    "pending_launches": 9,
+    "consecutive_successful_landings": 1,
+    "successful_landings": 1,
+    "failed_landings": 1,
+    "attempted_landings": 2,
+    "successful_landings_spacecraft": 3,
+    "failed_landings_spacecraft": 0,
+    "attempted_landings_spacecraft": 3,
+    "successful_landings_payload": 2,
+    "failed_landings_payload": 0,
+    "attempted_landings_payload": 2,
+    "info_url": "https://english.spacechina.com/",
+    "wiki_url": "https://en.wikipedia.org/wiki/China_Aerospace_Science_and_Technology_Corporation",
+    "social_media_links": []
+   },
+   "rocket": {
+    "id": 9292,
+    "configuration": {
+     "response_mode": "detailed",
+     "id": 518,
+     "url": "https://ll.thespacedevs.com/2.3.0/launcher_configurations/518/",
+     "name": "Long March 8A",
+     "families": [
+      {
+       "response_mode": "detailed",
+       "id": 106,
+       "name": "Long March",
+       "manufacturer": [
+        {
+         "response_mode": "normal",
+         "id": 88,
+         "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+         "name": "China Aerospace Science and Technology Corporation",
+         "abbrev": "CASC",
+         "type": {
+          "id": 1,
+          "name": "Government"
+         },
+         "featured": true,
+         "country": [
+          {
+           "id": 6,
+           "name": "China",
+           "alpha_2_code": "CN",
+           "alpha_3_code": "CHN",
+           "nationality_name": "Chinese",
+           "nationality_name_composed": "Sino"
+          }
+         ],
+         "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+         "administrator": "Chairman & President: Lei Fanpei",
+         "founding_year": 1999,
+         "launchers": "Long March",
+         "spacecraft": "",
+         "parent": null,
+         "image": {
+          "id": 8,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "logo": {
+          "id": 124,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "social_logo": {
+          "id": 50,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "total_launch_count": 626,
+         "consecutive_successful_launches": 16,
+         "successful_launches": 609,
+         "failed_launches": 16,
+         "pending_launches": 9,
+         "consecutive_successful_landings": 1,
+         "successful_landings": 1,
+         "failed_landings": 1,
+         "attempted_landings": 2,
+         "successful_landings_spacecraft": 3,
+         "failed_landings_spacecraft": 0,
+         "attempted_landings_spacecraft": 3,
+         "successful_landings_payload": 2,
+         "failed_landings_payload": 0,
+         "attempted_landings_payload": 2,
+         "info_url": "https://english.spacechina.com/",
+         "wiki_url": "https://en.wikipedia.org/wiki/China_Aerospace_Science_and_Technology_Corporation",
+         "social_media_links": []
+        }
+       ],
+       "parent": null,
+       "description": "",
+       "active": true,
+       "maiden_flight": "1970-04-24",
+       "total_launch_count": 678,
+       "consecutive_successful_launches": 16,
+       "successful_launches": 658,
+       "failed_launches": 20,
+       "pending_launches": 9,
+       "attempted_landings": 2,
+       "successful_landings": 1,
+       "failed_landings": 1,
+       "consecutive_successful_landings": 1
+      },
+      {
+       "response_mode": "detailed",
+       "id": 115,
+       "name": "Long March 8",
+       "manufacturer": [
+        {
+         "response_mode": "normal",
+         "id": 88,
+         "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+         "name": "China Aerospace Science and Technology Corporation",
+         "abbrev": "CASC",
+         "type": {
+          "id": 1,
+          "name": "Government"
+         },
+         "featured": true,
+         "country": [
+          {
+           "id": 6,
+           "name": "China",
+           "alpha_2_code": "CN",
+           "alpha_3_code": "CHN",
+           "nationality_name": "Chinese",
+           "nationality_name_composed": "Sino"
+          }
+         ],
+         "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+         "administrator": "Chairman & President: Lei Fanpei",
+         "founding_year": 1999,
+         "launchers": "Long March",
+         "spacecraft": "",
+         "parent": null,
+         "image": {
+          "id": 8,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "logo": {
+          "id": 124,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "social_logo": {
+          "id": 50,
+          "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+          "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+          "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+          "credit": null,
+          "license": {
+           "id": 1,
+           "name": "Unknown",
+           "priority": 9,
+           "link": null
+          },
+          "single_use": true,
+          "variants": []
+         },
+         "total_launch_count": 626,
+         "consecutive_successful_launches": 16,
+         "successful_launches": 609,
+         "failed_launches": 16,
+         "pending_launches": 9,
+         "consecutive_successful_landings": 1,
+         "successful_landings": 1,
+         "failed_landings": 1,
+         "attempted_landings": 2,
+         "successful_landings_spacecraft": 3,
+         "failed_landings_spacecraft": 0,
+         "attempted_landings_spacecraft": 3,
+         "successful_landings_payload": 2,
+         "failed_landings_payload": 0,
+         "attempted_landings_payload": 2,
+         "info_url": "https://english.spacechina.com/",
+         "wiki_url": "https://en.wikipedia.org/wiki/China_Aerospace_Science_and_Technology_Corporation",
+         "social_media_links": []
+        }
+       ],
+       "parent": {
+        "response_mode": "normal",
+        "id": 106,
+        "name": "Long March",
+        "manufacturer": [
+         {
+          "response_mode": "normal",
+          "id": 88,
+          "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+          "name": "China Aerospace Science and Technology Corporation",
+          "abbrev": "CASC",
+          "type": {
+           "id": 1,
+           "name": "Government"
+          },
+          "featured": true,
+          "country": [
+           {
+            "id": 6,
+            "name": "China",
+            "alpha_2_code": "CN",
+            "alpha_3_code": "CHN",
+            "nationality_name": "Chinese",
+            "nationality_name_composed": "Sino"
+           }
+          ],
+          "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+          "administrator": "Chairman & President: Lei Fanpei",
+          "founding_year": 1999,
+          "launchers": "Long March",
+          "spacecraft": "",
+          "parent": null,
+          "image": {
+           "id": 8,
+           "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+           "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+           "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+           "credit": null,
+           "license": {
+            "id": 1,
+            "name": "Unknown",
+            "priority": 9,
+            "link": null
+           },
+           "single_use": true,
+           "variants": []
+          },
+          "logo": {
+           "id": 124,
+           "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+           "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+           "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+           "credit": null,
+           "license": {
+            "id": 1,
+            "name": "Unknown",
+            "priority": 9,
+            "link": null
+           },
+           "single_use": true,
+           "variants": []
+          },
+          "social_logo": {
+           "id": 50,
+           "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+           "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+           "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+           "credit": null,
+           "license": {
+            "id": 1,
+            "name": "Unknown",
+            "priority": 9,
+            "link": null
+           },
+           "single_use": true,
+           "variants": []
+          }
+         }
+        ],
+        "parent": null
+       },
+       "description": "",
+       "active": true,
+       "maiden_flight": "2020-12-22",
+       "total_launch_count": 19,
+       "consecutive_successful_launches": 19,
+       "successful_launches": 19,
+       "failed_launches": 0,
+       "pending_launches": 1,
+       "attempted_landings": 0,
+       "successful_landings": 0,
+       "failed_landings": 0,
+       "consecutive_successful_landings": 0
+      }
+     ],
+     "full_name": "Long March 8A",
+     "variant": "A",
+     "active": true,
+     "is_placeholder": false,
+     "manufacturer": {
+      "response_mode": "normal",
+      "id": 88,
+      "url": "https://ll.thespacedevs.com/2.3.0/agencies/88/",
+      "name": "China Aerospace Science and Technology Corporation",
+      "abbrev": "CASC",
+      "type": {
+       "id": 1,
+       "name": "Government"
+      },
+      "featured": true,
+      "country": [
+       {
+        "id": 6,
+        "name": "China",
+        "alpha_2_code": "CN",
+        "alpha_3_code": "CHN",
+        "nationality_name": "Chinese",
+        "nationality_name_composed": "Sino"
+       }
+      ],
+      "description": "The China Aerospace Science and Technology Corporation (CASC) is the main contractor for the Chinese space program. It is state-owned and has a number of subordinate entities which design, develop and manufacture a range of spacecraft, launch vehicles, strategic and tactical missile systems, and ground equipment. It was officially established in July 1999 as part of a Chinese government reform drive, having previously been one part of the former China Aerospace Corporation. Various incarnations of the program date back to 1956.",
+      "administrator": "Chairman & President: Lei Fanpei",
+      "founding_year": 1999,
+      "launchers": "Long March",
+      "spacecraft": "",
+      "parent": null,
+      "image": {
+       "id": 8,
+       "name": "[AUTO] China Aerospace Science and Technology Corporation - image",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_image_20191228094408.jpeg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184558.jpeg",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "logo": {
+       "id": 124,
+       "name": "[AUTO] China Aerospace Science and Technology Corporation - logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_logo_20220826093937.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184933.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "social_logo": {
+       "id": 50,
+       "name": "[AUTO] China Aerospace Science and Technology Corporation - social_logo",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/china2520aerospace2520science2520and2520technology2520corporation_nation_20230604193716.png",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305184746.png",
+       "credit": null,
+       "license": {
+        "id": 1,
+        "name": "Unknown",
+        "priority": 9,
+        "link": null
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "total_launch_count": 626,
+      "consecutive_successful_launches": 16,
+      "successful_launches": 609,
+      "failed_launches": 16,
+      "pending_launches": 9,
+      "consecutive_successful_landings": 1,
+      "successful_landings": 1,
+      "failed_landings": 1,
+      "attempted_landings": 2,
+      "successful_landings_spacecraft": 3,
+      "failed_landings_spacecraft": 0,
+      "attempted_landings_spacecraft": 3,
+      "successful_landings_payload": 2,
+      "failed_landings_payload": 0,
+      "attempted_landings_payload": 2,
+      "info_url": "https://english.spacechina.com/",
+      "wiki_url": "https://en.wikipedia.org/wiki/China_Aerospace_Science_and_Technology_Corporation",
+      "social_media_links": []
+     },
+     "program": [],
+     "reusable": false,
+     "image": {
+      "id": 2616,
+      "name": "CZ-8A Launch (SatNet LEO Group 14)",
+      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cz-8a_launch_2_image_20251206093107.jpeg",
+      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cz-8a_launch_2_image_thumbnail_20251206093108.jpeg",
+      "credit": "CASC",
+      "license": {
+       "id": 1,
+       "name": "Unknown",
+       "priority": 9,
+       "link": null
+      },
+      "single_use": false,
+      "variants": []
+     },
+     "info_url": null,
+     "wiki_url": "https://en.wikipedia.org/wiki/Long_March_8#CZ-8A_variant",
+     "description": "The Long March 8A is an orbital launch vehicle developed by the China Academy of Launch Vehicle Technology based on the Long March 8. It has an increased capability of up to 7 tonnes to a 700 km altitude sun-synchronous orbit. It implements a larger 3.35 meters diameter liquid hydrogen/liquid oxygen 2nd stage, coupled with 2 upgraded version of the YF-75D engines used on the Long March 5 (known as the YF-75H) with increased thrust to 10 tonnes each through measures such as increased turbopump speeds. \r\n\r\nThe Long March 8A can also use a larger 5.2 meters diameter payload fairing.",
+     "alias": "",
+     "min_stage": 2,
+     "max_stage": 2,
+     "length": 50.5,
+     "diameter": 3.35,
+     "maiden_flight": "2025-02-11",
+     "launch_cost": null,
+     "launch_mass": 371.0,
+     "leo_capacity": 9800.0,
+     "gto_capacity": 3500.0,
+     "geo_capacity": null,
+     "sso_capacity": 7000.0,
+     "to_thrust": 4800.0,
+     "apogee": null,
+     "total_launch_count": 13,
+     "consecutive_successful_launches": 12,
+     "successful_launches": 12,
+     "failed_launches": 0,
+     "pending_launches": 0,
+     "attempted_landings": 0,
+     "successful_landings": 0,
+     "failed_landings": 0,
+     "consecutive_successful_landings": 0,
+     "fastest_turnaround": "P18DT15H59M"
+    },
+    "launcher_stage": [],
+    "spacecraft_stage": [],
+    "payloads": []
+   },
+   "mission": {
+    "id": 7891,
+    "name": "SatNet LEO Group TBD?",
+    "type": "Communications",
+    "description": "A batch of 9 Low Earth Orbit communication satellites for the Chinese state owned SatNet constellation operated by the China Satellite Network Group.\r\n\r\nThe constellation will eventually consists of 13000 satellites.",
+    "image": null,
+    "orbit": {
+     "id": 8,
+     "name": "Low Earth Orbit",
+     "abbrev": "LEO",
+     "celestial_body": {
+      "response_mode": "list",
+      "id": 1,
+      "name": "Earth"
+     }
+    },
+    "agencies": [],
+    "info_urls": [],
+    "vid_urls": []
+   },
+   "pad": {
+    "id": 218,
+    "url": "https://ll.thespacedevs.com/2.3.0/pads/218/",
+    "active": true,
+    "agencies": [],
+    "name": "Commercial LC-1",
+    "image": null,
+    "description": "",
+    "info_url": null,
+    "wiki_url": "https://en.wikipedia.org/wiki/Wenchang_Commercial_Space_Launch_Site",
+    "map_url": "https://www.google.com/maps?q=19.597275,110.930753",
+    "latitude": 19.597275,
+    "longitude": 110.930753,
+    "country": {
+     "id": 6,
+     "name": "China",
+     "alpha_2_code": "CN",
+     "alpha_3_code": "CHN",
+     "nationality_name": "Chinese",
+     "nationality_name_composed": "Sino"
+    },
+    "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/pad_commercial_lc-1_20231225074041.jpg",
+    "total_launch_count": 16,
+    "orbital_launch_attempt_count": 16,
+    "fastest_turnaround": "P18DT15H52M",
+    "location": {
+     "response_mode": "normal",
+     "id": 8,
+     "url": "https://ll.thespacedevs.com/2.3.0/locations/8/",
+     "name": "Wenchang Space Launch Site, People's Republic of China",
+     "celestial_body": {
+      "response_mode": "normal",
+      "id": 1,
+      "name": "Earth",
+      "type": {
+       "id": 1,
+       "name": "Planet"
+      },
+      "diameter": 12742000.0,
+      "mass": 5.972168e+24,
+      "gravity": 9.80655,
+      "length_of_day": "1 00:00:00",
+      "atmosphere": true,
+      "image": {
+       "id": 2040,
+       "name": "Earth (Apollo 17)",
+       "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_20240402194304.jpeg",
+       "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/earth_2528apol_image_thumbnail_20240402194305.jpeg",
+       "credit": "NASA",
+       "license": {
+        "id": 4,
+        "name": "NASA Image and Media Guidelines",
+        "priority": 0,
+        "link": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+       },
+       "single_use": true,
+       "variants": []
+      },
+      "description": "Earth is the third planet from the Sun and the only astronomical object known to harbor life.",
+      "wiki_url": "https://en.wikipedia.org/wiki/Earth",
+      "total_attempted_launches": 7665,
+      "successful_launches": 7107,
+      "failed_launches": 558,
+      "total_attempted_landings": 1388,
+      "successful_landings": 1338,
+      "failed_landings": 50
+     },
+     "active": true,
+     "country": {
+      "id": 6,
+      "name": "China",
+      "alpha_2_code": "CN",
+      "alpha_3_code": "CHN",
+      "nationality_name": "Chinese",
+      "nationality_name_composed": "Sino"
+     },
+     "description": "The Wenchang Space Launch Site is a rocket launch site located in Wenchang on the island of Hainan, in China.\r\n\r\nFormally a suborbital test center, it currently serves as China's southernmost spaceport. The site was selected for its low latitude, 19° north of the equator, allowing for larger payloads to be launched. It is capable of launching the Long March 5, the heaviest Chinese rocket. Unlike launch facilities on the mainland, Wenchang uses its seaport for deliveries.",
+     "image": {
+      "id": 2019,
+      "name": "CZ-8 liftoff from pad 201 (Queqiao-2)",
+      "image_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cz-8_liftoff_2_image_20240320175819.jpeg",
+      "thumbnail_url": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/images/cz-8_liftoff_2_image_thumbnail_20240320175820.jpeg",
+      "credit": "秦英健/Qin Yingjian",
+      "license": {
+       "id": 1,
+       "name": "Unknown",
+       "priority": 9,
+       "link": null
+      },
+      "single_use": false,
+      "variants": []
+     },
+     "map_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/map_images/location_8_20200803142445.jpg",
+     "longitude": 110.951133,
+     "latitude": 19.614492,
+     "timezone_name": "Asia/Shanghai",
+     "total_launch_count": 78,
+     "total_landing_count": 0
+    }
+   },
+   "webcast_live": false,
+   "program": [],
+   "orbital_launch_attempt_count": 7442,
+   "location_launch_attempt_count": 78,
+   "pad_launch_attempt_count": 16,
+   "agency_launch_attempt_count": 626,
+   "orbital_launch_attempt_count_year": 269,
+   "location_launch_attempt_count_year": 23,
+   "pad_launch_attempt_count_year": 10,
+   "agency_launch_attempt_count_year": 56,
+   "flightclub_url": null,
+   "updates": [
+    {
+     "id": 16818,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
+     "comment": "Liftoff.",
+     "info_url": "https://www.youtube.com/watch?v=dUxmQvNnQEI",
+     "created_by": "Cosmic_Penguin",
+     "created_on": "2026-11-20T12:03:00Z"
+    },
+    {
+     "id": 16792,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
+     "comment": "Refined launch window per new NOTAMs.",
+     "info_url": "https://forum.nasaspaceflight.com/index.php?topic=57867.msg2842181#msg2842181",
+     "created_by": "Cosmic_Penguin",
+     "created_on": "2026-11-18T08:29:00Z"
+    },
+    {
+     "id": 16627,
+     "profile_image": "https://thespacedevs-prod.nyc3.digitaloceanspaces.com/media/profile_images/cosmic2520penguin_profile_20210817212020.png",
+     "comment": "Added launch per NOTAMs; Payload identity uncertain.",
+     "info_url": "https://forum.nasaspaceflight.com/index.php?topic=57867.msg2837224#msg2837224",
+     "created_by": "Cosmic_Penguin",
+     "created_on": "2026-10-30T13:59:00Z"
+    }
+   ],
+   "info_urls": [],
+   "vid_urls": [
+    {
+     "priority": 10,
+     "source": "youtube.com",
+     "publisher": "International Rocket Launches",
+     "title": "Live: Long March 8A Launches SatNet LEO Group 30 (No Commentary)",
+     "description": "Footage courtesy of SpaceLens/晓东/文昌瑶光火箭发射观礼平台/椰岛之梦/小葡萄幺姐/牧野湖\n\nInternational Rocket Launches provides commentary-free coverage of select global rocket launches.\n\nFollow @IntRocketLaunch on Twitter: https://twitter.com/IntRocketLaunch\n\nRestreaming and reuse are permitted with credit to both the original source and @IntRocketLaunch.",
+     "feature_image": "https://i.ytimg.com/vi/dUxmQvNnQEI/maxresdefault.jpg?v=6af2de75",
+     "url": "https://www.youtube.com/watch?v=dUxmQvNnQEI",
+     "type": {
+      "id": 3,
+      "name": "Unofficial Webcast"
+     },
+     "language": {
+      "id": 2,
+      "name": "Chinese",
+      "code": "zn"
+     },
+     "start_time": "2026-11-20T11:00:10Z",
+     "end_time": "2026-11-20T12:03:12Z",
+     "live": false
+    }
+   ],
+   "timeline": [],
+   "pad_turnaround": "P26DT9H56M",
    "mission_patches": []
   }
  ]
