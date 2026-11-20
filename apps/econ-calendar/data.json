@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-11-19T23:47:35Z",
-  "asOf": "2026-11-19",
+  "updatedAt": "2026-11-20T20:38:40Z",
+  "asOf": "2026-11-20",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-11-15 ~ 2026-11-21",
-  "count": 125,
+  "count": 126,
   "highCount": 13,
   "events": [
     {
@@ -412,6 +412,18 @@
       "impact": "low",
       "forecast": "25.4K",
       "previous": "30.3K",
+      "actual": null
+    },
+    {
+      "ts": "2026-11-17T07:00:00Z",
+      "ccy": "GBP",
+      "country": "英国",
+      "flag": "🇬🇧",
+      "title": "HMRC Payrolls Change",
+      "titleEn": "HMRC Payrolls Change",
+      "impact": "low",
+      "forecast": "9K",
+      "previous": "13K",
       "actual": null
     },
     {
@@ -1387,18 +1399,6 @@
       "actual": null
     },
     {
-      "ts": "2026-11-20T07:02:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "Foreign Direct Investment ytd/y",
-      "titleEn": "Foreign Direct Investment ytd/y",
-      "impact": "low",
-      "forecast": null,
-      "previous": "-4.3%",
-      "actual": null
-    },
-    {
       "ts": "2026-11-20T08:15:00Z",
       "ccy": "EUR",
       "country": "欧元区",
@@ -1492,6 +1492,18 @@
       "impact": "medium",
       "forecast": null,
       "previous": "4.3%",
+      "actual": null
+    },
+    {
+      "ts": "2026-11-20T17:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "央行官员讲话",
+      "titleEn": "President Trump Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
