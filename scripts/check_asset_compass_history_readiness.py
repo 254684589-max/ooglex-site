@@ -15,7 +15,8 @@ ROOT=Path(__file__).resolve().parents[1]
 OUTPUT=ROOT/"data"/"asset-compass-history-readiness.json"
 REQUIRED_SERIES={"treasury.us10y","treasury.real10y","treasury.us2y",
  "nyfed.effr","bls.cpi","bls.core_cpi","bls.unemployment","bls.payroll",
- "bea.core_pce","fed_h41.total_assets"}
+ "bea.core_pce","fed_h41.total_assets",
+ "liquidity.reserves","liquidity.tga","liquidity.overnight_rrp"}
 
 def report(rows):
     groups=defaultdict(list)
