@@ -55,6 +55,7 @@ def build():
             latest=(d,a,b,c);break
     if latest is None:raise ValueError("No same-date verified nominal and TIPS 10-year yields")
     d,a,b,c=latest
+    if (date.today()-d).days>10:raise ValueError("Treasury observation stale: "+d.isoformat())
     result={"schema_version":1,"observation_date":d.isoformat(),"generated_at":datetime.now(timezone.utc).isoformat(),
             "status":"partial_data_no_full_score","source":"US Department of the Treasury",
             "source_urls":urls,
