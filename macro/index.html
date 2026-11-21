@@ -45,8 +45,8 @@ function show(data){
  root.innerHTML=items.map(([name,val])=>'<article class="card"><div class="label">'+name+'</div><div class="big">'+fmt(safe(val))+'</div><div class="label">美国财政部 · '+(data.observation_date||"无日期")+'</div></article>').join("");
  const b=data.bls&&data.bls.series||{};
  const recent=rec=>{if(!rec||!/^\\d{4}-\\d{2}$/.test(rec.period||""))return false;const [y,m]=rec.period.split("-").map(Number);const now=new Date();const diff=(now.getUTCFullYear()-y)*12+now.getUTCMonth()+1-m;return diff>=0&&diff<=3};
- const blsItems=[["美国CPI同比",recent(b.cpi)?b.cpi.yoy_percent:null,"%",b.cpi&&b.cpi.period],["美国失业率",recent(b.unemployment)?b.unemployment.value:null,"%",b.unemployment&&b.unemployment.period],["非农就业月增量",recent(b.payroll)?b.payroll.monthly_change_thousands:null,"千人",b.payroll&&b.payroll.period]];
- labor.innerHTML=blsItems.map(([name,val,unit,period])=>'<article class="card"><div class="label">'+name+'</div><div class="big">'+(safe(val)===null?"暂无数据":Number(val).toFixed(unit==="%"?2:1)+unit)+'</div><div class="label">美国劳工统计局 · '+(period||"无日期")+'</div></article>').join("");
+ const blsItems=[["美国CPI指数（季调）",recent(b.cpi)?b.cpi.value:null,"",b.cpi&&b.cpi.period],["美国CPI同比（历史不足时不计算）",recent(b.cpi)?b.cpi.yoy_percent:null,"%",b.cpi&&b.cpi.period],["美国失业率",recent(b.unemployment)?b.unemployment.value:null,"%",b.unemployment&&b.unemployment.period],["非农就业月增量",recent(b.payroll)?b.payroll.monthly_change_thousands:null,"千人",b.payroll&&b.payroll.period]];
+ labor.innerHTML=blsItems.map(([name,val,unit,period])=>'<article class="card"><div class="label">'+name+'</div><div class="big">'+(safe(val)===null?"暂无数据":Number(val).toFixed(unit==="%"?2:unit===""?3:1)+unit)+'</div><div class="label">美国劳工统计局 · '+(period||"无日期")+'</div></article>').join("");
  const ny=data.nyfed||{};const effrDate=ny.observation_date?new Date(ny.observation_date+"T00:00:00Z"):null;
  const effrFresh=effrDate&&Number.isFinite(effrDate.getTime())&&(Date.now()-effrDate.getTime())/86400000<=11;
  const effr=effrFresh?safe(ny.effr_percent):null;
