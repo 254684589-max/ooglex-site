@@ -23,6 +23,9 @@ footer{font-size:12px;color:#8796a8;margin-top:32px}
 <h2 style="margin-top:42px">美国通胀与就业（BLS）</h2><section class="grid" id="labor"></section><p id="cpi-note" class="muted" style="font-size:13px" aria-live="polite"></p><h2 style="margin-top:42px">纽约联储货币政策指标</h2><section class="grid" id="policy"></section><p class="muted" style="font-size:13px">纽约联储收益率曲线模型的12个月后衰退概率已列入待接入清单，尚未取得可核验的结构化数据前不显示概率值。模型采用10年期与3个月期国债利差，而非10Y−2Y；该指标不是纽约联储官方预测。<a href="https://www.newyorkfed.org/research/capital_markets/ycfaq.html" target="_blank" rel="noopener">官方说明</a></p><h2 style="margin-top:42px">核心PCE与美联储资产负债表</h2>
 <p class="muted">美国经济分析局核心PCE（经FRED镜像）与美联储H.4.1总资产（经FRED镜像）；两项均为最新修订观测，不等于历史首次发布版本。资产负债表规模不能单独衡量市场流动性。</p>
 <section class="grid" id="fed-bea" aria-label="核心PCE和联储资产负债表"></section>
+<h2 style="margin-top:42px">美联储流动性组件</h2>
+<p class="muted">银行准备金、美国财政部一般账户（TGA）为H.4.1周平均口径；隔夜逆回购为纽约联储每日操作余额。单位和观测时点不同，不能直接加减作为可靠的净流动性或市场买卖信号。</p>
+<section class="grid" id="liquidity-panel" aria-label="银行准备金、TGA、隔夜逆回购"></section>
 <h2 style="margin-top:42px">资产评分看板</h2>
 <div class="grid" id="assets"></div>
 <h2 style="margin-top:42px">数据质量与回测准备度</h2>
@@ -90,6 +93,26 @@ function showFedBea(data){
   c.append(l,b,n);return c;
  }));
 }
+function showLiquidity(data){
+ const root=document.querySelector("#liquidity-panel");
+ const list=[["银行准备金 WRESBAL","reserves",21,"百万美元"],
+             ["美国财政部TGA WTREGEN","tga",21,"百万美元"],
+             ["隔夜逆回购 RRPONTSYD","overnight_rrp",11,"十亿美元"]];
+ const today=Date.now();
+ root.replaceChildren(...list.map(([name,key,maxAge,unit])=>{
+  const r=((data.liquidity||{})[key])||{};
+  const d=/^\\d{4}-\\d{2}-\\d{2}$/.test(r.observation_date||"")?Date.parse(r.observation_date+"T00:00:00Z"):NaN;
+  const fresh=Number.isFinite(d)&&today>=d&&today-d<=maxAge*86400000;
+  const validUnit=unit==="十亿美元"?r.unit==="billions_usd":r.unit==="millions_usd";
+  const amount=fresh&&validUnit&&typeof r.value==="number"&&Number.isFinite(r.value)&&r.value>=0?r.value:null;
+  const article=document.createElement("article"),label=document.createElement("div"),big=document.createElement("div"),foot=document.createElement("div");
+  article.className="card";label.className="label";big.className="big";foot.className="label";
+  label.textContent=name;
+  big.textContent=amount===null?"暂无数据":amount.toLocaleString("en-US",{maximumFractionDigits:3})+" "+unit;
+  foot.textContent="观测日："+(r.observation_date||"未知")+" · "+(r.source||"来源待核实")+" · 不能单独衡量市场流动性";
+  article.append(label,big,foot);return article;
+ }));
+}
 show({});
 const auditStatus=document.querySelector("#price-audit-status"),auditGrid=document.querySelector("#price-audit");
 const auditNames={gold:"黄金",us_equities:"美股",us_long_bonds:"美国长期国债",usd:"美元",bitcoin:"比特币",oil:"原油"};
@@ -117,5 +140,5 @@ fetch("../data/asset-compass-history-readiness.json",{cache:"no-store"})
  document.querySelector("#archive-details").textContent=d.archived_observations?"这些是Ooglex实际首次采集到的数据及后续修订，不是历史官方首发版本。真实因子校准与跨经济周期回测尚未通过。":"已建立归档管道；首次成功定时采集后才会生成真实记录。综合评分仍保持关闭。";
 })
 .catch(()=>{document.querySelector("#archive-total").textContent="尚无归档记录";document.querySelector("#archive-details").textContent="没有可验证的历史归档；不发布未经验证的资产评分。";});
-fetch("../data/asset-scores.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("数据文件尚未生成");return r.json()}).then(d=>{if(!d||d.schema_version!==1)throw new Error("数据格式不匹配");show(d);showFedBea(d)}).catch(e=>status.textContent="数据暂不可用："+e.message+"。页面不会使用演示数值代替市场数据。");
+fetch("../data/asset-scores.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("数据文件尚未生成");return r.json()}).then(d=>{if(!d||d.schema_version!==1)throw new Error("数据格式不匹配");show(d);showFedBea(d);showLiquidity(d)}).catch(e=>status.textContent="数据暂不可用："+e.message+"。页面不会使用演示数值代替市场数据。");
 </script></body></html>
