@@ -23,12 +23,17 @@ jobs:
         run: python3 scripts/update_macro_nyfed.py
       - name: Evaluate guarded asset scoring model
         run: python3 scripts/score_macro_assets.py
+      - name: Archive first-seen macro observations (not original publication vintages)
+        run: python3 scripts/archive_asset_compass_observations.py
+      - name: Check historical archive readiness
+        run: python3 scripts/check_asset_compass_history_readiness.py
       - name: Commit verified snapshot when changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/asset-scores.json
+          git add data/asset-scores.json data/asset-compass-observation-ledger.jsonl data/asset-compass-history-readiness.json
           if ! git diff --cached --quiet; then
             git commit -m "data(macro): refresh official Treasury snapshot"
-            git push
+            git pull --rebase origin main
+            git push origin HEAD:main
           fi
