@@ -25,7 +25,7 @@ def parse_series(series):
     return dict(sorted(values.items()))
 
 def fetch():
-    payload=json.dumps({"seriesid":list(SERIES.values())}).encode("utf-8")
+    payload=json.dumps({"seriesid":list(SERIES.values()),"startyear":str(date.today().year-2),"endyear":str(date.today().year)}).encode("utf-8")
     req=urllib.request.Request(API,data=payload,headers={"Content-Type":"application/json","User-Agent":"OoglexResearch/1.0"},method="POST")
     with urllib.request.urlopen(req,timeout=35) as resp:
         data=json.load(resp)
@@ -36,6 +36,7 @@ def fetch():
         for key,expected in SERIES.items():
             if sid==expected:output[key]=parse_series(series)
     if set(output)!=set(SERIES):raise ValueError("BLS response missing series")
+    if len(output["cpi"])<13:raise ValueError("BLS CPI history shorter than 13 months")
     return output
 
 def calculate(raw,today=None):
@@ -63,6 +64,8 @@ def calculate(raw,today=None):
 
 def main():
     records=calculate(fetch())
+    if "yoy_percent" not in records["cpi"]:
+        raise ValueError("BLS CPI year-over-year cannot be calculated from official data")
     if not FILE.exists():raise RuntimeError("Treasury snapshot missing; run Treasury first")
     data=json.loads(FILE.read_text(encoding="utf-8"))
     if data.get("schema_version")!=1:raise ValueError("Unsupported macro schema")
