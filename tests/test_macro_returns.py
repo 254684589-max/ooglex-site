@@ -1,6 +1,6 @@
 import unittest
 from scripts.prepare_asset_compass_returns import extract_rows, research_returns
-from tests.test_macro_price_audit import history, crypto
+from test_macro_price_audit import history, crypto
 
 class PriceReturnResearchTests(unittest.TestCase):
     def test_coin_gecko_btc_independent_calendar(self):
