@@ -9,6 +9,10 @@ on:
       - 'scripts/build_asset_compass_history.py'
       - 'scripts/audit_asset_compass_prices.py'
       - 'scripts/prepare_asset_compass_returns.py'
+      - 'scripts/asset_compass_vintages.py'
+      - 'scripts/asset_compass_walkforward.py'
+      - 'macro/migrations/**'
+      - 'docs/ASSET_COMPASS_V9_POINT_IN_TIME.md'
       - 'macro/index.html'
       - '.github/workflows/deploy_protected_pages.yml'
       - 'apps/asset-tracker/history.json'
@@ -34,6 +38,9 @@ jobs:
         run: python3 -m compileall -q scripts tests
       - name: Unit tests without network
         run: python3 -m unittest discover -s tests -p 'test_macro_*.py' -v
+      - name: Verify SQLite point-in-time schema and OOS tests
+        run: |
+          python3 -m unittest discover -s tests -p 'test_macro_vintages.py' -v
       - name: Audit existing asset prices without claiming validated returns
         run: |
           python3 scripts/audit_asset_compass_prices.py --output /tmp/asset-compass-price-audit.json
