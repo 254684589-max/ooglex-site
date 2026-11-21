@@ -22,11 +22,16 @@ footer{font-size:12px;color:#8796a8;margin-top:32px}
 <section class="grid" id="metrics" aria-label="美国国债核心指标"></section>
 <h2 style="margin-top:42px">美国通胀与就业（BLS）</h2><section class="grid" id="labor"></section><h2 style="margin-top:42px">纽约联储货币政策指标</h2><section class="grid" id="policy"></section><h2 style="margin-top:42px">资产评分看板</h2>
 <div class="grid" id="assets"></div>
+<h2 style="margin-top:42px">历史回测与模型验证</h2>
+<div class="card"><div class="label">样本外验证状态</div><div class="big neutral" style="font-size:24px;margin:12px 0">尚未完成真实历史回测</div>
+<p>已建立可复现的研究工具：采用可用时间戳、21个交易日未来收益、按日期划分训练和测试区间，并排除训练集对测试期的未来信息依赖。数据未准备齐全时不发布胜率、模型收益率或经过校准的利多利空评分。</p>
+<p>回测需使用当时已经公开的宏观数据、合法取得的历史资产价格，并进一步进行多周期滚动样本外检验。评分不是上涨概率。</p>
+</div>
 <h2 style="margin-top:42px">计算方法与数据完整性</h2>
 <div class="card"><p>完整模型计划采用六大因子：利率、通胀、增长、流动性、金融风险和资产自身资金/估值。各资产权重不同，因子归一化后加权计算。<strong>尚未具备完整独立因子覆盖、校准和回测时，不发布完整综合评分或“利多/利空”结论</strong>。</p>
 <p>当前展示的是美国财政部、BLS与纽约联储的观测值与可用性状态；新增足够独立数据源并经过历史校准后，才会开启完整评分。10年期通胀补偿＝10年名义国债收益率－10年TIPS实际收益率；该数值不是纯粹的通胀预测。</p>
-<p>数据源：<a href="https://home.treasury.gov/treasury-daily-interest-rate-xml-feed" target="_blank" rel="noopener">美国财政部</a>、<a href="https://www.bls.gov/developers/" target="_blank" rel="noopener">美国劳工统计局</a>、<a href="https://www.newyorkfed.org/markets/reference-rates/effr" target="_blank" rel="noopener">纽约联储</a>。数据交易日更新，周末与节假日沿用最近公布日期；页面不宣称实时交易行情。</p></div>
-<footer>Ooglex Quant V1 · 研究用途 · 非投资建议 · 不把分数解释成上涨概率</footer>
+<p>数据源：<a href="https://home.treasury.gov/treasury-daily-interest-rate-xml-feed" target="_blank" rel="noopener">美国财政部</a>、<a href="https://www.bls.gov/developers/" target="_blank" rel="noopener">美国劳工统计局</a>、<a href="https://www.newyorkfed.org/markets/reference-rates/effr" target="_blank" rel="noopener">纽约联储</a>。数据源按交易日或官方发布日更新；采集任务延迟或失败时显示缺失/过期提示；页面不宣称实时交易行情。</p></div>
+<footer>Ooglex Quant V1 · 公开研究预览 · 研究用途 · 非投资建议 · 不把分数解释成上涨概率</footer>
 </main>
 <script>
 const root=document.querySelector("#metrics"),assets=document.querySelector("#assets"),status=document.querySelector("#status"),labor=document.querySelector("#labor"),policy=document.querySelector("#policy");
