@@ -14,7 +14,7 @@ from scripts.archive_asset_compass_observations import LEDGER,load,utc
 ROOT=Path(__file__).resolve().parents[1]
 OUTPUT=ROOT/"data"/"asset-compass-history-readiness.json"
 REQUIRED_SERIES={"treasury.us10y","treasury.real10y","treasury.us2y",
- "nyfed.effr","bls.cpi","bls.unemployment","bls.payroll"}
+ "nyfed.effr","bls.cpi","bls.core_cpi","bls.unemployment","bls.payroll"}
 
 def report(rows):
     groups=defaultdict(list)
