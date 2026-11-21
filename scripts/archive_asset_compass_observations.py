@@ -26,6 +26,9 @@ FIELDS={
  "bls.core_cpi":("bls","core_cpi","index"),
  "bea.core_pce":("bea","core_pce","index"),
  "fed_h41.total_assets":("fed_h41","total_assets","millions_usd"),
+ "liquidity.reserves":("liquidity","reserves","millions_usd"),
+ "liquidity.tga":("liquidity","tga","millions_usd"),
+ "liquidity.overnight_rrp":("liquidity","overnight_rrp","billions_usd"),
  "bls.unemployment":("bls","unemployment","percent"),
  "bls.payroll":("bls","payroll","thousands"),
 }
@@ -35,6 +38,7 @@ SOURCES={
  "bls":"U.S. Bureau of Labor Statistics",
  "bea":"U.S. Bureau of Economic Analysis (via FRED)",
  "fed_h41":"Federal Reserve Board H.4.1 (via FRED)",
+ "liquidity":"Federal Reserve system (via FRED)",
 }
 
 def utc(value):
@@ -61,6 +65,10 @@ def rows_from_snapshot(snapshot,first_seen_at):
         elif section=="bea":
             block=(snapshot.get("bea") or {}).get("core_pce") or {}
             value=block.get("value");observed=block.get("observation_period")
+            source_url=block.get("source_url","")
+        elif section=="liquidity":
+            block=(snapshot.get("liquidity") or {}).get(name) or {}
+            value=block.get("value");observed=block.get("observation_date")
             source_url=block.get("source_url","")
         elif section=="fed_h41":
             block=(snapshot.get("fed_h41") or {}).get("total_assets") or {}
