@@ -192,6 +192,27 @@
       "note": "Weekly Federal Reserve total assets level in millions USD. Not a standalone market liquidity measure. Bounded live FRED CSV source independently verified in GitHub Actions; timestamp is latest revised observation, not original release vintage."
     },
     {
+      "id": "fed_reserve_balances",
+      "source": "Federal Reserve Board H.4.1 via FRED (WRESBAL)",
+      "group": "liquidity",
+      "status": "integration_pending_live_verification",
+      "note": "Bank reserve balances, weekly average in millions USD; no synthetic net liquidity."
+    },
+    {
+      "id": "treasury_general_account",
+      "source": "Federal Reserve Board H.4.1 via FRED (WTREGEN)",
+      "group": "liquidity",
+      "status": "integration_pending_live_verification",
+      "note": "Treasury General Account, weekly average in millions USD; not comparable to a daily balance without matching dates."
+    },
+    {
+      "id": "overnight_reverse_repo",
+      "source": "Federal Reserve Bank of New York via FRED (RRPONTSYD)",
+      "group": "liquidity",
+      "status": "integration_pending_live_verification",
+      "note": "Daily overnight reverse repurchase operations, billions USD; zero is a valid published value."
+    },
+    {
       "id": "vix",
       "source": "Cboe",
       "group": "risk",
