@@ -60,11 +60,6 @@ def calculate(pce,walcl,today=None):
          "source_url":BASE+"WALCL",
          "original_source_url":"https://www.federalreserve.gov/releases/h41/",
          "source_series_id":"WALCL","release_timestamp_verified":False}
-    prev_dates=[d for d in walcl if d<=latest_walcl.replace(year=latest_walcl.year-1)]
-    if prev_dates:
-        p=max(prev_dates)
-        h41["year_prior_observation_date"]=p.isoformat()
-        h41["yoy_percent"]=round((walcl[latest_walcl]/walcl[p]-1)*100,3)
     return core,h41
 
 def fetch(series_id):
