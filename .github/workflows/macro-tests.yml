@@ -38,10 +38,12 @@ jobs:
           from pathlib import Path
           d=json.loads(Path('data/asset-scores.json').read_text())
           assert d['rates']['us10y'] is not None
-          assert d['bls']['series']['cpi']['yoy_percent'] is not None
+          assert d['bls']['series']['cpi']['value'] is not None
+          assert d['bls']['series']['unemployment']['value'] is not None
+          assert d['bls']['series']['payroll']['value'] is not None
           assert d['nyfed']['effr_percent'] is not None
           assert all(asset['score'] is None for asset in d['assets'].values())
-          print('Verified official records:',d['observation_date'],d['bls']['series']['cpi']['period'],d['nyfed']['observation_date'])
+          print('Verified official records:',d['observation_date'],d['bls']['series']['cpi']['period'],d['nyfed']['observation_date'],'CPI YoY available=',d['bls']['completeness']['cpi_yoy_available'])
           PY
       - name: Save verified official snapshot to this feature branch
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'feature/global-asset-score-v1'
