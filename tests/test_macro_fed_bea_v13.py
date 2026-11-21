@@ -2,7 +2,7 @@ import json
 import unittest
 from datetime import date
 from pathlib import Path
-from scripts.update_macro_fed_bea import parse_csv, calculate
+from scripts.update_macro_fed_bea import parse_csv, calculate, download_url
 from scripts.archive_asset_compass_observations import rows_from_snapshot
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -40,6 +40,33 @@ class FedBEAIntegrationTests(unittest.TestCase):
         rows=rows_from_snapshot(snap,"2026-11-22T03:00:00Z")
         self.assertEqual({r["series_id"] for r in rows},{"bea.core_pce","fed_h41.total_assets"})
         self.assertTrue(all(r["eligible_for_historical_official_vintage"] is False for r in rows))
+    def test_bounded_fred_requests(self):
+        p=download_url("PCEPILFE",date(2026,11,22))
+        h=download_url("WALCL",date(2026,11,22))
+        self.assertIn("cosd=2023-01-01",p)
+        self.assertIn("coed=2026-11-22",p)
+        self.assertIn("cosd=2025-01-01",h)
+        with self.assertRaisesRegex(ValueError,"Unknown"):
+            download_url("UNLICENSED",date(2026,11,22))
+    def test_source_outputs_are_independent_when_one_times_out(self):
+        from unittest.mock import patch
+        from tempfile import TemporaryDirectory
+        from scripts import update_macro_fed_bea as module
+        with TemporaryDirectory() as d:
+            output=Path(d)/"asset-scores.json"
+            output.write_text(json.dumps({"schema_version":1,"assets":{}}),encoding="utf-8")
+            pce={date(2025,10,1):130.,date(2026,10,1):134.}
+            with patch.object(module,"FILE",output),patch.object(module,"fetch",side_effect=[
+                (pce,"https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE"),
+                TimeoutError("H41 slow")
+            ]),patch.object(module,"date") as mocked_date:
+                mocked_date.today.return_value=date(2026,11,22)
+                mocked_date.side_effect=lambda *args:date(*args)
+                module.main()
+            data=json.loads(output.read_text(encoding="utf-8"))
+            self.assertIn("bea",data)
+            self.assertNotIn("fed_h41",data)
+            self.assertEqual(data["bea"]["core_pce"]["yoy_percent"],3.077)
     def test_ui_and_registry_definitions(self):
         cfg=json.loads((ROOT/"macro/model-config.json").read_text(encoding="utf-8"))
         vals={x["id"]:x for x in cfg["indicator_registry"]}
