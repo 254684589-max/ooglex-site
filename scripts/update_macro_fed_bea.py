@@ -10,6 +10,7 @@ import io
 import json
 import math
 import urllib.request
+import urllib.error
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -71,9 +72,15 @@ def fetch(series_id):
     return parse_csv(body,series_id),url
 
 def main():
-    core,_=fetch("PCEPILFE")
-    assets,_=fetch("WALCL")
-    pce,h41=calculate(core,assets)
+    try:
+        core,_=fetch("PCEPILFE")
+        assets,_=fetch("WALCL")
+        pce,h41=calculate(core,assets)
+    except (OSError, TimeoutError, urllib.error.URLError, ValueError) as exc:
+        # Optional external feed: don't break Treasury/BLS/NYFed ingestion.
+        # Never insert stale/default values after a network failure.
+        print("PENDING_EXTERNAL_SOURCE_VALIDATION:",type(exc).__name__,str(exc))
+        return False
     if not FILE.is_file():raise ValueError("Treasury snapshot missing")
     data=json.loads(FILE.read_text(encoding="utf-8"))
     if data.get("schema_version")!=1:raise ValueError("Invalid macro snapshot schema")
@@ -82,4 +89,5 @@ def main():
     data["generated_at"]=datetime.now(timezone.utc).isoformat()
     FILE.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("BEA core PCE:",pce["observation_period"],"Fed H41:",h41["observation_date"])
+    return True
 if __name__=="__main__":main()
