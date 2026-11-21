@@ -7,6 +7,8 @@ on:
       - 'scripts/update_macro_nyfed.py'
       - 'scripts/backtest_asset_compass.py'
       - 'scripts/build_asset_compass_history.py'
+      - 'scripts/audit_asset_compass_prices.py'
+      - 'apps/asset-tracker/history.json'
       - 'scripts/score_macro_assets.py'
       - 'macro/model-config.json'
       - 'tests/test_macro_*.py'
@@ -28,6 +30,19 @@ jobs:
         run: python3 -m compileall -q scripts tests
       - name: Unit tests without network
         run: python3 -m unittest discover -s tests -p 'test_macro_*.py' -v
+      - name: Audit existing asset prices without claiming validated returns
+        run: |
+          python3 scripts/audit_asset_compass_prices.py --output /tmp/asset-compass-price-audit.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/asset-compass-price-audit.json').read_text())
+          assert r['report_type']=='price_coverage_audit'
+          assert r['validated_for_live_scoring'] is False
+          assert r['licensing_review_required'] is True
+          assert all(not a['eligible_for_return_backtest'] for a in r['assets'].values())
+          print('Asset coverage verified:',{k:v['observation_count'] for k,v in r['assets'].items()})
+          PY
       - name: Verify actual Treasury, BLS and NY Fed feeds
         run: |
           python3 scripts/update_asset_scores.py
