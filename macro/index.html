@@ -20,7 +20,8 @@ footer{font-size:12px;color:#8796a8;margin-top:32px}
 <p>以官方宏观数据为基础，逐步构建黄金、美股、美债、美元、比特币与原油的因子评分。当前版本验证美国国债收益率、通胀、就业与纽约联储政策利率，不伪造尚未接入的数据。</p>
 <div class="note" id="status" role="status">正在读取最新数据……</div>
 <section class="grid" id="metrics" aria-label="美国国债核心指标"></section>
-<h2 style="margin-top:42px">美国通胀与就业（BLS）</h2><section class="grid" id="labor"></section><p id="cpi-note" class="muted" style="font-size:13px" aria-live="polite"></p><h2 style="margin-top:42px">纽约联储货币政策指标</h2><section class="grid" id="policy"></section><p class="muted" style="font-size:13px">纽约联储收益率曲线模型的12个月后衰退概率已列入待接入清单，尚未取得可核验的结构化数据前不显示概率值。模型采用10年期与3个月期国债利差，而非10Y−2Y；该指标不是纽约联储官方预测。<a href="https://www.newyorkfed.org/research/capital_markets/ycfaq.html" target="_blank" rel="noopener">官方说明</a></p><h2 style="margin-top:42px">核心PCE与美联储资产负债表</h2>
+<h2 style="margin-top:42px">美国通胀与就业（BLS）</h2><section class="grid" id="labor"></section><p id="cpi-note" class="muted" style="font-size:13px" aria-live="polite"></p><h2 style="margin-top:42px">纽约联储货币政策指标</h2><section class="grid" id="policy"></section><p class="muted" style="font-size:13px">纽约联储期限结构模型预测的是“12个月后的某个月份”的衰退概率，不是未来12个月任意时间发生衰退的累计概率。模型采用10年期与3个月期国债利差，而非10Y−2Y；该指标不是纽约联储官方预测。<a href="https://www.newyorkfed.org/research/capital_markets/ycfaq.html" target="_blank" rel="noopener">官方说明</a></p><section class="grid" id="nyfed-recession" aria-label="纽约联储12个月后衰退概率"></section>
+<h2 style="margin-top:42px">核心PCE与美联储资产负债表</h2>
 <p class="muted">美国经济分析局核心PCE（经FRED镜像）与美联储H.4.1总资产（经FRED镜像）；两项均为最新修订观测，不等于历史首次发布版本。资产负债表规模不能单独衡量市场流动性。</p>
 <section class="grid" id="fed-bea" aria-label="核心PCE和联储资产负债表"></section>
 <h2 style="margin-top:42px">美联储流动性组件</h2>
@@ -93,6 +94,23 @@ function showFedBea(data){
   c.append(l,b,n);return c;
  }));
 }
+function showRecession(data){
+ const root=document.querySelector("#nyfed-recession");
+ const model=data.nyfed_recession_model||{};
+ const now=new Date();
+ const o=/^\d{4}-\d{2}$/.test(model.observation_period||"")?model.observation_period:null;
+ const t=/^\d{4}-\d{2}$/.test(model.target_period||"")?model.target_period:null;
+ const dateIndex=s=>{const [y,m]=s.split("-").map(Number);return y*12+m};
+ const valid=o&&t&&dateIndex(t)-dateIndex(o)===12;
+ const age=valid?now.getUTCFullYear()*12+now.getUTCMonth()+1-dateIndex(o):NaN;
+ const prob=valid&&age>=0&&age<=4&&model.source==="Federal Reserve Bank of New York"&&typeof model.probability_percent==="number"&&Number.isFinite(model.probability_percent)&&model.probability_percent>=0&&model.probability_percent<=100?model.probability_percent:null;
+ const article=document.createElement("article"),label=document.createElement("div"),big=document.createElement("div"),foot=document.createElement("div");
+ article.className="card";label.className="label";big.className="big";foot.className="label";
+ label.textContent="纽约联储收益率曲线模型 · 12个月后衰退概率";
+ big.textContent=prob===null?"暂无数据":prob.toFixed(2)+"%";
+ foot.textContent="利差观察期："+(o||"未验证")+" · 预测目标月份："+(t||"未验证")+" · 模型概率，非官方预测";
+ article.append(label,big,foot);root.replaceChildren(article);
+}
 function showLiquidity(data){
  const root=document.querySelector("#liquidity-panel");
  const list=[["银行准备金 WRESBAL","reserves",21,"百万美元"],
@@ -140,5 +158,5 @@ fetch("../data/asset-compass-history-readiness.json",{cache:"no-store"})
  document.querySelector("#archive-details").textContent=d.archived_observations?"这些是Ooglex实际首次采集到的数据及后续修订，不是历史官方首发版本。真实因子校准与跨经济周期回测尚未通过。":"已建立归档管道；首次成功定时采集后才会生成真实记录。综合评分仍保持关闭。";
 })
 .catch(()=>{document.querySelector("#archive-total").textContent="尚无归档记录";document.querySelector("#archive-details").textContent="没有可验证的历史归档；不发布未经验证的资产评分。";});
-fetch("../data/asset-scores.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("数据文件尚未生成");return r.json()}).then(d=>{if(!d||d.schema_version!==1)throw new Error("数据格式不匹配");show(d);showFedBea(d);showLiquidity(d)}).catch(e=>status.textContent="数据暂不可用："+e.message+"。页面不会使用演示数值代替市场数据。");
+fetch("../data/asset-scores.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("数据文件尚未生成");return r.json()}).then(d=>{if(!d||d.schema_version!==1)throw new Error("数据格式不匹配");show(d);showFedBea(d);showLiquidity(d);showRecession(d)}).catch(e=>status.textContent="数据暂不可用："+e.message+"。页面不会使用演示数值代替市场数据。");
 </script></body></html>
