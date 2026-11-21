@@ -11,6 +11,7 @@ import json
 import math
 import urllib.request
 import urllib.error
+from urllib.parse import urlencode
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -63,31 +64,66 @@ def calculate(pce,walcl,today=None):
          "source_series_id":"WALCL","release_timestamp_verified":False}
     return core,h41
 
+def download_url(series_id,today=None):
+    today=today or date.today()
+    if series_id not in ("PCEPILFE","WALCL"):raise ValueError("Unknown public series")
+    # Core PCE requires prior-year month for YoY. Avoid requesting ~60 years
+    # of history from the graph renderer on every scheduled refresh.
+    years=3 if series_id=="PCEPILFE" else 1
+    since=date(today.year-years,1,1)
+    return "https://fred.stlouisfed.org/graph/fredgraph.csv?"+urlencode(
+        {"id":series_id,"cosd":since.isoformat(),"coed":today.isoformat()})
+
 def fetch(series_id):
-    url=BASE+series_id
-    req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0 OoglexResearch/1.0"})
-    with urllib.request.urlopen(req,timeout=40) as r:
-        body=r.read(9000000).decode("utf-8-sig")
+    url=download_url(series_id)
+    req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0 OoglexResearch/1.0","Accept":"text/csv"})
+    with urllib.request.urlopen(req,timeout=25) as r:
+        body=r.read(1500000).decode("utf-8-sig")
     if "<html" in body.lower()[:100]:raise ValueError("Unexpected HTML response")
     return parse_csv(body,series_id),url
 
 def main():
-    try:
-        core,_=fetch("PCEPILFE")
-        assets,_=fetch("WALCL")
-        pce,h41=calculate(core,assets)
-    except (OSError, TimeoutError, urllib.error.URLError, ValueError) as exc:
-        # Optional external feed: don't break Treasury/BLS/NYFed ingestion.
-        # Never insert stale/default values after a network failure.
-        print("PENDING_EXTERNAL_SOURCE_VALIDATION:",type(exc).__name__,str(exc))
-        return False
     if not FILE.is_file():raise ValueError("Treasury snapshot missing")
     data=json.loads(FILE.read_text(encoding="utf-8"))
     if data.get("schema_version")!=1:raise ValueError("Invalid macro snapshot schema")
-    data["bea"]={"core_pce":pce,"retrieved_at":datetime.now(timezone.utc).isoformat()}
-    data["fed_h41"]={"total_assets":h41,"retrieved_at":datetime.now(timezone.utc).isoformat()}
-    data["generated_at"]=datetime.now(timezone.utc).isoformat()
-    FILE.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    print("BEA core PCE:",pce["observation_period"],"Fed H41:",h41["observation_date"])
-    return True
+    now=datetime.now(timezone.utc).isoformat()
+    results={}
+    errors={}
+    for sid in ("PCEPILFE","WALCL"):
+        try:
+            rows,url=fetch(sid)
+            # Reuse authoritative formula and freshness checks for each source
+            # independently; do not discard valid H41 when BEA download fails.
+            if sid=="PCEPILFE":
+                most_recent=max(rows)
+                if (date.today().year-most_recent.year)*12+date.today().month-most_recent.month>4:
+                    raise ValueError("Core PCE source stale")
+                level=rows[most_recent]
+                older=rows.get(date(most_recent.year-1,most_recent.month,1))
+                result={"observation_period":most_recent.strftime("%Y-%m"),"value":level,
+                  "unit":"index","source":"Bureau of Economic Analysis via FRED","source_url":url,
+                  "original_source_url":"https://www.bea.gov/data/personal-consumption-expenditures-price-index",
+                  "source_series_id":sid,"release_timestamp_verified":False}
+                if older and older>0:result["yoy_percent"]=round((level/older-1)*100,3)
+                else:result["yoy_unavailable_reason"]="official_reference_month_missing"
+                results["bea"]={"core_pce":result,"retrieved_at":now}
+            else:
+                latest=max(rows)
+                if (date.today()-latest).days>21:raise ValueError("Fed H.4.1 source stale")
+                results["fed_h41"]={"total_assets":{
+                  "observation_date":latest.isoformat(),"value_millions_usd":rows[latest],
+                  "unit":"millions_usd","source":"Federal Reserve Board H.4.1 via FRED",
+                  "source_url":url,"original_source_url":"https://www.federalreserve.gov/releases/h41/",
+                  "source_series_id":sid,"release_timestamp_verified":False},"retrieved_at":now}
+            print("VERIFIED_OFFICIAL_MIRROR:",sid,url)
+        except (OSError,TimeoutError,urllib.error.URLError,ValueError) as exc:
+            errors[sid]=type(exc).__name__
+            print("PENDING_EXTERNAL_SOURCE_VALIDATION:",sid,type(exc).__name__,str(exc))
+    if results:
+        data.update(results)
+        data["generated_at"]=now
+        FILE.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    print("Source status:",{"verified":list(results),"pending":errors})
+    return results
+
 if __name__=="__main__":main()
