@@ -8,6 +8,8 @@ on:
       - 'scripts/backtest_asset_compass.py'
       - 'scripts/build_asset_compass_history.py'
       - 'scripts/audit_asset_compass_prices.py'
+      - 'macro/index.html'
+      - '.github/workflows/deploy_protected_pages.yml'
       - 'apps/asset-tracker/history.json'
       - 'scripts/score_macro_assets.py'
       - 'macro/model-config.json'
