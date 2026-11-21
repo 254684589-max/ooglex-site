@@ -122,7 +122,7 @@ def main():
     if results:
         data.update(results)
         data["generated_at"]=now
-        FILE.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+        FILE.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("Source status:",{"verified":list(results),"pending":errors})
     return results
 
