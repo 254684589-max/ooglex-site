@@ -47,7 +47,8 @@ def rows_from_snapshot(snapshot,first_seen_at):
         if section=="rates":
             value=(snapshot.get("rates") or {}).get(name)
             observed=snapshot.get("observation_date")
-            source_url=next((u for u in snapshot.get("source_urls",[]) if isinstance(u,str) and u.startswith("https://home.treasury.gov/")),"")
+            source_type="daily_treasury_real_yield_curve" if name=="real10y" else "daily_treasury_yield_curve"
+            source_url=next((u for u in snapshot.get("source_urls",[]) if isinstance(u,str) and u.startswith("https://home.treasury.gov/") and "type="+source_type+"&" in u),"")
         elif section=="nyfed":
             block=snapshot.get("nyfed") or {}
             value=block.get(name);observed=block.get("observation_date")
