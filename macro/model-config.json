@@ -192,6 +192,27 @@
       "note": "Weekly Federal Reserve total assets level in millions USD. Not a standalone market liquidity measure. Bounded live FRED CSV source independently verified in GitHub Actions; timestamp is latest revised observation, not original release vintage."
     },
     {
+      "id": "fed_reserve_balances",
+      "source": "Federal Reserve Board H.4.1 via FRED (WRESBAL)",
+      "group": "liquidity",
+      "status": "implemented",
+      "note": "Bank reserve balances, weekly average in millions USD; no synthetic net liquidity. V15 GitHub Actions verified the official current observations; not an archived first-release vintage and not certified as an investment signal."
+    },
+    {
+      "id": "treasury_general_account",
+      "source": "Federal Reserve Board H.4.1 via FRED (WTREGEN)",
+      "group": "liquidity",
+      "status": "implemented",
+      "note": "Treasury General Account, weekly average in millions USD; not comparable to a daily balance without matching dates. V15 GitHub Actions verified the official current observations; not an archived first-release vintage and not certified as an investment signal."
+    },
+    {
+      "id": "overnight_reverse_repo",
+      "source": "Federal Reserve Bank of New York via FRED (RRPONTSYD)",
+      "group": "liquidity",
+      "status": "implemented",
+      "note": "Daily overnight reverse repurchase operations, billions USD; zero is a valid published value. V15 GitHub Actions verified the official current observations; not an archived first-release vintage and not certified as an investment signal."
+    },
+    {
       "id": "vix",
       "source": "Cboe",
       "group": "risk",
@@ -237,8 +258,8 @@
       "id": "nyfed_recession_probability_12m",
       "source": "Federal Reserve Bank of New York",
       "group": "growth",
-      "status": "planned_source_format_review",
-      "note": "Official yield-curve probit indicator based on 10-year minus 3-month Treasury spread; monthly. Not an official forecast and not equivalent to probability of any recession within next 12 months. No fabricated values."
+      "status": "implemented",
+      "note": "Official yield-curve probit indicator based on 10-year minus 3-month Treasury spread; monthly. Not an official forecast and not equivalent to probability of any recession within next 12 months. No fabricated values. V15 GitHub Actions verified the official current observations; not an archived first-release vintage and not certified as an investment signal."
     }
   ]
 }
