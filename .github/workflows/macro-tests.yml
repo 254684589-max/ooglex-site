@@ -13,6 +13,8 @@ on:
       - 'scripts/asset_compass_walkforward.py'
       - 'scripts/archive_asset_compass_observations.py'
       - 'scripts/check_asset_compass_history_readiness.py'
+      - 'scripts/audit_asset_compass_oos_evidence.py'
+      - 'docs/ASSET_COMPASS_V11_EVIDENCE_GATE.md'
       - '.github/workflows/macro-treasury.yml'
       - 'macro/migrations/**'
       - 'docs/ASSET_COMPASS_V9_POINT_IN_TIME.md'
@@ -44,6 +46,19 @@ jobs:
       - name: Verify SQLite point-in-time schema and OOS tests
         run: |
           python3 -m unittest discover -s tests -p 'test_macro_vintages.py' -v
+      - name: Verify independent research evidence gate is locked
+        run: |
+          python3 -m unittest discover -s tests -p 'test_macro_oos_evidence.py' -v
+          python3 - <<'PY'
+          import json
+          from scripts.audit_asset_compass_oos_evidence import inspect_evidence
+          report={"report_type":"expanding_window_research_diagnostic","results":{}}
+          result=inspect_evidence(report,{})
+          assert result["validated_for_live_scoring"] is False
+          assert result["oos_backtest_certified"] is False
+          assert result["data_license_certified"] is False
+          print("Independent evidence review remains locked")
+          PY
       - name: Audit existing asset prices without claiming validated returns
         run: |
           python3 scripts/audit_asset_compass_prices.py --output /tmp/asset-compass-price-audit.json
