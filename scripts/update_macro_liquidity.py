@@ -16,7 +16,7 @@ import urllib.error
 import urllib.request
 from datetime import date, datetime, timezone
 from pathlib import Path
-from scripts.update_macro_fed_bea import download_url, FILE
+from scripts.update_macro_fed_bea import FILE
 
 SOURCES={
     "reserves":("WRESBAL","millions_usd",21,"Federal Reserve Board H.4.1"),
