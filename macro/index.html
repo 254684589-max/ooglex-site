@@ -23,7 +23,7 @@ footer{font-size:12px;color:#8796a8;margin-top:32px}
 <h2 style="margin-top:42px">美国通胀与就业（BLS）</h2><section class="grid" id="labor"></section><p id="cpi-note" class="muted" style="font-size:13px" aria-live="polite"></p><h2 style="margin-top:42px">纽约联储货币政策指标</h2><section class="grid" id="policy"></section><h2 style="margin-top:42px">资产评分看板</h2>
 <div class="grid" id="assets"></div>
 <h2 style="margin-top:42px">数据质量与回测准备度</h2>
-<p class="muted">此处仅报告站内历史行情的覆盖情况，不是收益率回测或投资信号。期货、指数和ETF价格尚未统一总回报口径。</p>
+<p class="muted">此处仅报告站内历史行情的覆盖情况，不是收益率回测或投资信号。比特币复用CoinGecko日度行情，其日期轴与其他Yahoo行情独立；期货、指数和ETF尚未统一总回报口径。</p>
 <div class="note" id="price-audit-status" role="status">正在检查历史行情覆盖率……</div>
 <section class="grid" id="price-audit" aria-label="六类资产历史行情覆盖率"></section>
 <h2 style="margin-top:42px">历史回测与模型验证</h2>
@@ -74,7 +74,7 @@ fetch("../data/asset-compass-price-audit.json",{cache:"no-store"})
   article.className="card";label.className="label";big.className="big";note.className="label";
   label.textContent=name+" · "+(item.symbol||"无行情代码");
   big.textContent=item.status==="missing"?"历史数据缺失":typeof item.observation_count==="number"?item.observation_count+" 条":"待核实";
-  note.textContent=item.status==="missing"?"尚无可用日线序列":"日期覆盖 "+(item.coverage_percent??"未知")+"% · 不构成合格回测总回报";
+  note.textContent=item.status==="missing"?"尚无可用日线序列":"日期覆盖 "+(item.coverage_percent??"未知")+"% · "+(item.source||report.source||"来源待核实")+" · "+(item.last_observation||"日期未知")+" · 尚未验证收益口径";
   article.append(label,big,note);auditGrid.append(article);
  }
 })
