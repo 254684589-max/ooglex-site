@@ -12,7 +12,7 @@ def diagnostic(n=8,overlap=False):
         end=f"{year}-04-01"
         folds.append({"active_signal_count":12,
           "test_first_entry":start,"test_last_entry":end,
-          "training_last_label_exit":f"{year-1}-12-01",
+          "training_last_label_exit":"2015-12-01" if overlap else f"{year-1}-12-01",
           "directional_accuracy":.5,"constant_long_accuracy":.5})
     return {"report_type":"expanding_window_research_diagnostic",
             "results":{"gold":{"status":"research_diagnostic_not_validated","folds":folds}}}
