@@ -89,6 +89,8 @@ jobs:
           d=json.loads(Path('data/asset-scores.json').read_text())
           assert d['rates']['us10y'] is not None
           assert d['bls']['series']['cpi']['value'] is not None
+          assert d['bls']['series']['core_cpi']['value'] is not None
+          assert d['bls']['series']['core_cpi']['unit']=='index'
           assert d['bls']['series']['unemployment']['value'] is not None
           assert d['bls']['series']['payroll']['value'] is not None
           assert d['nyfed']['effr_percent'] is not None
@@ -107,6 +109,7 @@ jobs:
           result=json.loads(Path('/tmp/macro-readiness.json').read_text())
           assert len(archive)>=8 and len(archive)==len({(r['series_id'],r['observation_period']) for r in archive})
           assert all(r['official_release_time_known'] is False for r in archive)
+          assert any(r['series_id']=='bls.core_cpi' for r in archive)
           assert result['validated_for_live_scoring'] is False
           assert result['eligible_for_point_in_time_backtest'] is False
           print('First-seen archived macro observations verified:',len(archive))
