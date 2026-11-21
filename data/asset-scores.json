@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "observation_date": "2026-11-20",
+  "generated_at": "2026-11-21T17:10:30.172385+00:00",
+  "status": "partial_data_no_full_score",
+  "source": "US Department of the Treasury",
+  "source_urls": [
+    "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
+    "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_real_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
+    "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page=&_format=csv",
+    "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_real_yield_curve&field_tdr_date_value=2026&page=&_format=csv"
+  ],
+  "rates": {
+    "us10y": 4.92,
+    "us2y": 4.63,
+    "real10y": 2.77,
+    "breakeven10y": 2.15,
+    "spread10y2y": 0.29
+  },
+  "assets": {
+    "gold": {
+      "score": null,
+      "label": null,
+      "status": "unavailable",
+      "coverage_pct": 0,
+      "covered_factors": [],
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "us_equities": {
+      "score": null,
+      "label": null,
+      "status": "unavailable",
+      "coverage_pct": 0,
+      "covered_factors": [],
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "us_long_bonds": {
+      "score": null,
+      "label": null,
+      "status": "unavailable",
+      "coverage_pct": 0,
+      "covered_factors": [],
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "usd": {
+      "score": null,
+      "label": null,
+      "status": "unavailable",
+      "coverage_pct": 0,
+      "covered_factors": [],
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "bitcoin": {
+      "score": null,
+      "label": null,
+      "status": "unavailable",
+      "coverage_pct": 0,
+      "covered_factors": [],
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "oil": {
+      "score": null,
+      "label": null,
+      "status": "unavailable",
+      "coverage_pct": 0,
+      "covered_factors": [],
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    }
+  },
+  "bls": {
+    "series": {
+      "cpi": {
+        "period": "2026-10",
+        "value": 337.476,
+        "unit": "index",
+        "source": "BLS",
+        "yoy_unavailable_reason": "BLS did not publish October 2025 CPI because of the federal shutdown"
+      },
+      "unemployment": {
+        "period": "2026-10",
+        "value": 4.1,
+        "unit": "percent",
+        "source": "BLS"
+      },
+      "payroll": {
+        "period": "2026-10",
+        "value": 159293.0,
+        "unit": "thousands",
+        "source": "BLS",
+        "monthly_change_thousands": 165.0
+      }
+    },
+    "completeness": {
+      "cpi_yoy_available": false,
+      "payroll_delta_available": true
+    },
+    "retrieved_at": "2026-11-21T17:10:29.899892+00:00",
+    "source_url": "https://api.bls.gov/publicAPI/v1/timeseries/data/",
+    "note": "Preliminary data may be revised by BLS."
+  },
+  "nyfed": {
+    "observation_date": "2026-11-19",
+    "effr_percent": 3.88,
+    "target_range_lower": 3.75,
+    "target_range_upper": 4.0,
+    "source": "Federal Reserve Bank of New York",
+    "source_url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/last/10.json"
+  },
+  "scoring": {
+    "model": "ooglex-macro-v1-precalibration",
+    "generated_at": "2026-11-21T17:10:30.193282+00:00",
+    "calibration_verified": false,
+    "out_of_sample_verified": false
+  }
+}

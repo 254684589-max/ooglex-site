@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "model": "ooglex-macro-v1-precalibration",
+  "score_range": [
+    0,
+    100
+  ],
+  "factor_signal_range": [
+    -1,
+    1
+  ],
+  "factor_order": [
+    "rates",
+    "inflation",
+    "growth",
+    "liquidity",
+    "risk",
+    "asset_specific"
+  ],
+  "weights": {
+    "gold": [
+      30,
+      10,
+      5,
+      20,
+      20,
+      15
+    ],
+    "us_equities": [
+      20,
+      10,
+      25,
+      15,
+      10,
+      20
+    ],
+    "us_long_bonds": [
+      35,
+      20,
+      25,
+      5,
+      10,
+      5
+    ],
+    "usd": [
+      35,
+      10,
+      20,
+      20,
+      10,
+      5
+    ],
+    "bitcoin": [
+      15,
+      5,
+      10,
+      30,
+      20,
+      20
+    ],
+    "oil": [
+      5,
+      10,
+      35,
+      10,
+      10,
+      30
+    ]
+  },
+  "scoring_rule": "50 + 50 * sum(weight_percent / 100 * asset_specific_factor_signal)",
+  "guardrails": {
+    "minimum_factor_groups": 5,
+    "minimum_weight_coverage_percent": 85,
+    "require_historical_calibration": true,
+    "require_out_of_sample_validation": true,
+    "stale_source_fails_closed": true,
+    "do_not_treat_score_as_probability": true
+  },
+  "tiers": [
+    {
+      "range": [
+        0,
+        29
+      ],
+      "label": "强利空"
+    },
+    {
+      "range": [
+        30,
+        44
+      ],
+      "label": "偏空"
+    },
+    {
+      "range": [
+        45,
+        64
+      ],
+      "label": "中性"
+    },
+    {
+      "range": [
+        65,
+        79
+      ],
+      "label": "偏多"
+    },
+    {
+      "range": [
+        80,
+        100
+      ],
+      "label": "强利多"
+    }
+  ],
+  "indicator_registry": [
+    {
+      "id": "treasury_10y",
+      "source": "US Treasury",
+      "group": "rates",
+      "status": "implemented"
+    },
+    {
+      "id": "treasury_2y",
+      "source": "US Treasury",
+      "group": "rates",
+      "status": "implemented"
+    },
+    {
+      "id": "tips_real_10y",
+      "source": "US Treasury",
+      "group": "rates",
+      "status": "implemented"
+    },
+    {
+      "id": "breakeven_10y",
+      "source": "calculated",
+      "group": "inflation",
+      "status": "implemented"
+    },
+    {
+      "id": "curve_10y_2y",
+      "source": "calculated",
+      "group": "rates",
+      "status": "implemented"
+    },
+    {
+      "id": "cpi_yoy",
+      "source": "BLS",
+      "group": "inflation",
+      "status": "implemented"
+    },
+    {
+      "id": "unemployment",
+      "source": "BLS",
+      "group": "growth",
+      "status": "implemented"
+    },
+    {
+      "id": "nonfarm_payroll_change",
+      "source": "BLS",
+      "group": "growth",
+      "status": "implemented"
+    },
+    {
+      "id": "core_pce",
+      "source": "BEA",
+      "group": "inflation",
+      "status": "planned"
+    },
+    {
+      "id": "fed_funds",
+      "source": "Federal Reserve Bank of New York (EFFR)",
+      "group": "rates",
+      "status": "implemented",
+      "note": "EFFR observed rate, not target rate; freshness gate 10 calendar days"
+    },
+    {
+      "id": "fed_balance_sheet",
+      "source": "Federal Reserve",
+      "group": "liquidity",
+      "status": "planned"
+    },
+    {
+      "id": "vix",
+      "source": "Cboe",
+      "group": "risk",
+      "status": "planned_license_review"
+    },
+    {
+      "id": "credit_spreads",
+      "source": "ICE BofA",
+      "group": "risk",
+      "status": "planned_license_review"
+    },
+    {
+      "id": "dollar_index",
+      "source": "ICE",
+      "group": "liquidity",
+      "status": "planned_license_review"
+    },
+    {
+      "id": "ism_pmi",
+      "source": "ISM",
+      "group": "growth",
+      "status": "planned_license_review"
+    },
+    {
+      "id": "gold_cot",
+      "source": "CFTC",
+      "group": "asset_specific",
+      "status": "planned"
+    },
+    {
+      "id": "equity_valuation",
+      "source": "S&P DJI",
+      "group": "asset_specific",
+      "status": "planned_license_review"
+    },
+    {
+      "id": "gold_reserves",
+      "source": "IMF/WGC",
+      "group": "asset_specific",
+      "status": "planned_license_review"
+    }
+  ]
+}
