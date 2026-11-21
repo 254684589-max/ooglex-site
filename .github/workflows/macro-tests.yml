@@ -6,6 +6,7 @@ on:
       - 'scripts/update_macro_bls.py'
       - 'scripts/update_macro_nyfed.py'
       - 'scripts/update_macro_fed_bea.py'
+      - 'scripts/update_macro_liquidity.py'
       - 'scripts/backtest_asset_compass.py'
       - 'scripts/build_asset_compass_history.py'
       - 'scripts/audit_asset_compass_prices.py'
@@ -120,6 +121,29 @@ jobs:
                   print("SOURCE NOT VERIFIED:",symbol,"No inferred values")
           assert all(a["score"] is None for a in d["assets"].values())
           PY
+      - name: Verify live reserve balances TGA and overnight RRP separately
+        run: |
+          python3 -m scripts.update_macro_liquidity
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("data/asset-scores.json").read_text())
+          l=d.get("liquidity") or {}
+          for key,symbol,units in (
+            ("reserves","WRESBAL","millions_usd"),
+            ("tga","WTREGEN","millions_usd"),
+            ("overnight_rrp","RRPONTSYD","billions_usd")
+          ):
+            if key in l:
+              r=l[key]
+              assert r["source_series_id"]==symbol and r["unit"]==units
+              assert r["release_timestamp_verified"] is False
+              assert r["value"]>=0 and "cosd=" in r["source_url"]
+              print("VERIFIED LIQUIDITY SOURCE:",symbol,r["observation_date"],r["value"],units)
+            else:
+              print("SOURCE NOT VERIFIED:",symbol)
+          assert all(a["score"] is None for a in d["assets"].values())
+          PY
       - name: Verify immutable first-seen archival and fail-closed readiness
         run: |
           python3 -m scripts.archive_asset_compass_observations --snapshot data/asset-scores.json --ledger /tmp/macro-observations.jsonl
@@ -133,6 +157,9 @@ jobs:
           assert len(archive)>=8 and len(archive)==len({(r['series_id'],r['observation_period']) for r in archive})
           assert all(r['official_release_time_known'] is False for r in archive)
           assert any(r['series_id']=='bls.core_cpi' for r in archive)
+          for key in ('reserves','tga','overnight_rrp'):
+              if key in json.loads(Path('data/asset-scores.json').read_text()).get('liquidity',{}):
+                  assert any(r['series_id']=='liquidity.'+key for r in archive)
           if "bea" in json.loads(Path("data/asset-scores.json").read_text()):
               assert any(r['series_id']=='bea.core_pce' for r in archive)
               assert any(r['series_id']=='fed_h41.total_assets' for r in archive)
