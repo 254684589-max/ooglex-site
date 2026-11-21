@@ -7,6 +7,7 @@ on:
       - 'scripts/update_macro_nyfed.py'
       - 'scripts/update_macro_fed_bea.py'
       - 'scripts/update_macro_liquidity.py'
+      - 'scripts/inspect_nyfed_recession_workbook.py'
       - 'scripts/backtest_asset_compass.py'
       - 'scripts/build_asset_compass_history.py'
       - 'scripts/audit_asset_compass_prices.py'
@@ -121,6 +122,10 @@ jobs:
                   print("SOURCE NOT VERIFIED:",symbol,"No inferred values")
           assert all(a["score"] is None for a in d["assets"].values())
           PY
+      - name: Inspect official New York Fed monthly recession probability workbook (diagnostic only)
+        run: |
+          python3 -m pip install -q xlrd==2.0.2
+          python3 -m scripts.inspect_nyfed_recession_workbook
       - name: Verify live reserve balances TGA and overnight RRP separately
         run: |
           python3 -m scripts.update_macro_liquidity
