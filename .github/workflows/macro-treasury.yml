@@ -13,8 +13,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Run macro parsing unit tests
+        run: python3 -m unittest discover -s tests -p 'test_macro_pipeline.py' -v
       - name: Download official Treasury yields and validate
         run: python3 scripts/update_asset_scores.py
+      - name: Download BLS CPI and labor-market observations
+        run: python3 scripts/update_macro_bls.py
       - name: Commit verified snapshot when changed
         run: |
           git config user.name "github-actions[bot]"
