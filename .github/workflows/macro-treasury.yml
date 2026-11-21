@@ -1,4 +1,4 @@
-name: Ooglex Macro Treasury Snapshot
+name: Ooglex Macro Official Data Pipeline
 on:
   schedule:
     - cron: '40 23 * * 1-5'
@@ -14,11 +14,15 @@ jobs:
         with:
           python-version: '3.12'
       - name: Run macro parsing unit tests
-        run: python3 -m unittest discover -s tests -p 'test_macro_pipeline.py' -v
+        run: python3 -m unittest discover -s tests -p 'test_macro_*.py' -v
       - name: Download official Treasury yields and validate
         run: python3 scripts/update_asset_scores.py
       - name: Download BLS CPI and labor-market observations
         run: python3 scripts/update_macro_bls.py
+      - name: Download New York Fed effective funds rate
+        run: python3 scripts/update_macro_nyfed.py
+      - name: Evaluate guarded asset scoring model
+        run: python3 scripts/score_macro_assets.py
       - name: Commit verified snapshot when changed
         run: |
           git config user.name "github-actions[bot]"
