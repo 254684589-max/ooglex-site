@@ -55,6 +55,8 @@ def calculate(raw,today=None):
             prior=series.get(prev_period)
             if prior is not None and prior>0:
                 records[key]["yoy_percent"]=round((last_val/prior-1)*100,3)
+            else:
+                records[key]["yoy_unavailable_reason"]=("BLS did not publish October 2025 CPI because of the federal shutdown" if prev_period=="2025-10" else "official_reference_month_missing")
         if key=="payroll":
             # One-month difference in thousands of jobs; it is not a level percentage.
             previous_month=f"{last_y-1:04d}-12" if last_m==1 else f"{last_y:04d}-{last_m-1:02d}"
