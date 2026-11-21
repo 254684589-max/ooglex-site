@@ -24,9 +24,9 @@ jobs:
       - name: Evaluate guarded asset scoring model
         run: python3 scripts/score_macro_assets.py
       - name: Archive first-seen macro observations (not original publication vintages)
-        run: python3 scripts/archive_asset_compass_observations.py
+        run: python3 -m scripts.archive_asset_compass_observations
       - name: Check historical archive readiness
-        run: python3 scripts/check_asset_compass_history_readiness.py
+        run: python3 -m scripts.check_asset_compass_history_readiness
       - name: Commit verified snapshot when changed
         run: |
           git config user.name "github-actions[bot]"
