@@ -3,7 +3,6 @@
 import csv
 import io
 import json
-import os
 import re
 import urllib.parse
 import urllib.request
@@ -51,7 +50,7 @@ def build():
     latest=None
     for d in common:
         if d>date.today():continue
-        a=lookup(n[d],"10year");b=lookup(n[d],"2year");c=lookup(r[d],"10year")
+        a=lookup(n[d],"10yr");b=lookup(n[d],"2yr");c=lookup(r[d],"10yr")
         if all(v is not None and -5<v<30 for v in (a,b,c)):
             latest=(d,a,b,c);break
     if latest is None:raise ValueError("No same-date verified nominal and TIPS 10-year yields")
@@ -67,6 +66,10 @@ def build():
     if out.exists():
         previous=json.loads(out.read_text(encoding="utf-8"))
         if previous.get("observation_date","")>d.isoformat():raise ValueError("Refusing to overwrite newer snapshot")
+    if out.exists():
+        previous=json.loads(out.read_text(encoding="utf-8"))
+        if isinstance(previous.get("bls"),dict): result["bls"]=previous["bls"]
+        if isinstance(previous.get("factor_signals"),dict): result["factor_signals"]=previous["factor_signals"]
     out.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("Updated",out,d)
 if __name__=="__main__":build()
