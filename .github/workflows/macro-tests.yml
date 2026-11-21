@@ -6,6 +6,7 @@ on:
       - 'scripts/update_macro_bls.py'
       - 'scripts/update_macro_nyfed.py'
       - 'scripts/backtest_asset_compass.py'
+      - 'scripts/build_asset_compass_history.py'
       - 'scripts/score_macro_assets.py'
       - 'macro/model-config.json'
       - 'tests/test_macro_*.py'
@@ -44,6 +45,18 @@ jobs:
           assert d['nyfed']['effr_percent'] is not None
           assert all(asset['score'] is None for asset in d['assets'].values())
           print('Verified official records:',d['observation_date'],d['bls']['series']['cpi']['period'],d['nyfed']['observation_date'],'CPI YoY available=',d['bls']['completeness']['cpi_yoy_available'])
+          PY
+      - name: Validate two years of official Treasury history
+        run: |
+          python3 -m scripts.build_asset_compass_history --start-year 2025 --end-year 2026 --output /tmp/asset-compass-treasury-history.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path('/tmp/asset-compass-treasury-history.json').read_text())
+          assert report['observation_count'] >= 100
+          assert report['not_valid_for_point_in_time_backtest'] is True
+          assert report['original_release_vintages_available'] is False
+          print('Historical Treasury verification:', report['observation_count'],report['start_date'],report['end_date'])
           PY
       - name: Save verified official snapshot to this feature branch
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'feature/global-asset-score-v1'
