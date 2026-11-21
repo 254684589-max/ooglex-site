@@ -170,9 +170,10 @@
     },
     {
       "id": "fed_funds",
-      "source": "Federal Reserve",
+      "source": "Federal Reserve Bank of New York (EFFR)",
       "group": "rates",
-      "status": "planned"
+      "status": "implemented",
+      "note": "EFFR observed rate, not target rate; freshness gate 10 calendar days"
     },
     {
       "id": "fed_balance_sheet",
