@@ -26,6 +26,8 @@ footer{font-size:12px;color:#8796a8;margin-top:32px}
 <p class="muted">此处仅报告站内历史行情的覆盖情况，不是收益率回测或投资信号。比特币复用CoinGecko日度行情，其日期轴与其他Yahoo行情独立；期货、指数和ETF尚未统一总回报口径。</p>
 <div class="note" id="price-audit-status" role="status">正在检查历史行情覆盖率……</div>
 <section class="grid" id="price-audit" aria-label="六类资产历史行情覆盖率"></section>
+<h2 style="margin-top:42px">宏观历史归档进度</h2>
+<div class="card"><div class="label">真实观测归档 · 首次记录，不代表官方首次发布日期</div><div class="big neutral" id="archive-total" style="font-size:25px;margin:10px 0">读取中</div><p class="muted" id="archive-details">正在核对历史观测归档。</p></div>
 <h2 style="margin-top:42px">历史回测与模型验证</h2>
 <div class="card"><div class="label">样本外验证状态</div><div class="big neutral" style="font-size:24px;margin:12px 0">尚未完成真实历史回测</div>
 <p>已建立可复现的研究工具：采用可用时间戳、21个交易日未来收益、按日期划分训练和测试区间，并排除训练集对测试期的未来信息依赖。数据未准备齐全时不发布胜率、模型收益率或经过校准的利多利空评分。</p>
@@ -79,5 +81,13 @@ fetch("../data/asset-compass-price-audit.json",{cache:"no-store"})
  }
 })
 .catch(error=>{auditStatus.textContent="数据质量报告暂不可用："+error.message+"。不影响已经核验的宏观指标。";auditGrid.replaceChildren();});
+fetch("../data/asset-compass-history-readiness.json",{cache:"no-store"})
+.then(r=>{if(!r.ok)throw new Error("尚无归档准备度报告");return r.json()})
+.then(d=>{
+ if(d.schema_version!==1||d.report_type!=="asset_compass_history_readiness"||d.validated_for_live_scoring!==false)throw new Error("归档状态无效");
+ document.querySelector("#archive-total").textContent=Number.isInteger(d.archived_observations)?d.archived_observations+" 条已记录观测":"暂无有效归档";
+ document.querySelector("#archive-details").textContent=d.archived_observations?"这些是Ooglex实际首次采集到的数据及后续修订，不是历史官方首发版本。真实因子校准与跨经济周期回测尚未通过。":"已建立归档管道；首次成功定时采集后才会生成真实记录。综合评分仍保持关闭。";
+})
+.catch(()=>{document.querySelector("#archive-total").textContent="尚无归档记录";document.querySelector("#archive-details").textContent="没有可验证的历史归档；不发布未经验证的资产评分。";});
 fetch("../data/asset-scores.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("数据文件尚未生成");return r.json()}).then(d=>{if(!d||d.schema_version!==1)throw new Error("数据格式不匹配");show(d)}).catch(e=>status.textContent="数据暂不可用："+e.message+"。页面不会使用演示数值代替市场数据。");
 </script></body></html>
