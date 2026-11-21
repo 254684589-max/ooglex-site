@@ -12,12 +12,14 @@ on:
       - '.github/workflows/macro-tests.yml'
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   unit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -41,3 +43,13 @@ jobs:
           assert all(asset['score'] is None for asset in d['assets'].values())
           print('Verified official records:',d['observation_date'],d['bls']['series']['cpi']['period'],d['nyfed']['observation_date'])
           PY
+      - name: Save verified official snapshot to this feature branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'feature/global-asset-score-v1'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/asset-scores.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data(macro): save verified official indicators"
+            git push origin "HEAD:refs/heads/${GITHUB_HEAD_REF}"
+          fi
