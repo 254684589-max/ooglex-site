@@ -8,6 +8,7 @@ on:
       - 'scripts/update_macro_fed_bea.py'
       - 'scripts/update_macro_liquidity.py'
       - 'scripts/inspect_nyfed_recession_workbook.py'
+      - 'scripts/update_nyfed_recession.py'
       - 'scripts/backtest_asset_compass.py'
       - 'scripts/build_asset_compass_history.py'
       - 'scripts/audit_asset_compass_prices.py'
@@ -126,6 +127,23 @@ jobs:
         run: |
           python3 -m pip install -q xlrd==2.0.2
           python3 -m scripts.inspect_nyfed_recession_workbook
+      - name: Verify official NY Fed recession model 12-month target date
+        run: |
+          python3 -m scripts.update_nyfed_recession
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('data/asset-scores.json').read_text())
+          r=d.get('nyfed_recession_model')
+          assert r, 'No independently verified NY Fed model observation'
+          y,m=map(int,r['observation_period'].split('-'))
+          ty,tm=map(int,r['target_period'].split('-'))
+          assert (ty*12+tm)-(y*12+m)==12
+          assert 0<=r['probability_percent']<=100
+          assert r['official_forecast'] is False
+          assert r['release_timestamp_verified'] is False
+          print('NYFED RECESSION VERIFIED:',r['observation_period'],r['target_period'],r['probability_percent'])
+          PY
       - name: Verify live reserve balances TGA and overnight RRP separately
         run: |
           python3 -m scripts.update_macro_liquidity
@@ -162,6 +180,7 @@ jobs:
           assert len(archive)>=8 and len(archive)==len({(r['series_id'],r['observation_period']) for r in archive})
           assert all(r['official_release_time_known'] is False for r in archive)
           assert any(r['series_id']=='bls.core_cpi' for r in archive)
+          assert any(r['series_id']=='nyfed_recession.probability' for r in archive)
           for key in ('reserves','tga','overnight_rrp'):
               if key in json.loads(Path('data/asset-scores.json').read_text()).get('liquidity',{}):
                   assert any(r['series_id']=='liquidity.'+key for r in archive)
