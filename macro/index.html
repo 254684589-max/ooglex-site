@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>全球资产晴雨表 | Ooglex</title>
+<meta name="description" content="美国财政部利率数据驱动的全球宏观资产因子监控。">
+<style>
+:root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",system-ui,sans-serif;background:#0b0e13;color:#ecf3fc}
+*{box-sizing:border-box}body{margin:0}a{color:#7cb3ff}header{border-bottom:1px solid #273142;padding:20px max(20px,calc((100vw - 1160px)/2))}.brand{font-size:14px;letter-spacing:3px;color:#8ab8f7;font-weight:800}
+main{max-width:1160px;margin:auto;padding:42px 20px 80px}h1{font-size:clamp(30px,5vw,44px);margin:12px 0}h2{font-size:18px}p,.muted{color:#9daec2;line-height:1.7}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:#121925;border:1px solid #293347;border-radius:16px;padding:22px}.big{font-size:32px;font-weight:800;font-variant-numeric:tabular-nums}
+.label{font-size:12px;color:#9daec2}.up{color:#48c997}.down{color:#ff898d}.neutral{color:#e3b86e}.bar{height:8px;background:#263345;border-radius:6px;overflow:hidden;margin:15px 0 8px}.fill{background:linear-gradient(90deg,#3478e1,#42d4a1);height:100%;width:0}
+.note{background:#172232;border:1px solid #314159;border-radius:12px;padding:15px 18px;margin:24px 0;color:#b9cbe2;line-height:1.7}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{text-align:left;border-bottom:1px solid #273142;padding:13px 8px}th{color:#9daec2;font-weight:500}
+button{background:#2275d5;color:white;border:0;border-radius:8px;padding:11px 17px;cursor:pointer}
+footer{font-size:12px;color:#8796a8;margin-top:32px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}main{padding-top:20px}.card{padding:17px}table{font-size:12px}}
+</style></head><body>
+<header><a href="/" class="brand" style="text-decoration:none">OOGLEX</a> <span class="muted"> / GLOBAL ASSET INTELLIGENCE</span></header>
+<main>
+<p class="brand">MACRO FACTOR MONITOR · V1</p><h1>全球资产晴雨表</h1>
+<p>以官方宏观数据为基础，逐步构建黄金、美股、美债、美元、比特币与原油的因子评分。当前版本优先验证美国国债收益率与实际利率，不伪造尚未接入的数据。</p>
+<div class="note" id="status" role="status">正在读取最新数据……</div>
+<section class="grid" id="metrics" aria-label="美国国债核心指标"></section>
+<h2 style="margin-top:42px">资产评分看板</h2>
+<div class="grid" id="assets"></div>
+<h2 style="margin-top:42px">计算方法与数据完整性</h2>
+<div class="card"><p>完整模型计划采用六大因子：利率、通胀、增长、流动性、金融风险和资产自身资金/估值。各资产权重不同，因子归一化后加权计算。<strong>仅有国债收益率时，不发布完整综合评分或“利多/利空”结论</strong>。</p>
+<p>当前展示的是美国财政部利率观测值与可用性状态；新增足够独立数据源并经过历史校准后，才会开启完整评分。10年期通胀补偿＝10年名义国债收益率－10年TIPS实际收益率；该数值不是纯粹的通胀预测。</p>
+<p>数据源：<a href="https://home.treasury.gov/treasury-daily-interest-rate-xml-feed" target="_blank" rel="noopener">美国财政部官方收益率数据</a>。数据交易日更新，周末与节假日沿用最近公布日期；页面不宣称实时交易行情。</p></div>
+<footer>Ooglex Quant V1 · 研究用途 · 非投资建议 · 不把分数解释成上涨概率</footer>
+</main>
+<script>
+const root=document.querySelector("#metrics"),assets=document.querySelector("#assets"),status=document.querySelector("#status");
+const names=["黄金","美股","美国长期国债","美元","比特币","原油"];
+const fmt=v=>typeof v==="number"&&Number.isFinite(v)?v.toFixed(2)+"%":"暂无数据";
+const safe=v=>typeof v==="number"&&Number.isFinite(v)?v:null;
+function show(data){
+ const r=data.rates||{};const items=[["10年期名义收益率",r.us10y],["2年期名义收益率",r.us2y],["10年期实际收益率(TIPS)",r.real10y],["10年期通胀补偿",r.breakeven10y],["10Y－2Y利差",r.spread10y2y]];
+ root.innerHTML=items.map(([name,val])=>'<article class="card"><div class="label">'+name+'</div><div class="big">'+fmt(safe(val))+'</div><div class="label">美国财政部 · '+(data.observation_date||"无日期")+'</div></article>').join("");
+ const usable=items.filter(([,v])=>safe(v)!==null).length;
+ status.textContent=usable?"最新观测日："+data.observation_date+" ｜ 成功读取 "+usable+"/5 项国债指标。综合评分暂未启用，等待其余权威因子接入。":"暂无经过验证的财政部观测数据，评分已安全停用。";
+ assets.innerHTML=names.map(n=>'<article class="card"><div class="label">'+n+'</div><div class="big neutral">— / 100</div><div class="bar"><div class="fill"></div></div><div class="label">数据不足 · 暂不判定利多/利空</div></article>').join("");
+}
+show({});
+fetch("../data/asset-scores.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("数据文件尚未生成");return r.json()}).then(d=>{if(!d||d.schema_version!==1)throw new Error("数据格式不匹配");show(d)}).catch(e=>status.textContent="数据暂不可用："+e.message+"。页面不会使用演示数值代替市场数据。");
+</script></body></html>
