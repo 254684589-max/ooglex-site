@@ -34,7 +34,7 @@ footer{font-size:12px;color:#8796a8;margin-top:32px}
 <footer>Ooglex Quant V1 · 公开研究预览 · 研究用途 · 非投资建议 · 不把分数解释成上涨概率</footer>
 </main>
 <script>
-const root=document.querySelector("#metrics"),assets=document.querySelector("#assets"),status=document.querySelector("#status"),labor=document.querySelector("#labor"),policy=document.querySelector("#policy");
+const root=document.querySelector("#metrics"),assets=document.querySelector("#assets"),status=document.querySelector("#status"),labor=document.querySelector("#labor"),policy=document.querySelector("#policy"),cpiNote=document.querySelector("#cpi-note");
 const names=["黄金","美股","美国长期国债","美元","比特币","原油"];
 const fmt=v=>typeof v==="number"&&Number.isFinite(v)?v.toFixed(2)+"%":"暂无数据";
 const safe=v=>typeof v==="number"&&Number.isFinite(v)?v:null;
@@ -46,6 +46,7 @@ function show(data){
  const b=data.bls&&data.bls.series||{};
  const recent=rec=>{if(!rec||!/^\\d{4}-\\d{2}$/.test(rec.period||""))return false;const [y,m]=rec.period.split("-").map(Number);const now=new Date();const diff=(now.getUTCFullYear()-y)*12+now.getUTCMonth()+1-m;return diff>=0&&diff<=3};
  const blsItems=[["美国CPI指数（季调）",recent(b.cpi)?b.cpi.value:null,"",b.cpi&&b.cpi.period],["美国CPI同比（历史不足时不计算）",recent(b.cpi)?b.cpi.yoy_percent:null,"%",b.cpi&&b.cpi.period],["美国失业率",recent(b.unemployment)?b.unemployment.value:null,"%",b.unemployment&&b.unemployment.period],["非农就业月增量",recent(b.payroll)?b.payroll.monthly_change_thousands:null,"千人",b.payroll&&b.payroll.period]];
+ cpiNote.textContent=b.cpi&&b.cpi.yoy_unavailable_reason==="BLS did not publish October 2025 CPI because of the federal shutdown"?"注：美国劳工统计局未公布2025年10月CPI，故2026年10月同比缺少基期数据，不作估算。":"";
  labor.innerHTML=blsItems.map(([name,val,unit,period])=>'<article class="card"><div class="label">'+name+'</div><div class="big">'+(safe(val)===null?"暂无数据":Number(val).toFixed(unit==="%"?2:unit===""?3:1)+unit)+'</div><div class="label">美国劳工统计局 · '+(period||"无日期")+'</div></article>').join("");
  const ny=data.nyfed||{};const effrDate=ny.observation_date?new Date(ny.observation_date+"T00:00:00Z"):null;
  const effrFresh=effrDate&&Number.isFinite(effrDate.getTime())&&(Date.now()-effrDate.getTime())/86400000<=11;
