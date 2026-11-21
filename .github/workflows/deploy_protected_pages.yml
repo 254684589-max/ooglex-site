@@ -95,6 +95,9 @@ jobs:
       - name: Build Finance Column 10 percent preview and full payload
         run: node scripts/pro/build_finance_column_pro.mjs
 
+      - name: Build Asset Compass archive readiness metadata
+        run: python3 -m scripts.check_asset_compass_history_readiness
+
       - name: Build Asset Compass public price coverage metadata
         run: python3 scripts/audit_asset_compass_prices.py --output data/asset-compass-price-audit.json
 
