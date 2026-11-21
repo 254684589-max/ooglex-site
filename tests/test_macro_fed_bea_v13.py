@@ -43,8 +43,8 @@ class FedBEAIntegrationTests(unittest.TestCase):
     def test_ui_and_registry_definitions(self):
         cfg=json.loads((ROOT/"macro/model-config.json").read_text(encoding="utf-8"))
         vals={x["id"]:x for x in cfg["indicator_registry"]}
-        self.assertEqual(vals["core_pce"]["status"],"implemented")
-        self.assertEqual(vals["fed_balance_sheet"]["status"],"implemented")
+        self.assertEqual(vals["core_pce"]["status"],"integration_pending_live_verification")
+        self.assertEqual(vals["fed_balance_sheet"]["status"],"integration_pending_live_verification")
         html=(ROOT/"macro/index.html").read_text(encoding="utf-8")
         self.assertIn('id="fed-bea"',html)
         self.assertIn("showFedBea(d)",html)
