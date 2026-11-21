@@ -34,13 +34,16 @@ const names=["黄金","美股","美国长期国债","美元","比特币","原油
 const fmt=v=>typeof v==="number"&&Number.isFinite(v)?v.toFixed(2)+"%":"暂无数据";
 const safe=v=>typeof v==="number"&&Number.isFinite(v)?v:null;
 function show(data){
- const r=data.rates||{};const items=[["10年期名义收益率",r.us10y],["2年期名义收益率",r.us2y],["10年期实际收益率(TIPS)",r.real10y],["10年期通胀补偿",r.breakeven10y],["10Y－2Y利差",r.spread10y2y]];
+ const treasuryDate=data.observation_date?new Date(data.observation_date+"T00:00:00Z"):null;
+ const treasuryFresh=treasuryDate&&Number.isFinite(treasuryDate.getTime())&&((Date.now()-treasuryDate.getTime())/86400000<=11);
+ const r=treasuryFresh?(data.rates||{}):{};const items=[["10年期名义收益率",r.us10y],["2年期名义收益率",r.us2y],["10年期实际收益率(TIPS)",r.real10y],["10年期通胀补偿",r.breakeven10y],["10Y－2Y利差",r.spread10y2y]];
  root.innerHTML=items.map(([name,val])=>'<article class="card"><div class="label">'+name+'</div><div class="big">'+fmt(safe(val))+'</div><div class="label">美国财政部 · '+(data.observation_date||"无日期")+'</div></article>').join("");
  const b=data.bls&&data.bls.series||{};
- const blsItems=[["美国CPI同比",b.cpi&&b.cpi.yoy_percent,"%",b.cpi&&b.cpi.period],["美国失业率",b.unemployment&&b.unemployment.value,"%",b.unemployment&&b.unemployment.period],["非农就业月增量",b.payroll&&b.payroll.monthly_change_thousands,"千人",b.payroll&&b.payroll.period]];
+ const recent=rec=>{if(!rec||!/^\\d{4}-\\d{2}$/.test(rec.period||""))return false;const [y,m]=rec.period.split("-").map(Number);const now=new Date();const diff=(now.getUTCFullYear()-y)*12+now.getUTCMonth()+1-m;return diff>=0&&diff<=3};
+ const blsItems=[["美国CPI同比",recent(b.cpi)?b.cpi.yoy_percent:null,"%",b.cpi&&b.cpi.period],["美国失业率",recent(b.unemployment)?b.unemployment.value:null,"%",b.unemployment&&b.unemployment.period],["非农就业月增量",recent(b.payroll)?b.payroll.monthly_change_thousands:null,"千人",b.payroll&&b.payroll.period]];
  labor.innerHTML=blsItems.map(([name,val,unit,period])=>'<article class="card"><div class="label">'+name+'</div><div class="big">'+(safe(val)===null?"暂无数据":Number(val).toFixed(unit==="%"?2:1)+unit)+'</div><div class="label">美国劳工统计局 · '+(period||"无日期")+'</div></article>').join("");
  const usable=items.filter(([,v])=>safe(v)!==null).length;
- status.textContent=usable?"最新观测日："+data.observation_date+" ｜ 读取 "+usable+"/5 项国债指标；BLS数据 "+(Object.keys(b).length===3?"已接入":"待验证")+"。综合评分暂未启用。":"暂无经过验证的财政部观测数据，评分已安全停用。";
+ status.textContent=usable?"最新观测日："+data.observation_date+" ｜ 读取 "+usable+"/5 项国债指标；BLS数据 "+(Object.keys(b).length===3&&Object.values(b).every(recent)?"已接入":"缺失或过期")+"。综合评分暂未启用。":"暂无经过验证的财政部观测数据，评分已安全停用。";
  assets.innerHTML=names.map(n=>'<article class="card"><div class="label">'+n+'</div><div class="big neutral">— / 100</div><div class="bar"><div class="fill"></div></div><div class="label">数据不足 · 暂不判定利多/利空</div></article>').join("");
 }
 show({});
