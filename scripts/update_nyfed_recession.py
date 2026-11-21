@@ -78,7 +78,7 @@ def main():
     snapshot=json.loads(FILE.read_text(encoding="utf-8"))
     if snapshot.get("schema_version")!=1:raise ValueError("Invalid macro snapshot")
     snapshot["nyfed_recession_model"]={**result,"retrieved_at":datetime.now(timezone.utc).isoformat()}
-    FILE.write_text(json.dumps(snapshot,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    FILE.write_text(json.dumps(snapshot,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("VERIFIED_NYFED_RECESSION:",result["observation_period"],result["target_period"],result["probability_percent"])
     return True
 if __name__=="__main__":main()
