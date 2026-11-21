@@ -25,6 +25,10 @@ jobs:
         run: python3 -m scripts.update_macro_fed_bea
       - name: Download Federal Reserve liquidity components individually
         run: python3 -m scripts.update_macro_liquidity
+      - name: Download official NY Fed recession model workbook
+        run: |
+          python3 -m pip install -q xlrd==2.0.2
+          python3 -m scripts.update_nyfed_recession
       - name: Evaluate guarded asset scoring model
         run: python3 scripts/score_macro_assets.py
       - name: Archive first-seen macro observations (not original publication vintages)
