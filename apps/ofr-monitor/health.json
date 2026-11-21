@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "ofr-monitor",
-  "generatedAt": "2026-11-20T22:38:41Z",
+  "generatedAt": "2026-11-21T23:48:21Z",
   "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-11-20T22:38:41Z",
-  "lastSuccessfulAt": "2026-11-20T22:38:41Z",
+  "lastAttemptAt": "2026-11-21T23:48:21Z",
+  "lastSuccessfulAt": "2026-11-21T23:48:21Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-11-20T22:38:41Z",
+  "publishedSnapshotAt": "2026-11-21T23:48:21Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -44,8 +44,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-20T22:38:41Z",
-      "lastSuccessAt": "2026-11-20T22:38:41Z"
+      "lastAttemptAt": "2026-11-21T23:48:21Z",
+      "lastSuccessAt": "2026-11-21T23:48:21Z"
     },
     {
       "id": "funding",
@@ -56,8 +56,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-20T22:38:41Z",
-      "lastSuccessAt": "2026-11-20T22:38:41Z"
+      "lastAttemptAt": "2026-11-21T23:48:21Z",
+      "lastSuccessAt": "2026-11-21T23:48:21Z"
     },
     {
       "id": "mmf",
@@ -68,8 +68,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-20T22:38:41Z",
-      "lastSuccessAt": "2026-11-20T22:38:41Z"
+      "lastAttemptAt": "2026-11-21T23:48:21Z",
+      "lastSuccessAt": "2026-11-21T23:48:21Z"
     },
     {
       "id": "hedge",
@@ -80,8 +80,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-20T22:38:41Z",
-      "lastSuccessAt": "2026-11-20T22:38:41Z"
+      "lastAttemptAt": "2026-11-21T23:48:21Z",
+      "lastSuccessAt": "2026-11-21T23:48:21Z"
     },
     {
       "id": "bank",
@@ -92,8 +92,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-20T22:38:41Z",
-      "lastSuccessAt": "2026-11-20T22:38:41Z"
+      "lastAttemptAt": "2026-11-21T23:48:21Z",
+      "lastSuccessAt": "2026-11-21T23:48:21Z"
     }
   ],
   "policy": {
