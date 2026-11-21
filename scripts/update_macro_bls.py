@@ -65,11 +65,11 @@ def calculate(raw,today=None):
 def main():
     records=calculate(fetch())
     if "yoy_percent" not in records["cpi"]:
-        raise ValueError("BLS CPI year-over-year cannot be calculated from official data")
+        print("WARNING: CPI YoY not available; previous-year same-month value is absent from current API response")
     if not FILE.exists():raise RuntimeError("Treasury snapshot missing; run Treasury first")
     data=json.loads(FILE.read_text(encoding="utf-8"))
     if data.get("schema_version")!=1:raise ValueError("Unsupported macro schema")
-    data["bls"]={"series":records,"retrieved_at":datetime.now(timezone.utc).isoformat(),"source_url":API,
+    data["bls"]={"series":records,"completeness":{"cpi_yoy_available":"yoy_percent" in records["cpi"],"payroll_delta_available":"monthly_change_thousands" in records["payroll"]},"retrieved_at":datetime.now(timezone.utc).isoformat(),"source_url":API,
                  "note":"Preliminary data may be revised by BLS."}
     data["generated_at"]=datetime.now(timezone.utc).isoformat()
     FILE.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
