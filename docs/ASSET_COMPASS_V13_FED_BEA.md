@@ -1,12 +1,12 @@
-# Ooglex 全球资产罗盘 V13｜BEA 核心PCE和联储 H.4.1
+# Ooglex 全球资产罗盘 V13｜核心PCE和联储 H.4.1 数据接入准备
 
-## 实际接入
+## 已完成代码与未通过的在线验收
 
 - **BEA 核心PCE（剔除食品和能源）**：FRED 公开 CSV 序列 `PCEPILFE`；数据原始统计机构为美国经济分析局 BEA，官方说明：https://www.bea.gov/index.php/help/faq/518；FRED 页面：https://fred.stlouisfed.org/series/PCEPILFE
 - **美联储资产负债表总资产**：FRED 公开 CSV 序列 `WALCL`；原始统计机构为美联储，属于 H.4.1 周度报告，原始页面：https://www.federalreserve.gov/releases/h41/；FRED 页面：https://fred.stlouisfed.org/series/WALCL
 - **纽约联储未来12个月衰退模型**：官方资料 https://www.newyorkfed.org/research/capital_markets/ycfaq.html 提供月度模型资料，尚未完成官方原始文件格式、日期列和预测月份的程序化验收，所以注册状态不改变，不显示模型概率。
 
-两项新数值来源是 FRED 对官方统计数据的镜像（不是直接访问 BEA 和美联储网站）。首次访问或数据更新失败时，自动化 CI 报错，页面显示「暂无数据」，不会添加示例数值。
+两项来源是 FRED 对官方统计数据的镜像。**2026-11-22 GitHub Actions 的第一次实际在线访问核心PCE时发生读取超时，未取得真实观测，不能认定数据已正式接入。** 采集代码已加失败隔离，不会破坏财政部、BLS、纽约联储现有成功流程。失败时只记录 `PENDING_EXTERNAL_SOURCE_VALIDATION`，页面显示「暂无数据」，不添加演示数值；注册表仍标为 `integration_pending_live_verification`。下一步需解决数据源的线上可达性并重新做实际值验收。
 
 ## 字段与口径
 
