@@ -72,9 +72,9 @@ function show(data){
 }
 function showFedBea(data){
  const p=(data.bea||{}).core_pce||{},h=(data.fed_h41||{}).total_assets||{};
- const pceDate=/^\\d{4}-\\d{2}$/.test(p.observation_period||"")?p.observation_period:null;
+ const pceDate=/^\d{4}-\d{2}$/.test(p.observation_period||"")?p.observation_period:null;
  const pceFresh=pceDate?(()=>{const [y,m]=pceDate.split("-").map(Number),now=new Date();const delta=(now.getUTCFullYear()-y)*12+now.getUTCMonth()+1-m;return delta>=0&&delta<=4})():false;
- const hDate=/^\\d{4}-\\d{2}-\\d{2}$/.test(h.observation_date||"")?new Date(h.observation_date+"T00:00:00Z"):null;
+ const hDate=/^\d{4}-\d{2}-\d{2}$/.test(h.observation_date||"")?new Date(h.observation_date+"T00:00:00Z"):null;
  const hFresh=hDate&&Number.isFinite(hDate.getTime())&&Date.now()>=hDate.getTime()&&(Date.now()-hDate.getTime())/86400000<=21;
  const safeNum=v=>typeof v==="number"&&Number.isFinite(v)?v:null;
  const cards=[
