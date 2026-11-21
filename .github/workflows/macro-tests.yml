@@ -5,6 +5,7 @@ on:
       - 'scripts/update_asset_scores.py'
       - 'scripts/update_macro_bls.py'
       - 'scripts/update_macro_nyfed.py'
+      - 'scripts/backtest_asset_compass.py'
       - 'scripts/score_macro_assets.py'
       - 'macro/model-config.json'
       - 'tests/test_macro_*.py'
@@ -24,3 +25,19 @@ jobs:
         run: python3 -m compileall -q scripts tests
       - name: Unit tests without network
         run: python3 -m unittest discover -s tests -p 'test_macro_*.py' -v
+      - name: Verify actual Treasury, BLS and NY Fed feeds
+        run: |
+          python3 scripts/update_asset_scores.py
+          python3 scripts/update_macro_bls.py
+          python3 scripts/update_macro_nyfed.py
+          python3 scripts/score_macro_assets.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('data/asset-scores.json').read_text())
+          assert d['rates']['us10y'] is not None
+          assert d['bls']['series']['cpi']['yoy_percent'] is not None
+          assert d['nyfed']['effr_percent'] is not None
+          assert all(asset['score'] is None for asset in d['assets'].values())
+          print('Verified official records:',d['observation_date'],d['bls']['series']['cpi']['period'],d['nyfed']['observation_date'])
+          PY
