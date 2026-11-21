@@ -151,6 +151,14 @@
       "status": "implemented"
     },
     {
+      "id": "core_cpi",
+      "source": "BLS",
+      "series_id": "CUSR0000SA0L1E",
+      "group": "inflation",
+      "status": "implemented",
+      "note": "CPI-U all items less food and energy, seasonally adjusted; separate series from all-items CPI. Year-on-year unavailable if official comparison month missing."
+    },
+    {
       "id": "unemployment",
       "source": "BLS",
       "group": "growth",
@@ -222,6 +230,13 @@
       "source": "IMF/WGC",
       "group": "asset_specific",
       "status": "planned_license_review"
+    },
+    {
+      "id": "nyfed_recession_probability_12m",
+      "source": "Federal Reserve Bank of New York",
+      "group": "growth",
+      "status": "planned_source_format_review",
+      "note": "Official yield-curve probit indicator based on 10-year minus 3-month Treasury spread; monthly. Not an official forecast and not equivalent to probability of any recession within next 12 months. No fabricated values."
     }
   ]
 }

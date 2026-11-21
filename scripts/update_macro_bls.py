@@ -9,7 +9,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 API="https://api.bls.gov/publicAPI/v1/timeseries/data/"
-SERIES={"cpi":"CUSR0000SA0","unemployment":"LNS14000000","payroll":"CES0000000001"}
+SERIES={"cpi":"CUSR0000SA0","core_cpi":"CUSR0000SA0L1E","unemployment":"LNS14000000","payroll":"CES0000000001"}
 FILE=Path(__file__).resolve().parents[1]/"data"/"asset-scores.json"
 
 def parse_series(series):
@@ -37,6 +37,7 @@ def fetch():
             if sid==expected:output[key]=parse_series(series)
     if set(output)!=set(SERIES):raise ValueError("BLS response missing series")
     if len(output["cpi"])<13:raise ValueError("BLS CPI history shorter than 13 months")
+    if len(output["core_cpi"])<13:raise ValueError("BLS core CPI history shorter than 13 months")
     return output
 
 def calculate(raw,today=None):
@@ -49,8 +50,8 @@ def calculate(raw,today=None):
         last_y,last_m=map(int,last_period.split("-"))
         age=(today.year-last_y)*12+today.month-last_m
         if age>3:raise ValueError("BLS series stale: "+key)
-        records[key]={"period":last_period,"value":last_val,"unit":{"cpi":"index","unemployment":"percent","payroll":"thousands"}[key],"source":"BLS"}
-        if key=="cpi":
+        records[key]={"period":last_period,"value":last_val,"unit":{"cpi":"index","core_cpi":"index","unemployment":"percent","payroll":"thousands"}[key],"source":"BLS"}
+        if key in ("cpi","core_cpi"):
             prev_period=f"{last_y-1:04d}-{last_m:02d}"
             prior=series.get(prev_period)
             if prior is not None and prior>0:
@@ -66,12 +67,13 @@ def calculate(raw,today=None):
 
 def main():
     records=calculate(fetch())
-    if "yoy_percent" not in records["cpi"]:
-        print("WARNING: CPI YoY not available; previous-year same-month value is absent from current API response")
+    for name in ("cpi","core_cpi"):
+        if "yoy_percent" not in records[name]:
+            print("WARNING:",name,"YoY not available; previous-year same-month value is absent from current API response")
     if not FILE.exists():raise RuntimeError("Treasury snapshot missing; run Treasury first")
     data=json.loads(FILE.read_text(encoding="utf-8"))
     if data.get("schema_version")!=1:raise ValueError("Unsupported macro schema")
-    data["bls"]={"series":records,"completeness":{"cpi_yoy_available":"yoy_percent" in records["cpi"],"payroll_delta_available":"monthly_change_thousands" in records["payroll"]},"retrieved_at":datetime.now(timezone.utc).isoformat(),"source_url":API,
+    data["bls"]={"series":records,"completeness":{"cpi_yoy_available":"yoy_percent" in records["cpi"],"core_cpi_yoy_available":"yoy_percent" in records["core_cpi"],"payroll_delta_available":"monthly_change_thousands" in records["payroll"]},"retrieved_at":datetime.now(timezone.utc).isoformat(),"source_url":API,
                  "note":"Preliminary data may be revised by BLS."}
     data["generated_at"]=datetime.now(timezone.utc).isoformat()
     FILE.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")

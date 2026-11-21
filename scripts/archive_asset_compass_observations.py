@@ -23,6 +23,7 @@ FIELDS={
  "treasury.spread10y2y":("rates","spread10y2y","percentage_points"),
  "nyfed.effr":("nyfed","effr_percent","percent"),
  "bls.cpi":("bls","cpi","index"),
+ "bls.core_cpi":("bls","core_cpi","index"),
  "bls.unemployment":("bls","unemployment","percent"),
  "bls.payroll":("bls","payroll","thousands"),
 }

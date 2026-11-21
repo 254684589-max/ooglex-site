@@ -15,6 +15,7 @@ on:
       - 'scripts/check_asset_compass_history_readiness.py'
       - 'scripts/audit_asset_compass_oos_evidence.py'
       - 'docs/ASSET_COMPASS_V11_EVIDENCE_GATE.md'
+      - 'docs/ASSET_COMPASS_V12_INDICATOR_ALIGNMENT.md'
       - '.github/workflows/macro-treasury.yml'
       - 'macro/migrations/**'
       - 'docs/ASSET_COMPASS_V9_POINT_IN_TIME.md'
@@ -59,6 +60,8 @@ jobs:
           assert result["data_license_certified"] is False
           print("Independent evidence review remains locked")
           PY
+      - name: Verify core CPI indicator and NY Fed source registry
+        run: python3 -m unittest discover -s tests -p 'test_macro_core_cpi_v12.py' -v
       - name: Audit existing asset prices without claiming validated returns
         run: |
           python3 scripts/audit_asset_compass_prices.py --output /tmp/asset-compass-price-audit.json
@@ -86,6 +89,8 @@ jobs:
           d=json.loads(Path('data/asset-scores.json').read_text())
           assert d['rates']['us10y'] is not None
           assert d['bls']['series']['cpi']['value'] is not None
+          assert d['bls']['series']['core_cpi']['value'] is not None
+          assert d['bls']['series']['core_cpi']['unit']=='index'
           assert d['bls']['series']['unemployment']['value'] is not None
           assert d['bls']['series']['payroll']['value'] is not None
           assert d['nyfed']['effr_percent'] is not None
@@ -104,6 +109,7 @@ jobs:
           result=json.loads(Path('/tmp/macro-readiness.json').read_text())
           assert len(archive)>=8 and len(archive)==len({(r['series_id'],r['observation_period']) for r in archive})
           assert all(r['official_release_time_known'] is False for r in archive)
+          assert any(r['series_id']=='bls.core_cpi' for r in archive)
           assert result['validated_for_live_scoring'] is False
           assert result['eligible_for_point_in_time_backtest'] is False
           print('First-seen archived macro observations verified:',len(archive))
