@@ -24,6 +24,8 @@ FIELDS={
  "nyfed.effr":("nyfed","effr_percent","percent"),
  "bls.cpi":("bls","cpi","index"),
  "bls.core_cpi":("bls","core_cpi","index"),
+ "bea.core_pce":("bea","core_pce","index"),
+ "fed_h41.total_assets":("fed_h41","total_assets","millions_usd"),
  "bls.unemployment":("bls","unemployment","percent"),
  "bls.payroll":("bls","payroll","thousands"),
 }
@@ -31,6 +33,8 @@ SOURCES={
  "treasury":"U.S. Department of the Treasury",
  "nyfed":"Federal Reserve Bank of New York",
  "bls":"U.S. Bureau of Labor Statistics",
+ "bea":"U.S. Bureau of Economic Analysis (via FRED)",
+ "fed_h41":"Federal Reserve Board H.4.1 (via FRED)",
 }
 
 def utc(value):
@@ -54,13 +58,21 @@ def rows_from_snapshot(snapshot,first_seen_at):
             block=snapshot.get("nyfed") or {}
             value=block.get(name);observed=block.get("observation_date")
             source_url=block.get("source_url","")
+        elif section=="bea":
+            block=(snapshot.get("bea") or {}).get("core_pce") or {}
+            value=block.get("value");observed=block.get("observation_period")
+            source_url=block.get("source_url","")
+        elif section=="fed_h41":
+            block=(snapshot.get("fed_h41") or {}).get("total_assets") or {}
+            value=block.get("value_millions_usd");observed=block.get("observation_date")
+            source_url=block.get("source_url","")
         else:
             block=(snapshot.get("bls") or {}).get("series",{}).get(name) or {}
             value=block.get("value");observed=block.get("period")
             source_url=(snapshot.get("bls") or {}).get("source_url","")
         if type(value) not in (int,float) or not math.isfinite(value):continue
         if not isinstance(observed,str):continue
-        if len(observed)==7 and prefix=="bls":
+        if len(observed)==7 and prefix in ("bls","bea"):
             d=date.fromisoformat(observed+"-01")
         else:
             d=date.fromisoformat(observed)

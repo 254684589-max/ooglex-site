@@ -172,9 +172,10 @@
     },
     {
       "id": "core_pce",
-      "source": "BEA",
+      "source": "BEA via FRED (PCEPILFE)",
       "group": "inflation",
-      "status": "planned"
+      "status": "integration_pending_live_verification",
+      "note": "BEA core PCE seasonally adjusted price index; FRED latest revised mirror, not archived first-published vintage. GitHub Actions external source verification timed out; not certified as a live indicator."
     },
     {
       "id": "fed_funds",
@@ -185,9 +186,10 @@
     },
     {
       "id": "fed_balance_sheet",
-      "source": "Federal Reserve",
+      "source": "Federal Reserve H.4.1 via FRED (WALCL)",
       "group": "liquidity",
-      "status": "planned"
+      "status": "integration_pending_live_verification",
+      "note": "Weekly Federal Reserve total assets level in millions USD. Not a standalone market liquidity measure. GitHub Actions external source verification timed out; not certified as a live indicator."
     },
     {
       "id": "vix",

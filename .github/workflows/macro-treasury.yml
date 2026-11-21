@@ -21,6 +21,8 @@ jobs:
         run: python3 scripts/update_macro_bls.py
       - name: Download New York Fed effective funds rate
         run: python3 scripts/update_macro_nyfed.py
+      - name: Fetch BEA core PCE and Federal Reserve H41 (FRED public mirror)
+        run: python3 -m scripts.update_macro_fed_bea
       - name: Evaluate guarded asset scoring model
         run: python3 scripts/score_macro_assets.py
       - name: Archive first-seen macro observations (not original publication vintages)
