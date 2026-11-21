@@ -22,6 +22,10 @@ footer{font-size:12px;color:#8796a8;margin-top:32px}
 <section class="grid" id="metrics" aria-label="美国国债核心指标"></section>
 <h2 style="margin-top:42px">美国通胀与就业（BLS）</h2><section class="grid" id="labor"></section><p id="cpi-note" class="muted" style="font-size:13px" aria-live="polite"></p><h2 style="margin-top:42px">纽约联储货币政策指标</h2><section class="grid" id="policy"></section><h2 style="margin-top:42px">资产评分看板</h2>
 <div class="grid" id="assets"></div>
+<h2 style="margin-top:42px">数据质量与回测准备度</h2>
+<p class="muted">此处仅报告站内历史行情的覆盖情况，不是收益率回测或投资信号。期货、指数和ETF价格尚未统一总回报口径。</p>
+<div class="note" id="price-audit-status" role="status">正在检查历史行情覆盖率……</div>
+<section class="grid" id="price-audit" aria-label="六类资产历史行情覆盖率"></section>
 <h2 style="margin-top:42px">历史回测与模型验证</h2>
 <div class="card"><div class="label">样本外验证状态</div><div class="big neutral" style="font-size:24px;margin:12px 0">尚未完成真实历史回测</div>
 <p>已建立可复现的研究工具：采用可用时间戳、21个交易日未来收益、按日期划分训练和测试区间，并排除训练集对测试期的未来信息依赖。数据未准备齐全时不发布胜率、模型收益率或经过校准的利多利空评分。</p>
@@ -57,5 +61,23 @@ function show(data){
  assets.innerHTML=names.map(n=>'<article class="card"><div class="label">'+n+'</div><div class="big neutral">— / 100</div><div class="bar"><div class="fill"></div></div><div class="label">数据不足 · 暂不判定利多/利空</div></article>').join("");
 }
 show({});
+const auditStatus=document.querySelector("#price-audit-status"),auditGrid=document.querySelector("#price-audit");
+const auditNames={gold:"黄金",us_equities:"美股",us_long_bonds:"美国长期国债",usd:"美元",bitcoin:"比特币",oil:"原油"};
+fetch("../data/asset-compass-price-audit.json",{cache:"no-store"})
+.then(r=>{if(!r.ok)throw new Error("审计报告暂未生成");return r.json()})
+.then(report=>{
+ if(report.schema_version!==1||report.report_type!=="price_coverage_audit"||!report.assets||report.validated_for_live_scoring!==false)throw new Error("审计报告格式不符合预期");
+ auditStatus.textContent="行情来源："+(report.source||"未标注")+" ｜ 原始日期位置："+report.calendar_observation_dates+" ｜ 截至："+(report.source_as_of||"未知")+" ｜ 数据授权与总回报口径尚待核实。";
+ auditGrid.replaceChildren();
+ for(const [key,name] of Object.entries(auditNames)){
+  const item=report.assets[key]||{},article=document.createElement("article"),label=document.createElement("div"),big=document.createElement("div"),note=document.createElement("div");
+  article.className="card";label.className="label";big.className="big";note.className="label";
+  label.textContent=name+" · "+(item.symbol||"无行情代码");
+  big.textContent=item.status==="missing"?"历史数据缺失":typeof item.observation_count==="number"?item.observation_count+" 条":"待核实";
+  note.textContent=item.status==="missing"?"尚无可用日线序列":"日期覆盖 "+(item.coverage_percent??"未知")+"% · 不构成合格回测总回报";
+  article.append(label,big,note);auditGrid.append(article);
+ }
+})
+.catch(error=>{auditStatus.textContent="数据质量报告暂不可用："+error.message+"。不影响已经核验的宏观指标。";auditGrid.replaceChildren();});
 fetch("../data/asset-scores.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("数据文件尚未生成");return r.json()}).then(d=>{if(!d||d.schema_version!==1)throw new Error("数据格式不匹配");show(d)}).catch(e=>status.textContent="数据暂不可用："+e.message+"。页面不会使用演示数值代替市场数据。");
 </script></body></html>
