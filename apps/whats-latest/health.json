@@ -1,38 +1,39 @@
 {
   "contractVersion": 1,
   "dataset": "whats-latest",
-  "generatedAt": "2026-11-20T20:09:42Z",
-  "status": "healthy",
+  "generatedAt": "2026-11-21T07:00:57Z",
+  "status": "degraded",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-11-20T20:09:42Z",
-  "lastSuccessfulAt": "2026-11-20T20:09:42Z",
+  "lastAttemptAt": "2026-11-21T07:00:57Z",
+  "lastSuccessfulAt": "2026-11-21T07:00:57Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-11-20T20:09:42Z",
+  "publishedSnapshotAt": "2026-11-21T07:00:57Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
     "expectedComponents": 7,
     "publishedComponents": 7,
-    "refreshedComponents": 7,
-    "fallbackComponents": 0,
+    "refreshedComponents": 2,
+    "fallbackComponents": 5,
     "unavailableComponents": 0,
     "unknownComponents": 0,
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 100.0
+    "freshCoveragePct": 28.57
   },
   "attempt": {
-    "status": "success",
+    "status": "partial",
     "published": true,
     "refreshedComponents": [
+      "risk-news",
+      "market-quotes"
+    ],
+    "fallbackComponents": [
       "politics-news",
       "world-news",
       "markets-news",
       "tech-news",
-      "law-news",
-      "risk-news",
-      "market-quotes"
+      "law-news"
     ],
-    "fallbackComponents": [],
     "unavailableComponents": [],
     "unknownComponents": []
   },
@@ -43,10 +44,10 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "healthy",
-      "mode": "fresh",
+      "status": "degraded",
+      "mode": "fallback",
       "published": true,
-      "lastAttemptAt": "2026-11-20T20:09:42Z",
+      "lastAttemptAt": "2026-11-21T07:00:57Z",
       "lastSuccessAt": "2026-11-20T20:09:42Z"
     },
     {
@@ -55,10 +56,10 @@
       "role": "primary",
       "frequency": "intraday",
       "requiredForTerminal": true,
-      "status": "healthy",
-      "mode": "fresh",
+      "status": "degraded",
+      "mode": "fallback",
       "published": true,
-      "lastAttemptAt": "2026-11-20T20:09:42Z",
+      "lastAttemptAt": "2026-11-21T07:00:57Z",
       "lastSuccessAt": "2026-11-20T20:09:42Z"
     },
     {
@@ -67,10 +68,10 @@
       "role": "primary",
       "frequency": "intraday",
       "requiredForTerminal": true,
-      "status": "healthy",
-      "mode": "fresh",
+      "status": "degraded",
+      "mode": "fallback",
       "published": true,
-      "lastAttemptAt": "2026-11-20T20:09:42Z",
+      "lastAttemptAt": "2026-11-21T07:00:57Z",
       "lastSuccessAt": "2026-11-20T20:09:42Z"
     },
     {
@@ -79,10 +80,10 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "healthy",
-      "mode": "fresh",
+      "status": "degraded",
+      "mode": "fallback",
       "published": true,
-      "lastAttemptAt": "2026-11-20T20:09:42Z",
+      "lastAttemptAt": "2026-11-21T07:00:57Z",
       "lastSuccessAt": "2026-11-20T20:09:42Z"
     },
     {
@@ -91,10 +92,10 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "healthy",
-      "mode": "fresh",
+      "status": "degraded",
+      "mode": "fallback",
       "published": true,
-      "lastAttemptAt": "2026-11-20T20:09:42Z",
+      "lastAttemptAt": "2026-11-21T07:00:57Z",
       "lastSuccessAt": "2026-11-20T20:09:42Z"
     },
     {
@@ -106,8 +107,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-20T20:09:42Z",
-      "lastSuccessAt": "2026-11-20T20:09:42Z"
+      "lastAttemptAt": "2026-11-21T07:00:57Z",
+      "lastSuccessAt": "2026-11-21T07:00:57Z"
     },
     {
       "id": "market-quotes",
@@ -118,8 +119,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-11-20T20:09:42Z",
-      "lastSuccessAt": "2026-11-20T20:09:42Z"
+      "lastAttemptAt": "2026-11-21T07:00:57Z",
+      "lastSuccessAt": "2026-11-21T07:00:57Z"
     }
   ],
   "policy": {
