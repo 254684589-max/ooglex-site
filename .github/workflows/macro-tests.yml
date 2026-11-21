@@ -11,6 +11,7 @@ on:
       - 'macro/index.html'
       - '.github/workflows/deploy_protected_pages.yml'
       - 'apps/asset-tracker/history.json'
+      - 'apps/asset-ranking/crypto.json'
       - 'scripts/score_macro_assets.py'
       - 'macro/model-config.json'
       - 'tests/test_macro_*.py'
@@ -40,6 +41,8 @@ jobs:
           from pathlib import Path
           r=json.loads(Path('/tmp/asset-compass-price-audit.json').read_text())
           assert r['report_type']=='price_coverage_audit'
+          assert r['assets']['bitcoin']['observation_count'] > 0
+          assert r['assets']['bitcoin']['source'] == 'CoinGecko'
           assert r['validated_for_live_scoring'] is False
           assert r['licensing_review_required'] is True
           assert all(not a['eligible_for_return_backtest'] for a in r['assets'].values())
