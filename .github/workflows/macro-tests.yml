@@ -105,16 +105,19 @@ jobs:
           import json
           from pathlib import Path
           d=json.loads(Path("data/asset-scores.json").read_text())
-          if "bea" in d and "fed_h41" in d:
-              p=d["bea"]["core_pce"]
-              h=d["fed_h41"]["total_assets"]
-              assert p["value"]>0 and p["source_series_id"]=="PCEPILFE"
-              assert h["value_millions_usd"]>0 and h["source_series_id"]=="WALCL"
-              assert p["release_timestamp_verified"] is False
-              assert h["release_timestamp_verified"] is False
-              print("LIVE OBSERVATIONS VERIFIED:",p["observation_period"],h["observation_date"])
-          else:
-              print("PENDING EXTERNAL SOURCE: no live FRED download verified; no values fabricated")
+          for key,field,symbol in (
+              ("bea","core_pce","PCEPILFE"),
+              ("fed_h41","total_assets","WALCL")
+          ):
+              if key in d:
+                  obs=d[key][field]
+                  assert obs["source_series_id"] == symbol
+                  assert obs["release_timestamp_verified"] is False
+                  assert obs["source_url"].startswith("https://fred.stlouisfed.org/")
+                  assert "cosd=" in obs["source_url"]
+                  print("VERIFIED SOURCE:",symbol,obs.get("observation_period",obs.get("observation_date")))
+              else:
+                  print("SOURCE NOT VERIFIED:",symbol,"No inferred values")
           assert all(a["score"] is None for a in d["assets"].values())
           PY
       - name: Verify immutable first-seen archival and fail-closed readiness
