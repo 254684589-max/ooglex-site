@@ -24,6 +24,11 @@ on:
       - 'macro/migrations/**'
       - 'docs/ASSET_COMPASS_V9_POINT_IN_TIME.md'
       - 'macro/index.html'
+      - 'macro/overview.html'
+      - 'macro/attribution.html'
+      - 'macro/research.html'
+      - 'macro/compass-pages.js'
+      - 'macro/compass-pages.css'
       - '.github/workflows/deploy_protected_pages.yml'
       - 'apps/asset-tracker/history.json'
       - 'apps/asset-ranking/crypto.json'
@@ -46,6 +51,8 @@ jobs:
           python-version: '3.12'
       - name: Compile scripts
         run: python3 -m compileall -q scripts tests
+      - name: Verify Asset Compass four-page JavaScript syntax
+        run: node --check macro/compass-pages.js
       - name: Unit tests without network
         run: python3 -m unittest discover -s tests -p 'test_macro_*.py' -v
       - name: Verify SQLite point-in-time schema and OOS tests
