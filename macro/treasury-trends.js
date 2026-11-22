@@ -225,6 +225,122 @@ const TREASURY_TRENDS=(function(){
   }
   panel.append(grid);
  }
+ // V46 in-sample descriptive statistics. The latest observation is included
+ // in its own empirical midrank; this is not an ex-ante PIT signal.
+ function quantile(sorted,p){
+  if(!sorted.length||p<0||p>1)return null;
+  const index=(sorted.length-1)*p,lo=Math.floor(index),hi=Math.ceil(index);
+  return sorted[lo]+(sorted[hi]-sorted[lo])*(index-lo);
+ }
+ const DISTRIBUTION_BINS=[
+  {label:"≤ −20 bp",accept:x=>x<=-20},
+  {label:"(−20, −10] bp",accept:x=>x>-20&&x<=-10},
+  {label:"(−10, −5] bp",accept:x=>x>-10&&x<=-5},
+  {label:"(−5, +5) bp",accept:x=>x>-5&&x<5},
+  {label:"[+5, +10) bp",accept:x=>x>=5&&x<10},
+  {label:"[+10, +20) bp",accept:x=>x>=10&&x<20},
+  {label:"≥ +20 bp",accept:x=>x>=20}
+ ];
+ function rateDistribution(rows,field){
+  if(!Array.isArray(rows)||!Object.hasOwn(FIELDS,field)||rows.length<3)return null;
+  let last="";
+  for(const row of rows){
+   if(!row||!validDay(row.date)||row.date<=last||
+    typeof row[field]!=="number"||!Number.isFinite(row[field]))return null;
+   last=row.date;
+  }
+  const values=rows.map(r=>r[field]),latest=values[values.length-1];
+  const ordered=values.slice().sort((a,b)=>a-b),n=values.length;
+  const lower=ordered.filter(v=>v<latest).length;
+  const equal=ordered.filter(v=>v===latest).length;
+  const percentile=100*(lower+0.5*equal)/n;
+  const moves=[];
+  for(let i=1;i<rows.length;i++){
+   // Consecutive *observed* dates, not necessarily successive calendar days.
+   const changeBp=(rows[i][field]-rows[i-1][field])*100;
+   moves.push({previousDate:rows[i-1].date,date:rows[i].date,
+    changeBp,absoluteBp:Math.abs(changeBp)});
+  }
+  const absolute=moves.map(m=>m.absoluteBp).sort((a,b)=>a-b);
+  const cutoff=quantile(absolute,0.95),latestMove=moves[moves.length-1];
+  const counts=DISTRIBUTION_BINS.map(b=>moves.filter(m=>b.accept(m.changeBp)).length);
+  const flagged=moves.filter(m=>m.absoluteBp>=cutoff);
+  const largest=moves.slice().sort((a,b)=>b.absoluteBp-a.absoluteBp||
+    a.date.localeCompare(b.date)).slice(0,5);
+  return {id:field,startDate:rows[0].date,endDate:rows[n-1].date,
+   levelCount:n,changeCount:moves.length,latest,percentile,
+   lowerCount:lower,equalCount:equal,
+   p10:quantile(ordered,0.1),median:quantile(ordered,0.5),p90:quantile(ordered,0.9),
+   cutoff95AbsBp:cutoff,flaggedCount:flagged.length,
+   latestMove,latestFlagged:latestMove.absoluteBp>=cutoff,
+   bins:DISTRIBUTION_BINS.map((b,i)=>({label:b.label,count:counts[i]})),
+   largest};
+ }
+ function renderRateDistribution(rows,key,compareKey){
+  const panel=$("treasury-rate-distribution");
+  if(!panel)return;
+  panel.replaceChildren();
+  if(!rows||rows.length<3){
+   panel.append(el("p","历史分布暂不可用：至少需要3个真实同日配对观测值。"));return;
+  }
+  const info=el("p","统计为所选图表范围内的历史样本描述：收益率经验分位采用“低于最新值的样本 + 相等样本的一半”计算；单日变化指相邻实际观测日的差，非日历日填值。异常阈值为本样本绝对变化的95%分位（含当前日），不构成实时预警、资产评分或预测。");
+  info.className="muted";panel.append(info);
+  const fields=[key,compareKey].filter((id,i,a)=>Object.hasOwn(FIELDS,id)&&a.indexOf(id)===i);
+  const grid=el("div");grid.className="treasury-distribution-grid";
+  for(const id of fields){
+   const stats=rateDistribution(rows,id);
+   const item=el("article");item.className="treasury-distribution-card";
+   item.append(el("h4",FIELDS[id].name));
+   if(!stats){item.append(el("p","有效样本不足或存在无效观测，统计不发布。"));grid.append(item);continue}
+   const summary=el("p","历史区间："+stats.startDate+" 至 "+stats.endDate+
+    " · 收益率观测 "+stats.levelCount+"日 · 变化样本 "+stats.changeCount+"次");
+   summary.className="label";item.append(summary);
+   const kpis=el("div");kpis.className="treasury-distribution-kpis";
+   for(const [label,value] of [
+    ["当前收益率经验分位",stats.percentile.toFixed(1)+"%"],
+    ["P10 / 中位 / P90",stats.p10.toFixed(3)+" / "+stats.median.toFixed(3)+" / "+stats.p90.toFixed(3)],
+    ["单次变动绝对值P95",stats.cutoff95AbsBp.toFixed(1)+" bp"],
+    ["最新一次观测间变动",(stats.latestMove.changeBp>=0?"+":"")+stats.latestMove.changeBp.toFixed(1)+" bp"],
+    ["最新变动是否达到样本P95阈值",stats.latestFlagged?"是（样本内）":"否（样本内）"],
+    ["达到阈值的样本次数",stats.flaggedCount+" / "+stats.changeCount]
+   ]){
+    const cell=el("div");cell.className="treasury-distribution-kpi";
+    const l=el("span",label);l.className="label";const v=el("strong",value);
+    cell.append(l,v);kpis.append(cell);
+   }
+   item.append(kpis);
+   item.append(el("h5","单次观测间变化分布（bp）"));
+   const bars=el("div");bars.className="treasury-distribution-bars";
+   const max=Math.max(...stats.bins.map(b=>b.count),1);
+   for(const bin of stats.bins){
+    const line=el("div");line.className="treasury-distribution-bin";
+    const name=el("span",bin.label),bar=el("div");bar.className="treasury-distribution-track";
+    const fill=el("span");fill.className="treasury-distribution-fill";
+    fill.style.width=(bin.count/max*100).toFixed(1)+"%";
+    bar.append(fill);
+    line.append(name,bar,el("span",String(bin.count)));bars.append(line);
+   }
+   item.append(bars);
+   item.append(el("h5","绝对变化最大的5个观测间变动"));
+   const table=el("table");const head=el("thead"),tr=el("tr");
+   for(const title of ["上一观测日","本次观测日","变动（bp）"]){
+    const th=el("th",title);th.scope="col";tr.append(th);
+   }
+   head.append(tr);table.append(head);
+   const body=el("tbody");
+   for(const move of stats.largest){
+    const row=el("tr");
+    for(const val of [move.previousDate,move.date,
+      (move.changeBp>=0?"+":"")+move.changeBp.toFixed(1)]){
+     row.append(el("td",val));
+    }
+    body.append(row);
+   }
+   table.append(body);const wrap=el("div");wrap.className="table-wrap";wrap.append(table);
+   item.append(wrap);grid.append(item);
+  }
+  panel.append(grid);
+ }
  function plot(data,key,range,compareKey){
   const chart=$("treasury-trend-svg"),status=$("treasury-trend-status"),
    meta=$("treasury-trend-meta"),body=$("treasury-trend-table"),
@@ -250,6 +366,7 @@ const TREASURY_TRENDS=(function(){
    if(probe)probe.textContent="未取得足够真实历史观测，无法定位或比较。";
    if(comparison)comparison.textContent="无可比较的实际观测日期。";
    renderPeriodStatistics(null,key,compareKey);
+   renderRateDistribution(null,key,compareKey);
    return;
   }
   const width=720,height=300,left=62,right=20,top=24,bottom=45;
@@ -296,6 +413,7 @@ const TREASURY_TRENDS=(function(){
   renderProbe(null,key,compareKey);
   renderDateComparison(all,key,compareKey,previousStart,previousEnd);
   renderPeriodStatistics(data,key,compareKey);
+  renderRateDistribution(all,key,compareKey);
   const last=all[all.length-1],unit=FIELDS[key].unit;
   status.textContent=FIELDS[key].name+"：最新 "+last[key].toFixed(2)+" "+unit+
    (compareKey?"；"+FIELDS[compareKey].name+"："+last[compareKey].toFixed(2)+" "+FIELDS[compareKey].unit:"")+
@@ -359,6 +477,6 @@ const TREASURY_TRENDS=(function(){
   if(typeof window!=="undefined")window.ooglexTreasuryFocus=focusAsset;
   update();
  }
- return {validate,selectWindow,plot,init,focusAsset,compareDates,nearestPlotObservation,periodStatistics,renderPeriodStatistics,FIELDS,ASSET_CURVE_FOCUS};
+ return {validate,selectWindow,plot,init,focusAsset,compareDates,nearestPlotObservation,periodStatistics,renderPeriodStatistics,rateDistribution,renderRateDistribution,FIELDS,ASSET_CURVE_FOCUS};
 })();
 if(document.body.dataset.page==="overview")void TREASURY_TRENDS.init();
