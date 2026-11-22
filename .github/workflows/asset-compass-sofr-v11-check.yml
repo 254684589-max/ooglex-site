@@ -1,0 +1,30 @@
+name: SOFR V11 end-to-end release gate
+on:
+  pull_request:
+    paths:
+      - 'tests/test_sofr_v11_end_to_end.py'
+      - '.github/workflows/asset-compass-sofr-v11-check.yml'
+      - '.github/workflows/asset-compass-sofr-spreads.yml'
+      - 'scripts/update_swap_spreads.py'
+      - 'scripts/report_swap_spread_ingest.py'
+      - 'scripts/publish_swap_spread_health.py'
+permissions:
+  contents: read
+jobs:
+  end-to-end:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify syntax
+        run: python -m py_compile tests/test_sofr_v11_end_to_end.py
+      - name: Offline full pipeline acceptance
+        run: python -m unittest discover -s tests -p test_sofr_v11_end_to_end.py -v
+      - name: Original historical data unchanged
+        run: |
+          git diff --exit-code -- macro/swap-spreads-history.json
+          test ! -f macro/swap-spreads-health.json
+          git diff --check
