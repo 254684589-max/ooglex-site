@@ -25,7 +25,7 @@ const TREASURY_TRENDS=(function(){
  }
  function validate(d){
   if(!d||d.schema_version!==1||d.dataset!=="treasury_historical_daily_observations"||
-    d.source!=="U.S. Department of the Treasury"||
+    !["U.S. Department of the Treasury","Federal Reserve Board H.15 via FRED"].includes(d.source)||
     d.original_release_vintages_available!==false||
     d.not_valid_for_point_in_time_backtest!==true||
     !Array.isArray(d.observations)||d.observations.length<2||d.observations.length>10000||
@@ -37,16 +37,31 @@ const TREASURY_TRENDS=(function(){
   const kinds=new Set();
   for(const raw of d.source_urls){
    let u;
-   try{u=new URL(raw)}catch{throw new Error("官方数据来源URL无效")}
-   const year=u.searchParams.get("field_tdr_date_value");
-   const kind=u.searchParams.get("type");
-   if(u.protocol!=="https:"||u.hostname!=="home.treasury.gov"||u.username||u.password||
-      !/^\d{4}$/.test(year||"")||!u.pathname.includes("/"+year+"/all")||
+   try{u=new URL(raw)}catch{throw new Error("历史官方来源URL无效")}
+   const year=u.searchParams.get("field_tdr_date_value"),kind=u.searchParams.get("type");
+   if(u.protocol!=="https:"||u.username||u.password)
+    throw new Error("历史来源必须使用可信HTTPS");
+   if(d.source==="U.S. Department of the Treasury"){
+    if(u.hostname!=="home.treasury.gov"||!/^[0-9]{4}$/.test(year||"")||
+      !u.pathname.includes("/"+year+"/all")||
       !["daily_treasury_yield_curve","daily_treasury_real_yield_curve"].includes(kind))
-    throw new Error("历史来源不是经核准的美国财政部CSV");
-   kinds.add(kind);
+      throw new Error("历史来源不是财政部官方CSV");
+    kinds.add(kind);
+   }else{
+    const id=u.searchParams.get("id");
+    if(u.hostname!=="fred.stlouisfed.org"||u.pathname!=="/graph/fredgraph.csv"||
+      !["DGS10","DGS2","DFII10"].includes(id)||
+      !u.searchParams.has("cosd")||!u.searchParams.has("coed"))
+      throw new Error("历史来源不是美联储H.15经FRED镜像");
+    kinds.add(id);
+   }
   }
-  if(kinds.size!==2)throw new Error("缺少名义或实际收益率官方来源");
+  if(d.source==="U.S. Department of the Treasury"&&kinds.size!==2)
+   throw new Error("缺少财政部名义或实际收益率来源");
+  if(d.source==="Federal Reserve Board H.15 via FRED"&&
+     (kinds.size!==3||!["DGS10","DGS2","DFII10"].every(x=>kinds.has(x))||
+     JSON.stringify(d.source_series_ids)!=='["DGS10","DGS2","DFII10"]'))
+   throw new Error("H.15必须包含DGS10、DGS2和DFII10");
   let last="";
   const keys=["us10y","us2y","real10y","breakeven10y","spread10y2y"];
   for(const row of d.observations){
@@ -102,7 +117,8 @@ const TREASURY_TRENDS=(function(){
   const last=all[all.length-1],unit=FIELDS[key].unit;
   status.textContent=FIELDS[key].name+"：最新图内观测 "+last[key].toFixed(2)+" "+unit+
    " · "+last.date+" · "+all.length+" 个匹配观测日";
-  meta.textContent="来源：美国财政部名义国债与TIPS实际收益率官方CSV；"+
+  meta.textContent="来源："+(data.source==="U.S. Department of the Treasury"?
+    "美国财政部名义国债与TIPS实际收益率官方CSV":"美国联邦储备委员会H.15日度国债收益率（经圣路易斯联储FRED镜像）")+"；"+
    "数据读取时间："+data.retrieved_at+"；"+
    "历史回溯观测不是历史首发版本，不能直接用于当年可得信息回测。";
   for(const item of all.slice(-8).reverse()){
