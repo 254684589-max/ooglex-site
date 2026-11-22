@@ -195,6 +195,21 @@ jobs:
           python3 -m unittest discover -s tests -p 'test_macro_production_v12.py' -v
           python3 -m scripts.verify_macro_live_v12 --root .site --sha "$GITHUB_SHA"
 
+      - name: Check indicator-first A10 and forty-series page separation
+        run: |
+          python3 -m unittest discover -s tests -p 'test_macro_indicator_catalog_focus.py' -v
+          node --check .site/macro/indicator-a10.js
+          python3 - <<'PYCATALOG'
+          from pathlib import Path
+          page=Path(".site/macro/indicator-ratings.html").read_text(encoding="utf-8")
+          research=Path(".site/macro/indicator-lab.html").read_text(encoding="utf-8")
+          assert 'id="indicator-rows"' in page and 'id="a10-rows"' in page
+          assert 'id="v8-heading"' not in page
+          assert 'id="v8-heading"' in research
+          assert (Path(".site/macro/indicator-a10.js")).is_file()
+          print("Indicator-first production structure verified")
+          PYCATALOG
+
       - name: V10 verify public macro pages, audit payloads and model gates
         run: |
           set -euo pipefail
