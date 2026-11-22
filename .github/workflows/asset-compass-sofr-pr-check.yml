@@ -1,0 +1,28 @@
+name: SOFR spread module pull-request checks
+on:
+  pull_request:
+    paths:
+      - 'macro/swap-spreads*'
+      - 'scripts/update_swap_spreads.py'
+      - 'tests/test_swap_spreads_history.py'
+      - '.github/workflows/asset-compass-sofr-*.yml'
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check Python syntax
+        run: python -m py_compile scripts/update_swap_spreads.py
+      - name: Run source matching tests
+        run: python -m unittest discover -s tests -p test_swap_spreads_history.py -v
+      - name: Check JS syntax
+        run: node --check macro/swap-spreads-history.js
+      - name: Validate JSON
+        run: python -m json.tool macro/swap-spreads-history.json > /dev/null
+      - name: Check whitespace
+        run: git diff --check
