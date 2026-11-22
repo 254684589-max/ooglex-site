@@ -257,7 +257,7 @@ const TREASURY_TRENDS=(function(){
   const moves=[];
   for(let i=1;i<rows.length;i++){
    // Consecutive *observed* dates, not necessarily successive calendar days.
-   const changeBp=(rows[i][field]-rows[i-1][field])*100;
+   const changeBp=Math.round((rows[i][field]-rows[i-1][field])*10000)/100;
    moves.push({previousDate:rows[i-1].date,date:rows[i].date,
     changeBp,absoluteBp:Math.abs(changeBp)});
   }
