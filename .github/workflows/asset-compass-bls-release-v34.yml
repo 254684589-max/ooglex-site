@@ -1,0 +1,59 @@
+name: Asset Compass V34 Official BLS Release Capture
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/asset-compass-bls-release-v34.yml'
+      - 'scripts/capture_asset_compass_bls_release_v34.py'
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify security and provenance tests
+        run: python3 -m unittest discover -s tests -p 'test_asset_compass_bls_release_v34.py' -v
+      - name: Retrieve official 2024-12 CPI release and hash the actual bytes
+        run: |
+          python3 -m scripts.capture_asset_compass_bls_release_v34 \
+            --artifact-id bls-cpi-2024-12-release \
+            --output /tmp/ooglex-v34-evidence-receipt.json
+      - name: Audit receipt without certifying PIT vintages
+        if: always()
+        run: |
+          if [ -f /tmp/ooglex-v34-evidence-receipt.json ]; then
+            python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          r=json.loads(Path("/tmp/ooglex-v34-evidence-receipt.json").read_text())
+          assert len(r["sha256"])==64 and r["byte_size"]>0
+          assert r["historical_byte_availability_verified"] is False
+          assert r["eligible_for_point_in_time_backtest"] is False
+          assert r["raw_artifact_exported_to_public_repo"] is False
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as out:
+              out.write("### V34 historical BLS release captured, not PIT-certified\n")
+              out.write(f"Document: {r['artifact_id']}  \n")
+              out.write(f"Byte length: {r['byte_size']}  \n")
+              out.write(f"SHA-256: \`{r['sha256']}\`  \n")
+              out.write(f"Captured at UTC: {r['captured_at']}  \n")
+              out.write("Publication timestamp and historical byte availability remain UNVERIFIED.\n")
+          PY
+          else
+            echo '::error::No official artifact receipt. Check HTTP access, status and source validation.'
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ooglex-v34-bls-release-receipt
+          path: /tmp/ooglex-v34-evidence-receipt.json
+          if-no-files-found: warn
+          retention-days: 30

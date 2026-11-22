@@ -1,4 +1,4 @@
-name: Asset Compass Research V18-V33 Gates
+name: Asset Compass Research V18-V34 Gates
 on:
   pull_request:
     paths:
@@ -10,6 +10,9 @@ on:
       - 'scripts/audit_asset_compass_real_history_v24.py'
       - 'scripts/audit_asset_compass_history_v32.py'
       - 'scripts/qualify_asset_compass_pit_v33.py'
+      - 'scripts/capture_asset_compass_bls_release_v34.py'
+      - 'docs/ASSET_COMPASS_V34_*'
+      - '.github/workflows/asset-compass-bls-release-v34.yml'
       - 'docs/ASSET_COMPASS_V33_*'
       - 'scripts/check_asset_compass_archive_continuity_v25.py'
       - 'tests/test_asset_compass_*_v*.py'
@@ -35,7 +38,7 @@ jobs:
           python-version: '3.12'
       - name: Syntax validation
         run: python3 -m compileall -q scripts tests
-      - name: Run isolated V18-V33 research gates
+      - name: Run isolated V18-V34 research gates
         run: python3 -m unittest discover -s tests -p 'test_asset_compass_*_v*.py' -v
       - name: Verify production scoring remains blocked
         run: |
