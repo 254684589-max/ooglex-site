@@ -1,0 +1,40 @@
+name: SOFR archive coverage audit (read only)
+on:
+  workflow_dispatch:
+    inputs:
+      check_date:
+        description: 'Optional archived date YYYY-MM-DD (blank = offline coverage only)'
+        required: false
+        type: string
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate Python and audit tests
+        run: |
+          python -m py_compile scripts/audit_swap_spreads_coverage.py
+          python -m unittest discover -s tests -p test_swap_spreads_coverage.py -v
+      - name: Produce coverage report without modifying data
+        env:
+          CHECK_DATE: ${{ inputs.check_date }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "$CHECK_DATE" ]]; then
+            [[ "$CHECK_DATE" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]] || { echo "Invalid YYYY-MM-DD"; exit 1; }
+            python scripts/audit_swap_spreads_coverage.py --date "$CHECK_DATE" --output /tmp/sofr-coverage-audit.json
+          else
+            python scripts/audit_swap_spreads_coverage.py --output /tmp/sofr-coverage-audit.json
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sofr-coverage-report
+          path: /tmp/sofr-coverage-audit.json
+          retention-days: 14
