@@ -9,6 +9,7 @@ on:
       - 'scripts/build_asset_compass_history_fred_v42.py'
       - 'scripts/build_asset_compass_history_resilient_v42.py'
       - 'scripts/validate_asset_compass_treasury_trends_v42.py'
+      - 'scripts/build_asset_compass_rate_shocks_v55.py'
   schedule:
     - cron: '15 4 * * 1'
 permissions:
@@ -37,13 +38,15 @@ jobs:
         run: python3 -m scripts.build_asset_compass_history_resilient_v42
       - name: Verify original Treasury or H.15 provenance, matched observations, derived arithmetic and no PIT authorization
         run: python3 -m scripts.validate_asset_compass_treasury_trends_v42 --minimum 100
+      - name: V55 calculate descriptive real rate-shock candidates from official historical yields
+        run: python3 -m scripts.build_asset_compass_rate_shocks_v55
       - name: Save only genuine H.15 market yield observations
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/asset-compass-treasury-history.json
+          git add data/asset-compass-treasury-history.json data/asset-compass-rate-shocks-v55.json
           if ! git diff --cached --quiet; then
             git commit -m "data(asset-compass): refresh official Treasury trend observations"
             git pull --rebase origin main
@@ -55,8 +58,20 @@ jobs:
           set -euo pipefail
           git fetch origin main
           git show origin/main:data/asset-compass-treasury-history.json > /tmp/ooglex-v42-published.json
+          git show origin/main:data/asset-compass-rate-shocks-v55.json > /tmp/ooglex-v55-published.json
           python3 -m scripts.validate_asset_compass_treasury_trends_v42 \
             --input /tmp/ooglex-v42-published.json --minimum 100
+          python3 - <<'PYV55'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("/tmp/ooglex-v55-published.json").read_text())
+          assert d["report_type"]=="asset_compass_v55_real_treasury_rate_shock_research"
+          assert d["official_0_to_100_scores_published"]==0
+          assert d["historical_first_publication_vintages_verified"] is False
+          assert d["validated_for_live_scoring"] is False
+          assert d["source_end_date"]==json.loads(Path("/tmp/ooglex-v42-published.json").read_text())["end_date"]
+          print("V55 real Treasury-rate research published with 0 live scores")
+          PYV55
           python3 - <<'PY'
           import json, os
           from pathlib import Path
