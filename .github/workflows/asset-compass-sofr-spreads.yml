@@ -1,0 +1,41 @@
+name: Asset compass SOFR spread history (daily reference)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '35 3 * * 2-6'
+permissions:
+  contents: write
+concurrency:
+  group: asset-compass-sofr-spread-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  update:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify offline contract
+        run: python -m unittest discover -s tests -p test_swap_spreads_history.py -v
+      - name: Retrieve aligned public data
+        run: python scripts/update_swap_spreads.py
+      - name: Commit data only if a new matched observation was added
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- macro/swap-spreads-history.json; then
+            echo "No new matched trading date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- macro/swap-spreads-history.json
+          git diff --cached --check
+          git commit -m "data(macro): append validated SOFR swap-spread trading day"
+          git pull --rebase origin main
+          git push origin HEAD:main
