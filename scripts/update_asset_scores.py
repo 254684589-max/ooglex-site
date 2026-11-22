@@ -37,6 +37,80 @@ def rowdate(row):
     return None
 def by_date(rows):
     return {rowdate(r):r for r in rows if rowdate(r)}
+def retain_recent_auxiliary(previous, now):
+    """Retain previously verified auxiliary blocks only for a short retry window.
+
+    Treasury refresh is the first step in a multi-source pipeline. It must not
+    erase independently verified PCE/H.4.1/liquidity/recession observations when
+    another source has not yet returned. This is NOT permission to relabel old
+    readings as newly published, nor to retain old readings indefinitely.
+    """
+    if not isinstance(previous, dict) or previous.get("schema_version") != 1:
+        return {}
+    retained = {}
+    limits = {"bea": 4, "fed_h41": 21, "liquidity": 21, "nyfed_recession_model": 4}
+    for section, max_age in limits.items():
+        block = previous.get(section)
+        if not isinstance(block, dict) or not block.get("retrieved_at"):
+            continue
+        try:
+            stamp = datetime.fromisoformat(block["retrieved_at"].replace("Z", "+00:00"))
+        except (ValueError, TypeError, AttributeError):
+            continue
+        if stamp.tzinfo is None:
+            continue
+        age = (now - stamp.astimezone(timezone.utc)).total_seconds()
+        if not 0 <= age <= 72 * 3600:
+            continue
+        if section == "bea":
+            sub = block.get("core_pce") or {}
+            period = sub.get("observation_period")
+            try:
+                y, m = (int(p) for p in period.split("-"))
+                diff = (now.year-y)*12 + now.month-m
+                if not 0 <= diff <= max_age or not isinstance(sub.get("value"), (int,float)):
+                    continue
+            except (TypeError, ValueError, AttributeError):
+                continue
+        elif section == "nyfed_recession_model":
+            period = block.get("observation_period")
+            try:
+                y, m = (int(p) for p in period.split("-"))
+                if not 0 <= (now.year-y)*12+now.month-m <= max_age:
+                    continue
+            except (TypeError, ValueError, AttributeError):
+                continue
+        elif section == "fed_h41":
+            try:
+                observed = date.fromisoformat(block["total_assets"]["observation_date"])
+                if not 0 <= (now.date()-observed).days <= max_age:
+                    continue
+            except (KeyError, TypeError, ValueError):
+                continue
+        elif section == "liquidity":
+            safe = {"retrieved_at":block["retrieved_at"]}
+            for key in ("reserves", "tga", "overnight_rrp"):
+                item = block.get(key)
+                if not isinstance(item, dict):
+                    continue
+                try:
+                    observed = date.fromisoformat(item["observation_date"])
+                    horizon = 11 if key == "overnight_rrp" else max_age
+                    if not 0 <= (now.date()-observed).days <= horizon:
+                        continue
+                    if type(item.get("value")) not in (int,float):
+                        continue
+                    safe[key] = item
+                except (KeyError, TypeError, ValueError):
+                    continue
+            if len(safe) == 1:
+                continue
+            retained[section] = safe
+            continue
+        retained[section] = block
+    return retained
+
+
 def build():
     year=date.today().year
     # Include preceding year for first trading days of January.
@@ -71,6 +145,7 @@ def build():
         previous=json.loads(out.read_text(encoding="utf-8"))
         if isinstance(previous.get("bls"),dict): result["bls"]=previous["bls"]
         if isinstance(previous.get("factor_signals"),dict): result["factor_signals"]=previous["factor_signals"]
+        result.update(retain_recent_auxiliary(previous, datetime.now(timezone.utc)))
     out.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("Updated",out,d)
 if __name__=="__main__":build()
