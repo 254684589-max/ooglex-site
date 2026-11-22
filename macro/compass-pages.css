@@ -31,3 +31,19 @@
 .insights-item p{font-size:13px;margin:10px 0 0}
 .insights-warning{font-size:13px;color:#e2b879;line-height:1.7;margin:13px 0 0}
 @media(max-width:780px){.insights-list{grid-template-columns:1fr}.insights-panel{padding:16px}.insights-item .insights-value{font-size:21px}}
+
+/* V42: official Treasury historical observations, not a PIT strategy graph. */
+.treasury-trends-panel{margin:18px 0 27px}
+.treasury-trend-controls{display:flex;flex-wrap:wrap;gap:15px;margin:0 0 16px}
+.treasury-trend-controls label{display:grid;gap:7px;flex:1 1 220px;color:#b7c6db;font-size:12px}
+.treasury-trend-controls select{background:#101823;border:1px solid #435773;border-radius:9px;color:#edf3fc;min-height:42px;padding:8px 11px;font-size:14px;max-width:100%}
+.treasury-trend-controls select:focus-visible{outline:2px solid #83b9ff;outline-offset:2px}
+.treasury-trend-svg{width:100%;height:auto;display:block;min-height:180px;max-height:370px;overflow:visible}
+.trend-gridline{stroke:#344154;stroke-width:1;stroke-dasharray:4 5}
+.trend-axis-label{fill:#a7bbd4;font-size:12px}
+.trend-line{stroke:#65baff;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.trend-last-point{fill:#5bd7aa;stroke:#0b0e13;stroke-width:2}
+.treasury-trend-data{border-top:1px solid #293347;margin-top:16px;padding-top:13px}
+.treasury-trend-data summary{color:#acd3ff;cursor:pointer;font-size:13px}
+.treasury-trend-data td,.treasury-trend-data th{font-variant-numeric:tabular-nums}
+@media(max-width:780px){.treasury-trend-controls{gap:10px}.treasury-trend-svg{min-height:130px}.treasury-trends-panel{padding:15px}}
