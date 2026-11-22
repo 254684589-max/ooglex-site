@@ -11,7 +11,7 @@
 <h2>核心利率观测 <a class="section-link" href="./index.html">完整宏观指标中心</a></h2>
 <section class="grid" id="headline" aria-label="美国国债关键利率"></section>
 <h2>美国国债市场 · 双曲线历史趋势对比</h2>
-<p class="muted">选择主曲线与对比曲线，共用同一观测日期和纵轴；名义收益率减同期限TIPS实际收益率会额外展示通胀补偿差值。点击下方六资产的关联利率按钮可自动切换两条曲线。使用美国国债及TIPS市场的逐日收益率观测（美国财政部或美联储H.15经FRED镜像），观察利率、通胀补偿和期限利差随时间的变化。实际数据来源及抓取时间在图下方列明。此处为历史观测值，<strong>不是当时可交易的历史首次发布版本，也不是资产评分或回测。</strong></p>
+<p class="muted">选择主曲线与对比曲线，共用同一观测日期和纵轴；鼠标悬停可查看精确日期及读数，起点、终点可计算收益率百分点和基点变化；名义收益率减同期限TIPS实际收益率会额外展示通胀补偿差值。点击下方六资产的关联利率按钮可自动切换两条曲线。使用美国国债及TIPS市场的逐日收益率观测（美国财政部或美联储H.15经FRED镜像），观察利率、通胀补偿和期限利差随时间的变化。实际数据来源及抓取时间在图下方列明。此处为历史观测值，<strong>不是当时可交易的历史首次发布版本，也不是资产评分或回测。</strong></p>
 <section class="card treasury-trends-panel" id="treasury-trend-panel" aria-label="美国国债真实历史观测走势图">
  <div class="treasury-trend-controls">
   <label>观测指标
@@ -43,6 +43,16 @@
  <div class="trend-legend" id="treasury-trend-legend" aria-label="主曲线和对比曲线图例"></div>
  <p class="trend-difference" id="treasury-trend-difference" aria-live="polite"></p>
  <svg id="treasury-trend-svg" class="treasury-trend-svg" viewBox="0 0 720 300" preserveAspectRatio="xMidYMid meet" role="img" aria-label="历史数据加载中"></svg>
+ <p class="trend-probe" id="treasury-trend-probe" aria-live="polite" aria-label="图表历史观测日精确读数">移动鼠标或触摸图表查看历史观测值。</p>
+ <div class="treasury-date-compare" role="group" aria-label="选取两个实际观测日并比较收益率变化">
+  <label>起点观测日期
+   <select id="treasury-compare-start" aria-label="起点观测日期"><option value="">数据读取中</option></select>
+  </label>
+  <label>终点观测日期
+   <select id="treasury-compare-end" aria-label="终点观测日期"><option value="">数据读取中</option></select>
+  </label>
+ </div>
+ <p class="trend-comparison-result" id="treasury-compare-result" aria-live="polite">选择两个真实观测日期比较变化。</p>
  <p class="label" id="treasury-trend-meta"></p>
  <details class="treasury-trend-data"><summary>查看最近8个实际历史观测值</summary>
   <div class="table-wrap"><table><thead><tr><th scope="col">观测日期</th><th scope="col">观测数值</th><th scope="col">对比值（可选）</th></tr></thead><tbody id="treasury-trend-table"></tbody></table></div>
