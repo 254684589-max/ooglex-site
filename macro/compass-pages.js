@@ -166,7 +166,7 @@ function renderFactorQualification(rows,readiness,report){
   (audit.archivedTotal===null?"首次归档报告未核实":audit.archivedTotal+"条网站首次归档记录")+
   "；已认证独立预测信号："+audit.certifiedSignalCount+
   "；正式评分：未启用。"+
-  (audit.sourceMismatchCount===null?"":(" 已归档的财政部来源年份异常记录："+audit.sourceMismatchCount+"（需修复及原始版本核证）。"));
+  (audit.sourceMismatchCount===null?"":(" 已归档的财政部来源年份异常记录："+audit.sourceMismatchCount+"（需修复及原始版本核证）。")));
  const wrap=el("div","table-wrap"),table=el("table"),head=el("thead"),tr=el("tr");
  for(const label of ["源指标","当前观测","历史覆盖/下限","官方首发时间","修订追踪","信息独立增量","样本外验证","模型准入"]){
   const th=el("th","",label);th.scope="col";tr.append(th);
