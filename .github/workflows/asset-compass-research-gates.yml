@@ -1,4 +1,4 @@
-name: Asset Compass Research V18-V52 Gates
+name: Asset Compass Research V18-V53 Gates
 on:
   pull_request:
     paths:
@@ -21,6 +21,10 @@ on:
       - 'tests/smoke_asset_compass_evidence_v50.cjs'
       - 'tests/test_asset_compass_official_v51.py'
       - 'tests/test_asset_compass_custody_v52.py'
+      - 'tests/test_asset_compass_release_values_v53.py'
+      - 'scripts/asset_compass_release_values_v53.py'
+      - '.github/workflows/asset-compass-release-values-v53.yml'
+      - 'docs/ASSET_COMPASS_V53_*'
       - 'scripts/asset_compass_custody_v52.py'
       - 'scripts/run_asset_compass_v52.sh'
       - '.github/workflows/asset-compass-private-custody-v52.yml'
@@ -97,9 +101,9 @@ jobs:
         run: python3 -m pip install cryptography==46.0.4
       - name: Syntax validation
         run: python3 -m compileall -q scripts tests
-      - name: Run isolated V18-V52 research gates
+      - name: Run isolated V18-V53 research gates
         run: python3 -m unittest discover -s tests -p 'test_asset_compass_*_v*.py' -v
-      - name: V39-V52 verify factor qualification evidence and closed scoring gates
+      - name: V39-V53 verify factor qualification evidence and closed scoring gates
         run: |
           node --check macro/compass-pages.js
           node tests/smoke_asset_compass_frontend_v40.cjs
@@ -127,6 +131,8 @@ jobs:
         run: |
           python3 -m unittest discover -s tests -p 'test_asset_compass_custody_v52.py' -v
           bash -n scripts/run_asset_compass_v52.sh
+      - name: V53 verify five separately typed source statistics and unchanged locked PIT status
+        run: python3 -m unittest discover -s tests -p 'test_asset_compass_release_values_v53.py' -v
       - name: Verify production scoring remains blocked
         run: |
           python3 - <<'PY'
