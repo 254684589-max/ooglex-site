@@ -1,0 +1,70 @@
+name: Asset Compass V8 Operational Watchdog
+on:
+  schedule:
+    # After independent archive's 01:20 UTC Tue-Sat run.
+    - cron: '50 2 * * 2-6'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/asset-compass-monitor-v8.yml'
+      - 'scripts/monitor_asset_compass_v8.py'
+      - 'tests/test_macro_monitor_v8.py'
+permissions:
+  contents: write
+concurrency:
+  group: asset-compass-ledger-main
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify independent monitoring regression tests
+        run: python3 -m unittest discover -s tests -p 'test_macro_monitor_v8.py' -v
+      - name: Evaluate committed source freshness, V7 provenance and continuity
+        env:
+          OOGLEX_MONITOR_RUN_ID: ${{ github.run_id }}
+        run: |
+          python3 -m scripts.monitor_asset_compass_v8 --run-id "$OOGLEX_MONITOR_RUN_ID"
+      - name: Persist monitoring events and latest report
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/asset-compass-monitor-v8.json data/asset-compass-monitor-events-v8.jsonl
+          if ! git diff --cached --quiet; then
+            git commit -m "data(macro): record V8 operational monitoring result"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+          git fetch origin main
+          git show origin/main:data/asset-compass-monitor-v8.json > /tmp/ooglex-monitor-v8-remote.json
+          git show origin/main:data/asset-compass-monitor-events-v8.jsonl > /tmp/ooglex-monitor-v8-events-remote.jsonl
+          cmp data/asset-compass-monitor-v8.json /tmp/ooglex-monitor-v8-remote.json
+          cmp data/asset-compass-monitor-events-v8.jsonl /tmp/ooglex-monitor-v8-events-remote.jsonl
+      - name: Emit GitHub Actions failure on critical operational issues
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          r=json.loads(Path("data/asset-compass-monitor-v8.json").read_text())
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+              f.write("### Ooglex Macro V8 Monitor\n")
+              f.write("Operational status: "+r["operational_status"]+"  \n")
+              f.write("Consecutive alert runs: "+str(r["consecutive_alert_runs"])+"  \n")
+              for issue in r["issues"]:
+                  f.write("- "+issue["code"]+": "+issue["detail"]+"\n")
+              f.write("\nModel scoring remains disabled.\n")
+          if r["operational_status"]!="healthy":
+              raise SystemExit("::error::Asset Compass monitoring detected unhealthy source state; inspect V8 report.")
+          PY
