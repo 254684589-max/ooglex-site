@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "observation_date": "2026-11-20",
-  "generated_at": "2026-11-21T17:10:30.172385+00:00",
+  "generated_at": "2026-11-22T08:19:50.720733+00:00",
   "status": "partial_data_no_full_score",
   "source": "US Department of the Treasury",
   "source_urls": [
@@ -106,6 +106,13 @@
         "source": "BLS",
         "yoy_unavailable_reason": "BLS did not publish October 2025 CPI because of the federal shutdown"
       },
+      "core_cpi": {
+        "period": "2026-10",
+        "value": 339.9,
+        "unit": "index",
+        "source": "BLS",
+        "yoy_unavailable_reason": "BLS did not publish October 2025 CPI because of the federal shutdown"
+      },
       "unemployment": {
         "period": "2026-10",
         "value": 4.1,
@@ -122,9 +129,10 @@
     },
     "completeness": {
       "cpi_yoy_available": false,
+      "core_cpi_yoy_available": false,
       "payroll_delta_available": true
     },
-    "retrieved_at": "2026-11-21T17:10:29.899892+00:00",
+    "retrieved_at": "2026-11-22T08:19:50.230155+00:00",
     "source_url": "https://api.bls.gov/publicAPI/v1/timeseries/data/",
     "note": "Preliminary data may be revised by BLS."
   },
@@ -136,9 +144,85 @@
     "source": "Federal Reserve Bank of New York",
     "source_url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/last/10.json"
   },
+  "bea": {
+    "core_pce": {
+      "observation_period": "2026-09",
+      "value": 130.902,
+      "unit": "index",
+      "source": "Bureau of Economic Analysis via FRED",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE&cosd=2023-01-01&coed=2026-11-22",
+      "original_source_url": "https://www.bea.gov/data/personal-consumption-expenditures-price-index",
+      "source_series_id": "PCEPILFE",
+      "release_timestamp_verified": false,
+      "yoy_percent": 3.121
+    },
+    "retrieved_at": "2026-11-22T08:19:50.720733+00:00"
+  },
+  "fed_h41": {
+    "total_assets": {
+      "observation_date": "2026-11-18",
+      "value_millions_usd": 6741452.0,
+      "unit": "millions_usd",
+      "source": "Federal Reserve Board H.4.1 via FRED",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WALCL&cosd=2025-01-01&coed=2026-11-22",
+      "original_source_url": "https://www.federalreserve.gov/releases/h41/",
+      "source_series_id": "WALCL",
+      "release_timestamp_verified": false
+    },
+    "retrieved_at": "2026-11-22T08:19:50.720733+00:00"
+  },
+  "liquidity": {
+    "reserves": {
+      "observation_date": "2026-11-18",
+      "value": 2979656.0,
+      "unit": "millions_usd",
+      "source_series_id": "WRESBAL",
+      "source": "Federal Reserve Board H.4.1 via FRED",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WRESBAL&cosd=2025-01-01&coed=2026-11-22",
+      "release_timestamp_verified": false,
+      "frequency": "weekly",
+      "frequency_detail": "H.4.1 week-average estimate"
+    },
+    "tga": {
+      "observation_date": "2026-11-18",
+      "value": 916613.0,
+      "unit": "millions_usd",
+      "source_series_id": "WTREGEN",
+      "source": "Federal Reserve Board H.4.1 via FRED",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WTREGEN&cosd=2025-01-01&coed=2026-11-22",
+      "release_timestamp_verified": false,
+      "frequency": "weekly",
+      "frequency_detail": "H.4.1 week-average estimate"
+    },
+    "overnight_rrp": {
+      "observation_date": "2026-11-20",
+      "value": 0.401,
+      "unit": "billions_usd",
+      "source_series_id": "RRPONTSYD",
+      "source": "Federal Reserve Bank of New York via FRED",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRPONTSYD&cosd=2025-01-01&coed=2026-11-22",
+      "release_timestamp_verified": false,
+      "frequency": "daily",
+      "frequency_detail": "daily overnight operation balance"
+    },
+    "retrieved_at": "2026-11-22T08:19:51.377367+00:00"
+  },
+  "nyfed_recession_model": {
+    "observation_period": "2026-10",
+    "target_period": "2027-10",
+    "probability_percent": 12.415814,
+    "source": "Federal Reserve Bank of New York",
+    "source_url": "https://www.newyorkfed.org/medialibrary/media/research/capital_markets/allmonth.xls",
+    "source_model_url": "https://www.newyorkfed.org/research/capital_markets/ycfaq.html",
+    "model": "10Y minus 3M Treasury spread; recession in a month 12 months ahead",
+    "official_forecast": false,
+    "release_timestamp_verified": false,
+    "unit": "percent",
+    "retrieved_at": "2026-11-22T08:19:52.668931+00:00"
+  },
   "scoring": {
     "model": "ooglex-macro-v1-precalibration",
-    "generated_at": "2026-11-21T17:10:30.193282+00:00",
+    "generated_at": "2026-11-22T08:19:52.711731+00:00",
     "calibration_verified": false,
     "out_of_sample_verified": false
   }

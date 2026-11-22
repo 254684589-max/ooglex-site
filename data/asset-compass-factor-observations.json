@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_factor_observations",
+  "generated_at": "2026-11-22T08:19:52.750195+00:00",
+  "source_snapshot_observation_date": "2026-11-20",
+  "groups": {
+    "rates": {
+      "label": "利率与货币政策",
+      "observations": [
+        {
+          "id": "us10y",
+          "label": "美国10年期名义国债收益率",
+          "value": 4.92,
+          "unit": "percent",
+          "observation_period": "2026-11-20",
+          "source": "US Treasury",
+          "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
+          "validated_historical_release_time": false,
+          "qualifies_as_model_factor_signal": false
+        },
+        {
+          "id": "us2y",
+          "label": "美国2年期名义国债收益率",
+          "value": 4.63,
+          "unit": "percent",
+          "observation_period": "2026-11-20",
+          "source": "US Treasury",
+          "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
+          "validated_historical_release_time": false,
+          "qualifies_as_model_factor_signal": false
+        },
+        {
+          "id": "real10y",
+          "label": "美国10年期TIPS实际收益率",
+          "value": 2.77,
+          "unit": "percent",
+          "observation_period": "2026-11-20",
+          "source": "US Treasury",
+          "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_real_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
+          "validated_historical_release_time": false,
+          "qualifies_as_model_factor_signal": false
+        },
+        {
+          "id": "spread10y2y",
+          "label": "10Y−2Y期限利差",
+          "value": 0.29,
+          "unit": "percentage_points",
+          "observation_period": "2026-11-20",
+          "source": "US Treasury (derived same-day rates)",
+          "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
+          "validated_historical_release_time": false,
+          "qualifies_as_model_factor_signal": false,
+          "formula": "10Y nominal yield minus 2Y nominal yield"
+        },
+        {
+          "id": "effr",
+          "label": "有效联邦基金利率 EFFR",
+          "value": 3.88,
+          "unit": "percent",
+          "observation_period": "2026-11-19",
+          "source": "New York Fed",
+          "source_url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/last/10.json",
+          "validated_historical_release_time": false,
+          "qualifies_as_model_factor_signal": false
+        }
+      ],
+      "status": "observations_only",
+      "unavailable_reason": null
+    },
+    "inflation": {
+      "label": "通胀环境",
+      "observations": [
+        {
+          "id": "breakeven10y",
+          "label": "10年期盈亏平衡通胀补偿",
+          "value": 2.15,
+          "unit": "percentage_points",
+          "observation_period": "2026-11-20",
+          "source": "US Treasury (derived same-day nominal/TIPS)",
+          "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_real_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
+          "validated_historical_release_time": false,
+          "qualifies_as_model_factor_signal": false,
+          "formula": "10Y nominal yield minus 10Y TIPS real yield; not pure expected inflation"
+        },
+        {
+          "id": "core_pce_yoy",
+          "label": "美国核心PCE同比",
+          "value": 3.121,
+          "unit": "percent",
+          "observation_period": "2026-09",
+          "source": "BEA via FRED",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE&cosd=2023-01-01&coed=2026-11-22",
+          "validated_historical_release_time": false,
+          "qualifies_as_model_factor_signal": false
+        }
+      ],
+      "status": "observations_only",
+      "unavailable_reason": null
+    },
+    "growth": {
+      "label": "经济增长与就业",
+      "observations": [
+        {
+          "id": "unemployment",
+          "label": "美国失业率",
+          "value": 4.1,
+          "unit": "percent",
+          "observation_period": "2026-10",
+          "source": "US Bureau of Labor Statistics",
+          "source_url": "https://api.bls.gov/publicAPI/v1/timeseries/data/",
+          "validated_historical_release_time": false,
+          "qualifies_as_model_factor_signal": false
+        },
+        {
+          "id": "payroll_delta",
+          "label": "美国非农就业月度变化",
+          "value": 165.0,
+          "unit": "thousands",
+          "observation_period": "2026-10",
+          "source": "US Bureau of Labor Statistics",
+          "source_url": "https://api.bls.gov/publicAPI/v1/timeseries/data/",
+          "validated_historical_release_time": false,
+          "qualifies_as_model_factor_signal": false
+        },
+        {
+          "id": "nyfed_recession_probability",
+          "label": "纽约联储收益率曲线模型12个月后衰退概率",
+          "value": 12.415814,
+          "unit": "percent",
+          "observation_period": "2026-10",
+          "source": "New York Fed (research model, not official forecast)",
+          "source_url": "https://www.newyorkfed.org/medialibrary/media/research/capital_markets/allmonth.xls",
+          "validated_historical_release_time": false,
+          "qualifies_as_model_factor_signal": false
+        }
+      ],
+      "status": "observations_only",
+      "unavailable_reason": null
+    },
+    "liquidity": {
+      "label": "流动性组件",
+      "observations": [
+        {
+          "id": "fed_assets",
+          "label": "联储H.4.1总资产",
+          "value": 6741452.0,
+          "unit": "millions_usd",
+          "observation_period": "2026-11-18",
+          "source": "Federal Reserve via FRED",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WALCL&cosd=2025-01-01&coed=2026-11-22",
+          "validated_historical_release_time": false,
+          "qualifies_as_model_factor_signal": false
+        },
+        {
+          "id": "reserves",
+          "label": "银行准备金",
+          "value": 2979656.0,
+          "unit": "millions_usd",
+          "observation_period": "2026-11-18",
+          "source": "Federal Reserve Board H.4.1 via FRED",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WRESBAL&cosd=2025-01-01&coed=2026-11-22",
+          "validated_historical_release_time": false,
+          "qualifies_as_model_factor_signal": false
+        },
+        {
+          "id": "tga",
+          "label": "财政部一般账户TGA",
+          "value": 916613.0,
+          "unit": "millions_usd",
+          "observation_period": "2026-11-18",
+          "source": "Federal Reserve Board H.4.1 via FRED",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WTREGEN&cosd=2025-01-01&coed=2026-11-22",
+          "validated_historical_release_time": false,
+          "qualifies_as_model_factor_signal": false
+        },
+        {
+          "id": "overnight_rrp",
+          "label": "隔夜逆回购",
+          "value": 0.401,
+          "unit": "billions_usd",
+          "observation_period": "2026-11-20",
+          "source": "Federal Reserve Bank of New York via FRED",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRPONTSYD&cosd=2025-01-01&coed=2026-11-22",
+          "validated_historical_release_time": false,
+          "qualifies_as_model_factor_signal": false
+        }
+      ],
+      "status": "observations_only",
+      "unavailable_reason": null
+    },
+    "risk": {
+      "label": "风险与信用环境",
+      "observations": [],
+      "status": "unavailable",
+      "unavailable_reason": "no_current_verified_observation"
+    },
+    "asset_specific": {
+      "label": "资产专属估值与资金流",
+      "observations": [],
+      "status": "unavailable",
+      "unavailable_reason": "no_current_verified_observation"
+    }
+  },
+  "validated_for_live_scoring": false,
+  "factor_signals_calibrated": false,
+  "asset_specific_contributions_available": false,
+  "independent_factor_group_count_certified": false,
+  "no_missing_to_neutral_imputation": true,
+  "limitations": [
+    "Current official observations are not calibrated factor signals or asset return forecasts.",
+    "10Y nominal, TIPS real and break-even inflation are mathematically linked and not independent votes.",
+    "No released historical vintage timestamps; newest revisions cannot backfill past trading decisions.",
+    "Liquidity components have different units, dates and accounting bases; they cannot be summed into a net-liquidity trade signal.",
+    "Market risk/credit and asset-specific valuation/flows lack qualifying source observations.",
+    "Missing, stale or unverified observations are never set to neutral or zero."
+  ]
+}
