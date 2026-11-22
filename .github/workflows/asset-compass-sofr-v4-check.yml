@@ -1,0 +1,28 @@
+name: SOFR V4 movement monitoring tests
+on:
+  pull_request:
+    paths:
+      - 'macro/swap-spreads*'
+      - 'tests/test_swap_spreads_monitor.cjs'
+      - '.github/workflows/asset-compass-sofr-v4-check.yml'
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate V4 scripts
+        run: |
+          node --check macro/swap-spreads-monitor.js
+          node --check macro/swap-spreads-monitor-panel.js
+      - name: V3 and V4 contracts
+        run: |
+          node --test tests/test_swap_spreads_analytics.cjs
+          node --test tests/test_swap_spreads_monitor.cjs
+      - name: Validate sample
+        run: python -m json.tool macro/swap-spreads-history.json >/dev/null
