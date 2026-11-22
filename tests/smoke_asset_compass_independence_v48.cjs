@@ -72,7 +72,7 @@ test("dashboard displays 14 source entries and two formulas, no phantom independ
  assert.match(displayed,/14 条已接入源系列/);
  assert.match(displayed,/2 条代数派生公式/);
  assert.match(displayed,/0项预测独立性认证/);
- assert.match(displayed,/名义10年/);
+ assert.match(displayed,/10年名义收益率/);
  assert.match(displayed,/FRED|美联储/);
  assert.ok(nodes["asset-grid"].children.every(x=>x.children[1].textContent==="— / 100"));
 });
