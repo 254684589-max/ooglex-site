@@ -140,7 +140,7 @@ const TREASURY_TRENDS=(function(){
   const last=all[all.length-1],unit=FIELDS[key].unit;
   status.textContent=FIELDS[key].name+"：最新 "+last[key].toFixed(2)+" "+unit+
    (compareKey?"；"+FIELDS[compareKey].name+"："+last[compareKey].toFixed(2)+" "+FIELDS[compareKey].unit:"")+
-   " · "+last.date+" · "+all.length+" 个同日匹配观测日";
+   " · "+last.date+" · "+all.length+" 个匹配观测日（所有曲线按同日配对）";
   meta.textContent="来源："+(data.source==="U.S. Department of the Treasury"?
     "美国财政部名义国债与TIPS实际收益率官方CSV":"美国联邦储备委员会H.15日度国债收益率（经圣路易斯联储FRED镜像）")+"；"+
    "数据读取时间："+data.retrieved_at+"；"+
