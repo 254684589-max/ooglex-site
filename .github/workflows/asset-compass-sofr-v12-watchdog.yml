@@ -1,0 +1,57 @@
+name: SOFR V12 scheduled ingestion watchdog
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '35 7 * * 2-6'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  watchdog:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run offline regression tests
+        run: python -m unittest discover -s tests -p test_sofr_v12_watchdog.py -v
+      - name: Verify actual scheduled run and published heartbeat
+        id: audit
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set +e
+          python scripts/watch_sofr_schedule.py --output /tmp/sofr-v12-watchdog.json
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Save watchdog result
+        if: always() && steps.audit.outputs.exit_code != ''
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os
+          p=json.load(open('/tmp/sofr-v12-watchdog.json',encoding='utf-8'))
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a',encoding='utf-8') as out:
+              out.write('## SOFR production schedule watchdog\n')
+              for key in ('status','expectedScheduledAt','runId','archiveLatestDate','archiveObservations'):
+                  out.write(f'- {key}: {p.get(key,"N/A")}\n')
+              out.write('Checks actual schedule runs only. Does not write market data.\n')
+          PY
+      - name: Upload audit report for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sofr-v12-production-watchdog
+          path: /tmp/sofr-v12-watchdog.json
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Mark missing or failed scheduled ingestion as failure
+        if: always() && steps.audit.outputs.exit_code != '' && steps.audit.outputs.exit_code != '0'
+        run: |
+          echo "No verified SOFR scheduled ingest. Review report and ingestion workflow."
+          exit 1
