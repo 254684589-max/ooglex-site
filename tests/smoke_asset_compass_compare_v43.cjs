@@ -57,14 +57,15 @@ test("real committed 1472-date history is validated with its actual official sou
  assert.equal(x.original_release_vintages_available,false);
  assert.equal(x.not_valid_for_point_in_time_backtest,true);
 });
-test("two curves share exact 1472 source-matched dates and both render",()=>{
+test("two curves share exact live source-matched dates and both render",()=>{
  const {ctx,nodes}=setup();ctx.data=history;
  vm.runInContext('TREASURY_TRENDS.plot(data,"us10y","all","real10y")',ctx);
  assert.equal(paths(nodes).length,2);
  assert.equal(nodes["treasury-trend-legend"].children.length,2);
  assert.equal(nodes["treasury-trend-table"].children.length,8);
  assert.equal(nodes["treasury-trend-table"].children[0].children.length,3);
- assert.match(nodes["treasury-trend-status"].textContent,/1472 个匹配观测日/);
+ assert.match(nodes["treasury-trend-status"].textContent,
+  new RegExp(history.observation_count+" 个匹配观测日"));
  assert.match(nodes["treasury-trend-svg"].attributes["aria-label"],/双曲线对比/);
 });
 test("breakeven spread exactly matches the last real date in both percentage points and bp",()=>{
