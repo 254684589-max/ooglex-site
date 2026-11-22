@@ -316,7 +316,7 @@ const TREASURY_TRENDS=(function(){
     const line=el("div");line.className="treasury-distribution-bin";
     const name=el("span",bin.label),bar=el("div");bar.className="treasury-distribution-track";
     const fill=el("span");fill.className="treasury-distribution-fill";
-    fill.style.width=(bin.count/max*100).toFixed(1)+"%";
+    fill.setAttribute("style","width:"+(bin.count/max*100).toFixed(1)+"%");
     bar.append(fill);
     line.append(name,bar,el("span",String(bin.count)));bars.append(line);
    }
