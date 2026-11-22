@@ -127,3 +127,13 @@
 .factor-qualification th,.factor-qualification td{padding:10px 9px;line-height:1.6;vertical-align:middle}
 .factor-qualification th:last-child,.factor-qualification td:last-child{font-weight:600;white-space:nowrap}
 .factor-qualification .insights-warning{margin-top:14px;line-height:1.75}
+
+/* V50: publisher release/revision reference ledger, research-only. */
+.pit-evidence-v50{margin:15px 0 26px}
+.pit-evidence-v50 .table-wrap{overflow-x:auto}
+.pit-evidence-v50 table{min-width:1040px;font-size:12px}
+.pit-evidence-v50 th,.pit-evidence-v50 td{padding:11px 9px;line-height:1.65;vertical-align:top}
+.pit-evidence-v50 td:last-child{min-width:280px;max-width:440px;white-space:normal}
+.pit-evidence-v50 a{display:inline-block;min-height:24px}
+.pit-evidence-v50 a:focus-visible{outline:2px solid #83b9ff;outline-offset:3px}
+.pit-evidence-v50 .data-unavailable{color:#e1b774;font-weight:600;white-space:nowrap}

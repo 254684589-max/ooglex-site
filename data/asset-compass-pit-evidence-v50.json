@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_pit_evidence_ledger_v50",
+  "as_of": "2026-11-23",
+  "status": "research_only",
+  "evidence_policy": {
+    "reference_links_are_not_proof": true,
+    "archived_first_seen_is_not_publication_time": true,
+    "exact_as_of_publication_timestamp_required": true,
+    "original_values_and_sha256_required": true,
+    "complete_revision_lineage_required": true,
+    "independent_manual_review_required": true,
+    "no_model_admission_from_registry": true
+  },
+  "entries": [
+    {
+      "id": "treasury.us10y",
+      "publisher": "美国财政部",
+      "cadence": "daily",
+      "release_reference": {
+        "url": "https://home.treasury.gov/treasury-daily-interest-rate-xml-feed",
+        "kind": "官方发布或历史检索入口",
+        "status": "reference_only"
+      },
+      "revision_reference": {
+        "url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+        "kind": "官方修订规则或历史版本检索入口",
+        "status": "reference_only"
+      },
+      "first_publication_records": [],
+      "revision_records": [],
+      "first_publication_verified": false,
+      "revision_chain_verified": false,
+      "point_in_time_qualified": false,
+      "evidence_gap": "逐交易日原始发布文件、首次可见时刻及变更/更正历史"
+    },
+    {
+      "id": "treasury.real10y",
+      "publisher": "美国财政部",
+      "cadence": "daily",
+      "release_reference": {
+        "url": "https://home.treasury.gov/treasury-daily-interest-rate-xml-feed",
+        "kind": "官方发布或历史检索入口",
+        "status": "reference_only"
+      },
+      "revision_reference": {
+        "url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+        "kind": "官方修订规则或历史版本检索入口",
+        "status": "reference_only"
+      },
+      "first_publication_records": [],
+      "revision_records": [],
+      "first_publication_verified": false,
+      "revision_chain_verified": false,
+      "point_in_time_qualified": false,
+      "evidence_gap": "TIPS实值曲线逐日首发快照与后续更正轨迹"
+    },
+    {
+      "id": "treasury.us2y",
+      "publisher": "美国财政部",
+      "cadence": "daily",
+      "release_reference": {
+        "url": "https://home.treasury.gov/treasury-daily-interest-rate-xml-feed",
+        "kind": "官方发布或历史检索入口",
+        "status": "reference_only"
+      },
+      "revision_reference": {
+        "url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+        "kind": "官方修订规则或历史版本检索入口",
+        "status": "reference_only"
+      },
+      "first_publication_records": [],
+      "revision_records": [],
+      "first_publication_verified": false,
+      "revision_chain_verified": false,
+      "point_in_time_qualified": false,
+      "evidence_gap": "2年期曲线逐日发布时点及更正来源"
+    },
+    {
+      "id": "nyfed.effr",
+      "publisher": "纽约联储",
+      "cadence": "daily",
+      "release_reference": {
+        "url": "https://www.newyorkfed.org/markets/reference-rates/effr",
+        "kind": "官方发布或历史检索入口",
+        "status": "reference_only"
+      },
+      "revision_reference": {
+        "url": "https://www.newyorkfed.org/markets/reference-rates/additional-information-about-reference-rates",
+        "kind": "官方修订规则或历史版本检索入口",
+        "status": "reference_only"
+      },
+      "first_publication_records": [],
+      "revision_records": [],
+      "first_publication_verified": false,
+      "revision_chain_verified": false,
+      "point_in_time_qualified": false,
+      "evidence_gap": "EFFR每个观测日首发记录及追溯性修订说明"
+    },
+    {
+      "id": "bls.cpi",
+      "publisher": "美国劳工统计局",
+      "cadence": "monthly",
+      "release_reference": {
+        "url": "https://www.bls.gov/bls/news-release/cpi.htm",
+        "kind": "官方发布或历史检索入口",
+        "status": "reference_only"
+      },
+      "revision_reference": {
+        "url": "https://www.bls.gov/about-bls/revisions.htm",
+        "kind": "官方修订规则或历史版本检索入口",
+        "status": "reference_only"
+      },
+      "first_publication_records": [],
+      "revision_records": [],
+      "first_publication_verified": false,
+      "revision_chain_verified": false,
+      "point_in_time_qualified": false,
+      "evidence_gap": "CPI月度首发新闻稿原值、发布日期时刻及后续版本差异"
+    },
+    {
+      "id": "bls.core_cpi",
+      "publisher": "美国劳工统计局",
+      "cadence": "monthly",
+      "release_reference": {
+        "url": "https://www.bls.gov/bls/news-release/cpi.htm",
+        "kind": "官方发布或历史检索入口",
+        "status": "reference_only"
+      },
+      "revision_reference": {
+        "url": "https://www.bls.gov/cpi/tables/supplemental-files/home.htm",
+        "kind": "官方修订规则或历史版本检索入口",
+        "status": "reference_only"
+      },
+      "first_publication_records": [],
+      "revision_records": [],
+      "first_publication_verified": false,
+      "revision_chain_verified": false,
+      "point_in_time_qualified": false,
+      "evidence_gap": "核心CPI月度首发原值及季调或基准变更的版本对照"
+    },
+    {
+      "id": "bls.unemployment",
+      "publisher": "美国劳工统计局",
+      "cadence": "monthly",
+      "release_reference": {
+        "url": "https://www.bls.gov/bls/news-release/empsit.htm",
+        "kind": "官方发布或历史检索入口",
+        "status": "reference_only"
+      },
+      "revision_reference": {
+        "url": "https://www.bls.gov/about-bls/revisions.htm",
+        "kind": "官方修订规则或历史版本检索入口",
+        "status": "reference_only"
+      },
+      "first_publication_records": [],
+      "revision_records": [],
+      "first_publication_verified": false,
+      "revision_chain_verified": false,
+      "point_in_time_qualified": false,
+      "evidence_gap": "家庭调查失业率当期首发稿及修订/重估版本"
+    },
+    {
+      "id": "bls.payroll",
+      "publisher": "美国劳工统计局",
+      "cadence": "monthly",
+      "release_reference": {
+        "url": "https://www.bls.gov/bls/news-release/empsit.htm",
+        "kind": "官方发布或历史检索入口",
+        "status": "reference_only"
+      },
+      "revision_reference": {
+        "url": "https://www.bls.gov/about-bls/revisions.htm",
+        "kind": "官方修订规则或历史版本检索入口",
+        "status": "reference_only"
+      },
+      "first_publication_records": [],
+      "revision_records": [],
+      "first_publication_verified": false,
+      "revision_chain_verified": false,
+      "point_in_time_qualified": false,
+      "evidence_gap": "非农首发月增量及后续两次修订和年度基准修订"
+    },
+    {
+      "id": "bea.core_pce",
+      "publisher": "美国经济分析局",
+      "cadence": "monthly",
+      "release_reference": {
+        "url": "https://www.bea.gov/news/archive?field_related_product_target_id=716",
+        "kind": "官方发布或历史检索入口",
+        "status": "reference_only"
+      },
+      "revision_reference": {
+        "url": "https://fred.stlouisfed.org/docs/api/fred/series_observations.html",
+        "kind": "官方修订规则或历史版本检索入口",
+        "status": "reference_only"
+      },
+      "first_publication_records": [],
+      "revision_records": [],
+      "first_publication_verified": false,
+      "revision_chain_verified": false,
+      "point_in_time_qualified": false,
+      "evidence_gap": "核心PCE同比需从对应时点已发布指数计算；首发数值、两期历史指数及后续修订快照未核证"
+    },
+    {
+      "id": "fed_h41.total_assets",
+      "publisher": "美联储理事会",
+      "cadence": "weekly",
+      "release_reference": {
+        "url": "https://www.federalreserve.gov/releases/h41/",
+        "kind": "官方发布或历史检索入口",
+        "status": "reference_only"
+      },
+      "revision_reference": {
+        "url": "https://www.federalreserve.gov/releases/h41/about.htm",
+        "kind": "官方修订规则或历史版本检索入口",
+        "status": "reference_only"
+      },
+      "first_publication_records": [],
+      "revision_records": [],
+      "first_publication_verified": false,
+      "revision_chain_verified": false,
+      "point_in_time_qualified": false,
+      "evidence_gap": "H.4.1每期正式发布文本、明确发布时刻及历史更正版本"
+    },
+    {
+      "id": "liquidity.reserves",
+      "publisher": "美联储理事会",
+      "cadence": "weekly",
+      "release_reference": {
+        "url": "https://www.federalreserve.gov/releases/h41/",
+        "kind": "官方发布或历史检索入口",
+        "status": "reference_only"
+      },
+      "revision_reference": {
+        "url": "https://fred.stlouisfed.org/docs/api/fred/series_vintagedates.html",
+        "kind": "官方修订规则或历史版本检索入口",
+        "status": "reference_only"
+      },
+      "first_publication_records": [],
+      "revision_records": [],
+      "first_publication_verified": false,
+      "revision_chain_verified": false,
+      "point_in_time_qualified": false,
+      "evidence_gap": "H.4.1准备金逐期发布版本；FRED镜像版本不能自动视作首发证据"
+    },
+    {
+      "id": "liquidity.tga",
+      "publisher": "美联储理事会",
+      "cadence": "weekly",
+      "release_reference": {
+        "url": "https://www.federalreserve.gov/releases/h41/",
+        "kind": "官方发布或历史检索入口",
+        "status": "reference_only"
+      },
+      "revision_reference": {
+        "url": "https://fred.stlouisfed.org/docs/api/fred/series_vintagedates.html",
+        "kind": "官方修订规则或历史版本检索入口",
+        "status": "reference_only"
+      },
+      "first_publication_records": [],
+      "revision_records": [],
+      "first_publication_verified": false,
+      "revision_chain_verified": false,
+      "point_in_time_qualified": false,
+      "evidence_gap": "H.4.1财政部TGA存款逐期发布版本、修订/重分类轨迹"
+    },
+    {
+      "id": "liquidity.overnight_rrp",
+      "publisher": "纽约联储",
+      "cadence": "daily",
+      "release_reference": {
+        "url": "https://www.newyorkfed.org/markets/desk-operations/reverse-repo",
+        "kind": "官方发布或历史检索入口",
+        "status": "reference_only"
+      },
+      "revision_reference": {
+        "url": "https://www.newyorkfed.org/markets/rrp_faq.html",
+        "kind": "官方修订规则或历史版本检索入口",
+        "status": "reference_only"
+      },
+      "first_publication_records": [],
+      "revision_records": [],
+      "first_publication_verified": false,
+      "revision_chain_verified": false,
+      "point_in_time_qualified": false,
+      "evidence_gap": "隔夜逆回购操作结果逐日发布时刻、操作结果更正记录及FRED镜像差异"
+    },
+    {
+      "id": "nyfed_recession.probability",
+      "publisher": "纽约联储研究部门",
+      "cadence": "monthly",
+      "release_reference": {
+        "url": "https://www.newyorkfed.org/research/capital_markets/ycfaq.html",
+        "kind": "官方发布或历史检索入口",
+        "status": "reference_only"
+      },
+      "revision_reference": {
+        "url": "https://www.newyorkfed.org/research/capital_markets/ycfaq.html",
+        "kind": "官方修订规则或历史版本检索入口",
+        "status": "reference_only"
+      },
+      "first_publication_records": [],
+      "revision_records": [],
+      "first_publication_verified": false,
+      "revision_chain_verified": false,
+      "point_in_time_qualified": false,
+      "evidence_gap": "模型月度概率表当期真正公开的版本、模型重估变化及历史修订，不能用后见模型参数回填"
+    }
+  ]
+}
