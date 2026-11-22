@@ -23,6 +23,21 @@ jobs:
           python -m unittest discover -s tests -p test_sofr_backfill_pilot.py -v
       - name: Sample 10 genuine historical source dates without publishing rates
         run: python scripts/audit_sofr_backfill_pilot.py --output /tmp/sofr-v15-history-pilot.json
+      - name: Enforce metadata-only release block and audit result
+        run: |
+          python - <<'PY'
+          import json
+          with open("/tmp/sofr-v15-history-pilot.json",encoding="utf-8") as file:
+              report=json.load(file)
+          assert report["licenseApproval"]=="not_obtained"
+          assert report["publicationApproved"] is False
+          assert report["rawSwapRatesIncluded"] is False
+          assert report["productionHistoryModified"] is False
+          assert report["decision"] in ("REVIEW_ONLY","BLOCKED_CONFLICT_REVIEW")
+          if report["counts"]["archive_conflict"]:
+              assert report["decision"]=="BLOCKED_CONFLICT_REVIEW"
+              print("Audit succeeded; historical CONFLICT blocks publication, not audit execution.")
+          PY
       - name: Verify production history not modified
         if: always()
         run: |
