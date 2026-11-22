@@ -10,6 +10,33 @@
 <section class="grid overview-kpis" id="overview-kpis" aria-label="宏观系统运行状态"></section>
 <h2>核心利率观测 <a class="section-link" href="./index.html">完整宏观指标中心</a></h2>
 <section class="grid" id="headline" aria-label="美国国债关键利率"></section>
+<h2>美国国债市场 · 历史趋势</h2>
+<p class="muted">基于美国财政部公布的逐日名义国债与TIPS实际收益率，观察利率、通胀补偿和期限利差随时间的变化。此处为历史观测值，<strong>不是当时可交易的历史首次发布版本，也不是资产评分或回测。</strong></p>
+<section class="card treasury-trends-panel" id="treasury-trend-panel" aria-label="美国国债真实历史观测走势图">
+ <div class="treasury-trend-controls">
+  <label>观测指标
+   <select id="treasury-trend-series">
+    <option value="us10y">10年期名义收益率</option>
+    <option value="real10y">10年期TIPS实际收益率</option>
+    <option value="breakeven10y">10年期通胀补偿（派生）</option>
+    <option value="spread10y2y">10Y−2Y期限利差（派生）</option>
+   </select>
+  </label>
+  <label>时间范围
+   <select id="treasury-trend-range">
+    <option value="3m">近3个月</option>
+    <option value="1y" selected>近1年</option>
+    <option value="all">全部已取到的历史观测</option>
+   </select>
+  </label>
+ </div>
+ <p class="muted" id="treasury-trend-status" role="status" aria-live="polite">正在读取美国财政部真实历史观测……</p>
+ <svg id="treasury-trend-svg" class="treasury-trend-svg" viewBox="0 0 720 300" preserveAspectRatio="xMidYMid meet" role="img" aria-label="历史数据加载中"></svg>
+ <p class="label" id="treasury-trend-meta"></p>
+ <details class="treasury-trend-data"><summary>查看最近8个实际历史观测值</summary>
+  <div class="table-wrap"><table><thead><tr><th scope="col">观测日期</th><th scope="col">观测数值</th></tr></thead><tbody id="treasury-trend-table"></tbody></table></div>
+ </details>
+</section>
 <h2>14项必需宏观指标 · 实际观测值</h2>
 <p class="muted">逐项显示官方观测期、来源与可用状态。日频、周频、月频分别采用独立的过期门槛；缺失或过期显示“—”，不以零代替。</p>
 <div class="overview-controls"><label>类别 <select id="indicator-filter"><option value="all">全部指标</option><option value="利率">利率</option><option value="通胀">通胀</option><option value="就业">就业</option><option value="流动性">流动性</option><option value="模型">经济模型</option></select></label>
@@ -22,4 +49,5 @@
 <section class="card insights-panel" id="asset-insights" aria-label="所选资产的真实宏观观测及经济解释" aria-live="polite" aria-atomic="true"><p class="muted">选择上方资产查看实际观测与经济背景。</p></section>
 <div class="note" id="history-status">正在核验历史数据和评分资格……</div>
 <footer>Ooglex Quant V1 · 数据按原发布机构频率更新 · 当前模型未完成校准 · 仅供研究，不构成投资建议</footer></main>
-<script src="./compass-pages.js" defer></script></body></html>
+<script src="./compass-pages.js" defer></script>
+<script src="./treasury-trends.js" defer></script></body></html>
