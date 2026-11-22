@@ -100,6 +100,8 @@ jobs:
 
       - name: Build Asset Compass archive readiness metadata
         run: python3 -m scripts.check_asset_compass_history_readiness
+      - name: V55 build genuine Treasury-rate shock research (never asset scores)
+        run: python3 -m scripts.build_asset_compass_rate_shocks_v55
 
       - name: Build Asset Compass public price coverage metadata
         run: python3 scripts/audit_asset_compass_prices.py --output data/asset-compass-price-audit.json
@@ -144,6 +146,16 @@ jobs:
           assert report["factor_signals_calibrated"] is False
           assert report["asset_specific_contributions_available"] is False
           assert set(report["groups"])=={"rates","inflation","growth","liquidity","risk","asset_specific"}
+          v55_path=Path(".site/data/asset-compass-rate-shocks-v55.json")
+          assert v55_path.is_file(),"V55 real-rate shock report missing from Pages artifact"
+          v55=json.loads(v55_path.read_text(encoding="utf-8"))
+          assert v55["report_type"]=="asset_compass_v55_real_treasury_rate_shock_research"
+          assert v55["source_observation_count"]>=274
+          assert v55["historical_first_publication_vintages_verified"] is False
+          assert v55["validated_for_live_scoring"] is False
+          assert v55["official_0_to_100_scores_published"]==0
+          assert all(asset["official_score"] is None for asset in v55["assets"].values())
+          print("Asset Compass V55 real rates included, all official scores null")
           print("Asset Compass four-page public build verified")
           PY
 
@@ -316,7 +328,14 @@ jobs:
 
       - name: V11 verify live macro console, data and exact deployment SHA
         id: macro_v11
-        run: python3 -m scripts.verify_macro_live_v11 --base https://www.ooglex.com --sha "$GITHUB_SHA" --report /tmp/ooglex-v11-live-report.json
+        run: |
+          # The Pages branch publisher and Actions artifact may race. Give
+          # propagation limited time, but never mark missing/mismatched SHA a pass.
+          python3 -m scripts.verify_macro_live_v11 --base https://www.ooglex.com --sha "$GITHUB_SHA" \
+            --attempts 6 --delay 8 --report /tmp/ooglex-v11-live-report.json || {
+            echo "::error::V11 source manifest missing or not this SHA. Check Settings > Pages > Build and deployment > Source: GitHub Actions; competing branch-mode Pages publisher may overwrite the artifact."
+            exit 1
+          }
 
       - name: Upload classified V11 deployment evidence
         if: always()
