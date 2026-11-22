@@ -36,7 +36,7 @@ class MacroFourPagesTests(unittest.TestCase):
         self.assertEqual(set(cfg["factor_order"]),FACTORS)
         self.assertTrue(all(len(w)==6 and sum(w)==100 for w in cfg["weights"].values()))
         js=(MACRO/"compass-pages.js").read_text(encoding="utf-8")
-        for a in ASSETS:self.assertRegex(js,r'\\b'+a+r'\\s*:')
+        for a in ASSETS:self.assertIn(a+':',js)
     def test_scoring_and_backtest_fail_closed(self):
         js=(MACRO/"compass-pages.js").read_text(encoding="utf-8")
         self.assertIn('a.validation?.historical_calibration_passed===true',js)
