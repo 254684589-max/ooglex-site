@@ -1,0 +1,53 @@
+name: Asset Compass Archive Continuity V27
+on:
+  schedule:
+    # After the independent 01:20 UTC Tue-Sat archive job.
+    - cron: '30 2 * * 2-6'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/monitor_asset_compass_continuity_v27.py'
+      - '.github/workflows/asset-compass-continuity-v27.yml'
+permissions:
+  contents: read
+concurrency:
+  group: asset-compass-v27-monitor
+  cancel-in-progress: false
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate archive chronology and per-series observed cadence
+        run: |
+          python3 -m scripts.monitor_asset_compass_continuity_v27 \
+            --output /tmp/asset-compass-v27-continuity.json --fail-on-critical
+      - name: Publish diagnostic summary (no market values)
+        if: always()
+        run: |
+          if test -f /tmp/asset-compass-v27-continuity.json; then
+            python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          r=json.loads(Path("/tmp/asset-compass-v27-continuity.json").read_text())
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+              f.write("### Asset Compass V27 operational continuity\n")
+              f.write(f"Status: **{r['monitor_status']}**\n\n")
+              f.write(f"Archived versions: {r['archived_versions']}  \n")
+              f.write(f"Seeded required indicators: {r['seeded_series']}/{r['required_series']}  \n")
+              f.write(f"Missing indicators: {len(r['missing_required_series'])}  \n")
+              f.write(f"Legacy Treasury provenance exceptions: {r['provenance_exception_count']}  \n")
+              f.write(f"Critical operational alerts: {r['critical_operational_alerts']}\n")
+              f.write("\nNo validated historical vintages, investment scores or trading alerts.\n")
+          PY
+          else
+            echo '::error::No V27 diagnostic was produced; inspect ledger/schema/check steps.'
+          fi
