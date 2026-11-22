@@ -78,7 +78,8 @@ const TREASURY_TRENDS=(function(){
   return d;
  }
  function selectWindow(data,range){
-  const rows=data.observations;
+  const rows=Array.isArray(data?.observations)?data.observations:[];
+  if(!rows.length)return [];
   if(range==="all")return rows;
   const latest=Date.parse(rows[rows.length-1].date+"T00:00:00Z");
   const cutoff=latest-(range==="3m"?92:366)*86400000;
