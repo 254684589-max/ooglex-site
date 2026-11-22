@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SOFR互换利差曲线 | Ooglex 全球资产罗盘</title>
+<meta name="description" content="美国SOFR互换利率与同期限美债收益率的互换利差期限结构，含来源日期、公式与数据质量提示。">
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",system-ui,sans-serif;color-scheme:dark;background:#0b1019;color:#eaf2ff}*{box-sizing:border-box}body{margin:0}a{color:#85baff}
+header{padding:18px max(18px,calc((100vw - 1120px)/2));border-bottom:1px solid #293548}.brand{color:#8ebafa;font-size:14px;font-weight:800;text-decoration:none;letter-spacing:2px}
+nav{display:flex;flex-wrap:wrap;gap:10px;margin-top:13px}nav a{font-size:12px;text-decoration:none;border:1px solid #344458;border-radius:8px;padding:8px 10px}nav a[aria-current]{background:#19365a;color:#fff}
+main{max-width:1120px;margin:auto;padding:30px 18px 70px}h1{font-size:clamp(25px,4vw,38px);margin:10px 0}h2{font-size:18px;margin:27px 0 12px}.muted,.small{color:#a6b5c9;line-height:1.65}.small{font-size:12px}.brandline{color:#8ebafa;letter-spacing:2px;font-size:12px;font-weight:700}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}.card{border:1px solid #29384b;background:#131d2c;border-radius:14px;padding:18px}.value{font-size:26px;font-weight:750;font-variant-numeric:tabular-nums;margin:8px 0}.label{font-size:12px;color:#a6b5c9}
+.notice{border-left:3px solid #d6ab64;background:#1e2632;padding:12px 16px;margin:20px 0;font-size:13px;line-height:1.7}.chart{width:100%;height:auto;display:block;overflow:visible}.chart text{fill:#a6b5c9;font-size:12px}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px;white-space:nowrap}th,td{padding:13px 10px;border-bottom:1px solid #29384b;text-align:right;font-variant-numeric:tabular-nums}th:first-child,td:first-child{text-align:left}th{color:#9eb1c8}td:last-child{font-weight:750;color:#ff9b9b}footer{font-size:12px;color:#9eb1c8;line-height:1.7;margin-top:30px}
+@media(max-width:680px){.grid{grid-template-columns:1fr}main{padding-top:20px}.card{padding:14px}.value{font-size:23px}table{font-size:12px}.chart text{font-size:11px}}
+</style></head>
+<body><header><a class="brand" href="/">OOGLEX</a><nav aria-label="全球资产罗盘导航"><a href="./overview.html">全球资产总览</a><a href="./index.html">宏观指标中心</a><a href="./attribution.html">资产因子归因</a><a href="./research.html">回测与预警</a><a href="./swap-spreads.html" aria-current="page">互换利差曲线</a></nav></header>
+<main><div class="brandline">GLOBAL ASSET COMPASS · FIXED INCOME RESEARCH</div><h1>美国SOFR互换利差曲线</h1>
+<p class="muted">SOFR Swap Spread = SOFR互换固定利率 − 同期限美国国债平价收益率。展示2、3、5、7、10、30年六个期限的横截面结构，不是按时间变化的历史折线。</p>
+<div class="notice"><strong>日频研究参考快照 · 非实时行情</strong>｜观测日：<time datetime="2026-11-20">2026-11-20（美国交易日）</time>。互换端采用第三方合成平价曲线（Synthetic semiannual ACT/365F），并非交易商可执行SOFR OIS报价；国债端采用美国财政部每日CMT平价收益率，已四舍五入至两位小数。两种曲线的约定存在差异，利差仅供研究对照。当前页面为固定快照，后续交易日不会自动更新。</div>
+<section class="grid" aria-label="关键期限">
+<article class="card"><div class="label">2年期互换利差</div><div class="value" id="spread-2">—</div><div class="small">短端相对定价</div></article>
+<article class="card"><div class="label">10年期互换利差</div><div class="value" id="spread-10">—</div><div class="small">基准期限</div></article>
+<article class="card"><div class="label">30年期互换利差</div><div class="value" id="spread-30">—</div><div class="small">长端相对定价</div></article>
+</section>
+<section class="card"><h2 style="margin-top:0">期限结构｜Swap Spread (bp)</h2>
+<svg id="spread-chart" class="chart" viewBox="0 0 920 370" role="img" aria-label="2年至30年SOFR互换利差期限结构折线图"></svg>
+<p class="small" id="chart-description"></p></section>
+<h2>逐期限利率与利差</h2><div class="card tablewrap"><table><thead><tr><th scope="col">期限</th><th scope="col">SOFR互换（%）</th><th scope="col">美国国债（%）</th><th scope="col">利差（bp）</th></tr></thead><tbody id="rate-rows"></tbody></table></div>
+<h2>计算及解读</h2><div class="card"><p>计算公式：<strong>利差(bp) = [互换利率(%) − 国债收益率(%)] × 100</strong>。例如10年期：(4.5406 − 4.92) × 100 = −37.94 bp。</p>
+<p class="muted">负利差表示该期限互换固定端参考利率低于同期限国债收益率；不等同于信用利差，也不能单凭负值预测金融危机或美联储降息。研究生产级OIS Swap Spread前需取得同时间戳、同一估值日、相容支付约定与曲线口径的数据。</p>
+<p class="small">SOFR参考曲线：<a href="https://bondbyisin.com/swap-curves" target="_blank" rel="noopener noreferrer">BondByIsin · USD-SOFR（2026-11-20）</a>。美债：<a href="https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve" target="_blank" rel="noopener noreferrer">U.S. Treasury · Daily Par Yield Curve Rates</a>（数据可于 <a href="https://fedgazette.com/treasury-yield-curve/" target="_blank" rel="noopener noreferrer">Fed Gazette 同日期镜像</a>复核）。</p></div>
+<footer>Ooglex 全球资产罗盘 · 数据日期2026-11-20 · 日频静态研究快照 · 非实时行情 · 不构成投资建议</footer>
+</main>
+<script>
+"use strict";
+const asOf="2026-11-20";
+const records=[
+{tenor:2,swap:4.5016,treasury:4.63},
+{tenor:3,swap:4.4620,treasury:4.65},
+{tenor:5,swap:4.4487,treasury:4.71},
+{tenor:7,swap:4.4547,treasury:4.80},
+{tenor:10,swap:4.5406,treasury:4.92},
+{tenor:30,swap:4.6746,treasury:5.31}
+].map(r=>({...r,spread:Math.round((r.swap-r.treasury)*10000)/100}));
+const fmt=v=>(v<0?"−":"+")+Math.abs(v).toFixed(2)+" bp";
+const tbody=document.querySelector("#rate-rows");
+for(const r of records){const tr=document.createElement("tr");for(const cell of [r.tenor+"年",r.swap.toFixed(4),r.treasury.toFixed(2),fmt(r.spread)]){const td=document.createElement("td");td.textContent=cell;tr.append(td)}tbody.append(tr)}
+for(const tenor of [2,10,30])document.getElementById("spread-"+tenor).textContent=fmt(records.find(r=>r.tenor===tenor).spread);
+const svg=document.querySelector("#spread-chart"),ns="http://www.w3.org/2000/svg";
+const add=(tag,attrs,text)=>{const e=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));if(text!==undefined)e.textContent=text;svg.append(e);return e};
+const L=80,R=880,T=22,B=307,minY=-70,maxY=0;
+const x=r=>L+(r.tenor-2)/28*(R-L),y=v=>T+(maxY-v)/(maxY-minY)*(B-T);
+for(const tick of [0,-10,-20,-30,-40,-50,-60,-70]){let yy=y(tick);add("line",{x1:L,y1:yy,x2:R,y2:yy,stroke:"#334358","stroke-width":1});add("text",{x:L-12,y:yy+4,"text-anchor":"end"},tick.toString())}
+add("text",{x:18,y:20},"单位：bp");
+add("polyline",{points:records.map(r=>x(r)+","+y(r.spread)).join(" "),fill:"none",stroke:"#70b6ff","stroke-width":3,"stroke-linejoin":"round","stroke-linecap":"round"});
+for(const r of records){add("circle",{cx:x(r),cy:y(r.spread),r:5,fill:"#70b6ff",stroke:"#101a2a","stroke-width":2});add("text",{x:x(r),y:y(r.spread)-12,"text-anchor":"middle"},fmt(r.spread));add("text",{x:x(r),y:B+25,"text-anchor":"middle"},r.tenor+"Y")}
+document.querySelector("#chart-description").textContent="横轴：合约期限（年）；纵轴：互换利差（bp）。蓝线连接六个实际期限点，数据观测日："+asOf+"。负值并非单独的风险预警信号。";
+</script></body></html>
