@@ -1,0 +1,57 @@
+name: Asset Compass V51 Official Archived Release Capture
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/asset-compass-release-capture-v51.yml'
+      - 'scripts/capture_asset_compass_official_v51.py'
+      - 'data/asset-compass-v51-release-candidates.json'
+permissions:
+  contents: read
+jobs:
+  capture-candidates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify fail-closed V51 capture and shutdown tests
+        run: |
+          python3 -m unittest discover -s tests -p 'test_asset_compass_official_v51.py' -v
+          python3 -m scripts.capture_asset_compass_official_v51 --dry-run
+      - name: Attempt real BLS and BEA archive downloads, never certify historical PIT
+        run: |
+          python3 -m scripts.capture_asset_compass_official_v51 \
+            --output /tmp/ooglex-v51-release-capture-manifest.json --fail-if-incomplete
+      - name: Summarize genuine attempts and retained-record limitations
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path("/tmp/ooglex-v51-release-capture-manifest.json")
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+              f.write("## V51 official BLS/BEA archive capture\n")
+              if not p.exists():
+                  f.write("No manifest; failed before evidence aggregation.\n")
+              else:
+                  r=json.loads(p.read_text(encoding="utf-8"))
+                  assert r["historical_pit_certified_source_series"]==0
+                  assert r["eligible_for_point_in_time_backtest"] is False
+                  f.write(f"Requested: {r['requested']}; fetched today: {r['retrieved_now']}; failed: {r['failed']}  \n")
+                  f.write("BLS October 2025 CPI and employment reports were not published and were not synthesized.  \n")
+                  for key,entry in r["results"].items():
+                      f.write(f"- {key}: {entry['status']}\n")
+                  f.write("Metadata artifact retained up to 30 days; no raw release bytes retained here.  \n")
+                  f.write("Publication-time identity, uninterrupted custody, revision chain and model scoring remain unverified.\n")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ooglex-v51-source-capture-receipts
+          path: /tmp/ooglex-v51-release-capture-manifest.json
+          if-no-files-found: warn
+          retention-days: 30
