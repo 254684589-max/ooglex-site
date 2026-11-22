@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "observation_date": "2026-11-20",
-  "generated_at": "2026-11-22T08:19:50.720733+00:00",
+  "generated_at": "2026-11-22T08:27:49.863813+00:00",
   "status": "partial_data_no_full_score",
   "source": "US Department of the Treasury",
   "source_urls": [
@@ -132,17 +132,9 @@
       "core_cpi_yoy_available": false,
       "payroll_delta_available": true
     },
-    "retrieved_at": "2026-11-22T08:19:50.230155+00:00",
+    "retrieved_at": "2026-11-22T08:27:47.826638+00:00",
     "source_url": "https://api.bls.gov/publicAPI/v1/timeseries/data/",
     "note": "Preliminary data may be revised by BLS."
-  },
-  "nyfed": {
-    "observation_date": "2026-11-19",
-    "effr_percent": 3.88,
-    "target_range_lower": 3.75,
-    "target_range_upper": 4.0,
-    "source": "Federal Reserve Bank of New York",
-    "source_url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/last/10.json"
   },
   "bea": {
     "core_pce": {
@@ -156,7 +148,7 @@
       "release_timestamp_verified": false,
       "yoy_percent": 3.121
     },
-    "retrieved_at": "2026-11-22T08:19:50.720733+00:00"
+    "retrieved_at": "2026-11-22T08:27:48.205808+00:00"
   },
   "fed_h41": {
     "total_assets": {
@@ -169,9 +161,10 @@
       "source_series_id": "WALCL",
       "release_timestamp_verified": false
     },
-    "retrieved_at": "2026-11-22T08:19:50.720733+00:00"
+    "retrieved_at": "2026-11-22T08:27:48.205808+00:00"
   },
   "liquidity": {
+    "retrieved_at": "2026-11-22T08:27:48.779482+00:00",
     "reserves": {
       "observation_date": "2026-11-18",
       "value": 2979656.0,
@@ -204,8 +197,7 @@
       "release_timestamp_verified": false,
       "frequency": "daily",
       "frequency_detail": "daily overnight operation balance"
-    },
-    "retrieved_at": "2026-11-22T08:19:51.377367+00:00"
+    }
   },
   "nyfed_recession_model": {
     "observation_period": "2026-10",
@@ -218,11 +210,19 @@
     "official_forecast": false,
     "release_timestamp_verified": false,
     "unit": "percent",
-    "retrieved_at": "2026-11-22T08:19:52.668931+00:00"
+    "retrieved_at": "2026-11-22T08:27:49.827253+00:00"
+  },
+  "nyfed": {
+    "observation_date": "2026-11-19",
+    "effr_percent": 3.88,
+    "target_range_lower": 3.75,
+    "target_range_upper": 4.0,
+    "source": "Federal Reserve Bank of New York",
+    "source_url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/last/10.json"
   },
   "scoring": {
     "model": "ooglex-macro-v1-precalibration",
-    "generated_at": "2026-11-22T08:19:52.711731+00:00",
+    "generated_at": "2026-11-22T08:27:49.863803+00:00",
     "calibration_verified": false,
     "out_of_sample_verified": false
   }
