@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 2,
+  "updatedAt": "2026-11-22T00:00:00Z",
+  "status": "ok",
+  "frequency": "daily",
+  "demo": false,
+  "sources": {
+    "swap": {
+      "name": "CheckMySwap indicative USD SOFR OIS curve (DTCC-reported transactions)",
+      "url": "https://www.checkmyswap.com/rates",
+      "api": "https://www.checkmyswap.com/api/curves/USD",
+      "caveat": "Indicative composite; methods close/close-thin can differ and are not executable quotes."
+    },
+    "treasury": {
+      "name": "US Treasury Daily Par Yield Curve Rates",
+      "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve",
+      "caveat": "CMT par yield, rounded to 0.01 percentage point."
+    }
+  },
+  "observations": [
+    {
+      "asOf": "2026-11-20",
+      "quality": "indicative",
+      "tenors": [
+        {
+          "years": 2,
+          "swap": 4.46,
+          "treasury": 4.63,
+          "spreadBp": -17,
+          "method": "close-thin"
+        },
+        {
+          "years": 3,
+          "swap": 4.44,
+          "treasury": 4.65,
+          "spreadBp": -21,
+          "method": "close"
+        },
+        {
+          "years": 5,
+          "swap": 4.41,
+          "treasury": 4.71,
+          "spreadBp": -30,
+          "method": "close"
+        },
+        {
+          "years": 7,
+          "swap": 4.44,
+          "treasury": 4.8,
+          "spreadBp": -36,
+          "method": "close"
+        },
+        {
+          "years": 10,
+          "swap": 4.51,
+          "treasury": 4.92,
+          "spreadBp": -41,
+          "method": "close"
+        },
+        {
+          "years": 30,
+          "swap": 4.64,
+          "treasury": 5.31,
+          "spreadBp": -67,
+          "method": "close"
+        }
+      ]
+    }
+  ],
+  "note": "Initial source-matched reference observation. Not a licensed dealer live quote. Historical lines require at least two actual matched dates."
+}
