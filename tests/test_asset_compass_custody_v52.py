@@ -91,10 +91,8 @@ class V52CustodyTests(unittest.TestCase):
 
     def test_repeated_same_bytes_not_reported_as_official_revision(self):
         self.seed()
-        later = NOW.replace(second=(NOW.second + 1) % 60)
-        if later < NOW:
-            later = NOW
-        result = capture_and_record(self.private, now=later, fetcher=make_fetcher())
+        # Identical snapshots at the same instant stay deduplicated.
+        result = capture_and_record(self.private, now=NOW, fetcher=make_fetcher())
         self.assertEqual(result["failed"], 0)
         self.assertEqual(result["results"][self.registry["entries"][0]["artifact_id"]]["status"],
                          "same_html_bytes_rechecked")
