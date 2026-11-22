@@ -12,6 +12,8 @@ on:
       - 'tests/test_macro_treasury_v15.py'
       - 'scripts/track_treasury_retrievals_v16.py'
       - 'tests/test_macro_treasury_v16.py'
+      - 'scripts/audit_treasury_publication_v17.py'
+      - 'tests/test_macro_treasury_v17.py'
 permissions:
   contents: write
 concurrency:
@@ -65,6 +67,21 @@ jobs:
           assert d["validated_for_live_scoring"] is False
           print("V16 retrieval differences preserved, no historical PIT certification")
           PYV16
+      - name: V17 distinguish documented quote observation from unknown release time
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s tests -p 'test_macro_treasury_v17.py' -v
+          python3 -m scripts.audit_treasury_publication_v17
+          python3 - <<'PYV17'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("data/asset-compass-treasury-release-evidence-v17.json").read_text())
+          assert d["independently_verified_original_publication_timestamps"]==0
+          assert d["quotation_timestamp_is_publication_timestamp"] is False
+          assert d["eligible_for_point_in_time_backtest"] is False
+          assert d["validated_for_live_scoring"] is False
+          print("V17 release timestamp remains NOT independently verified")
+          PYV17
       - name: Upload exact retrieved official CSV bodies as private workflow evidence
         uses: actions/upload-artifact@v4
         with:
@@ -78,7 +95,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/asset-compass-treasury-source-evidence-v15.json data/asset-compass-treasury-v16-state.json data/asset-compass-treasury-v16-events.jsonl data/asset-compass-treasury-v16-report.json
+          git add data/asset-compass-treasury-source-evidence-v15.json data/asset-compass-treasury-v16-state.json data/asset-compass-treasury-v16-events.jsonl data/asset-compass-treasury-v16-report.json data/asset-compass-treasury-release-evidence-v17.json
           if ! git diff --cached --quiet; then
             git commit -m "data(macro): archive real V15 Treasury source retrieval receipts"
             git pull --rebase origin main
@@ -91,7 +108,9 @@ jobs:
             git show "origin/main:data/$file" > "/tmp/v16-remote-$file"
             cmp "data/$file" "/tmp/v16-remote-$file"
           done
-          echo "V15 provenance and V16 change events persisted on GitHub main"
+          git show origin/main:data/asset-compass-treasury-release-evidence-v17.json > /tmp/treasury-v17-remote.json
+          cmp data/asset-compass-treasury-release-evidence-v17.json /tmp/treasury-v17-remote.json
+          echo "V15/V16 retrieval evidence and V17 publication-time audit persisted on GitHub main"
       - name: Record failure for independent source investigation
         if: failure()
         run: |
