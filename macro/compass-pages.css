@@ -82,3 +82,21 @@
 .treasury-stat-series th,.treasury-stat-series td{padding:9px 8px;white-space:nowrap}
 .treasury-stat-series td:last-child{color:#b8dfbb}
 @media(max-width:780px){.treasury-stat-series{padding:9px}.treasury-stat-series .table-wrap{overflow-x:auto}}
+
+/* V46: historical empirical yield distributions; NOT calibrated asset signals. */
+.treasury-distribution-section{margin:22px 0;border-top:1px solid #34475d;padding-top:12px}
+.treasury-distribution-section>h3{font-size:17px}
+.treasury-distribution-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;margin-top:12px}
+.treasury-distribution-card{background:#152131;border:1px solid #334960;border-radius:11px;padding:16px;min-width:0}
+.treasury-distribution-card h4{font-size:15px;color:#bcdfff;margin:0 0 9px}
+.treasury-distribution-card h5{font-size:13px;color:#d5e2f1;margin:20px 0 10px}
+.treasury-distribution-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.treasury-distribution-kpi{display:flex;flex-direction:column;gap:7px;padding:11px;border-radius:9px;background:#1c2b3c;min-width:0}
+.treasury-distribution-kpi strong{font-variant-numeric:tabular-nums;font-size:16px;overflow-wrap:anywhere}
+.treasury-distribution-bars{display:grid;gap:8px}
+.treasury-distribution-bin{display:grid;grid-template-columns:110px minmax(0,1fr) 42px;align-items:center;gap:8px;font-size:12px;font-variant-numeric:tabular-nums}
+.treasury-distribution-track{background:#2a394a;height:12px;border-radius:5px;overflow:hidden}
+.treasury-distribution-fill{display:block;height:100%;background:#71b9f0;border-radius:5px}
+.treasury-distribution-bin>span:last-child{text-align:right;color:#d1e3f7}
+.treasury-distribution-card table{min-width:450px;font-size:12px;font-variant-numeric:tabular-nums}
+@media(max-width:780px){.treasury-distribution-kpis{grid-template-columns:1fr}.treasury-distribution-card{padding:11px}.treasury-distribution-bin{grid-template-columns:100px minmax(0,1fr) 32px}}
