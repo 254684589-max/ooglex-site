@@ -4,7 +4,21 @@
 <meta name="description" content="六类核心资产的研究入口。正式评分、排名和方向必须通过历史校准及样本外验证；尚未通过的资产只显示缺失状态。">
 <link rel="stylesheet" href="./compass-pages.css"></head>
 <body data-page="overview"><header><a href="/" class="brand">OOGLEX</a><nav class="nav" aria-label="全球资产罗盘页面导航"><a href="./overview.html" aria-current="page">全球资产总览</a><a href="./index.html">宏观指标中心</a><a href="./attribution.html">资产因子归因</a><a href="./research.html">回测与预警</a></nav></header>
-<main><p class="brand">ASSET COMPASS · RESEARCH V1</p><h1>全球资产总览</h1><p>六类核心资产的研究入口。正式评分、排名和方向必须通过历史校准及样本外验证；尚未通过的资产只显示缺失状态。</p>
-<div class="note" id="source-status" role="status">正在核对官方数据快照……</div><h2>宏观基础观测</h2><section class="grid" id="headline" aria-label="利率观测"></section><h2>六类资产 · 评分发布状态</h2><section class="grid" id="asset-grid" aria-label="六类资产"></section><div class="note">这里展示的是评分系统的准备状态，并非投资建议。当前未发布通过校准的0—100分模型，不做未经验证的资产排名与利多利空推断。</div>
+<main><p class="brand">ASSET COMPASS · OOGLEX 宏观资产研究终端</p><h1>全球资产罗盘</h1>
+<p>从美国财政部、劳工统计局、经济分析局和联储的真实观测出发，查看宏观环境与六类资产的研究依据。<strong>指标数值不等于投资信号；未经验证的评分不会展示。</strong></p>
+<div class="note" id="source-status" role="status" aria-live="polite">正在核对官方数据快照和数据有效期……</div>
+<section class="grid overview-kpis" id="overview-kpis" aria-label="宏观系统运行状态"></section>
+<h2>核心利率观测 <a class="section-link" href="./index.html">完整宏观指标中心</a></h2>
+<section class="grid" id="headline" aria-label="美国国债关键利率"></section>
+<h2>14项必需宏观指标 · 实际观测值</h2>
+<p class="muted">逐项显示官方观测期、来源与可用状态。日频、周频、月频分别采用独立的过期门槛；缺失或过期显示“—”，不以零代替。</p>
+<div class="overview-controls"><label>类别 <select id="indicator-filter"><option value="all">全部指标</option><option value="利率">利率</option><option value="通胀">通胀</option><option value="就业">就业</option><option value="流动性">流动性</option><option value="模型">经济模型</option></select></label>
+<label>检索 <input id="indicator-search" type="search" placeholder="搜索指标、来源、代码" autocomplete="off"></label>
+<span class="label" id="indicator-count" aria-live="polite">正在读取指标……</span></div>
+<div class="card table-wrap overview-table"><table aria-label="14项官方宏观指标观测表"><thead><tr><th scope="col">宏观指标</th><th scope="col">最新有效数值</th><th scope="col">观测期</th><th scope="col">来源</th><th scope="col">数据状态</th></tr></thead><tbody id="macro-table-body"><tr><td colspan="5">读取中……</td></tr></tbody></table></div>
+<h2>六类核心资产 · 研究入口</h2>
+<p class="muted">下方文字是分析框架，不是对未来价格的方向预测。具体因子权重和回测准备度可点击查看。</p>
+<section class="grid" id="asset-grid" aria-label="六类资产及研究依据"></section>
+<div class="note" id="history-status">正在核验历史数据和评分资格……</div>
 <footer>Ooglex Quant V1 · 数据按原发布机构频率更新 · 当前模型未完成校准 · 仅供研究，不构成投资建议</footer></main>
 <script src="./compass-pages.js" defer></script></body></html>
