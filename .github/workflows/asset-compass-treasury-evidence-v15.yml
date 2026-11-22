@@ -1,0 +1,76 @@
+name: Asset Compass V15 Treasury Source Evidence
+on:
+  workflow_dispatch:
+  schedule:
+    # After the official macro pipeline and independent first-seen archive.
+    - cron: '20 3 * * 2-6'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/asset-compass-treasury-evidence-v15.yml'
+      - 'scripts/collect_treasury_source_evidence_v15.py'
+      - 'tests/test_macro_treasury_v15.py'
+permissions:
+  contents: write
+concurrency:
+  group: asset-compass-ledger-main
+  cancel-in-progress: false
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify V15 Treasury parsing and PIT fail-closed tests
+        run: python3 -m unittest discover -s tests -p 'test_macro_treasury_v15.py' -v
+      - name: Capture original official HTTP response bodies with SHA256 receipts
+        run: |
+          set -euo pipefail
+          python3 -m scripts.collect_treasury_source_evidence_v15 --year "$(date -u +%Y)" --output data/asset-compass-treasury-source-evidence-v15.json --artifact-dir /tmp/ooglex-treasury-v15-raw
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          d=json.loads(Path("data/asset-compass-treasury-source-evidence-v15.json").read_text())
+          assert d["report_type"]=="asset_compass_v15_treasury_raw_source_evidence"
+          assert d["validated_for_live_scoring"] is False
+          assert d["eligible_for_point_in_time_backtest"] is False
+          assert d["original_publication_time_verified"] is False
+          for r in d["source_receipts"]:
+              raw=Path("/tmp/ooglex-treasury-v15-raw")/f'{d["year"]}-{r["type"]}.csv'
+              assert hashlib.sha256(raw.read_bytes()).hexdigest()==r["sha256"]
+          print("Treasury official response bodies match public SHA256 evidence receipts")
+          PY
+      - name: Upload exact retrieved official CSV bodies as private workflow evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: treasury-v15-raw-response-${{ github.run_id }}
+          path: /tmp/ooglex-treasury-v15-raw/
+          retention-days: 30
+          if-no-files-found: error
+      - name: Persist public provenance metadata without publishing raw CSV
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/asset-compass-treasury-source-evidence-v15.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data(macro): archive real V15 Treasury source retrieval receipts"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+          git fetch origin main
+          git show origin/main:data/asset-compass-treasury-source-evidence-v15.json > /tmp/treasury-v15-remote.json
+          cmp data/asset-compass-treasury-source-evidence-v15.json /tmp/treasury-v15-remote.json
+          echo "V15 provenance metadata persisted to main"
+      - name: Record failure for independent source investigation
+        if: failure()
+        run: |
+          echo '::error::V15 source capture failed; do not assume historical PIT qualification. Inspect original source response and uploaded artifact.' 
+          echo '### V15 Treasury evidence capture failed' >> "$GITHUB_STEP_SUMMARY"
