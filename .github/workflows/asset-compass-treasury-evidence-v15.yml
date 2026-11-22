@@ -10,6 +10,8 @@ on:
       - '.github/workflows/asset-compass-treasury-evidence-v15.yml'
       - 'scripts/collect_treasury_source_evidence_v15.py'
       - 'tests/test_macro_treasury_v15.py'
+      - 'scripts/track_treasury_retrievals_v16.py'
+      - 'tests/test_macro_treasury_v16.py'
 permissions:
   contents: write
 concurrency:
@@ -46,6 +48,23 @@ jobs:
               assert hashlib.sha256(raw.read_bytes()).hexdigest()==r["sha256"]
           print("Treasury official response bodies match public SHA256 evidence receipts")
           PY
+      - name: V16 inspect actual retrieval-to-retrieval changes
+        env:
+          SOURCE_RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s tests -p 'test_macro_treasury_v16.py' -v
+          python3 -m scripts.track_treasury_retrievals_v16 --raw-dir /tmp/ooglex-treasury-v15-raw --run-id "$SOURCE_RUN_ID"
+          python3 - <<'PYV16'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("data/asset-compass-treasury-v16-report.json").read_text(encoding="utf-8"))
+          assert set(d["by_series"])=={"treasury.us2y","treasury.us10y","treasury.real10y"}
+          assert d["historical_official_revisions_verified"] is False
+          assert d["eligible_for_point_in_time_backtest"] is False
+          assert d["validated_for_live_scoring"] is False
+          print("V16 retrieval differences preserved, no historical PIT certification")
+          PYV16
       - name: Upload exact retrieved official CSV bodies as private workflow evidence
         uses: actions/upload-artifact@v4
         with:
@@ -59,7 +78,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/asset-compass-treasury-source-evidence-v15.json
+          git add data/asset-compass-treasury-source-evidence-v15.json data/asset-compass-treasury-v16-state.json data/asset-compass-treasury-v16-events.jsonl data/asset-compass-treasury-v16-report.json
           if ! git diff --cached --quiet; then
             git commit -m "data(macro): archive real V15 Treasury source retrieval receipts"
             git pull --rebase origin main
@@ -68,7 +87,11 @@ jobs:
           git fetch origin main
           git show origin/main:data/asset-compass-treasury-source-evidence-v15.json > /tmp/treasury-v15-remote.json
           cmp data/asset-compass-treasury-source-evidence-v15.json /tmp/treasury-v15-remote.json
-          echo "V15 provenance metadata persisted to main"
+          for file in asset-compass-treasury-v16-state.json asset-compass-treasury-v16-events.jsonl asset-compass-treasury-v16-report.json; do
+            git show "origin/main:data/$file" > "/tmp/v16-remote-$file"
+            cmp "data/$file" "/tmp/v16-remote-$file"
+          done
+          echo "V15 provenance and V16 change events persisted on GitHub main"
       - name: Record failure for independent source investigation
         if: failure()
         run: |
