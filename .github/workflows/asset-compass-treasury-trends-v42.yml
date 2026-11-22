@@ -1,0 +1,65 @@
+name: Asset Compass V42 Official Treasury Trend Observations
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/asset-compass-treasury-trends-v42.yml'
+      - 'scripts/build_asset_compass_history.py'
+      - 'scripts/validate_asset_compass_treasury_trends_v42.py'
+  schedule:
+    - cron: '15 4 * * 1'
+permissions:
+  contents: write
+concurrency:
+  group: asset-compass-ledger-main
+  cancel-in-progress: false
+jobs:
+  official-history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test historical matching and strict chart authorization
+        run: |
+          python3 -m unittest discover -s tests -p 'test_macro_history.py' -v
+          python3 -m unittest discover -s tests -p 'test_asset_compass_treasury_trends_v42.py' -v
+      - name: Download actual Treasury nominal and TIPS daily history
+        run: python3 -m scripts.build_asset_compass_history
+      - name: Verify official URLs, independent values, paired arithmetic and no PIT authorization
+        run: python3 -m scripts.validate_asset_compass_treasury_trends_v42 --minimum 100
+      - name: Save only genuine current/retrieved Treasury historical observations
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/asset-compass-treasury-history.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data(asset-compass): refresh official Treasury trend observations"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Validate remote committed trend file
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git show origin/main:data/asset-compass-treasury-history.json > /tmp/ooglex-v42-published.json
+          python3 -m scripts.validate_asset_compass_treasury_trends_v42 \
+            --input /tmp/ooglex-v42-published.json --minimum 100
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          d=json.loads(Path("/tmp/ooglex-v42-published.json").read_text())
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+              f.write("### V42 actual Treasury history\n")
+              f.write("Official observations: "+str(d["observation_count"])+"  \n")
+              f.write("Range: "+d["start_date"]+" — "+d["end_date"]+"  \n")
+              f.write("PIT-vintage: not qualified. No investment scoring or backtest enabled.\n")
+          PY
