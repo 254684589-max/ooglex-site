@@ -20,7 +20,7 @@ from pathlib import Path
 PATHS = {
     "/macro/operations.html": ("text", ('id="ops-loading"', 'operations-v9.js')),
     "/macro/operations-v9.js": ("text", ("asset-compass-monitor-v8.json", "asset-compass-history-readiness.json")),
-    "/macro/indicator-ratings.html": ("text", ('id="v8-heading"', 'indicator-monitor-v8.js')),
+    "/macro/indicator-ratings.html": ("text", ('id="indicator-rows"', 'indicator-a10.js', 'id="a10-rows"')),
     "/data/asset-compass-monitor-v8.json": ("json", "asset_compass_monitor_v8"),
     "/data/asset-compass-provenance-v7.json": ("json", "asset_compass_v7_treasury_provenance"),
     "/data/asset-compass-history-readiness.json": ("json", "asset_compass_history_readiness"),
