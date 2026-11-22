@@ -33,6 +33,28 @@ class V12Tests(unittest.TestCase):
             result=inspect("https://test.example",SHA,attempts=1,delay=0)
         self.assertEqual(result["status"],"fail")
         self.assertEqual(result["issues"][0]["category"],"content_hash_mismatch")
+    def test_previous_manifest_then_current_commit_retries(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            for i,path in enumerate(FILES):
+                p=root/path
+                p.parent.mkdir(parents=True,exist_ok=True)
+                p.write_bytes(f"actual-{i}".encode())
+            doc=manifest(root,SHA,123,1)
+        seen={"manifest":0}
+        def fake(url):
+            path=url.split("?")[0].replace("https://test.example/","")
+            if path=="data/asset-compass-deploy-v12.json":
+                seen["manifest"]+=1
+                if seen["manifest"]==1:
+                    return json.dumps(dict(doc,source_commit="old_commit"))
+                return json.dumps(doc)
+            return "actual-"+str(FILES.index(path))
+        with patch("scripts.verify_macro_live_v12.get",side_effect=fake), patch("scripts.verify_macro_live_v12.time.sleep"):
+            result=inspect("https://test.example",SHA,attempts=2,delay=0)
+        self.assertEqual(result["status"],"pass")
+        self.assertEqual(seen["manifest"],2)
+
     def test_live_unavailable_manifest_blocks(self):
         with patch("scripts.verify_macro_live_v12.get",side_effect=OSError("offline")):
             result=inspect("https://test.example",SHA,attempts=1,delay=0)
