@@ -25,17 +25,17 @@ function run(obj=report,data=snap){
 function test(name,fn){try{fn();console.log("PASS",name)}catch(e){console.error("FAIL",name);throw e}}
 test("V55 genuine Treasury observation history is visible but not scored",()=>{
  const area=run();
- assert.equal(area.children.length,5);
+ assert.equal(area.children.length,4);
  assert.match(area.children[0].textContent,/个真实观测/);
  assert.equal(area.children[1].children[0].children[1].children.length,5);
- assert.equal(area.children[3].children[0].children[1].children.length,6);
- assert.match(area.children[4].textContent,/不是上涨概率/);
- const cells=area.children[3].children[0].children[1].children;
+ assert.equal(area.children[2].children[0].children[1].children.length,6);
+ assert.match(area.children[3].textContent,/不是上涨概率/);
+ const cells=area.children[2].children[0].children[1].children;
  for(const row of cells)assert.equal(row.children[3].textContent,"— / 100");
 });
 test("V55 candidate direction has research hypothesis and no certified score",()=>{
  const area=run();
- const assets=area.children[3].children[0].children[1].children;
+ const assets=area.children[2].children[0].children[1].children;
  assert.match(assets[0].children[1].textContent,/实际利率/);
  assert.match(assets[2].children[1].textContent,/名义长期收益率/);
  assert.match(assets[1].children[2].textContent,/不提供/);
@@ -44,7 +44,7 @@ test("V55 cannot show stale rate pressure as current",()=>{
  const bad=structuredClone(report);
  bad.source_end_date="2020-01-02";
  const area=run(bad);
- const assets=area.children[3].children[0].children[1].children;
+ const assets=area.children[2].children[0].children[1].children;
  assert.equal(assets[0].children[2].textContent,"不提供");
  assert.match(area.children[0].textContent,/已超过11日/);
 });
