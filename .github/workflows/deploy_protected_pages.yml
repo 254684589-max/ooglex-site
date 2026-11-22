@@ -104,6 +104,22 @@ jobs:
       - name: Build Asset Compass public price coverage metadata
         run: python3 scripts/audit_asset_compass_prices.py --output data/asset-compass-price-audit.json
 
+      - name: V14 build PIT evidence gap inventory (research only)
+        run: |
+          python3 -m unittest discover -s tests -p 'test_macro_pit_gaps_v14.py' -v
+          python3 -m scripts.build_asset_compass_pit_gaps_v14
+          python3 - <<'PYV14'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("data/asset-compass-pit-readiness-v14.json").read_text())
+          assert d["required_series"]==14
+          assert d["independently_qualified_pit_series"]==0
+          assert d["validated_for_live_scoring"] is False
+          assert d["eligible_for_point_in_time_backtest"] is False
+          assert d["private_vintage_database_exported"] is False
+          print("V14 original-release and license qualification remains fail-closed")
+          PYV14
+
       - name: Build protected public site
         run: python scripts/build_public_site.py --pro-cutover
 
@@ -133,6 +149,25 @@ jobs:
 
       - name: Validate V11 live acceptance regression tests
         run: python3 -m unittest discover -s tests -p 'test_macro_production_v11.py' -v
+
+      - name: V14 verify evidence gap inventory in public build
+        run: |
+          node --check .site/macro/operations-v14.js
+          python3 - <<'PYV14'
+          import json
+          from pathlib import Path
+          p=Path(".site/data/asset-compass-pit-readiness-v14.json")
+          assert p.is_file(),"V14 source inventory absent from public artifact"
+          d=json.loads(p.read_text(encoding="utf-8"))
+          assert d["report_type"]=="asset_compass_v14_pit_evidence_gaps"
+          assert d["required_series"]==len(d["series"])==14
+          assert d["independently_qualified_pit_series"]==0
+          assert d["validated_for_live_scoring"] is False
+          assert d["private_vintage_database_exported"] is False
+          page=Path(".site/macro/operations.html").read_text(encoding="utf-8")
+          assert 'src="./operations-v14.js"' in page
+          print("V14 public evidence report present; model certification still blocked")
+          PYV14
 
       - name: V11 stamp exact deployed source and workflow identity
         shell: bash
