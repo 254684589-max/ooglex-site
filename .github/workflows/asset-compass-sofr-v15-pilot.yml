@@ -1,0 +1,53 @@
+name: SOFR V15 historical backfill provenance pilot
+on:
+  pull_request:
+    paths:
+      - 'scripts/audit_sofr_backfill_pilot.py'
+      - 'tests/test_sofr_backfill_pilot.py'
+      - '.github/workflows/asset-compass-sofr-v15-pilot.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify contracts and no-rate output
+        run: |
+          python -m py_compile scripts/audit_sofr_backfill_pilot.py
+          python -m unittest discover -s tests -p test_sofr_backfill_pilot.py -v
+      - name: Sample 10 genuine historical source dates without publishing rates
+        run: python scripts/audit_sofr_backfill_pilot.py --output /tmp/sofr-v15-history-pilot.json
+      - name: Enforce metadata-only release block and audit result
+        run: |
+          python - <<'PY'
+          import json
+          with open("/tmp/sofr-v15-history-pilot.json",encoding="utf-8") as file:
+              report=json.load(file)
+          assert report["licenseApproval"]=="not_obtained"
+          assert report["publicationApproved"] is False
+          assert report["rawSwapRatesIncluded"] is False
+          assert report["productionHistoryModified"] is False
+          assert report["decision"] in ("REVIEW_ONLY","BLOCKED_CONFLICT_REVIEW")
+          if report["counts"]["archive_conflict"]:
+              assert report["decision"]=="BLOCKED_CONFLICT_REVIEW"
+              print("Audit succeeded; historical CONFLICT blocks publication, not audit execution.")
+          PY
+      - name: Verify production history not modified
+        if: always()
+        run: |
+          git diff --exit-code -- macro/swap-spreads-history.json
+          test ! -f macro/swap-spreads-health.json
+      - name: Upload metadata-only diagnostic summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sofr-v15-historical-eligibility-summary
+          path: /tmp/sofr-v15-history-pilot.json
+          retention-days: 7
+          if-no-files-found: ignore
