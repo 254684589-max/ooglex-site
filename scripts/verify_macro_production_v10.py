@@ -9,12 +9,12 @@ from pathlib import Path
 import argparse
 
 PAGES = ("index.html","overview.html","attribution.html","research.html",
-         "swap-spreads.html","indicator-ratings.html","operations.html")
+         "swap-spreads.html","indicator-ratings.html","indicator-lab.html","operations.html")
 SCRIPTS = ("compass-pages.js","treasury-trends.js",
            "indicator-observations.js","indicator-history.js",
            "indicator-correlations.js","indicator-leadlag.js",
            "indicator-quality.js","indicator-provenance-v7.js",
-           "indicator-monitor-v8.js","operations-v9.js")
+           "indicator-monitor-v8.js","operations-v9.js","indicator-a10.js")
 DATA = ("asset-scores.json","asset-compass-treasury-history.json",
         "asset-compass-history-readiness.json",
         "asset-compass-observation-ledger.jsonl",
@@ -39,14 +39,23 @@ def accept(root):
         if 'href="./indicator-ratings.html"' not in html:
             errors.append(filename+" missing indicator ratings navigation")
     for filename,script in (("operations.html","operations-v9.js"),
-                            ("indicator-ratings.html","indicator-history.js"),
-                            ("indicator-ratings.html","indicator-correlations.js"),
-                            ("indicator-ratings.html","indicator-leadlag.js"),
-                            ("indicator-ratings.html","indicator-quality.js"),
-                            ("indicator-ratings.html","indicator-monitor-v8.js")):
+                            ("indicator-lab.html","indicator-history.js"),
+                            ("indicator-lab.html","indicator-correlations.js"),
+                            ("indicator-lab.html","indicator-leadlag.js"),
+                            ("indicator-lab.html","indicator-quality.js"),
+                            ("indicator-lab.html","indicator-monitor-v8.js"),
+                            ("indicator-ratings.html","indicator-a10.js")):
         path=root/"macro"/filename
         if path.is_file() and 'src="./'+script+'"' not in path.read_text(encoding="utf-8"):
             errors.append(filename+" missing "+script)
+    ratings_path=root/"macro"/"indicator-ratings.html"
+    if ratings_path.is_file():
+        ratings=ratings_path.read_text(encoding="utf-8")
+        for marker in ('id="indicator-rows"','id="a10-rows"','href="./indicator-lab.html"'):
+            if marker not in ratings:
+                errors.append("ratings page lacks core catalog: "+marker)
+        if 'id="v8-heading"' in ratings or 'id="quality-asset-rows"' in ratings:
+            errors.append("operational audits or asset-scoring panels leaked into indicator catalog")
     for filename in DATA:
         path=root/"data"/filename
         if not path.is_file():continue
