@@ -11,6 +11,9 @@ on:
       - 'scripts/update_nyfed_recession.py'
       - 'scripts/backtest_asset_compass.py'
       - 'scripts/build_asset_compass_history.py'
+      - 'scripts/build_asset_compass_history_resilient_v42.py'
+      - 'scripts/build_asset_compass_history_fred_v42.py'
+      - '.github/workflows/macro-tests.yml'
       - 'scripts/audit_asset_compass_prices.py'
       - 'scripts/prepare_asset_compass_returns.py'
       - 'scripts/asset_compass_vintages.py'
@@ -218,9 +221,10 @@ jobs:
           assert result['eligible_for_point_in_time_backtest'] is False
           print('First-seen archived macro observations verified:',len(archive))
           PY
-      - name: Validate two years of official Treasury history
+      - name: Validate two years of Treasury yields using direct Treasury first and explicit H15 FRED fallback
         run: |
-          python3 -m scripts.build_asset_compass_history --start-year 2025 --end-year 2026 --output /tmp/asset-compass-treasury-history.json
+          python3 -m scripts.build_asset_compass_history_resilient_v42 --start-year 2025 --output /tmp/asset-compass-treasury-history.json
+          python3 -m scripts.validate_asset_compass_treasury_trends_v42 --input /tmp/asset-compass-treasury-history.json --minimum 100
           python3 - <<'PY'
           import json
           from pathlib import Path
@@ -228,7 +232,7 @@ jobs:
           assert report['observation_count'] >= 100
           assert report['not_valid_for_point_in_time_backtest'] is True
           assert report['original_release_vintages_available'] is False
-          print('Historical Treasury verification:', report['observation_count'],report['start_date'],report['end_date'])
+          print('Historical Treasury-market yield verification:', report['source'],report['observation_count'],report['start_date'],report['end_date'])
           PY
       - name: Save verified official snapshot to this feature branch
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'feature/global-asset-score-v1'

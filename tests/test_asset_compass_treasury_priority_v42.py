@@ -21,6 +21,21 @@ class PriorityV42Tests(unittest.TestCase):
         self.assertEqual(result["source"],"U.S. Department of the Treasury")
         self.assertEqual(called,[("direct",tuple(range(2021,2027)))])
 
+    def test_bounded_macro_ci_window_and_fallback_year(self):
+        dates=[]
+        def direct(years,output):
+            dates.extend(years)
+            raise ConnectionResetError("peer closed")
+        years=[]
+        def fallback(**kwargs):
+            years.append(kwargs["start_year"])
+            return {"source":"Federal Reserve Board H.15 via FRED"}
+        with patch("scripts.build_asset_compass_history_resilient_v42.validate"):
+            build_prefer_treasury(Path("/tmp/unused.json"),today=date(2026,11,22),
+                start_year=2025,direct=direct,fallback=fallback)
+        self.assertEqual(dates,[2025,2026])
+        self.assertEqual(years,[2025])
+
     def test_direct_disconnect_uses_explicit_h15_source(self):
         called=[]
         def direct(*args):
