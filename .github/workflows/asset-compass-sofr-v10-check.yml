@@ -1,0 +1,34 @@
+name: SOFR V10 last successful ingestion heartbeat checks
+on:
+  pull_request:
+    paths:
+      - 'scripts/publish_swap_spread_health.py'
+      - 'tests/test_swap_spreads_health.py'
+      - 'macro/swap-spreads-health.js'
+      - 'macro/swap-spreads.html'
+      - '.github/workflows/asset-compass-sofr-spreads.yml'
+      - '.github/workflows/asset-compass-sofr-v10-check.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check Python and JS
+        run: |
+          python -m py_compile scripts/publish_swap_spread_health.py scripts/report_swap_spread_ingest.py
+          node --check macro/swap-spreads-health.js
+      - name: Test ingestion and public health contracts
+        run: |
+          python -m unittest discover -s tests -p test_swap_spreads_health.py -v
+          python -m unittest discover -s tests -p test_swap_spreads_ingest_report.py -v
+          python -m unittest discover -s tests -p test_swap_spreads_history.py -v
+      - name: History must remain unchanged by this PR
+        run: |
+          git diff --exit-code -- macro/swap-spreads-history.json
+          git diff --check
