@@ -1,8 +1,14 @@
-name: Asset Compass Research V18-V38 Gates
+name: Asset Compass Research V18-V39 Gates
 on:
   pull_request:
     paths:
       - 'scripts/asset_compass_pit_standardize.py'
+      - 'macro/overview.html'
+      - 'macro/compass-pages.js'
+      - 'macro/compass-pages.css'
+      - 'index.html'
+      - 'tests/test_macro_compass_frontend_v39.py'
+      - 'docs/ASSET_COMPASS_V39_*'
       - 'scripts/asset_compass_vintage_quality.py'
       - 'scripts/asset_compass_risk_credit_v20.py'
       - 'scripts/asset_compass_asset_specific_v21.py'
@@ -51,8 +57,12 @@ jobs:
         run: python3 -m pip install cryptography==46.0.4
       - name: Syntax validation
         run: python3 -m compileall -q scripts tests
-      - name: Run isolated V18-V38 research gates
+      - name: Run isolated V18-V39 research gates
         run: python3 -m unittest discover -s tests -p 'test_asset_compass_*_v*.py' -v
+      - name: V39 verify existing frontend sources, links and JS syntax
+        run: |
+          node --check macro/compass-pages.js
+          python3 -m unittest discover -s tests -p 'test_macro_compass_frontend_v39.py' -v
       - name: Verify production scoring remains blocked
         run: |
           python3 - <<'PY'
