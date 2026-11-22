@@ -11,7 +11,7 @@ import sys
 from urllib.error import HTTPError
 
 from update_swap_spreads import (
-    YEARS, OIS_URL, TREASURY_URL, request_bytes, treasury_by_day, build_observation,
+    YEARS, TREASURY_FIELDS, OIS_URL, TREASURY_URL, request_bytes, treasury_by_day, build_observation,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
