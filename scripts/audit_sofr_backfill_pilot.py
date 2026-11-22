@@ -76,7 +76,25 @@ def run(dates,history,fetch=request_bytes,today=None):
     report=build_candidates(list(dates),document,fetch=fetch,today=today or date.today())
     if history.read_bytes()!=original:
         raise RuntimeError("Original production history changed during pilot")
-    return summarize(report)
+    output=summarize(report)
+    archived={obs["asOf"]:obs for obs in document["observations"]}
+    originals={obs["asOf"]:obs for obs in report["results"]}
+    for row in output["results"]:
+        if row["status"]!="archive_conflict":
+            continue
+        before=archived.get(row["asOf"],{}).get("tenors",[])
+        after=originals[row["asOf"]].get("unpublishedObservation",{}).get("tenors",[])
+        before_by={x["years"]:x for x in before}
+        after_by={x["years"]:x for x in after}
+        changed={}
+        for year in sorted(set(before_by)|set(after_by)):
+            a,b=before_by.get(year,{}),after_by.get(year,{})
+            fields=[k for k in ("swap","treasury","spreadBp","method") if a.get(k)!=b.get(k)]
+            if fields:
+                changed[str(year)+"Y"]=fields
+        # Only names of changed fields, never market values.
+        row["conflictFieldNamesByTenor"]=changed
+    return output
 
 
 def main():
