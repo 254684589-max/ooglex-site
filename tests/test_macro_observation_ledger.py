@@ -11,8 +11,8 @@ def snapshot():
         "rates":{"us10y":4.92,"us2y":4.63,"real10y":2.77,
                  "breakeven10y":2.15,"spread10y2y":.29},
         "source_urls":[
-            "https://home.treasury.gov/api?type=daily_treasury_yield_curve&year=2026",
-            "https://home.treasury.gov/api?type=daily_treasury_real_yield_curve&year=2026"],
+            "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page=&_format=csv",
+            "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_real_yield_curve&field_tdr_date_value=2026&page=&_format=csv"],
         "bls":{"series":{
             "cpi":{"period":"2026-10","value":337.476},
             "unemployment":{"period":"2026-10","value":4.1},

@@ -9,6 +9,7 @@ import json
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 from scripts.archive_asset_compass_observations import LEDGER,load,utc
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -36,7 +37,25 @@ def report(rows):
           "first_recorded_at":min((x["first_seen_at"] for x in items),default=None),
           "latest_recorded_at":max((x["first_seen_at"] for x in items),default=None)
         }
+    # Keep legacy mismatched source records intact; expose their provenance
+    # defect explicitly instead of deleting or silently counting them as clean.
+    treasury_source_mismatches=0
+    for record in rows:
+        if not str(record.get("series_id","")).startswith("treasury."):
+            continue
+        try:
+            year=int(str(record["observation_period"])[:4])
+            url=urlparse(record["source_url"])
+            parsed=parse_qs(url.query)
+            if (url.scheme!="https" or url.hostname!="home.treasury.gov"
+                    or f"/{year}/all" not in url.path
+                    or parsed.get("field_tdr_date_value")!=[str(year)]):
+                treasury_source_mismatches+=1
+        except (KeyError, TypeError, ValueError):
+            treasury_source_mismatches+=1
     reasons=[]
+    if treasury_source_mismatches:
+        reasons.append("treasury_source_year_mismatch_in_immutable_archive")
     if not rows:reasons.append("no_live_archive_yet")
     if any(summary[k]["distinct_observation_periods"]<36 for k in REQUIRED_SERIES):
         reasons.append("less_than_36_monthly_or_daily_periods_for_one_or_more_series")
@@ -49,6 +68,7 @@ def report(rows):
       "schema_version":1,"report_type":"asset_compass_history_readiness",
       "status":"research_data_collection_only",
       "archived_observations":len(rows),"series":summary,
+      "treasury_source_year_mismatch_rows":treasury_source_mismatches,
       "validated_for_live_scoring":False,
       "eligible_for_point_in_time_backtest":False,
       "blockers":reasons,
