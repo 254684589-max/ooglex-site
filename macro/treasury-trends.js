@@ -94,6 +94,63 @@ const TREASURY_TRENDS=(function(){
   oil:["breakeven10y","us10y"]
  };
  let readyData=null;
+ // V44: exact historical observations, not forward-filled dates, returns or
+ // investment performance. 1 percentage point = 100 basis points.
+ function compareDates(rows,startDate,endDate,key,compareKey){
+  if(!Array.isArray(rows)||!Object.hasOwn(FIELDS,key))return null;
+  const byDate=new Map(rows.map(row=>[row.date,row]));
+  const first=byDate.get(startDate),last=byDate.get(endDate);
+  if(!first||!last||startDate>endDate)return null;
+  const secondary=Object.hasOwn(FIELDS,compareKey)&&compareKey!==key?compareKey:null;
+  const changes=[key,secondary].filter(Boolean).map(id=>{
+   const start=first[id],end=last[id];
+   if(!Number.isFinite(start)||!Number.isFinite(end))return null;
+   const percentagePoints=end-start;
+   return {id,start,end,percentagePoints,basisPoints:Math.round(percentagePoints*100)};
+  });
+  return changes.every(Boolean)?{startDate,endDate,changes}:null;
+ }
+ function renderDateComparison(rows,key,compareKey){
+  const start=$("treasury-compare-start"),end=$("treasury-compare-end"),
+   output=$("treasury-compare-result");
+  if(!start||!end||!output)return;
+  const available=rows.map(r=>r.date);
+  const previousStart=start.value,previousEnd=end.value;
+  start.replaceChildren(...available.map(day=>{
+   const option=el("option",day);option.value=day;return option;
+  }));
+  end.replaceChildren(...available.map(day=>{
+   const option=el("option",day);option.value=day;return option;
+  }));
+  start.value=available.includes(previousStart)?previousStart:available[0];
+  end.value=available.includes(previousEnd)?previousEnd:available[available.length-1];
+  const update=()=>{
+   const report=compareDates(rows,start.value,end.value,key,compareKey);
+   if(!report){output.textContent="请选择起点不晚于终点的两个真实观测日期。";return}
+   output.textContent=report.startDate+" → "+report.endDate+"（仅观察收益率变化） "+
+    report.changes.map(change=>FIELDS[change.id].name+"："+
+     change.start.toFixed(3)+" → "+change.end.toFixed(3)+" "+FIELDS[change.id].unit+
+     "，变化 "+(change.percentagePoints>=0?"+":"")+change.percentagePoints.toFixed(3)+
+     "个百分点（"+(change.basisPoints>=0?"+":"")+change.basisPoints+" bp）").join("；")+
+    "。非资产价格回报，不代表回测收益。";
+  };
+  start.onchange=update;end.onchange=update;
+  update();
+ }
+ function renderProbe(row,key,compareKey){
+  const display=$("treasury-trend-probe");
+  if(!display)return;
+  if(!row){display.textContent="移动鼠标或触摸图表查看某日真实观测；也可在下方选择两个日期比较。";return}
+  display.textContent=row.date+" · "+FIELDS[key].name+"："+row[key].toFixed(3)+
+   " "+FIELDS[key].unit+(compareKey?" · "+FIELDS[compareKey].name+"："+
+   row[compareKey].toFixed(3)+" "+FIELDS[compareKey].unit:"")+
+   "（官方历史观测，非PIT首发值）";
+ }
+ function nearestPlotObservation(rows,relativeX){
+  if(!Array.isArray(rows)||!rows.length||!Number.isFinite(relativeX))return null;
+  const clamped=Math.max(0,Math.min(1,relativeX));
+  return rows[Math.round(clamped*(rows.length-1))];
+ }
  function plot(data,key,range,compareKey){
   const chart=$("treasury-trend-svg"),status=$("treasury-trend-status"),
    meta=$("treasury-trend-meta"),body=$("treasury-trend-table"),
@@ -102,6 +159,13 @@ const TREASURY_TRENDS=(function(){
   clear(chart);clear(body);
   if(legend)clear(legend);
   if(difference)difference.textContent="";
+  const probe=$("treasury-trend-probe"),start=$("treasury-compare-start"),
+    end=$("treasury-compare-end"),comparison=$("treasury-compare-result");
+  chart.onpointermove=null;chart.onpointerleave=null;
+  if(probe)probe.textContent="";
+  if(comparison)comparison.textContent="";
+  if(start)start.replaceChildren();
+  if(end)end.replaceChildren();
   key=Object.hasOwn(FIELDS,key)?key:"us10y";
   compareKey=Object.hasOwn(FIELDS,compareKey)&&compareKey!==key?compareKey:null;
   const all=selectWindow(data,range);
@@ -137,6 +201,21 @@ const TREASURY_TRENDS=(function(){
   if(compareKey)curve(compareKey,"trend-compare-line");
   chart.append(svg("text",{x:left,y:height-12,class:"trend-axis-label"},all[0].date));
   chart.append(svg("text",{x:width-right,y:height-12,"text-anchor":"end",class:"trend-axis-label"},all[all.length-1].date));
+  // Use the V43 equal-spaced observation x axis, not fabricated weekend days.
+  // Pointer coordinates come from the rendered SVG bounds; no network fetches.
+  chart.onpointermove=event=>{
+   if(typeof chart.getBoundingClientRect!=="function")return;
+   const bounds=chart.getBoundingClientRect();
+   if(!bounds||!Number.isFinite(bounds.width)||bounds.width<=0)return;
+   const viewX=(event.clientX-bounds.left)/bounds.width*width;
+   const ratio=(viewX-left)/(width-left-right);
+   renderProbe(nearestPlotObservation(all,ratio),key,compareKey);
+  };
+  chart.onpointerleave=()=>renderProbe(null,key,compareKey);
+  chart.onfocus=()=>renderProbe(all[all.length-1],key,compareKey);
+  if(typeof chart.setAttribute==="function")chart.setAttribute("tabindex","0");
+  renderProbe(null,key,compareKey);
+  renderDateComparison(all,key,compareKey);
   const last=all[all.length-1],unit=FIELDS[key].unit;
   status.textContent=FIELDS[key].name+"：最新 "+last[key].toFixed(2)+" "+unit+
    (compareKey?"；"+FIELDS[compareKey].name+"："+last[compareKey].toFixed(2)+" "+FIELDS[compareKey].unit:"")+
@@ -200,6 +279,6 @@ const TREASURY_TRENDS=(function(){
   if(typeof window!=="undefined")window.ooglexTreasuryFocus=focusAsset;
   update();
  }
- return {validate,selectWindow,plot,init,focusAsset,FIELDS,ASSET_CURVE_FOCUS};
+ return {validate,selectWindow,plot,init,focusAsset,compareDates,nearestPlotObservation,FIELDS,ASSET_CURVE_FOCUS};
 })();
 if(document.body.dataset.page==="overview")void TREASURY_TRENDS.init();
