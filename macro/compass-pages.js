@@ -34,6 +34,81 @@ const OVERVIEW_INDICATORS=[
  {id:"liquidity.overnight_rrp",name:"隔夜逆回购余额",group:"流动性",source:"纽约联储（经FRED）",cadence:"daily",unit:"十亿美元",precision:3,value:d=>d.liquidity?.overnight_rrp?.unit==="billions_usd"?d.liquidity.overnight_rrp.value:null,period:d=>d.liquidity?.overnight_rrp?.observation_date},
  {id:"nyfed_recession.probability",name:"收益率曲线模型：12个月后衰退概率",group:"模型",source:"纽约联储研究模型",cadence:"monthly",unit:"%",precision:2,value:d=>{const m=d.nyfed_recession_model||{};if(m.official_forecast!==false||!/^\d{4}-\d{2}$/.test(m.observation_period||"")||!/^\d{4}-\d{2}$/.test(m.target_period||""))return null;const [y,n]=m.observation_period.split("-").map(Number),[ty,tn]=m.target_period.split("-").map(Number);return (ty*12+tn)-(y*12+n)===12?m.probability_percent:null},period:d=>d.nyfed_recession_model?.observation_period}
 ];
+// V48: research-source independence taxonomy, not causal or predictive
+// certification. Every entry maps to a V39 canonical observation series.
+const INDICATOR_DEPENDENCE={
+ "treasury.us10y":{family:"国债收益率",relation:"名义期限锚",note:"与实际收益率、通胀补偿存在同期限代数恒等式"},
+ "treasury.real10y":{family:"国债收益率",relation:"实际期限锚",note:"与名义收益率、通胀补偿存在同期限代数恒等式"},
+ "treasury.us2y":{family:"国债收益率",relation:"短端期限锚",note:"10Y−2Y期限利差依赖此值及10年名义收益率"},
+ "nyfed.effr":{family:"政策及货币市场",relation:"独立系列，尚未认证独立预测信息",note:"与短端国债利率或货币政策背景可能高度相关，不能重复视作独立投票"},
+ "bls.cpi":{family:"通胀",relation:"独立系列，尚未认证独立预测信息",note:"与核心CPI共享调查来源和部分价格样本"},
+ "bls.core_cpi":{family:"通胀",relation:"独立系列，尚未认证独立预测信息",note:"CPI剔除食品能源的口径，与总体CPI非相互独立"},
+ "bls.unemployment":{family:"劳动力市场",relation:"独立系列，尚未认证独立预测信息",note:"失业率来自家庭调查，非农来自企业调查；经济周期相关但不是代数重复"},
+ "bls.payroll":{family:"劳动力市场",relation:"独立系列，尚未认证独立预测信息",note:"就业增长和失业率来自不同调查但共享宏观周期"},
+ "bea.core_pce":{family:"通胀",relation:"独立系列，尚未认证独立预测信息",note:"与CPI有共用价格资料，不等于CPI，但不能假定完全独立"},
+ "fed_h41.total_assets":{family:"美联储资产负债表",relation:"共同会计体系，不能独立计票",note:"与准备金、财政部TGA等余额存在资产负债表会计联系，并非简单相加独立信号"},
+ "liquidity.reserves":{family:"美联储资产负债表",relation:"共同会计体系，不能独立计票",note:"准备金为美联储负债端项目，非美联储资产的另一项独立政策投票"},
+ "liquidity.tga":{family:"美联储资产负债表",relation:"共同会计体系，不能独立计票",note:"财政部在联储的存款与准备金共同受到资产负债表操作影响"},
+ "liquidity.overnight_rrp":{family:"美联储资产负债表",relation:"共同会计体系，不能独立计票",note:"隔夜逆回购余额与准备金存在资金配置联系，且来源频率、单位不同"},
+ "nyfed_recession.probability":{family:"期限结构研究模型",relation:"模型输出，非独立原始指标",note:"纽约联储模型基于收益率曲线，不能再作为独立于期限利差的证据"}
+};
+const EXACT_IDENTITIES=[
+ {label:"10年名义收益率 = 10年TIPS实际收益率 + 10年通胀补偿",
+  inputs:["treasury.us10y","treasury.real10y"],derived:"treasury.breakeven10y"},
+ {label:"10Y−2Y期限利差 = 10年名义收益率 − 2年名义收益率",
+  inputs:["treasury.us10y","treasury.us2y"],derived:"treasury.spread10y2y"}
+];
+function independenceAudit(rows){
+ const validRows=Array.isArray(rows)?rows:[];
+ const coverage=OVERVIEW_INDICATORS.every(x=>Object.hasOwn(INDICATOR_DEPENDENCE,x.id))&&
+  Object.keys(INDICATOR_DEPENDENCE).length===OVERVIEW_INDICATORS.length;
+ if(!coverage)throw Error("V48 indicator dependency registry incomplete");
+ const entries=OVERVIEW_INDICATORS.map(def=>{
+  const observation=validRows.find(r=>r.id===def.id);
+  return {id:def.id,name:def.name,source:def.source,cadence:def.cadence,
+   family:INDICATOR_DEPENDENCE[def.id].family,
+   relation:INDICATOR_DEPENDENCE[def.id].relation,
+   note:INDICATOR_DEPENDENCE[def.id].note,
+   current:observation?.value!==null&&Number.isFinite(observation?.value)};
+ });
+ return {entries,sourceSeries:entries.length,derivedDefinitions:EXACT_IDENTITIES.length,
+  reportingFamilies:new Set(entries.map(x=>x.family)).size,
+  // These must remain false until independent PIT and out-of-sample evidence exists.
+  independentSignalsCertified:false,validatedForScoring:false};
+}
+function renderIndependenceAudit(rows){
+ const panel=$("#indicator-independence");
+ if(!panel)return;
+ panel.replaceChildren();
+ const audit=independenceAudit(rows);
+ const intro=el("p","muted","审计覆盖 "+audit.sourceSeries+" 条已接入源系列、"+
+  audit.derivedDefinitions+" 条代数派生公式和 "+audit.reportingFamilies+
+  " 个研究主题分组。研究主题分组不是独立因子数量，来自同一机构或不同机构也不能据此认证预测独立性。");
+ const identities=el("div","audit-identities");
+ for(const item of EXACT_IDENTITIES){
+  const p=el("p","",item.label+"；派生指标 "+item.derived+" 只能由同日原始数据计算，不新增独立观测源或重复投票。");
+  identities.append(p);
+ }
+ const wrap=el("div","table-wrap"),table=el("table");
+ const header=el("tr");
+ for(const text of ["14项源指标","研究主题","频率","依赖及重复风险","数据状态"]){
+  const th=el("th","",text);th.scope="col";header.append(th);
+ }
+ const thead=el("thead");thead.append(header);table.append(thead);
+ const body=el("tbody");
+ for(const item of audit.entries){
+  const tr=el("tr");tr.title=item.note;
+  for(const v of [item.name,item.family,item.cadence,item.relation,item.current?"当前可用":"缺失或过期"]){
+   tr.append(el("td","",v));
+  }
+  body.append(tr);
+ }
+ table.append(body);wrap.append(table);
+ const foot=el("p","insights-warning",
+  "独立性审计结论：0项预测独立性认证。来源计数≠独立信号数。高相关不等于严格代数重复；同一会计体系不意味着数值相等。缺少逐日历史发布可得性和样本外验证，不能解锁六资产评分、历史策略收益和自动预警。");
+ panel.append(intro,identities,wrap,foot);
+}
+
 // Stable primary publisher references; never use the legacy 2025 Treasury
 // citation attached to the 2026 value as a live series source link.
 const OFFICIAL_SOURCES={
@@ -173,6 +248,7 @@ function overview(data,readiness){
  const snapshotValid=data?.schema_version===1&&data?.assets&&data?.scoring?.calibration_verified===false&&data?.scoring?.out_of_sample_verified===false;
  const approved=snapshotValid?data:null;
  const rows=overviewObservations(approved);
+ renderIndependenceAudit(rows);
  const usable=rows.filter(x=>x.state==="可用").length;
  const snapshotTime=approved?.generated_at?Date.parse(approved.generated_at):NaN;
  const age=Date.now()-snapshotTime;
