@@ -131,6 +131,14 @@ jobs:
           print("Asset Compass four-page public build verified")
           PY
 
+      - name: V10 verify public macro pages, audit payloads and model gates
+        run: |
+          set -euo pipefail
+          python3 -m scripts.verify_macro_production_v10 --root .site
+          for js in indicator-observations indicator-history indicator-correlations indicator-leadlag indicator-quality indicator-provenance-v7 indicator-monitor-v8 operations-v9; do
+            node --check ".site/macro/${js}.js"
+          done
+
       - name: Add latest Tech Leaders Android APK
         # 安装包由 android-tech-leaders.yml 发布到 GitHub Release；这里复制到站内下载地址。
         # 取不到（尚未发布或网络失败）时不影响网站部署，下载页会显示「暂未发布」。
@@ -229,6 +237,9 @@ jobs:
 
       - name: Verify live Global Cams V1.1
         run: node scripts/verify_global_cams_live.mjs
+
+      - name: V10 verify live macro console, scripts and audit JSON
+        run: python3 -m scripts.verify_macro_live_v10 --base https://www.ooglex.com --sha "$GITHUB_SHA"
 
       - name: Verify live TV V1.2
         run: |
