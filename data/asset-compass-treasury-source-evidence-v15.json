@@ -2,7 +2,7 @@
   "schema_version": 1,
   "report_type": "asset_compass_v15_treasury_raw_source_evidence",
   "year": 2026,
-  "retrieved_at": "2026-11-22T17:51:48.678090+00:00",
+  "retrieved_at": "2026-11-22T17:55:20.081980+00:00",
   "source": "U.S. Department of the Treasury",
   "source_receipts": [
     {
@@ -13,8 +13,8 @@
       "observation_rows": 223,
       "earliest_observation_date": "2026-01-02",
       "latest_observation_date": "2026-11-20",
-      "retrieved_at": "2026-11-22T17:51:48.678090+00:00",
-      "http_date_unverified_publication_time": "Sun, 22 Nov 2026 17:52:07 GMT",
+      "retrieved_at": "2026-11-22T17:55:20.081980+00:00",
+      "http_date_unverified_publication_time": "Sun, 22 Nov 2026 17:55:37 GMT",
       "http_last_modified_unverified_publication_time": null,
       "etag_transport_metadata_only": null,
       "original_release_time_verified": false
@@ -27,8 +27,8 @@
       "observation_rows": 223,
       "earliest_observation_date": "2026-01-02",
       "latest_observation_date": "2026-11-20",
-      "retrieved_at": "2026-11-22T17:51:48.678090+00:00",
-      "http_date_unverified_publication_time": "Sun, 22 Nov 2026 17:52:26 GMT",
+      "retrieved_at": "2026-11-22T17:55:20.081980+00:00",
+      "http_date_unverified_publication_time": "Sun, 22 Nov 2026 17:55:55 GMT",
       "http_last_modified_unverified_publication_time": null,
       "etag_transport_metadata_only": null,
       "original_release_time_verified": false

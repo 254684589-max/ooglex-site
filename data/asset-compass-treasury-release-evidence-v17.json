@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_v17_treasury_publication_evidence",
-  "generated_at": "2026-11-22T17:52:26.516320+00:00",
-  "v15_retrieved_at": "2026-11-22T17:51:48.678090+00:00",
-  "v16_checked_at": "2026-11-22T17:52:26.373109+00:00",
+  "generated_at": "2026-11-22T17:55:56.041574+00:00",
+  "v15_retrieved_at": "2026-11-22T17:55:20.081980+00:00",
+  "v16_checked_at": "2026-11-22T17:55:55.877596+00:00",
   "source_year": 2026,
   "methodology_evidence_type": "official_public_website_description_not_original_release_archive",
   "methodology_review_status": "official_documentation_identified_not_independently_timestamped",
@@ -26,7 +26,7 @@
       "historical_first_release_vintage_hash": null,
       "historical_first_release_vintage_verified": false,
       "observed_source_content_sha256": "3a48daf1c889672fedc4643d8c2fc0a46b99eadf4af5a8780b11996eaff11df4",
-      "retrieved_at": "2026-11-22T17:51:48.678090+00:00",
+      "retrieved_at": "2026-11-22T17:55:20.081980+00:00",
       "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page=&_format=csv",
       "official_methodology_url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
       "required_additional_proof": [
@@ -49,7 +49,7 @@
       "historical_first_release_vintage_hash": null,
       "historical_first_release_vintage_verified": false,
       "observed_source_content_sha256": "3a48daf1c889672fedc4643d8c2fc0a46b99eadf4af5a8780b11996eaff11df4",
-      "retrieved_at": "2026-11-22T17:51:48.678090+00:00",
+      "retrieved_at": "2026-11-22T17:55:20.081980+00:00",
       "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page=&_format=csv",
       "official_methodology_url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
       "required_additional_proof": [
@@ -72,7 +72,7 @@
       "historical_first_release_vintage_hash": null,
       "historical_first_release_vintage_verified": false,
       "observed_source_content_sha256": "1282b12c4fc8d70c1a20fb9de974d6955ee83ac909ef590b34b5b939725929c9",
-      "retrieved_at": "2026-11-22T17:51:48.678090+00:00",
+      "retrieved_at": "2026-11-22T17:55:20.081980+00:00",
       "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_real_yield_curve&field_tdr_date_value=2026&page=&_format=csv",
       "official_methodology_url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
       "required_additional_proof": [
