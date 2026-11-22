@@ -113,7 +113,7 @@ def _heading_section(text, source):
     if source["release_kind"] == "cpi":
         heading = r"CONSUMER PRICE INDEX\s*[-–—]\s*" + month + rf"\s+{yyyy}\b"
     elif source["release_kind"] == "employment":
-        heading = r"THE EMPLOYMENT SITUATION\s*[-–—]{{1,2}}\s*" + month + rf"\s+{yyyy}\b"
+        heading = r"THE EMPLOYMENT SITUATION\s*[-–—]{1,2}\s*" + month + rf"\s+{yyyy}\b"
     else:
         heading = r"Personal Income and Outlays,?\s+" + month + rf"\s+{yyyy}\b"
     found = re.search(heading, text, re.I)
