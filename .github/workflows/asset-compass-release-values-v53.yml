@@ -1,0 +1,68 @@
+name: Asset Compass V53 Official Release Value Research
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/asset-compass-release-values-v53.yml'
+      - 'scripts/asset_compass_release_values_v53.py'
+      - 'scripts/asset_compass_custody_v52.py'
+      - 'data/asset-compass-v51-release-candidates.json'
+permissions:
+  contents: read
+jobs:
+  source-value-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit-test historical summary extraction without real internet
+        run: |
+          python3 -m unittest discover -s tests -p 'test_asset_compass_release_values_v53.py' -v
+      - name: Fetch seven real publisher HTML releases to ephemeral private folder
+        run: |
+          mkdir -p /tmp/ooglex-v53/private
+          chmod 700 /tmp/ooglex-v53/private
+          python3 -m scripts.asset_compass_custody_v52 capture \
+            --private-dir /tmp/ooglex-v53/private \
+            --output /tmp/ooglex-v53/capture-report.json
+      - name: Extract only reported statistical headline figures and check cross-release revisions
+        run: |
+          python3 -m scripts.asset_compass_release_values_v53 \
+            --private-dir /tmp/ooglex-v53/private \
+            --output /tmp/ooglex-v53/reported-rates.json --require-complete
+      - name: Summarize evidence without releasing raw news HTML or PIT certifications
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import os, json
+          from pathlib import Path
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+              f.write("## V53 release values: publisher headline candidates only\n")
+              for file in ("capture-report.json", "reported-rates.json"):
+                  p=Path("/tmp/ooglex-v53")/file
+                  if not p.exists():
+                      f.write(f"- {file}: missing; source evidence unverified\n")
+                      continue
+                  report=json.loads(p.read_text())
+                  assert report["historical_pit_series_approved"]==0
+                  f.write(f"- {file}: "+(
+                      f"{report['retrieved_now']}/{report['requested']} source HTML files downloaded now"
+                      if file.startswith("capture") else
+                      f"{report.get('complete_candidate_sources',0)}/{report['requested_sources']} candidate source extracts complete; "
+                      f"{report.get('candidate_metrics_from_latest_snapshots',0)} reported rate/count fields; "
+                      f"{len(report['cross_release_revision_claims'])} stated revision claims") + "\n")
+              f.write("No historical original-byte timestamp verification; no raw document retained by workflow; no trading approval.\n")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ooglex-v53-source-reported-candidates
+          path: |
+            /tmp/ooglex-v53/capture-report.json
+            /tmp/ooglex-v53/reported-rates.json
+          if-no-files-found: warn
+          retention-days: 30
