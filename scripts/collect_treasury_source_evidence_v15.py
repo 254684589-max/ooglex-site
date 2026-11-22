@@ -49,7 +49,7 @@ def parse_csv(raw,kind,year):
             try:observed=datetime.strptime(value,fmt).date();break
             except ValueError:pass
         if observed is None or observed.year!=year:raise ValueError("Bad or out-of-year Treasury observation")
-        if observed in records:raise ValueError("Duplicate Treasury observation period")
+        if observed.isoformat() in records:raise ValueError("Duplicate Treasury observation period")
         vals={}
         for field in (("10yr","2yr") if kind=="nominal" else ("10yr",)):
             cell=str(row.get(normalized[field]) or "").strip()
