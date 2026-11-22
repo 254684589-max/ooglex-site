@@ -35,7 +35,7 @@ class PilotTests(unittest.TestCase):
         self.assertEqual(result["counts"]["candidate"],1)
         self.assertEqual(result["counts"]["archive_conflict"],1)
         self.assertFalse(result["publicationApproved"])
-        self.assertEqual(result["decision"],"REVIEW_ONLY")
+        self.assertEqual(result["decision"],"BLOCKED_CONFLICT_REVIEW")
         self.assertEqual(result["licenseApproval"],"not_obtained")
     def test_unknown_status_is_rejected(self):
         f=full();f["results"][0]["status"]="permission_granted"
