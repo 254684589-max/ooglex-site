@@ -9,6 +9,7 @@ main{max-width:1120px;margin:auto;padding:30px 18px 70px}h1{font-size:clamp(26px
 <header><a href="/" class="brand">OOGLEX</a><nav aria-label="全球资产罗盘导航"><a href="./overview.html">全球资产总览</a><a href="./index.html">宏观指标中心</a><a href="./attribution.html">资产因子归因</a><a href="./research.html">回测与预警</a><a href="./swap-spreads.html" aria-current="page">互换利差曲线</a><a href="./indicator-ratings.html">华尔街指标评级</a></nav></header>
 <main><div class="kicker">GLOBAL ASSET COMPASS · FIXED INCOME RESEARCH</div><h1>SOFR互换利差监测</h1><p class="muted">同期限SOFR OIS固定利率减去美国财政部国债平价收益率。按美国交易日匹配观测日期，展示利差期限结构与逐日历史，不将指示性数据标为实时成交报价。</p>
 <div class="notice" id="status" role="status" aria-live="polite">正在读取已验证的日期匹配数据……</div>
+<div class="notice" id="sofr-run-health" role="status" aria-live="polite">正在核对正式日更成功记录……</div>
 <section class="grid" aria-label="利差摘要"><article class="card"><div class="minor">2年期利差</div><div class="big" id="k2">—</div><div class="minor">短端</div></article><article class="card"><div class="minor">10年期利差</div><div class="big" id="k10">—</div><div class="minor">基准期限</div></article><article class="card"><div class="minor">30年期利差</div><div class="big" id="k30">—</div><div class="minor">长端</div></article></section>
 <section class="card"><h2 style="margin-top:0">期限结构 · 横轴为年期</h2><svg id="term" class="chart" viewBox="0 0 900 340" role="img" aria-label="六期限SOFR互换利差横截面"></svg><p class="minor" id="term-desc"></p></section>
 <h2>历史时间序列</h2><section class="card"><label for="tenor-select">选择期限 <select id="tenor-select"><option value="2">2年</option><option value="3">3年</option><option value="5">5年</option><option value="7">7年</option><option value="10" selected>10年</option><option value="30">30年</option></select></label><svg id="history" class="chart" viewBox="0 0 900 320" role="img" aria-label="互换利差历史走势"></svg><p class="minor" id="history-desc">需要至少两个真实匹配日期才可形成时间序列。</p></section>
@@ -39,4 +40,4 @@ main{max-width:1120px;margin:auto;padding:30px 18px 70px}h1{font-size:clamp(26px
 <script src="./swap-spreads-analytics-panel.js" defer></script>
 <script src="./swap-spreads-history.js" defer></script>
 <script src="./swap-spreads-monitor.js" defer></script>
-<script src="./swap-spreads-monitor-panel.js" defer></script></body></html>
+<script src="./swap-spreads-monitor-panel.js" defer></script><script src="./swap-spreads-health.js" defer></script></body></html>

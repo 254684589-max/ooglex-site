@@ -66,18 +66,26 @@ jobs:
           path: /tmp/sofr-ingest-evidence.json
           if-no-files-found: error
           retention-days: 7
-      - name: Commit data only if a new matched observation was added
+      - name: Update public last-success marker only on verified ingestion
         if: steps.ingest.outputs.exit_code == '0'
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- macro/swap-spreads-history.json; then
-            echo "No new matched trading date; publishing nothing."
+          python scripts/publish_swap_spread_health.py \
+            --evidence /tmp/sofr-ingest-evidence.json \
+            --output macro/swap-spreads-health.json
+      - name: Commit validated observations and last-success marker
+        if: steps.ingest.outputs.exit_code == '0'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -- macro/swap-spreads-history.json macro/swap-spreads-health.json
+          if git diff --cached --quiet; then
+            echo "No new validated data or last-success heartbeat to publish."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- macro/swap-spreads-history.json
           git diff --cached --check
           git commit -m "data(macro): append validated SOFR swap-spread trading day"
           git pull --rebase origin main
