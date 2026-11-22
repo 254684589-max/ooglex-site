@@ -1,0 +1,36 @@
+name: SOFR V8 live pipeline verification
+on:
+  pull_request:
+    paths:
+      - 'scripts/probe_swap_spread_pipeline.py'
+      - 'tests/test_swap_spreads_pipeline_probe.py'
+      - '.github/workflows/asset-compass-sofr-v8-probe.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Python syntax and offline contract
+        run: |
+          python -m py_compile scripts/probe_swap_spread_pipeline.py
+          python -m unittest discover -s tests -p test_swap_spreads_pipeline_probe.py -v
+      - name: Live read-only source smoke check
+        run: python scripts/probe_swap_spread_pipeline.py --output /tmp/sofr-source-probe.json
+      - name: Verify no original history modification
+        if: always()
+        run: git diff --exit-code -- macro/swap-spreads-history.json
+      - name: Upload diagnostic report, no market publication
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sofr-source-probe
+          path: /tmp/sofr-source-probe.json
+          if-no-files-found: ignore
+          retention-days: 7
