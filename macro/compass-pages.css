@@ -47,3 +47,15 @@
 .treasury-trend-data summary{color:#acd3ff;cursor:pointer;font-size:13px}
 .treasury-trend-data td,.treasury-trend-data th{font-variant-numeric:tabular-nums}
 @media(max-width:780px){.treasury-trend-controls{gap:10px}.treasury-trend-svg{min-height:130px}.treasury-trends-panel{padding:15px}}
+
+/* V43: exact-observation-date dual Treasury curves and linked six-asset focus. */
+.trend-compare-line{stroke:#f0ba73;stroke-width:2.6;stroke-dasharray:8 4;stroke-linecap:round;stroke-linejoin:round}
+.trend-compare-point{fill:#f0ba73;stroke:#101722;stroke-width:2}
+.trend-legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;font-weight:600;margin:10px 0;color:#c9d8ec}
+.trend-legend span:first-child{color:#65baff}
+.trend-legend span:nth-child(2){color:#f0ba73}
+.trend-difference{font-size:13px;line-height:1.65;color:#f1d7ac;margin:10px 0;min-height:0}
+.asset-trend-focus{display:inline-flex;margin:11px 0 0 9px;align-items:center;min-height:40px;font-size:13px;border:1px solid #507b9c;border-radius:9px;padding:8px 12px;color:#c7e5ff;background:#173047;cursor:pointer}
+.asset-trend-focus:hover{background:#24435e}
+.asset-trend-focus:focus-visible{outline:2px solid #a0d6ff;outline-offset:3px}
+@media(max-width:780px){.asset-trend-focus{margin-left:0;display:flex}.trend-legend{font-size:12px;gap:6px 10px}}
