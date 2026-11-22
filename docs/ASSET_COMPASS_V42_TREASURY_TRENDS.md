@@ -27,3 +27,21 @@ node tests/smoke_asset_compass_trends_v42.cjs
 提交后以 GitHub `Asset Compass Research V18–V42 Gates` 为离线测试结果，**以独立的 `Asset Compass V42 Official Treasury Trend Observations` 工作流及已提交的 `data/asset-compass-treasury-history.json` 为真实抓取完成的证据**。二者必须分开核实。
 
 已验证评分的独立宏观因子来源仍不足，正式评分及收益率历史回测继续关闭。
+
+## V42.1 实际采集通路修复（官方财政部接口不稳定）
+真实 GitHub PR `Ooglex Macro Unit Tests` 运行 #45036004023 的历史CSV验证报错 `http.client.RemoteDisconnected: Remote end closed connection without response`。同一问题影响最初的V42官方历史数据工作流；不能把源端断连当作已采集成功。
+
+补充一个同样来自美国官方机构的可追溯镜像：美联储 H.15 日度收益率，圣路易斯联储 FRED 公共CSV：
+- `DGS10`：10年期名义恒定期限美国国债收益率；
+- `DGS2`：2年期名义恒定期限美国国债收益率；
+- `DFII10`：10年期通胀保值国债实际收益率。
+
+`scripts/build_asset_compass_history_fred_v42.py` 真正请求上述三条CSV，并严格只取三者**同一个观测日**的数据。前端和历史JSON来源字段明确写为 `Federal Reserve Board H.15 via FRED`，不得伪称直接使用了财政部CSV。依旧不认定原始历史首发时间，也不解锁资产评分。
+
+`validate_asset_compass_treasury_trends_v42.py` 分别审计两种来源模式：直接财政部历史CSV或 H.15 FRED 镜像；严格拒绝跨来源混拼、错误FRED series id、不同日期值与伪造PIT标志。GitHub独立定时采集仍**优先**直接获取美国财政部原始CSV；仅在连接失败或质量未通过时，尝试明确标注为美联储H.15/FRED的备用来源，并对备份来源采用同等的日期/派生算术验证。
+
+参考美联储官方FRED series：<https://fred.stlouisfed.org/series/DGS10>、<https://fred.stlouisfed.org/series/DGS2>、<https://fred.stlouisfed.org/series/DFII10>。
+
+## 2026-11-22 实际运行结果
+V42官方财政部历史抓取工作流 `45036124807` **最终成功**，并已写入 `main:data/asset-compass-treasury-history.json`。已验证实际数据源为 `U.S. Department of the Treasury`，`observation_count=1472`，日期范围2021-01-04到2026-11-20，抓取时间2026-11-22T15:07:02Z。
+因此FRED为**备用机制**而不是取代成功的官方财政部原始来源。未来采用备用来源时，数据JSON、图表来源、工作流汇总都必须如实变为H.15/FRED；不可以把不同发布机构的观测值混在同一条曲线上而不标注。

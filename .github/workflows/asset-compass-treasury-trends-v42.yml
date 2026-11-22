@@ -6,6 +6,8 @@ on:
     paths:
       - '.github/workflows/asset-compass-treasury-trends-v42.yml'
       - 'scripts/build_asset_compass_history.py'
+      - 'scripts/build_asset_compass_history_fred_v42.py'
+      - 'scripts/build_asset_compass_history_resilient_v42.py'
       - 'scripts/validate_asset_compass_treasury_trends_v42.py'
   schedule:
     - cron: '15 4 * * 1'
@@ -29,11 +31,13 @@ jobs:
         run: |
           python3 -m unittest discover -s tests -p 'test_macro_history.py' -v
           python3 -m unittest discover -s tests -p 'test_asset_compass_treasury_trends_v42.py' -v
-      - name: Download actual Treasury nominal and TIPS daily history
-        run: python3 -m scripts.build_asset_compass_history
-      - name: Verify official URLs, independent values, paired arithmetic and no PIT authorization
+          python3 -m unittest discover -s tests -p 'test_asset_compass_h15_fred_v42.py' -v
+          python3 -m unittest discover -s tests -p 'test_asset_compass_treasury_priority_v42.py' -v
+      - name: Prefer actual Treasury CSV; use clearly identified H.15/FRED mirror only if direct source fails
+        run: python3 -m scripts.build_asset_compass_history_resilient_v42
+      - name: Verify original Treasury or H.15 provenance, matched observations, derived arithmetic and no PIT authorization
         run: python3 -m scripts.validate_asset_compass_treasury_trends_v42 --minimum 100
-      - name: Save only genuine current/retrieved Treasury historical observations
+      - name: Save only genuine H.15 market yield observations
         shell: bash
         run: |
           set -euo pipefail
@@ -58,7 +62,7 @@ jobs:
           from pathlib import Path
           d=json.loads(Path("/tmp/ooglex-v42-published.json").read_text())
           with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
-              f.write("### V42 actual Treasury history\n")
+              f.write("### V42 actual U.S. Treasury-market yields (Federal Reserve H.15 via FRED)\n")
               f.write("Official observations: "+str(d["observation_count"])+"  \n")
               f.write("Range: "+d["start_date"]+" — "+d["end_date"]+"  \n")
               f.write("PIT-vintage: not qualified. No investment scoring or backtest enabled.\n")

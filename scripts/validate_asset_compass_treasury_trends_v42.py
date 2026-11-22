@@ -14,7 +14,8 @@ def validate(document,minimum=100,now=None):
         raise ValueError("Treasury chart: schema must be 1")
     if document.get("dataset")!="treasury_historical_daily_observations":
         raise ValueError("Treasury chart: wrong dataset")
-    if document.get("source")!="U.S. Department of the Treasury":
+    source=document.get("source")
+    if source not in ("U.S. Department of the Treasury","Federal Reserve Board H.15 via FRED"):
         raise ValueError("Treasury chart: source not official")
     if document.get("original_release_vintages_available") is not False or document.get("not_valid_for_point_in_time_backtest") is not True:
         raise ValueError("Treasury chart: PIT disclaimer must remain locked")
@@ -26,19 +27,31 @@ def validate(document,minimum=100,now=None):
     if not isinstance(urls,list) or not urls or len(urls)>40:
         raise ValueError("Treasury chart: official source URLs required")
     kinds=set()
-    for source in urls:
-        parsed=urlparse(source)
+    for raw_url in urls:
+        parsed=urlparse(raw_url)
         query=parse_qs(parsed.query)
-        year=query.get("field_tdr_date_value",[""])[0]
-        kind=query.get("type",[""])[0]
-        if (parsed.scheme!="https" or parsed.hostname!="home.treasury.gov"
-            or parsed.username is not None or parsed.password is not None
-            or kind not in ("daily_treasury_yield_curve","daily_treasury_real_yield_curve")
-            or not year.isdigit() or f"/{year}/all" not in parsed.path):
+        if parsed.scheme!="https" or parsed.username is not None or parsed.password is not None:
             raise ValueError("Treasury chart: forged source link")
-        kinds.add(kind)
-    if len(kinds)!=2:
-        raise ValueError("Treasury chart: nominal and TIPS sources both required")
+        if source=="U.S. Department of the Treasury":
+            year=query.get("field_tdr_date_value",[""])[0]
+            kind=query.get("type",[""])[0]
+            if (parsed.hostname!="home.treasury.gov"
+                or kind not in ("daily_treasury_yield_curve","daily_treasury_real_yield_curve")
+                or not year.isdigit() or f"/{year}/all" not in parsed.path):
+                raise ValueError("Treasury chart: forged source link")
+            kinds.add(kind)
+        else:
+            identifier=query.get("id",[""])[0]
+            if (parsed.hostname!="fred.stlouisfed.org" or parsed.path!="/graph/fredgraph.csv"
+                or identifier not in ("DGS10","DGS2","DFII10")
+                or len(query.get("id",[]))!=1 or "cosd" not in query or "coed" not in query):
+                raise ValueError("Treasury chart: forged H.15 FRED mirror link")
+            kinds.add(identifier)
+    if source=="U.S. Department of the Treasury":
+        if len(kinds)!=2:
+            raise ValueError("Treasury chart: nominal and TIPS sources both required")
+    elif kinds!={"DGS10","DGS2","DFII10"} or document.get("source_series_ids")!=["DGS10","DGS2","DFII10"]:
+        raise ValueError("Treasury chart: all H.15 nominal/TIPS source series are required")
     observations=document.get("observations")
     if not isinstance(observations,list) or len(observations)<minimum or len(observations)>10000:
         raise ValueError("Treasury chart: insufficient or excessive observations")
@@ -64,7 +77,7 @@ def validate(document,minimum=100,now=None):
             raise ValueError("Treasury chart: invalid 10Y−2Y arithmetic")
     if document.get("start_date")!=observations[0]["date"] or document.get("end_date")!=observations[-1]["date"]:
         raise ValueError("Treasury chart: date range mismatch")
-    return {"source":"US Treasury","observations":len(observations),"start":document["start_date"],
+    return {"source":source,"observations":len(observations),"start":document["start_date"],
             "end":document["end_date"],"historical_pit_approved":False,
             "safe_for_observational_chart":True}
 
