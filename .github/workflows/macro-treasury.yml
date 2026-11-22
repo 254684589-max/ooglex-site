@@ -1,5 +1,12 @@
 name: Ooglex Macro Official Data Pipeline
 on:
+  # Controlled V30 acceptance on merge; collector's own data commits do not
+  # modify this workflow file and cannot form a push-trigger loop.
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/macro-treasury.yml'
   schedule:
     - cron: '40 23 * * 1-5'
   workflow_dispatch:
@@ -21,8 +28,12 @@ jobs:
       - name: Download official Treasury yields and validate
         run: python3 scripts/update_asset_scores.py
       - name: Download BLS CPI and labor-market observations
+        id: bls
+        continue-on-error: true
         run: python3 scripts/update_macro_bls.py
       - name: Download New York Fed effective funds rate
+        id: effr
+        continue-on-error: true
         run: python3 scripts/update_macro_nyfed.py
       - name: Fetch BEA core PCE and Federal Reserve H41 (FRED public mirror)
         run: python3 -m scripts.update_macro_fed_bea
@@ -64,4 +75,47 @@ jobs:
             git commit -m "data(macro): refresh official Treasury snapshot"
             git pull --rebase origin main
             git push origin HEAD:main
+          fi
+      - name: Confirm snapshot and append-only archive persisted remotely
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git show origin/main:data/asset-scores.json > /tmp/asset-compass-v30-remote-snapshot.json
+          git show origin/main:data/asset-compass-observation-ledger.jsonl > /tmp/asset-compass-v30-remote-ledger.jsonl
+          cmp data/asset-scores.json /tmp/asset-compass-v30-remote-snapshot.json
+          cmp data/asset-compass-observation-ledger.jsonl /tmp/asset-compass-v30-remote-ledger.jsonl
+          python3 - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          from scripts.archive_asset_compass_observations import load
+          from scripts.check_asset_compass_history_readiness import REQUIRED_SERIES
+          from scripts.diagnose_asset_compass_sources_v28 import diagnose
+          d=json.loads(Path("data/asset-scores.json").read_text(encoding="utf-8"))
+          ledger=load(Path("data/asset-compass-observation-ledger.jsonl"))
+          summary=diagnose(d,ledger,datetime.now(timezone.utc))
+          assert ledger and d["status"] in ("partial_data_no_full_score","ok_no_full_score")
+          assert summary["validated_for_live_scoring"] is False
+          assert summary["eligible_for_point_in_time_backtest"] is False
+          assert summary["required_series_count"]==len(REQUIRED_SERIES)
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as out:
+              out.write("\n### V30 real ingestion and GitHub persistence evidence\n")
+              out.write(f"Latest snapshot generated: {summary['snapshot_generated_at']}  \n")
+              out.write(f"Source coverage: {summary['required_present_in_snapshot']}/{summary['required_series_count']}  \n")
+              out.write(f"Missing: {', '.join(summary['missing_from_snapshot']) or 'none'}  \n")
+              out.write(f"Still unarchived: {', '.join(summary['present_but_not_archived']) or 'none'}  \n")
+              out.write(f"Ledger rows: {len(ledger)}. No investment scoring enabled.\n")
+          if summary["snapshot_age_exceeds_48_hours"]:
+              raise SystemExit("Snapshot stale; real source collection needs investigation")
+          PY
+      - name: Fail run if critical BLS or EFFR collector failed (after saving other sources)
+        if: always()
+        env:
+          BLS_OUTCOME: ${{ steps.bls.outcome }}
+          EFFR_OUTCOME: ${{ steps.effr.outcome }}
+        run: |
+          if [ "$BLS_OUTCOME" != "success" ] || [ "$EFFR_OUTCOME" != "success" ]; then
+            echo "::error::V30 BLS or EFFR collection failed: BLS=$BLS_OUTCOME EFFR=$EFFR_OUTCOME. Other successfully verified sources were preserved and saved where possible."
+            exit 1
           fi
