@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_history_readiness",
+  "status": "research_data_collection_only",
+  "archived_observations": 9,
+  "series": {
+    "bea.core_pce": {
+      "archived_versions": 0,
+      "distinct_observation_periods": 0,
+      "first_recorded_at": null,
+      "latest_recorded_at": null
+    },
+    "bls.core_cpi": {
+      "archived_versions": 0,
+      "distinct_observation_periods": 0,
+      "first_recorded_at": null,
+      "latest_recorded_at": null
+    },
+    "bls.cpi": {
+      "archived_versions": 1,
+      "distinct_observation_periods": 1,
+      "first_recorded_at": "2026-11-22T06:53:57.974839+00:00",
+      "latest_recorded_at": "2026-11-22T06:53:57.974839+00:00"
+    },
+    "bls.payroll": {
+      "archived_versions": 1,
+      "distinct_observation_periods": 1,
+      "first_recorded_at": "2026-11-22T06:53:57.974839+00:00",
+      "latest_recorded_at": "2026-11-22T06:53:57.974839+00:00"
+    },
+    "bls.unemployment": {
+      "archived_versions": 1,
+      "distinct_observation_periods": 1,
+      "first_recorded_at": "2026-11-22T06:53:57.974839+00:00",
+      "latest_recorded_at": "2026-11-22T06:53:57.974839+00:00"
+    },
+    "fed_h41.total_assets": {
+      "archived_versions": 0,
+      "distinct_observation_periods": 0,
+      "first_recorded_at": null,
+      "latest_recorded_at": null
+    },
+    "liquidity.overnight_rrp": {
+      "archived_versions": 0,
+      "distinct_observation_periods": 0,
+      "first_recorded_at": null,
+      "latest_recorded_at": null
+    },
+    "liquidity.reserves": {
+      "archived_versions": 0,
+      "distinct_observation_periods": 0,
+      "first_recorded_at": null,
+      "latest_recorded_at": null
+    },
+    "liquidity.tga": {
+      "archived_versions": 0,
+      "distinct_observation_periods": 0,
+      "first_recorded_at": null,
+      "latest_recorded_at": null
+    },
+    "nyfed.effr": {
+      "archived_versions": 1,
+      "distinct_observation_periods": 1,
+      "first_recorded_at": "2026-11-22T06:53:57.974839+00:00",
+      "latest_recorded_at": "2026-11-22T06:53:57.974839+00:00"
+    },
+    "nyfed_recession.probability": {
+      "archived_versions": 0,
+      "distinct_observation_periods": 0,
+      "first_recorded_at": null,
+      "latest_recorded_at": null
+    },
+    "treasury.real10y": {
+      "archived_versions": 1,
+      "distinct_observation_periods": 1,
+      "first_recorded_at": "2026-11-22T06:53:57.974839+00:00",
+      "latest_recorded_at": "2026-11-22T06:53:57.974839+00:00"
+    },
+    "treasury.us10y": {
+      "archived_versions": 1,
+      "distinct_observation_periods": 1,
+      "first_recorded_at": "2026-11-22T06:53:57.974839+00:00",
+      "latest_recorded_at": "2026-11-22T06:53:57.974839+00:00"
+    },
+    "treasury.us2y": {
+      "archived_versions": 1,
+      "distinct_observation_periods": 1,
+      "first_recorded_at": "2026-11-22T06:53:57.974839+00:00",
+      "latest_recorded_at": "2026-11-22T06:53:57.974839+00:00"
+    }
+  },
+  "validated_for_live_scoring": false,
+  "eligible_for_point_in_time_backtest": false,
+  "blockers": [
+    "less_than_36_monthly_or_daily_periods_for_one_or_more_series",
+    "official_historical_release_vintages_unverified",
+    "asset_total_return_history_not_qualified",
+    "multi_regime_oos_validation_not_passed"
+  ],
+  "note": "first_recorded_at is when Ooglex archived a value, not the original official release date."
+}
