@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_v17_treasury_publication_evidence",
+  "generated_at": "2026-11-22T17:52:26.516320+00:00",
+  "v15_retrieved_at": "2026-11-22T17:51:48.678090+00:00",
+  "v16_checked_at": "2026-11-22T17:52:26.373109+00:00",
+  "source_year": 2026,
+  "methodology_evidence_type": "official_public_website_description_not_original_release_archive",
+  "methodology_review_status": "official_documentation_identified_not_independently_timestamped",
+  "official_information_sources": {
+    "methodology": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+    "archive": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rate-archives",
+    "xml": "https://home.treasury.gov/treasury-daily-interest-rate-xml-feed"
+  },
+  "interpretation": "Treasury describes quotes obtained at about 3:30 PM New York time. This is not a documented Treasury website publishing instant. Published archives/XML alone do not provide certified original first-release timestamps or complete amendment history.",
+  "series": [
+    {
+      "series_id": "treasury.us2y",
+      "curve_type": "nominal",
+      "official_quote_sampling_approx_local_time": "15:30",
+      "official_quote_timezone": "America/New_York",
+      "quote_time_evidence_type": "official_methodology_description",
+      "quote_time_is_publication_time": false,
+      "publication_timestamp_utc": null,
+      "publication_time_evidence_status": "not_independently_verified",
+      "historical_first_release_vintage_hash": null,
+      "historical_first_release_vintage_verified": false,
+      "observed_source_content_sha256": "3a48daf1c889672fedc4643d8c2fc0a46b99eadf4af5a8780b11996eaff11df4",
+      "retrieved_at": "2026-11-22T17:51:48.678090+00:00",
+      "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page=&_format=csv",
+      "official_methodology_url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+      "required_additional_proof": [
+        "archived_original_daily_release_artifact_with_chain_of_custody",
+        "independent_source_publication_timestamp_with_timezone",
+        "asof_value_and_revisions_as_published_at_decision_instant",
+        "independent_publication_rights_and_statistical_use_review"
+      ],
+      "eligible_for_point_in_time_backtest": false
+    },
+    {
+      "series_id": "treasury.us10y",
+      "curve_type": "nominal",
+      "official_quote_sampling_approx_local_time": "15:30",
+      "official_quote_timezone": "America/New_York",
+      "quote_time_evidence_type": "official_methodology_description",
+      "quote_time_is_publication_time": false,
+      "publication_timestamp_utc": null,
+      "publication_time_evidence_status": "not_independently_verified",
+      "historical_first_release_vintage_hash": null,
+      "historical_first_release_vintage_verified": false,
+      "observed_source_content_sha256": "3a48daf1c889672fedc4643d8c2fc0a46b99eadf4af5a8780b11996eaff11df4",
+      "retrieved_at": "2026-11-22T17:51:48.678090+00:00",
+      "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page=&_format=csv",
+      "official_methodology_url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+      "required_additional_proof": [
+        "archived_original_daily_release_artifact_with_chain_of_custody",
+        "independent_source_publication_timestamp_with_timezone",
+        "asof_value_and_revisions_as_published_at_decision_instant",
+        "independent_publication_rights_and_statistical_use_review"
+      ],
+      "eligible_for_point_in_time_backtest": false
+    },
+    {
+      "series_id": "treasury.real10y",
+      "curve_type": "real",
+      "official_quote_sampling_approx_local_time": "15:30",
+      "official_quote_timezone": "America/New_York",
+      "quote_time_evidence_type": "official_methodology_description",
+      "quote_time_is_publication_time": false,
+      "publication_timestamp_utc": null,
+      "publication_time_evidence_status": "not_independently_verified",
+      "historical_first_release_vintage_hash": null,
+      "historical_first_release_vintage_verified": false,
+      "observed_source_content_sha256": "1282b12c4fc8d70c1a20fb9de974d6955ee83ac909ef590b34b5b939725929c9",
+      "retrieved_at": "2026-11-22T17:51:48.678090+00:00",
+      "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_real_yield_curve&field_tdr_date_value=2026&page=&_format=csv",
+      "official_methodology_url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+      "required_additional_proof": [
+        "archived_original_daily_release_artifact_with_chain_of_custody",
+        "independent_source_publication_timestamp_with_timezone",
+        "asof_value_and_revisions_as_published_at_decision_instant",
+        "independent_publication_rights_and_statistical_use_review"
+      ],
+      "eligible_for_point_in_time_backtest": false
+    }
+  ],
+  "independently_verified_original_publication_timestamps": 0,
+  "independently_verified_historical_vintages": 0,
+  "first_seen_is_official_release_timestamp": false,
+  "http_date_is_official_release_timestamp": false,
+  "quotation_timestamp_is_publication_timestamp": false,
+  "eligible_for_point_in_time_backtest": false,
+  "validated_for_live_scoring": false,
+  "safe_for_public_research_only": true
+}

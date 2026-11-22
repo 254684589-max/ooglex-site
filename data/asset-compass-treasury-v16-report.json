@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_v16_retrieval_comparison",
-  "checked_at": "2026-11-22T17:48:34.255682+00:00",
-  "run_id": "45051418482",
+  "checked_at": "2026-11-22T17:52:26.373109+00:00",
+  "run_id": "45051773067",
   "year": 2026,
-  "baseline_state": "first_capture",
-  "previous_run_id": null,
+  "baseline_state": "same_year",
+  "previous_run_id": "45051418482",
   "source_sha256": {
     "nominal": "3a48daf1c889672fedc4643d8c2fc0a46b99eadf4af5a8780b11996eaff11df4",
     "real": "1282b12c4fc8d70c1a20fb9de974d6955ee83ac909ef590b34b5b939725929c9"
   },
   "raw_file_changed_since_last_comparable_capture": {
-    "nominal": null,
-    "real": null
+    "nominal": false,
+    "real": false
   },
   "by_series": {
     "treasury.us2y": {
