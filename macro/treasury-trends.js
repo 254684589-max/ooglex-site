@@ -110,12 +110,11 @@ const TREASURY_TRENDS=(function(){
   });
   return changes.every(Boolean)?{startDate,endDate,changes}:null;
  }
- function renderDateComparison(rows,key,compareKey){
+ function renderDateComparison(rows,key,compareKey,previousStart,previousEnd){
   const start=$("treasury-compare-start"),end=$("treasury-compare-end"),
    output=$("treasury-compare-result");
   if(!start||!end||!output)return;
   const available=rows.map(r=>r.date);
-  const previousStart=start.value,previousEnd=end.value;
   start.replaceChildren(...available.map(day=>{
    const option=el("option",day);option.value=day;return option;
   }));
@@ -161,6 +160,7 @@ const TREASURY_TRENDS=(function(){
   if(difference)difference.textContent="";
   const probe=$("treasury-trend-probe"),start=$("treasury-compare-start"),
     end=$("treasury-compare-end"),comparison=$("treasury-compare-result");
+  const previousStart=start?.value,previousEnd=end?.value;
   chart.onpointermove=null;chart.onpointerleave=null;
   if(probe)probe.textContent="";
   if(comparison)comparison.textContent="";
@@ -171,7 +171,10 @@ const TREASURY_TRENDS=(function(){
   const all=selectWindow(data,range);
   if(all.length<2){
    status.textContent="所选期间有效观测不足，无法绘制真实历史趋势。";
-   meta.textContent="未使用估算值或填充值。";return;
+   meta.textContent="未使用估算值或填充值。";
+   if(probe)probe.textContent="未取得足够真实历史观测，无法定位或比较。";
+   if(comparison)comparison.textContent="无可比较的实际观测日期。";
+   return;
   }
   const width=720,height=300,left=62,right=20,top=24,bottom=45;
   // The source already has exact-date paired nominal and TIPS observations.
@@ -215,7 +218,7 @@ const TREASURY_TRENDS=(function(){
   chart.onfocus=()=>renderProbe(all[all.length-1],key,compareKey);
   if(typeof chart.setAttribute==="function")chart.setAttribute("tabindex","0");
   renderProbe(null,key,compareKey);
-  renderDateComparison(all,key,compareKey);
+  renderDateComparison(all,key,compareKey,previousStart,previousEnd);
   const last=all[all.length-1],unit=FIELDS[key].unit;
   status.textContent=FIELDS[key].name+"：最新 "+last[key].toFixed(2)+" "+unit+
    (compareKey?"；"+FIELDS[compareKey].name+"："+last[compareKey].toFixed(2)+" "+FIELDS[compareKey].unit:"")+
