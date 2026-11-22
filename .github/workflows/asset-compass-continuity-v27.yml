@@ -65,12 +65,11 @@ jobs:
           from pathlib import Path
           r=json.loads(Path("/tmp/asset-compass-v28-source-gaps.json").read_text())
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
-              f.write("\\n### V28 upstream source gap audit\\n")
-              f.write(f"Present required series in snapshot: {r['required_present_in_snapshot']}/{r['required_series_count']}  \\n")
-              f.write(f"Missing from snapshot: {', '.join(r['missing_from_snapshot']) or 'none'}  \\n")
-              f.write(f"Present but not archived: {', '.join(r['present_but_not_archived']) or 'none'}  \\n")
-              f.write(f"Snapshot age hours: {r['snapshot_age_hours']}  \\n")
-              f.write("Missing source is not zero; actual collector failure cause needs source logs.\\n")
+              f.write("\n### V28 upstream source gap audit\n")
+              f.write(f"Present required series: {r['required_present_in_snapshot']}/{r['required_series_count']}\n")
+              f.write(f"Missing upstream: {', '.join(r['missing_from_snapshot']) or 'none'}\n")
+              f.write(f"Pending archive: {', '.join(r['present_but_not_archived']) or 'none'}\n")
+              f.write(f"Snapshot age hours: {r['snapshot_age_hours']}\n")
           PY
           else
             echo '::error::V28 source-gap report unavailable; inspect snapshot and archive errors.'
