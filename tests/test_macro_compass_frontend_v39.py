@@ -48,8 +48,8 @@ class CompassFrontendV39Tests(unittest.TestCase):
         self.assertIn('"—"', JS)
 
     def test_score_gate_is_still_required(self):
-        self.assertIn('data?.scoring?.calibration_verified===false', JS)
-        self.assertIn('data?.scoring?.out_of_sample_verified===false', JS)
+        self.assertIn('typeof data?.scoring?.calibration_verified==="boolean"', JS)
+        self.assertIn('typeof data?.scoring?.out_of_sample_verified==="boolean"', JS)
         self.assertIn('usableScore(a)', JS)
         self.assertIn('"— / 100"', JS)
         for a in DATA.get("assets", {}).values():
