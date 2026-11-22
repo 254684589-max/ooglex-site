@@ -150,6 +150,80 @@ const TREASURY_TRENDS=(function(){
   const clamped=Math.max(0,Math.min(1,relativeX));
   return rows[Math.round(clamped*(rows.length-1))];
  }
+ // V45: descriptive statistics of actual paired observations, not a model score.
+ // All windows end on the last *available observation*, never on an assumed trade date.
+ const STAT_WINDOWS={"3m":92,"6m":183,"1y":366};
+ function periodStatistics(rows,field,window){
+  if(!Array.isArray(rows)||!Object.hasOwn(FIELDS,field)||!Object.hasOwn(STAT_WINDOWS,window)||rows.length<2)
+   return null;
+  const final=rows[rows.length-1];
+  if(!final||typeof final.date!=="string"||!validDay(final.date))return null;
+  const cutoff=Date.parse(final.date+"T00:00:00Z")-STAT_WINDOWS[window]*86400000;
+  const selected=rows.filter(r=>r&&validDay(r.date)&&
+   Date.parse(r.date+"T00:00:00Z")>=cutoff&&r.date<=final.date&&
+   typeof r[field]==="number"&&Number.isFinite(r[field]));
+  if(selected.length<2)return null;
+  const ordered=selected.every((r,i)=>i===0||selected[i-1].date<r.date);
+  if(!ordered)return null;
+  const first=selected[0],last=selected[selected.length-1];
+  let low=first,high=first,sum=0;
+  for(const item of selected){
+   sum+=item[field];
+   if(item[field]<low[field])low=item;
+   if(item[field]>high[field])high=item;
+  }
+  const change=last[field]-first[field],span=high[field]-low[field];
+  return {id:field,window,startDate:first.date,endDate:last.date,
+   sampleCount:selected.length,latest:last[field],minimum:low[field],
+   maximum:high[field],minimumDate:low.date,maximumDate:high.date,
+   average:sum/selected.length,changePercentagePoints:change,
+   changeBasisPoints:Math.round(change*100),
+   // This is the *location within the observed yield range*, NOT an
+   // investment rating, historical percentile or a 0–100 asset score.
+   rangePosition:span>0?(last[field]-low[field])/span:null};
+ }
+ function renderPeriodStatistics(data,key,compareKey){
+  const panel=$("treasury-period-statistics");
+  if(!panel)return;
+  panel.replaceChildren();
+  if(!data||!Array.isArray(data.observations)||data.observations.length<2){
+   panel.append(el("p","统计暂不可用：缺少经过核验的真实历史观测。"));return;
+  }
+  const intro=el("p","区间锚定于最新可取得的观测日；最高、最低与均值基于实际有记录的日期，不填补节假日。当前值位置仅是区间高低点内的相对位置，不是百分位、资产评分或涨跌预测。");
+  intro.className="muted";
+  panel.append(intro);
+  const fields=[key,compareKey].filter((id,i,arr)=>Object.hasOwn(FIELDS,id)&&arr.indexOf(id)===i);
+  const grid=el("div");grid.className="treasury-stat-grid";
+  for(const id of fields){
+   const item=el("article");item.className="treasury-stat-series";
+   const head=el("h3",FIELDS[id].name);item.append(head);
+   const table=el("table");
+   const thead=el("thead"),hr=el("tr");
+   for(const col of ["窗口","观测数","最低及日期","最高及日期","算术均值","最新值","首末变化","当前区间位置"]){
+    const th=el("th",col);th.scope="col";hr.append(th);
+   }
+   thead.append(hr);table.append(thead);
+   const tbody=el("tbody");
+   for(const win of ["3m","6m","1y"]){
+    const stats=periodStatistics(data.observations,id,win);
+    const row=el("tr");
+    const cells=!stats?[win,"不足2项实际观测","—","—","—","—","—","—"]:[
+     win,stats.sampleCount+"天",stats.minimum.toFixed(3)+"（"+stats.minimumDate+"）",
+     stats.maximum.toFixed(3)+"（"+stats.maximumDate+"）",
+     stats.average.toFixed(3),stats.latest.toFixed(3),
+     (stats.changeBasisPoints>=0?"+":"")+stats.changeBasisPoints+" bp",
+     stats.rangePosition===null?"区间无变化":
+     (stats.rangePosition*100).toFixed(1)+"%（低点→高点）"
+    ];
+    cells.forEach(value=>row.append(el("td",value)));
+    tbody.append(row);
+   }
+   table.append(tbody);
+   const wrap=el("div");wrap.className="table-wrap";wrap.append(table);
+   item.append(wrap);grid.append(item);
+  }
+  panel.append(grid);
+ }
  function plot(data,key,range,compareKey){
   const chart=$("treasury-trend-svg"),status=$("treasury-trend-status"),
    meta=$("treasury-trend-meta"),body=$("treasury-trend-table"),
@@ -174,6 +248,7 @@ const TREASURY_TRENDS=(function(){
    meta.textContent="未使用估算值或填充值。";
    if(probe)probe.textContent="未取得足够真实历史观测，无法定位或比较。";
    if(comparison)comparison.textContent="无可比较的实际观测日期。";
+   renderPeriodStatistics(null,key,compareKey);
    return;
   }
   const width=720,height=300,left=62,right=20,top=24,bottom=45;
@@ -219,6 +294,7 @@ const TREASURY_TRENDS=(function(){
   if(typeof chart.setAttribute==="function")chart.setAttribute("tabindex","0");
   renderProbe(null,key,compareKey);
   renderDateComparison(all,key,compareKey,previousStart,previousEnd);
+  renderPeriodStatistics(data,key,compareKey);
   const last=all[all.length-1],unit=FIELDS[key].unit;
   status.textContent=FIELDS[key].name+"：最新 "+last[key].toFixed(2)+" "+unit+
    (compareKey?"；"+FIELDS[compareKey].name+"："+last[compareKey].toFixed(2)+" "+FIELDS[compareKey].unit:"")+
@@ -282,6 +358,6 @@ const TREASURY_TRENDS=(function(){
   if(typeof window!=="undefined")window.ooglexTreasuryFocus=focusAsset;
   update();
  }
- return {validate,selectWindow,plot,init,focusAsset,compareDates,nearestPlotObservation,FIELDS,ASSET_CURVE_FOCUS};
+ return {validate,selectWindow,plot,init,focusAsset,compareDates,nearestPlotObservation,periodStatistics,renderPeriodStatistics,FIELDS,ASSET_CURVE_FOCUS};
 })();
 if(document.body.dataset.page==="overview")void TREASURY_TRENDS.init();
