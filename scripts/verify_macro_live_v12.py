@@ -55,21 +55,35 @@ def inspect(base,expected_sha,attempts=3,delay=4):
     issues=[]
     checks=[]
     manifest_url=base.rstrip("/")+"/data/asset-compass-deploy-v12.json?deploy="+urllib.parse.quote(expected_sha,safe="")
-    try:
-        doc=json.loads(get(manifest_url))
-        if (doc.get("report_type")!="ooglex_macro_public_digest_v12"
-            or doc.get("source_commit")!=expected_sha
-            or doc.get("hash_algorithm")!="sha256"
-            or doc.get("validated_for_live_scoring") is not False
-            or not isinstance(doc.get("files"),dict)
-            or set(doc["files"])!=set(FILES)):
-            raise ValueError("manifest schema, version or model gate mismatch")
-    except Exception as exc:
-        code,details=classify(exc)
-        if isinstance(exc,ValueError) and "version" in str(exc):
+    # Pages/CDN propagation can lag deployment. Retry a previous-commit
+    # manifest, but never approve the wrong commit as an accepted deployment.
+    doc=None
+    manifest_failure=None
+    for attempt in range(max(1,attempts)):
+        try:
+            candidate=json.loads(get(manifest_url))
+            if not isinstance(candidate,dict):
+                raise ValueError("manifest content is not an object")
+            if candidate.get("source_commit")!=expected_sha:
+                raise ValueError("manifest version mismatch: expected requested commit")
+            if (candidate.get("report_type")!="ooglex_macro_public_digest_v12"
+                or candidate.get("hash_algorithm")!="sha256"
+                or candidate.get("validated_for_live_scoring") is not False
+                or not isinstance(candidate.get("files"),dict)
+                or set(candidate["files"])!=set(FILES)):
+                raise ValueError("manifest schema or model gate mismatch")
+            doc=candidate
+            break
+        except Exception as exc:
+            manifest_failure=exc
+            if attempt+1<max(1,attempts):
+                time.sleep(max(0,delay))
+    if doc is None:
+        code,details=classify(manifest_failure)
+        if isinstance(manifest_failure,ValueError) and "version mismatch" in str(manifest_failure):
             code="version_or_manifest_mismatch"
-        issue={"path":"data/asset-compass-deploy-v12.json","category":code,"details":details[:250]}
-        issues.append(issue)
+        issues.append({"path":"data/asset-compass-deploy-v12.json",
+                       "category":code,"details":details[:250]})
         return {"status":"fail","checks":checks,"issues":issues}
     for path in FILES:
         expected=doc["files"][path]
