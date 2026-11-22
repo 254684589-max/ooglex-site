@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "series": "USD_SOFR_PAR_SWAP_VS_TREASURY_CMT",
+  "requiredTenorsYears": [2, 3, 5, 7, 10, 30],
+  "purpose": "Vendor assessment only; not a licensed price repository.",
+  "evaluationDate": "2026-11-23",
+  "productionSourceSwitchApproved": false,
+  "candidates": [
+    {
+      "id": "bluegamma",
+      "displayName": "BlueGamma SOFR par swap historical API",
+      "kind": "sofr_forward_par_swap_curve",
+      "indicatedHistoryStart": "2023-03",
+      "sourceUrl": "https://www.bluegamma.io/swap-rates",
+      "historicalApiDocumented": true,
+      "allSixTenorsIndependentlyVerified": false,
+      "historicalSnapshotVersionVerified": false,
+      "publicRedistributionLicensed": false,
+      "commercialUseLicensed": false,
+      "approval": "needs_contract_and_sample",
+      "rank": 1
+    },
+    {
+      "id": "checkmyswap",
+      "displayName": "CheckMySwap indicative OIS archival curves",
+      "kind": "sofr_forward_par_swap_curve",
+      "indicatedHistoryStart": "2026-03-19",
+      "sourceUrl": "https://www.checkmyswap.com/rates",
+      "historicalApiDocumented": true,
+      "allSixTenorsIndependentlyVerified": true,
+      "historicalSnapshotVersionVerified": false,
+      "publicRedistributionLicensed": false,
+      "commercialUseLicensed": false,
+      "approval": "blocked_rights_and_existing_conflict",
+      "rank": 2
+    },
+    {
+      "id": "dtcc_cftc",
+      "displayName": "DTCC swap dissemination / CFTC public reports",
+      "kind": "raw_swap_transactions",
+      "indicatedHistoryStart": null,
+      "sourceUrl": "https://www.cftc.gov/IndustryOversight/DataRepositories/index.htm",
+      "historicalApiDocumented": false,
+      "allSixTenorsIndependentlyVerified": false,
+      "historicalSnapshotVersionVerified": false,
+      "publicRedistributionLicensed": false,
+      "commercialUseLicensed": false,
+      "approval": "research_methodology_and_rights",
+      "rank": 3
+    },
+    {
+      "id": "newyorkfed_sofr",
+      "displayName": "New York Fed SOFR and historical compounded averages",
+      "kind": "overnight_or_backward_looking_sofr",
+      "indicatedHistoryStart": "2018-04",
+      "sourceUrl": "https://www.newyorkfed.org/markets/reference-rates/sofr-averages-and-index",
+      "historicalApiDocumented": true,
+      "allSixTenorsIndependentlyVerified": false,
+      "historicalSnapshotVersionVerified": false,
+      "publicRedistributionLicensed": false,
+      "commercialUseLicensed": false,
+      "approval": "ineligible_as_par_swap_curve",
+      "rank": 4
+    },
+    {
+      "id": "fred_legacy_swaps",
+      "displayName": "FRED discontinued Federal Reserve LIBOR swap history",
+      "kind": "legacy_non_sofr_swap_rates",
+      "indicatedHistoryStart": null,
+      "sourceUrl": "https://fred.stlouisfed.org/series/DSWP10",
+      "historicalApiDocumented": true,
+      "allSixTenorsIndependentlyVerified": false,
+      "historicalSnapshotVersionVerified": false,
+      "publicRedistributionLicensed": false,
+      "commercialUseLicensed": false,
+      "approval": "ineligible_as_modern_sofr",
+      "rank": 5
+    }
+  ]
+}
