@@ -30,7 +30,7 @@ class TestPITStandardization(unittest.TestCase):
         self.db.close()
 
     def calc(self, **kwargs):
-        return calculate(self.db, "TEST", self.asof, max_age_days=45, **kwargs)
+        return calculate(self.db, "TEST", self.asof, **({"max_age_days": 45} | kwargs))
 
     def test_research_z_is_not_asset_signal(self):
         r = self.calc(min_history=36)
