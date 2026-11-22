@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_v7_treasury_provenance",
+  "generated_at": "2026-11-22T16:59:50.941614+00:00",
+  "ledger_sha256": "dbe0eebc0faf986b3f6564cc1632a9527efbd3102efdb43d10cd5025eb7e1be9",
+  "treasury_valid_source_rows": 5,
+  "legacy_quarantined_rows": 5,
+  "unexpected_mismatch_rows": 0,
+  "legacy_anomalies": [
+    {
+      "series_id": "treasury.us10y",
+      "observation_period": "2026-11-20",
+      "first_seen_at": "2026-11-22T06:53:57.974839+00:00",
+      "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
+      "fingerprint_sha256": "4f5c0f5d3c979533d9065bd93ddf2c15e62878d222f9e0e6a2c4c103e2e22d5a"
+    },
+    {
+      "series_id": "treasury.us2y",
+      "observation_period": "2026-11-20",
+      "first_seen_at": "2026-11-22T06:53:57.974839+00:00",
+      "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
+      "fingerprint_sha256": "1cd18855b558388835b4e2cc9d192ca64a3fb33c43fcf3aef9dcf4ae22e305de"
+    },
+    {
+      "series_id": "treasury.real10y",
+      "observation_period": "2026-11-20",
+      "first_seen_at": "2026-11-22T06:53:57.974839+00:00",
+      "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_real_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
+      "fingerprint_sha256": "275db2f63c4c12131eeea0013fad4e126fbeca2f9cd5d04fee80f3929b58e5c1"
+    },
+    {
+      "series_id": "treasury.breakeven10y",
+      "observation_period": "2026-11-20",
+      "first_seen_at": "2026-11-22T06:53:57.974839+00:00",
+      "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
+      "fingerprint_sha256": "d5c64628e643fbc29c2efc5af4ffd51941fc8ce66d12c582324ae1e5fd916880"
+    },
+    {
+      "series_id": "treasury.spread10y2y",
+      "observation_period": "2026-11-20",
+      "first_seen_at": "2026-11-22T06:53:57.974839+00:00",
+      "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
+      "fingerprint_sha256": "0d07749fd898559f4fce8c7784456656ac67428c89a7e17a34dac8a4681fd0b4"
+    }
+  ],
+  "unexpected_mismatches": [],
+  "integrity_gate_passed": true,
+  "legacy_rows_are_valid_evidence": false,
+  "official_vintages_verified": false,
+  "validated_for_live_scoring": false,
+  "note": "Existing 2025 URLs attached to 2026 observations remain quarantined as immutable evidence of a prior extraction bug. Never count as trusted source provenance."
+}
