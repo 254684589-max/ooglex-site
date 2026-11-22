@@ -143,10 +143,6 @@ def main():
     p.add_argument("--output",type=Path,default=Path("/tmp/ooglex-v38-acceptance.json"))
     args=p.parse_args()
     output=_checked_location(args.output)
-    if args.offsite and not all(os.environ.get(k) for k in
-            ("CLOUDFLARE_ACCOUNT_ID","OOGLEX_R2_PRIVATE_BUCKET",
-             "AWS_ACCESS_KEY_ID","AWS_SECRET_ACCESS_KEY")):
-        raise SystemExit("R2 credentials and private bucket are not configured")
     secret=os.environ.get("OOGLEX_BACKUP_PASSPHRASE")
     if not secret:
         # Prompt interactively, never pass a secret as a CLI argument or store
