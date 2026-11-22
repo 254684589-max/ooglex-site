@@ -41,6 +41,24 @@ class PilotTests(unittest.TestCase):
         f=full();f["results"][0]["status"]="permission_granted"
         with self.assertRaises(ValueError):
             pilot.summarize(f)
+    def test_conflict_records_field_names_but_not_rates(self):
+        original=pilot.build_candidates
+        try:
+            pilot.build_candidates=lambda *args,**kw:full()
+            with tempfile.TemporaryDirectory() as td:
+                path=Path(td)/"production-history.json"
+                path.write_text(json.dumps({"schemaVersion":2,"demo":False,
+                    "observations":[{"asOf":"2026-11-20",
+                        "tenors":[{"years":2,"swap":4.41,"treasury":4.9,
+                                    "spreadBp":-49,"method":"close"}]}]}),encoding="utf-8")
+                result=pilot.run(["2026-11-20"],path,today=pilot.date(2026,11,23))
+                conflicts=[x for x in result["results"] if x["status"]=="archive_conflict"]
+                self.assertEqual(len(conflicts),1)
+                self.assertIn("2Y",conflicts[0]["conflictFieldNamesByTenor"])
+                self.assertNotIn("4.41",json.dumps(result))
+        finally:
+            pilot.build_candidates=original
+
     def test_exactly_ten_sampling_dates(self):
         self.assertEqual(len(pilot.PILOT_DATES),10)
         self.assertEqual(len(set(pilot.PILOT_DATES)),10)
