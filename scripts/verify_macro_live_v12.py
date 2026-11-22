@@ -18,6 +18,8 @@ FILES=(
  "macro/operations.html",
  "macro/operations-v9.js",
  "macro/indicator-ratings.html",
+ "macro/indicator-a10.js",
+ "macro/indicator-lab.html",
  "macro/indicator-monitor-v8.js",
  "data/asset-scores.json",
  "data/asset-compass-history-readiness.json",
