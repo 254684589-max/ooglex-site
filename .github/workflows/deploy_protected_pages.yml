@@ -131,6 +131,27 @@ jobs:
           print("Asset Compass four-page public build verified")
           PY
 
+      - name: V11 stamp exact deployed source and workflow identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PYV11'
+          import json,os
+          from datetime import datetime,timezone
+          from pathlib import Path
+          target=Path(".site/data/asset-compass-deploy-v11.json")
+          target.parent.mkdir(parents=True,exist_ok=True)
+          payload={"schema_version":1,
+                   "report_type":"ooglex_macro_public_deploy_v11",
+                   "source_commit":os.environ["GITHUB_SHA"],
+                   "workflow_run_id":os.environ["GITHUB_RUN_ID"],
+                   "workflow_attempt":int(os.environ["GITHUB_RUN_ATTEMPT"]),
+                   "built_at":datetime.now(timezone.utc).isoformat(),
+                   "validated_for_live_scoring":False}
+          target.write_text(json.dumps(payload,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print("V11 deployment identity:",payload["source_commit"],payload["workflow_run_id"])
+          PYV11
+
       - name: V10 verify public macro pages, audit payloads and model gates
         run: |
           set -euo pipefail
@@ -238,8 +259,18 @@ jobs:
       - name: Verify live Global Cams V1.1
         run: node scripts/verify_global_cams_live.mjs
 
-      - name: V10 verify live macro console, scripts and audit JSON
-        run: python3 -m scripts.verify_macro_live_v10 --base https://www.ooglex.com --sha "$GITHUB_SHA"
+      - name: V11 verify live macro console, data and exact deployment SHA
+        id: macro_v11
+        run: python3 -m scripts.verify_macro_live_v11 --base https://www.ooglex.com --sha "$GITHUB_SHA" --report /tmp/ooglex-v11-live-report.json
+
+      - name: Upload classified V11 deployment evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: macro-v11-live-evidence
+          path: /tmp/ooglex-v11-live-report.json
+          if-no-files-found: warn
+
 
       - name: Verify live TV V1.2
         run: |
