@@ -28,6 +28,20 @@ ALLOWLIST = {
         "publisher": "US Bureau of Labor Statistics",
         "media_type": "text/html",
     },
+    "bls-cpi-2025-01-release": {
+        "url": "https://www.bls.gov/news.release/archives/cpi_02122025.htm",
+        "observation_period": "2025-01",
+        "release_date_candidate": "2025-02-12",
+        "publisher": "US Bureau of Labor Statistics",
+        "media_type": "text/html",
+    },
+    "bls-cpi-2025-02-release": {
+        "url": "https://www.bls.gov/news.release/archives/cpi_03122025.htm",
+        "observation_period": "2025-02",
+        "release_date_candidate": "2025-03-12",
+        "publisher": "US Bureau of Labor Statistics",
+        "media_type": "text/html",
+    },
 }
 MAX_BYTES = 2_000_000
 DEFAULT_DIR = Path.home() / ".local" / "share" / "ooglex" / "private-historical-evidence"
