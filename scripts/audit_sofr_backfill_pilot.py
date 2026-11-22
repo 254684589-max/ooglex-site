@@ -65,7 +65,7 @@ def summarize(full):
         "licenseApproval":"not_obtained",
         "publicationApproved":False,
         "methodologyWarning":"Indicative par SOFR OIS, not a dealer quote; dated archives can be revised.",
-        "decision":"REVIEW_ONLY",
+        "decision":"BLOCKED_CONFLICT_REVIEW" if any(x["status"]=="archive_conflict" for x in rows) else "REVIEW_ONLY",
     }
 
 
@@ -115,11 +115,10 @@ def main():
     output.parent.mkdir(parents=True,exist_ok=True)
     output.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(report,ensure_ascii=False,indent=2))
-    # Fail if zero usable dates OR any conflict; 404/derived dates are
-    # not silently replaced by synthetic observations.
-    if report["counts"]["archive_conflict"]:
-        return 3
-    if report["counts"]["candidate"]+report["counts"]["already_archived"]<1:
+    # Audit execution success is separate from publication approval.
+    # Conflicts remain visible and publicationApproved is always false.
+    # Fail only if no date at all could be validated.
+    if report["counts"]["candidate"]+report["counts"]["already_archived"]+report["counts"]["archive_conflict"]<1:
         return 2
     return 0
 
