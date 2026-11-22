@@ -11,6 +11,7 @@ import json
 import math
 from datetime import date,datetime,timezone
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 ROOT=Path(__file__).resolve().parents[1]
 SOURCE=ROOT/"data"/"asset-scores.json"
@@ -49,6 +50,24 @@ def utc(value):
     if ts.tzinfo is None:raise ValueError("Timezone required")
     return ts.astimezone(timezone.utc)
 
+def treasury_source_for_period(urls, observation_date, source_type):
+    """Match both Treasury series type and observation year; never use first URL."""
+    year = date.fromisoformat(observation_date).year
+    for raw in urls:
+        if not isinstance(raw, str):
+            continue
+        parsed = urlparse(raw)
+        params = parse_qs(parsed.query)
+        if (parsed.scheme == "https"
+                and parsed.hostname == "home.treasury.gov"
+                and parsed.username is None and parsed.password is None
+                and f"/{year}/all" in parsed.path
+                and params.get("type") == [source_type]
+                and params.get("field_tdr_date_value") == [str(year)]):
+            return raw
+    raise ValueError("No Treasury source matching the observation year and series type")
+
+
 def rows_from_snapshot(snapshot,first_seen_at):
     seen=utc(first_seen_at)
     if snapshot.get("schema_version")!=1:raise ValueError("Schema mismatch")
@@ -59,7 +78,11 @@ def rows_from_snapshot(snapshot,first_seen_at):
             value=(snapshot.get("rates") or {}).get(name)
             observed=snapshot.get("observation_date")
             source_type="daily_treasury_real_yield_curve" if name=="real10y" else "daily_treasury_yield_curve"
-            source_url=next((u for u in snapshot.get("source_urls",[]) if isinstance(u,str) and u.startswith("https://home.treasury.gov/") and "type="+source_type+"&" in u),"")
+            if type(value) in (int,float) and math.isfinite(value) and isinstance(observed,str):
+                source_url=treasury_source_for_period(
+                    snapshot.get("source_urls",[]),observed,source_type)
+            else:
+                source_url=""
         elif section=="nyfed":
             block=snapshot.get("nyfed") or {}
             value=block.get(name);observed=block.get("observation_date")
