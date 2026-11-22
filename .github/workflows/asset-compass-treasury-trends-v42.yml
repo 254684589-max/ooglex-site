@@ -32,6 +32,7 @@ jobs:
           python3 -m unittest discover -s tests -p 'test_macro_history.py' -v
           python3 -m unittest discover -s tests -p 'test_asset_compass_treasury_trends_v42.py' -v
           python3 -m unittest discover -s tests -p 'test_asset_compass_h15_fred_v42.py' -v
+          python3 -m unittest discover -s tests -p 'test_asset_compass_treasury_priority_v42.py' -v
       - name: Prefer actual Treasury CSV; use clearly identified H.15/FRED mirror only if direct source fails
         run: python3 -m scripts.build_asset_compass_history_resilient_v42
       - name: Verify original Treasury or H.15 provenance, matched observations, derived arithmetic and no PIT authorization
