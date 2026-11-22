@@ -21,15 +21,58 @@ jobs:
         with:
           python-version: '3.12'
       - name: Verify offline contract
-        run: python -m unittest discover -s tests -p test_swap_spreads_history.py -v
-      - name: Retrieve aligned public data
-        run: python scripts/update_swap_spreads.py
+        run: |
+          python -m unittest discover -s tests -p test_swap_spreads_history.py -v
+          python -m unittest discover -s tests -p test_swap_spreads_ingest_report.py -v
+      - name: Retrieve aligned public data (preserve exit code)
+        id: ingest
+        shell: bash
+        run: |
+          set +e
+          python scripts/update_swap_spreads.py > /tmp/sofr-ingest.log 2>&1
+          code=$?
+          set -e
+          cat /tmp/sofr-ingest.log
+          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Prepare machine-readable and human-readable evidence
+        if: always() && steps.ingest.outputs.exit_code != ''
+        shell: bash
+        env:
+          INGEST_EXIT: ${{ steps.ingest.outputs.exit_code }}
+          WORKFLOW_RUN: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          python scripts/report_swap_spread_ingest.py \
+            --history macro/swap-spreads-history.json \
+            --ingest-log /tmp/sofr-ingest.log \
+            --ingest-exit "$INGEST_EXIT" \
+            --run-id "$WORKFLOW_RUN" \
+            --output /tmp/sofr-ingest-evidence.json
+          python - <<'PY'
+          import json,os
+          p=json.load(open("/tmp/sofr-ingest-evidence.json"))
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+              f.write("## SOFR source ingestion evidence\n")
+              for k in ("ingestionResult","ingestionExitCode","lastArchivedObservationDate","archiveObservations","stale"):
+                  f.write(f"- {k}: {p[k]}\n")
+              f.write("- This evidence is not a confirmation of publication or continuous scheduler operation.\n")
+          PY
+      - name: Retain small diagnostic report for seven days
+        if: always() && steps.ingest.outputs.exit_code != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: sofr-ingest-evidence
+          path: /tmp/sofr-ingest-evidence.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Commit data only if a new matched observation was added
+        if: steps.ingest.outputs.exit_code == '0'
         shell: bash
         run: |
           set -euo pipefail
           if git diff --quiet -- macro/swap-spreads-history.json; then
-            echo "No new matched trading date."
+            echo "No new matched trading date; publishing nothing."
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -39,3 +82,9 @@ jobs:
           git commit -m "data(macro): append validated SOFR swap-spread trading day"
           git pull --rebase origin main
           git push origin HEAD:main
+      - name: Fail run if market ingestion failed
+        if: always() && steps.ingest.outputs.exit_code != '' && steps.ingest.outputs.exit_code != '0'
+        shell: bash
+        run: |
+          echo "SOFR ingestion failed. See the retained source evidence and log."
+          exit 1
