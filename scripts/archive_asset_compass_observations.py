@@ -79,6 +79,8 @@ def rows_from_snapshot(snapshot,first_seen_at):
             observed=snapshot.get("observation_date")
             source_type="daily_treasury_real_yield_curve" if name=="real10y" else "daily_treasury_yield_curve"
             if type(value) in (int,float) and math.isfinite(value) and isinstance(observed,str):
+                if date.fromisoformat(observed)>seen.date():
+                    raise ValueError("Future observation: "+key)
                 source_url=treasury_source_for_period(
                     snapshot.get("source_urls",[]),observed,source_type)
             else:
