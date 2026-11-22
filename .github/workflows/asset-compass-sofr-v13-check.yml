@@ -1,0 +1,40 @@
+name: SOFR V13 Actions registration preflight
+on:
+  pull_request:
+    paths:
+      - 'scripts/audit_sofr_workflow_registration.py'
+      - 'tests/test_sofr_v13_registration.py'
+      - '.github/workflows/asset-compass-sofr-v13-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Python code and offline tests
+        run: |
+          python -m py_compile scripts/audit_sofr_workflow_registration.py
+          python -m unittest discover -s tests -p test_sofr_v13_registration.py -v
+      - name: Verify GitHub workflow registration and active states
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/audit_sofr_workflow_registration.py --output /tmp/sofr-v13-registration.json
+      - name: Upload registration diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sofr-v13-registration
+          path: /tmp/sofr-v13-registration.json
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Production history must remain untouched
+        run: |
+          git diff --exit-code -- macro/swap-spreads-history.json
+          git diff --check
