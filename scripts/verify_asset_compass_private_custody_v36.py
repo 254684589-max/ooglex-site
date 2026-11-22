@@ -27,11 +27,12 @@ def canonical(row):
 
 
 def private_directory(path):
-    directory=Path(path).expanduser().resolve()
+    original=Path(path).expanduser()
+    if original.is_symlink():
+        raise ValueError("Symlinked evidence directory not permitted")
+    directory=original.resolve()
     if directory.is_relative_to(ROOT.resolve()):
         raise ValueError("Evidence custody must be outside GitHub project")
-    if directory.is_symlink():
-        raise ValueError("Symlinked evidence directory not permitted")
     if not directory.is_dir():
         raise FileNotFoundError("Local private evidence directory missing")
     if stat.S_IMODE(directory.stat().st_mode) & 0o077:
