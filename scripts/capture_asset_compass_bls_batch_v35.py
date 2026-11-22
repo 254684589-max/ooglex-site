@@ -84,6 +84,13 @@ def main():
     a.output.parent.mkdir(parents=True,exist_ok=True)
     a.output.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",
                         encoding="utf-8")
+    # V36 local-only custody: verify captured bytes and append sealed journal.
+    if a.private_dir:
+        from scripts.verify_asset_compass_private_custody_v36 import record_batch
+        custody=record_batch(result,a.private_dir)
+        print(json.dumps({"v36_private_custody_entries":custody["verified_total_records"],
+                          "v36_new_records":custody["new_custody_records"],
+                          "historic_release_time_verified":False},ensure_ascii=False))
     print(json.dumps({"requested":result["requested_archives"],
                       "fetched":result["fetched_archives"],
                       "failed":result["failed_archives"],
