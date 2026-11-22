@@ -22,7 +22,7 @@ def full():
                  "provenance":{"oisSha256":"a"*64,"treasurySha256":"b"*64}},
                 {"asOf":"2026-04-15","status":"no_archive","reason":"HTTP 404"},
                 {"asOf":"2026-11-20","status":"archive_conflict",
-                 "unpublishedObservation":{"tenors":[{"swap":9}]},
+                 "unpublishedObservation":{"tenors":[{"years":2,"swap":9}]},
                  "provenance":{"oisSha256":"c"*64,"treasurySha256":"d"*64}}
             ]}
 
