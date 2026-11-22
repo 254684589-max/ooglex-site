@@ -109,6 +109,87 @@ function renderIndependenceAudit(rows){
  panel.append(intro,identities,wrap,foot);
 }
 
+// V49 factor evidence qualification: these are gates, NOT certified investment signals.
+// A website first-seen timestamp is not a publisher's as-of release timestamp.
+const QUALIFICATION_MIN_PERIODS={daily:252,weekly:104,monthly:36};
+function factorQualification(rows,readiness,report){
+ const validHistory=readiness?.schema_version===1&&
+  readiness?.report_type==="asset_compass_history_readiness"&&
+  readiness?.validated_for_live_scoring===false&&
+  readiness?.eligible_for_point_in_time_backtest===false;
+ const validReport=report?.schema_version===1&&
+  report?.report_type==="asset_compass_factor_observations"&&
+  report?.validated_for_live_scoring===false&&report?.factor_signals_calibrated===false&&
+  report?.asset_specific_contributions_available===false;
+ const byId=new Map((Array.isArray(rows)?rows:[]).map(r=>[r.id,r]));
+ const reportObservations=validReport?Object.values(report.groups||{}).flatMap(g=>Array.isArray(g.observations)?g.observations:[]):[];
+ const entries=OVERVIEW_INDICATORS.map(def=>{
+  const row=byId.get(def.id),series=validHistory?readiness.series?.[def.id]:null;
+  const periods=Number.isSafeInteger(series?.distinct_observation_periods)&&series.distinct_observation_periods>=0?
+   series.distinct_observation_periods:null;
+  const versions=Number.isSafeInteger(series?.archived_versions)&&series.archived_versions>=0?
+   series.archived_versions:null;
+  const observed=row?.state==="可用"&&isNumber(row?.value);
+  const minimum=QUALIFICATION_MIN_PERIODS[def.cadence];
+  const historyLength=periods!==null&&periods>=minimum;
+  // Merely archiving a revised value is NEVER evidence of official release-time provenance.
+  const releaseVerified=false;
+  const revisionTraceVerified=false;
+  // Shared lineage (V48) has been described, NOT statistically de-duplicated
+  // with original PIT evidence or tested for incremental predictive information.
+  const independentEvidence=false;
+  const oosVerified=false;
+  const reportMatch=reportObservations.some(r=>r&&r.validated_historical_release_time===true&&
+    r.qualifies_as_model_factor_signal===true);
+  return {id:def.id,name:def.name,cadence:def.cadence,
+   observed,periods,versions,minimum,historyLength,releaseVerified,
+   revisionTraceVerified,independentEvidence,oosVerified,
+   // The current V49 report does not authorize any score even when a data
+   // series eventually meets the minimum historical coverage gate.
+   qualified:false,reportMatch};
+ });
+ return {entries,archivedTotal:validHistory&&Number.isSafeInteger(readiness.archived_observations)?
+   readiness.archived_observations:null,
+  historyVerified:validHistory,reportVerified:validReport,
+  sourceMismatchCount:validHistory&&Number.isInteger(readiness.treasury_source_year_mismatch_rows)?
+   readiness.treasury_source_year_mismatch_rows:null,
+  certifiedSignalCount:0,scoringEnabled:false};
+}
+function renderFactorQualification(rows,readiness,report){
+ const target=$("#factor-qualification");
+ if(!target)return;
+ target.replaceChildren();
+ const audit=factorQualification(rows,readiness,report);
+ const headline=el("p","muted","V49准入规则：先确认真实观测，再逐项检查历史样本覆盖、官方首发可得时间、修订追踪、重复信息增量检验及样本外验证。"+
+  "历史覆盖研究下限：日频252、周频104、月频36个不同观测期；达到下限本身不等于合格。");
+ const summary=el("p","label","证据记录："+
+  (audit.archivedTotal===null?"首次归档报告未核实":audit.archivedTotal+"条网站首次归档记录")+
+  "；已认证独立预测信号："+audit.certifiedSignalCount+
+  "；正式评分：未启用。"+
+  (audit.sourceMismatchCount===null?"":(" 已归档的财政部来源年份异常记录："+audit.sourceMismatchCount+"（需修复及原始版本核证）。")));
+ const wrap=el("div","table-wrap"),table=el("table"),head=el("thead"),tr=el("tr");
+ for(const label of ["源指标","当前观测","历史覆盖/下限","官方首发时间","修订追踪","信息独立增量","样本外验证","模型准入"]){
+  const th=el("th","",label);th.scope="col";tr.append(th);
+ }
+ head.append(tr);table.append(head);
+ const body=el("tbody");
+ for(const item of audit.entries){
+  const row=el("tr");
+  const values=[item.name,item.observed?"有当前有效值":"缺失或过期",
+   (item.periods===null?"未核实":item.periods)+"/"+item.minimum+"期",
+   "未核实","未核实","未认证","未通过",
+   item.qualified?"已准入":"仅研究 · 不可评分"];
+  values.forEach(v=>row.append(el("td","",v)));
+  body.append(row);
+ }
+ table.append(body);wrap.append(table);
+ const note=el("p","insights-warning",
+  "网站首次观察记录不代表官方首次发布日期；同一序列有多个归档版本不代表修订全历史可追溯。"+
+  "V48的来源重叠审计和V47相关性也不能替代逐点PIT增量信息验证。"+
+  "当前缺少合格历史首发版本、修订溯源与样本外资产总回报检验，14项源系列均不得解锁评分、回测收益或自动投资预警。");
+ target.append(headline,summary,wrap,note);
+}
+
 // Stable primary publisher references; never use the legacy 2025 Treasury
 // citation attached to the 2026 value as a live series source link.
 const OFFICIAL_SOURCES={
@@ -244,11 +325,12 @@ function headline(data){
   card(title,fresh&&isNumber(v)?v.toFixed(2)+unit:"暂无有效数据",
        "美国财政部 · 观测日："+(data?.observation_date||"缺失"))));
 }
-function overview(data,readiness){
+function overview(data,readiness,qualifications){
  const snapshotValid=data?.schema_version===1&&data?.assets&&data?.scoring?.calibration_verified===false&&data?.scoring?.out_of_sample_verified===false;
  const approved=snapshotValid?data:null;
  const rows=overviewObservations(approved);
  renderIndependenceAudit(rows);
+ renderFactorQualification(rows,readiness,qualifications);
  const usable=rows.filter(x=>x.state==="可用").length;
  const snapshotTime=approved?.generated_at?Date.parse(approved.generated_at):NaN;
  const age=Date.now()-snapshotTime;
@@ -370,5 +452,5 @@ function renderFactorObservations(report){
 }
 function research(price,readiness){const out=$("#price-grid");if(!price||price.report_type!=="price_coverage_audit"||price.validated_for_live_scoring!==false){out.replaceChildren(el("p","empty","历史价格覆盖报告尚未发布或无效。"));}else{out.replaceChildren(...Object.entries(ASSETS).map(([id,name])=>{const a=price.assets?.[id]||{};const n=isNumber(a.observation_count)?a.observation_count:0;const node=card(name,n+" 条价格观测","来源代理："+(a.symbol||"未记录")+" · "+(a.last_observation||"暂无有效日期"));node.append(el("div","label","非可投资总回报；未通过回测准入。"));return node}))}
 const block=$("#archive-data");if(readiness&&readiness.report_type==="asset_compass_history_readiness"&&readiness.validated_for_live_scoring===false){const count=readiness.archived_observations;block.replaceChildren(card("首次归档观测数",Number.isInteger(count)?count:"暂无数据","记录网站首次看到数值的时间，不代表官方最初发布时间。"));const list=$("#blockers");list.replaceChildren(...(readiness.blockers||[]).map(x=>el("li","",x)));}else{block.replaceChildren(card("首次归档状态","未发布","没有可核实的正式历史归档进度，不能把CI测试样本当作生产历史。"));$("#blockers").replaceChildren(el("li","","官方首发版本、统一总回报、独立样本外模型验收尚未通过。"))}$("#research-status").textContent="暂不公布历史命中率、资金曲线、最大回撤或资产预警阈值。数据来源及模型尚未达到可验证标准。";}
-async function run(){const page=document.body.dataset.page;if(page==="overview"){const [data,readiness]=await Promise.all([optional(DATA),optional(READY)]);overview(data,readiness);return}if(page==="attribution"){const [config,data,observations]=await Promise.all([optional(CONFIG),optional(DATA),optional(OBSERVATIONS)]);attribution(config,data);renderFactorObservations(observations);return}if(page==="research"){const [price,readiness]=await Promise.all([optional(PRICE),optional(READY)]);research(price,readiness);return}}
+async function run(){const page=document.body.dataset.page;if(page==="overview"){const [data,readiness,qualifications]=await Promise.all([optional(DATA),optional(READY),optional(OBSERVATIONS)]);overview(data,readiness,qualifications);return}if(page==="attribution"){const [config,data,observations]=await Promise.all([optional(CONFIG),optional(DATA),optional(OBSERVATIONS)]);attribution(config,data);renderFactorObservations(observations);return}if(page==="research"){const [price,readiness]=await Promise.all([optional(PRICE),optional(READY)]);research(price,readiness);return}}
 run().catch(()=>{const node=$("#source-status")||$("#attribution-status")||$("#research-status");if(node)node.textContent="数据读取暂不可用；不会以示例数值代替真实数据。"});
