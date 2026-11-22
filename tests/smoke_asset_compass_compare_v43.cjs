@@ -64,7 +64,7 @@ test("two curves share exact 1472 source-matched dates and both render",()=>{
  assert.equal(nodes["treasury-trend-legend"].children.length,2);
  assert.equal(nodes["treasury-trend-table"].children.length,8);
  assert.equal(nodes["treasury-trend-table"].children[0].children.length,3);
- assert.match(nodes["treasury-trend-status"].textContent,/1472 个同日匹配观测日/);
+ assert.match(nodes["treasury-trend-status"].textContent,/1472 个匹配观测日/);
  assert.match(nodes["treasury-trend-svg"].attributes["aria-label"],/双曲线对比/);
 });
 test("breakeven spread exactly matches the last real date in both percentage points and bp",()=>{
