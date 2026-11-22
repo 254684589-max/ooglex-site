@@ -5,6 +5,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: asset-compass-ledger-main
+  cancel-in-progress: false
 jobs:
   treasury:
     runs-on: ubuntu-latest
