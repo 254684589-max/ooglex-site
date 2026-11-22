@@ -18,3 +18,16 @@
 .asset-links a{display:inline-block;color:#a7ccff;border:1px solid #3b5270;padding:7px 10px;text-decoration:none;border-radius:7px;font-size:12px}
 .asset-links a:focus-visible,.asset-links a:hover{background:#1c3654;outline:1px solid #6ea9ef}
 @media(max-width:780px){.overview-controls label{flex:1 1 130px;min-width:0}.overview-controls .label{flex:1 1 100%;margin:0}.section-link{float:none;display:block;margin-top:7px}.overview-table{padding:0 8px}}
+
+/* V41: evidence-level asset explainer; no predicted trend or score bars. */
+.insights-select{display:inline-flex;align-items:center;margin-top:13px;min-height:40px;font-size:13px}
+.insights-select[aria-pressed="true"]{background:#1a6257;border-color:#63c6b1}
+.insights-select:focus-visible{outline:2px solid #a0d6ff;outline-offset:3px}
+.insights-panel{margin-top:18px;border-color:#3a5271}
+.insights-title{font-size:19px;margin:0 0 6px}
+.insights-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+.insights-item{padding:14px;border:1px solid #344761;background:#172132;border-radius:11px;min-width:0}
+.insights-item .insights-value{font-size:22px;font-weight:750;font-variant-numeric:tabular-nums;margin:9px 0;overflow-wrap:anywhere}
+.insights-item p{font-size:13px;margin:10px 0 0}
+.insights-warning{font-size:13px;color:#e2b879;line-height:1.7;margin:13px 0 0}
+@media(max-width:780px){.insights-list{grid-template-columns:1fr}.insights-panel{padding:16px}.insights-item .insights-value{font-size:21px}}

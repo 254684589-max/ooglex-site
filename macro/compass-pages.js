@@ -57,6 +57,89 @@ const ASSET_CONTEXT={
  bitcoin:"观察金融条件与风险偏好；暂无合格资产专属因子。",
  oil:"观察需求增长、通胀与供给；暂无合格库存和供需因子。"
 };
+// V41 contextual explanations reference observation values only. They are not
+// calibrated factor signals, forward returns or buy/sell recommendations.
+const ASSET_INSIGHTS={
+ gold:{name:"黄金",items:[
+  ["treasury.real10y","实际利率代表持有无息黄金的机会成本背景；影响还取决于风险偏好与美元。"],
+  ["treasury.breakeven10y","期限通胀补偿包含风险和流动性溢价；不等于纯粹的通胀预期。"],
+  ["bea.core_pce","核心PCE反映通胀环境，不能仅凭其绝对值预测金价。"],
+  ["nyfed.effr","短端融资利率影响资金条件；不是黄金价格的独立交易信号。"]
+ ]},
+ us_equities:{name:"美股",items:[
+  ["treasury.us10y","长端国债利率影响折现率；对股价的影响同时取决于盈利预期。"],
+  ["bls.payroll","就业月增量可描述经济活动，但没有基期和盈利数据不能推导股市方向。"],
+  ["bls.unemployment","失业率反映劳动力市场状况，与估值、政策预期共同作用。"],
+  ["bea.core_pce","核心PCE是通胀约束之一，单期数据并不构成股市择时信号。"]
+ ]},
+ us_long_bonds:{name:"美国长期国债",items:[
+  ["treasury.us10y","长期债券价格通常与市场要求的收益率反向变化；持有到期与ETF净值不同。"],
+  ["treasury.real10y","TIPS实际利率反映长期实际贴现条件；并非完整债券总回报。"],
+  ["treasury.breakeven10y","通胀补偿分解名义收益率的背景，包含期限风险和流动性因素。"],
+  ["treasury.spread10y2y","10Y−2Y利差是期限结构观测，不等于衰退必然发生。"]
+ ]},
+ usd:{name:"美元",items:[
+  ["nyfed.effr","美国有效政策利率反映美元短期融资环境；汇率仍需比较海外利率。"],
+  ["treasury.us2y","美国两年期收益率反映近期政策定价；相对利差与风险情绪尚缺失。"],
+  ["treasury.us10y","美国长端收益率是资本流动的背景指标，不能单独预测美元指数。"],
+  ["bea.core_pce","通胀可能影响政策预期，但绝对水平不能直接转为美元多空信号。"]
+ ]},
+ bitcoin:{name:"比特币",items:[
+  ["nyfed.effr","短期资金价格是加密资产流动性环境的一部分，影响并不稳定。"],
+  ["liquidity.reserves","银行准备金是金融体系流动性组件，不可直接等同于加密市场可用资金。"],
+  ["treasury.real10y","实际贴现率是风险资产定价背景，但不能直接推导比特币回报。"],
+  ["nyfed_recession.probability","纽约联储模型衡量12个月后某个月的衰退概率，不是对比特币的预测。"]
+ ]},
+ oil:{name:"原油",items:[
+  ["bls.payroll","就业月增量可作为需求景气背景，无法替代实际原油消费统计。"],
+  ["bls.unemployment","劳动力市场数据有助于观察美国需求，但未覆盖全球供需。"],
+  ["bea.core_pce","核心PCE剔除食品与能源，属于货币政策背景，不能用它估算油价。"],
+  ["treasury.us10y","长端利率是经济周期及资金成本观测；缺少库存、OPEC供给和期货结构。"]
+ ]}
+};
+function derivedContextObservation(id,observations){
+ const byId=new Map(observations.map(x=>[x.id,x]));
+ const nominal=byId.get("treasury.us10y"),secondary=byId.get(
+  id==="treasury.breakeven10y"?"treasury.real10y":"treasury.us2y");
+ if(!nominal||!secondary||nominal.value===null||secondary.value===null||
+    nominal.period!==secondary.period)return null;
+ return {id,name:id==="treasury.breakeven10y"?"10年期通胀补偿（派生）":"10Y−2Y利差（派生）",
+    value:nominal.value-secondary.value,unit:"百分点",precision:2,
+    period:nominal.period,source:"美国财政部同日收益率差值",
+    state:"可用",derived:true};
+}
+function renderAssetInsights(assetId,observations){
+ const target=$("#asset-insights"),def=ASSET_INSIGHTS[assetId];
+ if(!target||!def)return;
+ const byId=new Map(observations.map(x=>[x.id,x]));
+ const heading=el("h3","insights-title",def.name+" · 相关宏观观测");
+ const note=el("p","muted","以下是当前观测值与宏观经济含义，不代表方向预测、独立因子评分或资产收益预期。");
+ const list=el("div","insights-list");
+ for(const [indicatorId,explanation] of def.items){
+  const obs=byId.get(indicatorId)||
+     (indicatorId.startsWith("treasury.")?derivedContextObservation(indicatorId,observations):null);
+  const row=el("article","insights-item"),label=el("div","label",obs?.name||indicatorId);
+  const value=obs?.value===null||!obs?"数据缺失或过期":
+   obs.value.toLocaleString("zh-CN",{minimumFractionDigits:obs.precision,
+      maximumFractionDigits:obs.precision})+" "+obs.unit;
+  const amount=el("div","insights-value",value);
+  const meta=el("div","label","观测期："+(obs?.period||"未知")+" · "+(obs?.source||"暂无来源")+
+      (obs?.derived?" · 同日代数派生，非独立来源":""));
+  const expl=el("p","muted",explanation);
+  row.append(label,amount,meta,expl);list.append(row);
+ }
+ const warning=el("p","insights-warning","尚缺少完整风险信用、估值与资金流等独立信号，不能把这些指标简单相加为0–100分。");
+ target.replaceChildren(heading,note,list,warning);
+}
+function renderAssetSelection(assetId,rows){
+ const valid=Object.hasOwn(ASSET_INSIGHTS,assetId)?assetId:"gold";
+ for(const b of document.querySelectorAll("[data-insight-asset]")){
+  const selected=b.dataset.insightAsset===valid;
+  b.setAttribute("aria-pressed",selected?"true":"false");
+ }
+ renderAssetInsights(valid,rows);
+}
+
 function observationCurrent(def,period){
  return def.cadence==="monthly"?isoMonth(period,4):isoDay(period,def.cadence==="weekly"?21:11)
 }
@@ -146,11 +229,18 @@ function overview(data,readiness){
   const gated=approved?.scoring?.calibration_verified===true&&approved?.scoring?.out_of_sample_verified===true&&usableScore(a);
   const node=card(name,gated?scoreText(a):"— / 100",ASSET_CONTEXT[id]);
   node.append(el("div","label","状态："+(gated?"已通过评分验证":"评分未校准 · 不做利多利空预测")));
+  const inspect=el("button","insights-select","查看宏观依据");
+  inspect.type="button";inspect.dataset.insightAsset=id;
+  inspect.setAttribute("aria-pressed","false");
+  inspect.setAttribute("aria-controls","asset-insights");
+  inspect.addEventListener("click",()=>renderAssetSelection(id,rows));
+  node.append(inspect);
   const links=el("div","asset-links");
   const detail=el("a","","查看因子权重");detail.href="./attribution.html";
   const history=el("a","","查看回测准备度");history.href="./research.html";
   links.append(detail,history);node.append(links);return node;
  }));
+ if(assets&&$("#asset-insights"))renderAssetSelection("gold",rows);
  const archive=$("#history-status");
  if(archive)archive.textContent="CPI、PCE等当前数值可能包含后续修订；首次观测归档不是官方原始发布版本。"+
   "盈亏平衡通胀补偿、实际利率与名义利率相关，不能当作独立投票；"+
