@@ -1,0 +1,38 @@
+name: SOFR V15 historical backfill provenance pilot
+on:
+  pull_request:
+    paths:
+      - 'scripts/audit_sofr_backfill_pilot.py'
+      - 'tests/test_sofr_backfill_pilot.py'
+      - '.github/workflows/asset-compass-sofr-v15-pilot.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify contracts and no-rate output
+        run: |
+          python -m py_compile scripts/audit_sofr_backfill_pilot.py
+          python -m unittest discover -s tests -p test_sofr_backfill_pilot.py -v
+      - name: Sample 10 genuine historical source dates without publishing rates
+        run: python scripts/audit_sofr_backfill_pilot.py --output /tmp/sofr-v15-history-pilot.json
+      - name: Verify production history not modified
+        if: always()
+        run: |
+          git diff --exit-code -- macro/swap-spreads-history.json
+          test ! -f macro/swap-spreads-health.json
+      - name: Upload metadata-only diagnostic summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sofr-v15-historical-eligibility-summary
+          path: /tmp/sofr-v15-history-pilot.json
+          retention-days: 7
+          if-no-files-found: ignore
