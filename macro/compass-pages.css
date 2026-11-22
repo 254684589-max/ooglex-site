@@ -59,3 +59,14 @@
 .asset-trend-focus:hover{background:#24435e}
 .asset-trend-focus:focus-visible{outline:2px solid #a0d6ff;outline-offset:3px}
 @media(max-width:780px){.asset-trend-focus{margin-left:0;display:flex}.trend-legend{font-size:12px;gap:6px 10px}}
+
+/* V44: exact-date probe and two-real-observation basis-point comparison. */
+.trend-probe{font-size:13px;font-variant-numeric:tabular-nums;color:#c2e8ff;line-height:1.7;padding:10px 12px;border:1px solid #345471;border-radius:9px;background:#112333}
+.treasury-trend-svg{touch-action:pan-y}
+.treasury-trend-svg:focus-visible{outline:2px solid #88c8ff;outline-offset:3px}
+.treasury-date-compare{display:flex;gap:14px;flex-wrap:wrap;margin:16px 0 8px}
+.treasury-date-compare label{flex:1 1 220px;display:grid;gap:7px;color:#b7c6db;font-size:12px}
+.treasury-date-compare select{background:#101823;border:1px solid #435773;border-radius:9px;color:#edf3fc;min-height:42px;padding:8px 10px;font-size:14px;max-width:100%}
+.treasury-date-compare select:focus-visible{outline:2px solid #88c8ff;outline-offset:2px}
+.trend-comparison-result{font-size:13px;line-height:1.8;color:#f0d8af;padding:11px 12px;background:#1d2532;border-radius:9px;font-variant-numeric:tabular-nums}
+@media(max-width:780px){.treasury-date-compare{gap:10px}.treasury-date-compare label{flex-basis:100%}}

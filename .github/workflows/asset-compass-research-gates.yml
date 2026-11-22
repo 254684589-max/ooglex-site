@@ -1,4 +1,4 @@
-name: Asset Compass Research V18-V43 Gates
+name: Asset Compass Research V18-V44 Gates
 on:
   pull_request:
     paths:
@@ -12,6 +12,8 @@ on:
       - 'tests/smoke_asset_compass_insights_v41.cjs'
       - 'tests/smoke_asset_compass_trends_v42.cjs'
       - 'tests/smoke_asset_compass_compare_v43.cjs'
+      - 'tests/smoke_asset_compass_probe_v44.cjs'
+      - 'docs/ASSET_COMPASS_V44_*'
       - 'docs/ASSET_COMPASS_V43_*'
       - 'scripts/validate_asset_compass_treasury_trends_v42.py'
       - 'scripts/build_asset_compass_history_fred_v42.py'
@@ -71,9 +73,9 @@ jobs:
         run: python3 -m pip install cryptography==46.0.4
       - name: Syntax validation
         run: python3 -m compileall -q scripts tests
-      - name: Run isolated V18-V43 research gates
+      - name: Run isolated V18-V44 research gates
         run: python3 -m unittest discover -s tests -p 'test_asset_compass_*_v*.py' -v
-      - name: V39-V43 verify six-asset linked curves and historical observation quality
+      - name: V39-V44 verify six-asset curves and exact-date yield comparisons
         run: |
           node --check macro/compass-pages.js
           node tests/smoke_asset_compass_frontend_v40.cjs
@@ -81,6 +83,7 @@ jobs:
           node --check macro/treasury-trends.js
           node tests/smoke_asset_compass_trends_v42.cjs
           node tests/smoke_asset_compass_compare_v43.cjs
+          node tests/smoke_asset_compass_probe_v44.cjs
           python3 -m unittest discover -s tests -p 'test_asset_compass_treasury_trends_v42.py' -v
           python3 -m unittest discover -s tests -p 'test_asset_compass_h15_fred_v42.py' -v
           python3 -m unittest discover -s tests -p 'test_asset_compass_treasury_priority_v42.py' -v
