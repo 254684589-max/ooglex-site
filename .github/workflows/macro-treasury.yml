@@ -40,6 +40,21 @@ jobs:
         run: python3 -m scripts.archive_asset_compass_observations
       - name: Check historical archive readiness
         run: python3 -m scripts.check_asset_compass_history_readiness
+      - name: Audit actual committed snapshot inputs and source gaps
+        run: |
+          python3 -m scripts.diagnose_asset_compass_sources_v28 \
+            --output /tmp/asset-compass-v29-source-audit.json
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          r=json.loads(Path("/tmp/asset-compass-v29-source-audit.json").read_text())
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+              f.write("### Macro source delivery audit (V29)\n")
+              f.write(f"Present required series: {r['required_present_in_snapshot']}/{r['required_series_count']}  \n")
+              f.write(f"Missing source fields: {', '.join(r['missing_from_snapshot']) or 'none'}  \n")
+              f.write(f"Present but not archived: {', '.join(r['present_but_not_archived']) or 'none'}  \n")
+              f.write("Missing is not zero; source response errors require collector logs. No live scores unlocked.\n")
+          PY
       - name: Commit verified snapshot when changed
         run: |
           git config user.name "github-actions[bot]"
