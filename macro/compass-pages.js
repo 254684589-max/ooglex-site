@@ -12,8 +12,8 @@ const isNumber=n=>typeof n==="number"&&Number.isFinite(n);
 function card(title,value,detail){const node=el("article","card"),h=el("div","label",title),b=el("div","big",value),p=el("p","muted",detail);node.append(h,b,p);return node}
 async function getJSON(path){const result=await fetch(path,{cache:"no-store"});if(!result.ok)throw Error("未发布："+path);return result.json()}
 async function optional(path){try{return await getJSON(path)}catch{return null}}
-function isoDay(day,age){if(!/^\d{4}-\d{2}-\d{2}$/.test(day||""))return false;const dt=Date.parse(day+"T00:00:00Z");return Number.isFinite(dt)&&Date.now()>=dt&&Date.now()-dt<=age*86400000}
-function isoMonth(month,age){if(!/^\d{4}-\d{2}$/.test(month||""))return false;const [y,m]=month.split("-").map(Number);const now=new Date();const n=(now.getUTCFullYear()-y)*12+now.getUTCMonth()+1-m;return n>=0&&n<=age}
+function isoDay(day,age){if(!/^\d{4}-\d{2}-\d{2}$/.test(day||""))return false;const dt=Date.parse(day+"T00:00:00Z");return Number.isFinite(dt)&&new Date(dt).toISOString().slice(0,10)===day&&Date.now()>=dt&&Date.now()-dt<=age*86400000}
+function isoMonth(month,age){if(!/^\d{4}-\d{2}$/.test(month||""))return false;const [y,m]=month.split("-").map(Number);if(y<1900||m<1||m>12)return false;const now=new Date();const n=(now.getUTCFullYear()-y)*12+now.getUTCMonth()+1-m;return n>=0&&n<=age}
 function usableScore(a){return a&&a.status!=="unavailable"&&isNumber(a.score)&&a.score>=0&&a.score<=100&&a.validation?.historical_calibration_passed===true&&a.validation?.out_of_sample_passed===true}
 function scoreText(a){return usableScore(a)?a.score.toFixed(1)+"/100":"— / 100"}
 // Current-observation registry. These are 14 SOURCE series, not 14 independent
@@ -34,6 +34,21 @@ const OVERVIEW_INDICATORS=[
  {id:"liquidity.overnight_rrp",name:"隔夜逆回购余额",group:"流动性",source:"纽约联储（经FRED）",cadence:"daily",unit:"十亿美元",precision:3,value:d=>d.liquidity?.overnight_rrp?.unit==="billions_usd"?d.liquidity.overnight_rrp.value:null,period:d=>d.liquidity?.overnight_rrp?.observation_date},
  {id:"nyfed_recession.probability",name:"收益率曲线模型：12个月后衰退概率",group:"模型",source:"纽约联储研究模型",cadence:"monthly",unit:"%",precision:2,value:d=>{const m=d.nyfed_recession_model||{};if(m.official_forecast!==false||!/^\d{4}-\d{2}$/.test(m.observation_period||"")||!/^\d{4}-\d{2}$/.test(m.target_period||""))return null;const [y,n]=m.observation_period.split("-").map(Number),[ty,tn]=m.target_period.split("-").map(Number);return (ty*12+tn)-(y*12+n)===12?m.probability_percent:null},period:d=>d.nyfed_recession_model?.observation_period}
 ];
+// Stable primary publisher references; never use the legacy 2025 Treasury
+// citation attached to the 2026 value as a live series source link.
+const OFFICIAL_SOURCES={
+ "treasury.":"https://home.treasury.gov/resource-center/data-chart-center/interest-rates",
+ "bls.":"https://www.bls.gov/developers/",
+ "bea.":"https://www.bea.gov/data/personal-consumption-expenditures-price-index",
+ "fed_h41.":"https://www.federalreserve.gov/releases/h41/",
+ "liquidity.":"https://fred.stlouisfed.org/",
+ "nyfed.effr":"https://www.newyorkfed.org/markets/reference-rates/effr",
+ "nyfed_recession.":"https://www.newyorkfed.org/research/capital_markets/ycfaq.html"
+};
+function sourceReference(id){
+ const key=Object.keys(OFFICIAL_SOURCES).find(prefix=>id.startsWith(prefix));
+ return key?OFFICIAL_SOURCES[key]:null
+}
 const ASSET_CONTEXT={
  gold:"观察实际利率、通胀补偿和美元条件。方向与因子贡献尚未校准。",
  us_equities:"观察利率、就业增长和流动性；不能直接推断指数涨跌。",
@@ -50,7 +65,11 @@ function overviewObservations(data){
  return OVERVIEW_INDICATORS.map(def=>{
   const period=valid?def.period(data):null;
   const value=valid?def.value(data):null;
-  const present=isNumber(value)&&observationCurrent(def,period);
+  const inRange=def.id==="nyfed_recession.probability"?(isNumber(value)&&value>=0&&value<=100):
+    def.id==="bls.unemployment"?(isNumber(value)&&value>=0&&value<=100):
+    def.id==="bls.payroll"?(isNumber(value)):
+    (isNumber(value)&&value>=0);
+  const present=inRange&&observationCurrent(def,period);
   return {id:def.id,name:def.name,group:def.group,source:def.source,
    period:period||"—",unit:def.unit,value:present?value:null,
    precision:def.precision,state:present?"可用":"缺失或过期"};
@@ -80,7 +99,7 @@ function overview(data,readiness){
  if(status)status.textContent=!approved?"数据未通过快照和评分锁定校验；暂停展示数值。":
    "官方数据快照："+(snapshotOk?new Date(snapshotTime).toLocaleString("zh-CN",{timeZone:"Asia/Shanghai",hour12:false})+"（北京时间）":"时间无效")+
    "；14项必需指标中 "+usable+" 项仍在各自可用期限内。"+
-   (delayed?" 数据快照已过期或生成时间异常，请检查采集任务。":" 当前快照可供研究浏览。")+
+   (delayed?" 注意：数据快照超过72小时未更新或生成时间异常。下方各指标按自身观测期单独判定，可能包含仍有效的月度值；请检查采集任务。":" 当前快照可供研究浏览。")+
    " 不代表实时行情或已验证资产预测。";
  headline(approved);
  const validReady=readiness?.schema_version===1&&readiness.report_type==="asset_compass_history_readiness"&&readiness.validated_for_live_scoring===false;
@@ -103,6 +122,11 @@ function overview(data,readiness){
    const value=r.value===null?"—":r.value.toLocaleString("zh-CN",{minimumFractionDigits:r.precision,maximumFractionDigits:r.precision})+" "+r.unit;
    [r.name,value,r.period,r.source,r.state].forEach((v,i)=>{
     const td=el("td","",v);
+    if(i===3){
+     const url=sourceReference(r.id);
+     if(url){const a=el("a","source-link",v);a.href=url;a.target="_blank";a.rel="noopener noreferrer";td.append(a)}
+     else td.textContent=v;
+    }
     if(i===4)td.className=r.value===null?"data-unavailable":"data-ready";
     tr.append(td);
    });
