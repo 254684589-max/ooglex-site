@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "provider": "bluegamma",
+  "purpose": "evaluation_only",
+  "productionSwitchApproved": false,
+  "api": {
+    "baseUrl": "https://api.bluegamma.io",
+    "path": "/v1/historical_swap_rates",
+    "authentication": "x-api-key",
+    "index": "SOFR",
+    "requiredTenors": [
+      "2Y",
+      "3Y",
+      "5Y",
+      "7Y",
+      "10Y",
+      "30Y"
+    ],
+    "queryParams": [
+      "index",
+      "tenor",
+      "start_date",
+      "end_date"
+    ],
+    "apiKeyConfigured": false,
+    "sixTenorApiResponseValidated": false
+  },
+  "history": {
+    "advertisedSince": "2023-03",
+    "method": "historical_par_rates_bootstrapped_from_provider_curve",
+    "pointInTimeImmutableVerified": false
+  },
+  "commercial": {
+    "advertisedStartingUsdPerIndexPerMonth": 349,
+    "trialDaysAdvertised": 14,
+    "redistributionPriceKnown": false,
+    "websiteRedistributionApproved": false,
+    "derivedSpreadPublicationApproved": false,
+    "downloadPermissionApproved": false,
+    "contractEvidence": null
+  },
+  "release": {
+    "writeProduction": false,
+    "replaceCheckMySwap": false,
+    "recordRawThirdPartyRatesInGit": false
+  },
+  "reviewedAt": "2026-11-23"
+}
