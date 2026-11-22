@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "dataset": "ooglex-sofr-ois-vs-us-treasury-cmt-historical-backfill",
+  "publicationMode": "blocked",
+  "purpose": "Historical cross-date observations re-published on Ooglex; not ordinary source exploration.",
+  "dataSources": {
+    "checkmyswap": {
+      "data": "USD SOFR OIS indicative historical snapshots",
+      "origin": "https://www.checkmyswap.com/rates",
+      "methodology": "https://www.checkmyswap.com/methodology",
+      "historicalStart": "2026-03-19",
+      "access": "public_read_only",
+      "redistributionStatus": "unverified",
+      "licensedUse": [],
+      "agreementIdentifier": null,
+      "evidenceUrl": null,
+      "licenseEffectiveDate": null,
+      "licenseExpiryDate": null,
+      "rightsHolderConfirmation": null,
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "scopeChecks": {
+        "historicalStorage": false,
+        "publicWebRedistribution": false,
+        "derivedSwapSpreadPublication": false,
+        "commercialUse": false,
+        "bulkAutomatedRetrieval": false
+      }
+    },
+    "usTreasury": {
+      "data": "Daily Treasury Par Yield Curve Rates",
+      "origin": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics/",
+      "access": "official_public_data",
+      "redistributionStatus": "separately_review",
+      "note": "Availability of official data does not grant rights over CheckMySwap's derived OIS curve."
+    }
+  },
+  "legacyConflict": {
+    "date": "2026-11-20",
+    "status": "unresolved",
+    "affectedTenors": ["2Y", "3Y", "5Y", "7Y", "10Y", "30Y"],
+    "changedFields": ["swap", "spreadBp"],
+    "unchangedFields": ["treasury", "method"],
+    "originalRawResponseSha256": null,
+    "resolutionEvidenceUrl": null,
+    "resolutionApprovedBy": null,
+    "decision": "do_not_overwrite"
+  },
+  "historicalPublicationApproved": false,
+  "lastReviewed": "2026-11-23",
+  "reviewMemo": "Public archive downloads and API availability do not establish third-party bulk redistribution rights. No signed or otherwise verifiable authorization is attached."
+}
