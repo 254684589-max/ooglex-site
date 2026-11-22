@@ -31,7 +31,8 @@ jobs:
         run: |
           set -euo pipefail
           git fetch origin "$GITHUB_BASE_REF" --depth=1
-          if git diff --quiet "origin/$GITHUB_BASE_REF"...HEAD -- macro/swap-spreads-history.json; then
+          git show "origin/$GITHUB_BASE_REF:macro/swap-spreads-history.json" > /tmp/sofr-v17-base-history.json
+          if cmp -s /tmp/sofr-v17-base-history.json macro/swap-spreads-history.json; then
             echo "PR does not change historical market data."
           else
             echo "::error::This PR changes published SOFR history. Historical backfill requires independent manual rights review and an approved source-specific data PR."
