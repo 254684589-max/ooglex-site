@@ -1,0 +1,30 @@
+name: SOFR V6 candidate staging tests
+on:
+  pull_request:
+    paths:
+      - 'scripts/build_swap_spread_candidates.py'
+      - 'tests/test_swap_spreads_candidates.py'
+      - '.github/workflows/asset-compass-sofr-v6-*.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Python static syntax
+        run: |
+          python -m py_compile scripts/build_swap_spread_candidates.py
+          python -m py_compile scripts/audit_swap_spreads_coverage.py
+      - name: Run read-only candidate tests
+        run: |
+          python -m unittest discover -s tests -p test_swap_spreads_candidates.py -v
+          python -m unittest discover -s tests -p test_swap_spreads_coverage.py -v
+      - name: Production history must remain untouched
+        run: |
+          git diff --exit-code -- macro/swap-spreads-history.json
+          git diff --check
