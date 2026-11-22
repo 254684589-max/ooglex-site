@@ -1,0 +1,27 @@
+name: SOFR V12 watchdog regression
+on:
+  pull_request:
+    paths:
+      - 'scripts/watch_sofr_schedule.py'
+      - 'tests/test_sofr_v12_watchdog.py'
+      - '.github/workflows/asset-compass-sofr-v12-*.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate code
+        run: python -m py_compile scripts/watch_sofr_schedule.py
+      - name: Validate date and live-run gating
+        run: python -m unittest discover -s tests -p test_sofr_v12_watchdog.py -v
+      - name: No price history modification
+        run: |
+          git diff --exit-code -- macro/swap-spreads-history.json
+          test ! -f macro/swap-spreads-health.json
+          git diff --check
