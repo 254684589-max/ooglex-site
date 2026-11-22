@@ -1,0 +1,26 @@
+name: SOFR spread V3 research analytics checks
+on:
+  pull_request:
+    paths:
+      - 'macro/swap-spreads*'
+      - 'tests/test_swap_spreads_analytics.cjs'
+      - '.github/workflows/asset-compass-sofr-v3-check.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check browser JavaScript syntax
+        run: |
+          node --check macro/swap-spreads-analytics.js
+          node --check macro/swap-spreads-analytics-panel.js
+      - name: Run deterministic analytics tests
+        run: node --test tests/test_swap_spreads_analytics.cjs
+      - name: Validate observations JSON
+        run: python -m json.tool macro/swap-spreads-history.json > /dev/null
