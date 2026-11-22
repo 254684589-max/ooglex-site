@@ -1,0 +1,61 @@
+name: Asset Compass V32 Historical Quality Audit
+on:
+  schedule:
+    # Read-only quality audit after the regular upstream collection.
+    - cron: '0 3 * * 2-6'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/asset-compass-quality-v32.yml'
+      - 'scripts/audit_asset_compass_history_v32.py'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify historical coverage, revisions and source timestamps
+        run: |
+          python3 -m unittest discover -s tests -p 'test_asset_compass_history_audit_v32.py' -v
+          python3 -m scripts.audit_asset_compass_history_v32 \
+            --output /tmp/asset-compass-history-audit-v32.json \
+            --fail-on-integrity
+      - name: Publish evidence summary
+        if: always()
+        run: |
+          if [ -f /tmp/asset-compass-history-audit-v32.json ]; then
+            python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          r=json.loads(Path("/tmp/asset-compass-history-audit-v32.json").read_text())
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+              f.write("### Ooglex V32 historical coverage audit\n")
+              f.write(f"Required indicator coverage: {r['archived_series_count']}/{r['required_series_count']}  \n")
+              f.write(f"Archive records: {r['archive_record_count']}  \n")
+              f.write(f"Indicators with 36 distinct periods: {r['number_of_series_with_36_distinct_periods']}  \n")
+              f.write(f"Value revisions (periods): {r['total_value_revision_periods']}  \n")
+              f.write(f"URL-only correction periods: {r['total_url_only_correction_periods']}  \n")
+              f.write(f"Legacy Treasury source exceptions: {r['legacy_treasury_source_year_mismatches']}  \n")
+              f.write(f"Snapshot timing: {r['snapshot_temporal_integrity']}  \n")
+              f.write(f"Audit flags: {', '.join(r['blockers']) or 'none'}\n\n")
+              f.write("First-seen is NOT official vintage history; scoring and backtesting remain unavailable.\n")
+          PY
+          else
+            echo '::error::V32 audit report not produced; inspect the audit logs.'
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ooglex-v32-historical-quality
+          path: /tmp/asset-compass-history-audit-v32.json
+          if-no-files-found: warn
+          retention-days: 30
