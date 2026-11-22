@@ -1,4 +1,4 @@
-name: Asset Compass Research V18-V53 Gates
+name: Asset Compass Research V18-V54 Gates
 on:
   pull_request:
     paths:
@@ -23,6 +23,12 @@ on:
       - 'tests/test_asset_compass_custody_v52.py'
       - 'tests/test_asset_compass_release_values_v53.py'
       - 'scripts/asset_compass_release_values_v53.py'
+      - 'scripts/score_macro_assets.py'
+      - 'scripts/build_asset_compass_scoring_readiness_v54.py'
+      - 'tests/test_asset_compass_scoring_readiness_v54.py'
+      - 'tests/smoke_asset_compass_scoring_v54.cjs'
+      - 'docs/ASSET_COMPASS_V54_*'
+      - 'macro/model-config.json'
       - '.github/workflows/asset-compass-release-values-v53.yml'
       - 'docs/ASSET_COMPASS_V53_*'
       - 'scripts/asset_compass_custody_v52.py'
@@ -101,9 +107,9 @@ jobs:
         run: python3 -m pip install cryptography==46.0.4
       - name: Syntax validation
         run: python3 -m compileall -q scripts tests
-      - name: Run isolated V18-V53 research gates
+      - name: Run isolated V18-V54 research gates
         run: python3 -m unittest discover -s tests -p 'test_asset_compass_*_v*.py' -v
-      - name: V39-V53 verify factor qualification evidence and closed scoring gates
+      - name: V39-V54 verify factor qualification evidence and closed scoring gates
         run: |
           node --check macro/compass-pages.js
           node tests/smoke_asset_compass_frontend_v40.cjs
@@ -133,6 +139,12 @@ jobs:
           bash -n scripts/run_asset_compass_v52.sh
       - name: V53 verify five separately typed source statistics and unchanged locked PIT status
         run: python3 -m unittest discover -s tests -p 'test_asset_compass_release_values_v53.py' -v
+      - name: V54 audit model score contract and six-asset actual source-to-signal gaps
+        run: |
+          python3 -m unittest discover -s tests -p 'test_asset_compass_scoring_readiness_v54.py' -v
+          python3 -m unittest discover -s tests -p 'test_macro_scoring.py' -v
+          node tests/smoke_asset_compass_scoring_v54.cjs
+          python3 -m scripts.build_asset_compass_scoring_readiness_v54 --output /tmp/ooglex-v54-readiness.json
       - name: Verify production scoring remains blocked
         run: |
           python3 - <<'PY'
