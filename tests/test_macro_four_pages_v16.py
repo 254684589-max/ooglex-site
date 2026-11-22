@@ -17,7 +17,7 @@ class MacroFourPagesTests(unittest.TestCase):
             self.assertIn('aria-label="全球资产罗盘页面导航"',html)
             for target in PAGES:
                 self.assertIn('href="./'+target+'"',html,filename)
-            self.assertEqual(html.count('aria-current="page"'),1,filename)
+            self.assertEqual(html.count('aria-current="page">'),1,filename)
     def test_new_pages_use_one_shared_asset_loader(self):
         js=(MACRO/"compass-pages.js").read_text(encoding="utf-8")
         for filename,page in PAGES.items():
