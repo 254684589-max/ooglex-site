@@ -1,4 +1,4 @@
-name: Asset Compass V32 Historical Quality Audit
+name: Asset Compass V32-V33 Historical Evidence Audit
 on:
   schedule:
     # Read-only quality audit after the regular upstream collection.
@@ -10,6 +10,7 @@ on:
     paths:
       - '.github/workflows/asset-compass-quality-v32.yml'
       - 'scripts/audit_asset_compass_history_v32.py'
+      - 'scripts/qualify_asset_compass_pit_v33.py'
 permissions:
   contents: read
 jobs:
@@ -29,6 +30,11 @@ jobs:
           python3 -m scripts.audit_asset_compass_history_v32 \
             --output /tmp/asset-compass-history-audit-v32.json \
             --fail-on-integrity
+      - name: V33 review every required series for original vintage evidence
+        run: |
+          python3 -m unittest discover -s tests -p 'test_asset_compass_pit_evidence_v33.py' -v
+          python3 -m scripts.qualify_asset_compass_pit_v33 \
+            --output /tmp/asset-compass-v33-pit-evidence.json
       - name: Publish evidence summary
         if: always()
         run: |
@@ -52,10 +58,35 @@ jobs:
           else
             echo '::error::V32 audit report not produced; inspect the audit logs.'
           fi
+      - name: Publish V33 PIT evidence qualification summary
+        if: always()
+        run: |
+          if [ -f /tmp/asset-compass-v33-pit-evidence.json ]; then
+            python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          r=json.loads(Path("/tmp/asset-compass-v33-pit-evidence.json").read_text())
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+              f.write("\n### V33 certified historical vintage evidence\n")
+              f.write(f"First-seen coverage: {r['first_seen_covered_series']}/{r['required_series']}  \n")
+              f.write(f"Independently qualified PIT series: {r['independently_qualified_pit_series']}/{r['required_series']}  \n")
+              f.write(f"Private research archive: {r['private_db_status']}  \n")
+              f.write("Official release timestamps and redistribution licenses are NOT certified.\n")
+          PY
+          else
+            echo '::error::V33 qualification evidence missing.'
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ooglex-v32-historical-quality
           path: /tmp/asset-compass-history-audit-v32.json
+          if-no-files-found: warn
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ooglex-v33-pit-evidence
+          path: /tmp/asset-compass-v33-pit-evidence.json
           if-no-files-found: warn
           retention-days: 30
