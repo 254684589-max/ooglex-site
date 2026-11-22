@@ -3,15 +3,16 @@
 ## 真实归档基线（2026-11-22）
 `main` 的 `data/asset-compass-observation-ledger.jsonl` 已有14条追加记录，分别覆盖9个有历史记录的指标；其中5条是保留的财政部2025链接与2026观测日期不一致的旧版本，后续5条更正来源年份的记录按实际 first_seen 时间追加。14个版本不等于14个交易日或可回测时间样本。
 
-在 `data/asset-compass-history-readiness.json` 登记的14个必需指标中，尚无归档的5项：
+在 `data/asset-compass-history-readiness.json` 登记的14个必需指标中，已入库7项，尚无归档的7项：
 - `bls.core_cpi`
 - `bea.core_pce`
 - `fed_h41.total_assets`
 - `liquidity.reserves`
 - `liquidity.tga`
-- `liquidity.overnight_rrp`（注意：这可能也是缺失项，以上只是基线概览，始终以动态报告为准）
+- `liquidity.overnight_rrp`
+- `nyfed_recession.probability`
 
-> 注意：缺失数量以当前版本的归档报告为准；不要按上述人工列举替代实际运行结果。
+> 注意：账本还含期限利差与盈亏平衡通胀2个派生指标，因此总计9个已种子化指标，但14项必需来源中仅7项。后续以自动生成的最新报告为准。
 
 ## V27 交付
 - `scripts/monitor_asset_compass_continuity_v27.py`：读取现有真实追加账本，执行先前 V25 的内容完整性检查，并按指标生成版本数、不同观测期、最后首次看到时刻、最后观测期及状态。
