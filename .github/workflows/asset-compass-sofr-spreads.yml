@@ -79,13 +79,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- macro/swap-spreads-history.json macro/swap-spreads-health.json; then
+          git add -- macro/swap-spreads-history.json macro/swap-spreads-health.json
+          if git diff --cached --quiet; then
             echo "No new validated data or last-success heartbeat to publish."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- macro/swap-spreads-history.json macro/swap-spreads-health.json
           git diff --cached --check
           git commit -m "data(macro): append validated SOFR swap-spread trading day"
           git pull --rebase origin main
