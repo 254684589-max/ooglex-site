@@ -149,6 +149,14 @@ class V55RateResearchTests(unittest.TestCase):
         self.assertIsNone(r["assets"]["gold"]["rate_pressure_candidate"])
         self.assertIsNone(r["assets"]["us_long_bonds"]["rate_pressure_candidate"])
 
+    def test_independent_treasury_history_may_be_newer_than_macro_daily_snapshot(self):
+        snap=copy.deepcopy(self.snapshot)
+        snap["observation_date"]="2026-11-19"
+        result=self.build(snapshot=snap)
+        self.assertTrue(result["snapshot_date_precedes_history"])
+        self.assertFalse(result["eligible_for_point_in_time_backtest"])
+        self.assertEqual(result["official_0_to_100_scores_published"],0)
+
     def test_h15_fallback_still_needs_full_provenance(self):
         h=copy.deepcopy(self.history)
         h["source"]="Federal Reserve Board H.15 via FRED"
