@@ -104,6 +104,21 @@ jobs:
       - name: Build protected public site
         run: python scripts/build_public_site.py --pro-cutover
 
+      - name: Verify Asset Compass four-page public build
+        run: |
+          node --check .site/macro/compass-pages.js
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path(".site/macro")
+          for name in ("index.html","overview.html","attribution.html","research.html","compass-pages.js","compass-pages.css","model-config.json"):
+              assert (root/name).is_file(),f"missing public macro page asset: {name}"
+          for name in ("index.html","overview.html","attribution.html","research.html"):
+              html=(root/name).read_text(encoding="utf-8")
+              for target in ("index.html","overview.html","attribution.html","research.html"):
+                  assert 'href="./'+target+'"' in html,(name,target)
+          print("Asset Compass four-page public build verified")
+          PY
+
       - name: Add latest Tech Leaders Android APK
         # 安装包由 android-tech-leaders.yml 发布到 GitHub Release；这里复制到站内下载地址。
         # 取不到（尚未发布或网络失败）时不影响网站部署，下载页会显示「暂未发布」。
