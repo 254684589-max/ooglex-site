@@ -119,3 +119,11 @@
 .indicator-independence th,.indicator-independence td{padding:10px 9px;line-height:1.6}
 .indicator-independence td:nth-child(4){max-width:310px;white-space:normal}
 .indicator-independence .table-wrap{overflow-x:auto}
+
+/* V49: evidence qualification only. Green scores cannot be rendered from these rows. */
+.factor-qualification{margin:15px 0 26px}
+.factor-qualification .table-wrap{overflow-x:auto}
+.factor-qualification table{min-width:1220px;font-size:12px}
+.factor-qualification th,.factor-qualification td{padding:10px 9px;line-height:1.6;vertical-align:middle}
+.factor-qualification th:last-child,.factor-qualification td:last-child{font-weight:600;white-space:nowrap}
+.factor-qualification .insights-warning{margin-top:14px;line-height:1.75}
