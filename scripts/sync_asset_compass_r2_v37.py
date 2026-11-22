@@ -16,7 +16,7 @@ from urllib.parse import urlsplit
 from scripts.backup_asset_compass_private_v37 import _checked_location, MAGIC
 
 BUCKET=re.compile(r"^[a-z0-9][a-z0-9.-]{2,62}$")
-KEY=re.compile(r"^ooglex-private/v37/[A-Za-z0-9][A-Za-z0-9._-]{0,120}\\.enc$")
+KEY=re.compile(r"^ooglex-private/v37/[A-Za-z0-9][A-Za-z0-9._-]{0,120}\.enc$")
 ACCOUNT=re.compile(r"^[a-f0-9]{32}$")
 
 
