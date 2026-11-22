@@ -100,3 +100,13 @@
 .treasury-distribution-bin>span:last-child{text-align:right;color:#d1e3f7}
 .treasury-distribution-card table{min-width:450px;font-size:12px;font-variant-numeric:tabular-nums}
 @media(max-width:780px){.treasury-distribution-kpis{grid-template-columns:1fr}.treasury-distribution-card{padding:11px}.treasury-distribution-bin{grid-template-columns:100px minmax(0,1fr) 32px}}
+
+/* V47: descriptive paired yield-change correlation only; no independent factor score. */
+.treasury-correlation-section{margin:23px 0;border-top:1px solid #34475d;padding-top:13px}
+.treasury-correlation-section>h3{font-size:17px}
+.treasury-correlation-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:13px 0}
+.treasury-correlation-kpi{display:flex;flex-direction:column;gap:7px;background:#192b3d;padding:12px;border:1px solid #344960;border-radius:9px;min-width:0}
+.treasury-correlation-kpi strong{font-size:18px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.treasury-correlation-rolls{padding:12px 14px;border:1px solid #394a60;border-radius:9px;color:#c4d9ed;font-size:13px}
+.treasury-correlation-rolls p{margin:8px 0}
+@media(max-width:780px){.treasury-correlation-kpis{grid-template-columns:1fr}}

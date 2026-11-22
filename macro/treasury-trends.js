@@ -341,6 +341,95 @@ const TREASURY_TRENDS=(function(){
   }
   panel.append(grid);
  }
+ // V47: historical co-movement of same-date observed yield *changes*.
+ // Nominal = real + breakeven; these are NOT independent predictors.
+ const CORRELATION_FIELDS=["us10y","us2y","real10y","breakeven10y","spread10y2y"];
+ function pairedYieldChanges(rows,first,second){
+  if(!Array.isArray(rows)||rows.length<3||
+    !CORRELATION_FIELDS.includes(first)||!CORRELATION_FIELDS.includes(second)||first===second)
+   return null;
+  const pairs=[];
+  let prior=null;
+  for(const row of rows){
+   if(!row||!validDay(row.date)||(prior&&row.date<=prior.date)||
+      !Number.isFinite(row[first])||!Number.isFinite(row[second]))return null;
+   if(prior)pairs.push({date:row.date,
+    x:Math.round((row[first]-prior[first])*10000)/100,
+    y:Math.round((row[second]-prior[second])*10000)/100});
+   prior=row;
+  }
+  return pairs;
+ }
+ function correlationStatistics(pairs){
+  if(!Array.isArray(pairs)||pairs.length<10||
+      pairs.some(p=>!p||!Number.isFinite(p.x)||!Number.isFinite(p.y)))return null;
+  const n=pairs.length;
+  let mx=0,my=0;
+  for(const p of pairs){mx+=p.x;my+=p.y}
+  mx/=n;my/=n;
+  let xx=0,yy=0,xy=0,concordant=0,discordant=0,neutral=0;
+  for(const p of pairs){
+   const dx=p.x-mx,dy=p.y-my;
+   xx+=dx*dx;yy+=dy*dy;xy+=dx*dy;
+   const sign=Math.sign(p.x)*Math.sign(p.y);
+   if(sign>0)concordant++;else if(sign<0)discordant++;else neutral++;
+  }
+  const correlation=xx>1e-12&&yy>1e-12?Math.max(-1,Math.min(1,xy/Math.sqrt(xx*yy))):null;
+  const directionalCount=concordant+discordant;
+  return {sampleCount:n,startDate:pairs[0].date,endDate:pairs[n-1].date,
+   correlation,concordant,discordant,neutral,directionalCount,
+   sameDirectionFraction:directionalCount?concordant/directionalCount:null};
+ }
+ function rollingCorrelations(pairs,window=20){
+  if(!Array.isArray(pairs)||![20,60].includes(window)||pairs.length<window)return [];
+  const out=[];
+  for(let i=window;i<=pairs.length;i++){
+   const subset=pairs.slice(i-window,i),stats=correlationStatistics(subset);
+   if(stats)out.push({date:subset[subset.length-1].date,correlation:stats.correlation});
+  }
+  return out;
+ }
+ function renderCorrelation(rows,key,compareKey){
+  const panel=$("treasury-correlation");
+  if(!panel)return;
+  panel.replaceChildren();
+  const note=el("p","仅研究同一来源、同一观测日期配对的收益率变化（bp），不计算不同日期数据的滞后预测。名义10年＝实际10年＋10年通胀补偿，10Y−2Y利差＝10年−2年名义收益率；这些指标存在代数依赖，相关性不能被当作独立证据、预测或投资评级。");
+  note.className="muted";panel.append(note);
+  if(!compareKey||compareKey===key||!Object.hasOwn(FIELDS,compareKey)){
+   panel.append(el("p","请选择不同的主曲线与对比曲线，才能计算跨指标相关性。"));return;
+  }
+  const pairs=pairedYieldChanges(rows,key,compareKey);
+  const stats=correlationStatistics(pairs);
+  if(!stats){
+   panel.append(el("p","同期有效变化样本不足10组，或指标变化方差为零；不能给出可靠的相关系数。"));return;
+  }
+  const grid=el("div");grid.className="treasury-correlation-kpis";
+  for(const [label,value] of [
+   ["Pearson 同日收益率变化相关系数",stats.correlation===null?"不可计算（零方差）":stats.correlation.toFixed(3)],
+   ["同期变化样本",stats.sampleCount+" 对"],
+   ["两者同方向变动",stats.concordant+" 次"],
+   ["两者反方向变动",stats.discordant+" 次"],
+   ["存在至少一方零变化",stats.neutral+" 次"],
+   ["非零变化同向比例",stats.sameDirectionFraction===null?"不可计算":(stats.sameDirectionFraction*100).toFixed(1)+"%"],
+   ["首个变化观测日",stats.startDate],["最新变化观测日",stats.endDate]
+  ]){
+   const card=el("div");card.className="treasury-correlation-kpi";
+   const l=el("span",label);l.className="label";card.append(l,el("strong",value));grid.append(card);
+  }
+  panel.append(grid);
+  const trend=el("div");trend.className="treasury-correlation-rolls";
+  for(const win of [20,60]){
+   const series=rollingCorrelations(pairs,win);
+   const valid=series.filter(point=>point.correlation!==null);
+   const latest=series.length?series[series.length-1]:null;
+   const line=el("p","滚动 "+win+" 组同日变化："+
+    (!latest||latest.correlation===null?"当前值不可计算（样本不足或零方差）":
+     latest.correlation.toFixed(3))+
+    "；共 "+valid.length+" 个具有非零方差的历史窗口。");
+   trend.append(line);
+  }
+  panel.append(trend);
+ }
  function plot(data,key,range,compareKey){
   const chart=$("treasury-trend-svg"),status=$("treasury-trend-status"),
    meta=$("treasury-trend-meta"),body=$("treasury-trend-table"),
@@ -367,6 +456,7 @@ const TREASURY_TRENDS=(function(){
    if(comparison)comparison.textContent="无可比较的实际观测日期。";
    renderPeriodStatistics(null,key,compareKey);
    renderRateDistribution(null,key,compareKey);
+   renderCorrelation(null,key,compareKey);
    return;
   }
   const width=720,height=300,left=62,right=20,top=24,bottom=45;
@@ -414,6 +504,7 @@ const TREASURY_TRENDS=(function(){
   renderDateComparison(all,key,compareKey,previousStart,previousEnd);
   renderPeriodStatistics(data,key,compareKey);
   renderRateDistribution(all,key,compareKey);
+  renderCorrelation(all,key,compareKey);
   const last=all[all.length-1],unit=FIELDS[key].unit;
   status.textContent=FIELDS[key].name+"：最新 "+last[key].toFixed(2)+" "+unit+
    (compareKey?"；"+FIELDS[compareKey].name+"："+last[compareKey].toFixed(2)+" "+FIELDS[compareKey].unit:"")+
@@ -477,6 +568,6 @@ const TREASURY_TRENDS=(function(){
   if(typeof window!=="undefined")window.ooglexTreasuryFocus=focusAsset;
   update();
  }
- return {validate,selectWindow,plot,init,focusAsset,compareDates,nearestPlotObservation,periodStatistics,renderPeriodStatistics,rateDistribution,renderRateDistribution,FIELDS,ASSET_CURVE_FOCUS};
+ return {validate,selectWindow,plot,init,focusAsset,compareDates,nearestPlotObservation,periodStatistics,renderPeriodStatistics,rateDistribution,renderRateDistribution,pairedYieldChanges,correlationStatistics,rollingCorrelations,renderCorrelation,FIELDS,ASSET_CURVE_FOCUS};
 })();
 if(document.body.dataset.page==="overview")void TREASURY_TRENDS.init();
