@@ -63,8 +63,6 @@ def calculate(history, snapshot, config, *, now=None,
     latest = observations[-1]
     stamp = date.fromisoformat(latest["date"])
     snapshot_date = date.fromisoformat(snapshot["observation_date"])
-    if stamp > snapshot_date:
-        raise ValueError("Historical file is ahead of official macro snapshot")
     age = (today-stamp).days
     # Out-of-date history is explicit unavailable research, never a current signal.
     fresh = 0 <= age <= max_stale_days
@@ -151,6 +149,7 @@ def calculate(history, snapshot, config, *, now=None,
         "source_history_sha256": canonical_hash(history),
         "source_snapshot_sha256": canonical_hash(snapshot),
         "source_snapshot_generated_at": snapshot["generated_at"],
+        "snapshot_date_precedes_history": snapshot_date < stamp,
         "model_config_sha256": canonical_hash(config),
         "observed_age_calendar_days": age,
         "latest_history_usable_for_current_research": fresh,
