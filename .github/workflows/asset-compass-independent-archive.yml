@@ -1,5 +1,12 @@
 name: Asset Compass Independent First-Seen Archive
 on:
+  # On workflow configuration changes merged to main, run a one-off controlled
+  # acceptance check. Ledger-only bot commits do not match this path, so no loop.
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/asset-compass-independent-archive.yml'
   # Runs after the official Mon-Fri UTC 23:40 macro pipeline.
   # A stale or failed upstream snapshot will fail the freshness gate.
   schedule:
