@@ -7,6 +7,8 @@ on:
       - main
     paths:
       - '.github/workflows/asset-compass-independent-archive.yml'
+      - 'scripts/archive_asset_compass_observations.py'
+      - 'scripts/check_asset_compass_history_readiness.py'
   # Runs after the official Mon-Fri UTC 23:40 macro pipeline.
   # A stale or failed upstream snapshot will fail the freshness gate.
   schedule:
