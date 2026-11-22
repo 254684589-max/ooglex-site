@@ -2,12 +2,12 @@
   "schema_version": 1,
   "report_type": "asset_compass_v54_scoring_readiness",
   "status": "research_only_no_authorized_scores",
-  "generated_at": "2026-11-22T18:22:03.509062Z",
-  "source_snapshot_generated_at": "2026-11-22T18:22:03.246635+00:00",
-  "source_observations_generated_at": "2026-11-22T18:22:03.351854+00:00",
+  "generated_at": "2026-11-22T18:38:40.712093Z",
+  "source_snapshot_generated_at": "2026-11-22T18:38:40.547484+00:00",
+  "source_observations_generated_at": "2026-11-22T18:38:40.615386+00:00",
   "input_sha256": {
-    "snapshot": "4c167021d9443ca82e1b78a0b8345ddec429159f24bf581b1df123e37ce73fcb",
-    "observations": "f4c95667c9a44273c8f38ae1146daa6c27a6980d3a1f17c356b81524178db353",
+    "snapshot": "45896548c7dbbcc7222d73b28c15a306f0301a08d0ad037ad59615e3942bf411",
+    "observations": "78539c7ecf15adb6694662d7a43387451918e43a521dcde9b04decc7aa2539a6",
     "history": "b864228c4f289dc409f7f4b86f9e662a5b82dee83125d7814c1641791034a040",
     "config": "a1d5a1a5f3dad358df8d770d639ef9d8eab78ba793360ad89355093daf4a4c4f"
   },

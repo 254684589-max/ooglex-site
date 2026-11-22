@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "observation_date": "2026-11-20",
-  "generated_at": "2026-11-22T18:22:03.246635+00:00",
+  "generated_at": "2026-11-22T18:38:40.547484+00:00",
   "status": "partial_data_no_full_score",
   "source": "US Department of the Treasury",
   "source_urls": [
@@ -156,7 +156,7 @@
       "core_cpi_yoy_available": false,
       "payroll_delta_available": true
     },
-    "retrieved_at": "2026-11-22T18:21:59.324936+00:00",
+    "retrieved_at": "2026-11-22T18:38:36.347813+00:00",
     "source_url": "https://api.bls.gov/publicAPI/v1/timeseries/data/",
     "note": "Preliminary data may be revised by BLS."
   },
@@ -172,7 +172,7 @@
       "release_timestamp_verified": false,
       "yoy_percent": 3.121
     },
-    "retrieved_at": "2026-11-22T18:21:59.756456+00:00"
+    "retrieved_at": "2026-11-22T18:38:36.806253+00:00"
   },
   "fed_h41": {
     "total_assets": {
@@ -185,10 +185,10 @@
       "source_series_id": "WALCL",
       "release_timestamp_verified": false
     },
-    "retrieved_at": "2026-11-22T18:21:59.756456+00:00"
+    "retrieved_at": "2026-11-22T18:38:36.806253+00:00"
   },
   "liquidity": {
-    "retrieved_at": "2026-11-22T18:22:01.603816+00:00",
+    "retrieved_at": "2026-11-22T18:38:39.284869+00:00",
     "reserves": {
       "observation_date": "2026-11-18",
       "value": 2979656.0,
@@ -234,7 +234,7 @@
     "official_forecast": false,
     "release_timestamp_verified": false,
     "unit": "percent",
-    "retrieved_at": "2026-11-22T18:22:03.194684+00:00"
+    "retrieved_at": "2026-11-22T18:38:40.512860+00:00"
   },
   "nyfed": {
     "observation_date": "2026-11-19",
@@ -246,7 +246,7 @@
   },
   "scoring": {
     "model": "ooglex-macro-v1-precalibration",
-    "generated_at": "2026-11-22T18:22:03.246588+00:00",
+    "generated_at": "2026-11-22T18:38:40.547474+00:00",
     "calibration_verified": false,
     "out_of_sample_verified": false
   }
