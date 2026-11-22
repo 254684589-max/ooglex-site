@@ -1,0 +1,41 @@
+name: Asset Compass Research V18-V22 Gates
+on:
+  pull_request:
+    paths:
+      - 'scripts/asset_compass_pit_standardize.py'
+      - 'scripts/asset_compass_vintage_quality.py'
+      - 'scripts/asset_compass_risk_credit_v20.py'
+      - 'scripts/asset_compass_asset_specific_v21.py'
+      - 'scripts/asset_compass_independence_v22.py'
+      - 'tests/test_asset_compass_*_v*.py'
+      - 'docs/ASSET_COMPASS_V1[8-9]_*'
+      - 'docs/ASSET_COMPASS_V2[0-2]_*'
+      - '.github/workflows/asset-compass-research-gates.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Syntax validation
+        run: python3 -m compileall -q scripts tests
+      - name: Run isolated V18-V22 research gates
+        run: python3 -m unittest discover -s tests -p 'test_asset_compass_*_v*.py' -v
+      - name: Verify production scoring remains blocked
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.score_macro_assets import score_one
+          config=json.loads(Path("macro/model-config.json").read_text())
+          for asset in config["weights"]:
+              result=score_one(asset, {}, config, {})
+              assert result["score"] is None
+              assert result["status"]=="unavailable"
+          print("No live scores or factor contribution unlocked")
+          PY
