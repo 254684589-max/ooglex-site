@@ -1,0 +1,29 @@
+name: SOFR V5 archive audit checks
+on:
+  pull_request:
+    paths:
+      - 'scripts/audit_swap_spreads_coverage.py'
+      - 'tests/test_swap_spreads_coverage.py'
+      - '.github/workflows/asset-compass-sofr-audit.yml'
+      - '.github/workflows/asset-compass-sofr-v5-check.yml'
+permissions:
+  contents: read
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Syntax check
+        run: python -m py_compile scripts/audit_swap_spreads_coverage.py
+      - name: Run reproducible tests
+        run: python -m unittest discover -s tests -p test_swap_spreads_coverage.py -v
+      - name: Run offline coverage audit
+        run: python scripts/audit_swap_spreads_coverage.py --today 2026-11-22 --output /tmp/sofr-audit.json
+      - name: Verify audit makes no changes
+        run: |
+          git diff --exit-code -- macro/swap-spreads-history.json
+          python -m json.tool /tmp/sofr-audit.json > /dev/null
