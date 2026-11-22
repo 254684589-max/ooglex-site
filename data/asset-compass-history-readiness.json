@@ -2,7 +2,7 @@
   "schema_version": 1,
   "report_type": "asset_compass_history_readiness",
   "status": "research_data_collection_only",
-  "archived_observations": 9,
+  "archived_observations": 14,
   "series": {
     "bea.core_pce": {
       "archived_versions": 0,
@@ -71,27 +71,29 @@
       "latest_recorded_at": null
     },
     "treasury.real10y": {
-      "archived_versions": 1,
+      "archived_versions": 2,
       "distinct_observation_periods": 1,
       "first_recorded_at": "2026-11-22T06:53:57.974839+00:00",
-      "latest_recorded_at": "2026-11-22T06:53:57.974839+00:00"
+      "latest_recorded_at": "2026-11-22T07:15:16.780714+00:00"
     },
     "treasury.us10y": {
-      "archived_versions": 1,
+      "archived_versions": 2,
       "distinct_observation_periods": 1,
       "first_recorded_at": "2026-11-22T06:53:57.974839+00:00",
-      "latest_recorded_at": "2026-11-22T06:53:57.974839+00:00"
+      "latest_recorded_at": "2026-11-22T07:15:16.780714+00:00"
     },
     "treasury.us2y": {
-      "archived_versions": 1,
+      "archived_versions": 2,
       "distinct_observation_periods": 1,
       "first_recorded_at": "2026-11-22T06:53:57.974839+00:00",
-      "latest_recorded_at": "2026-11-22T06:53:57.974839+00:00"
+      "latest_recorded_at": "2026-11-22T07:15:16.780714+00:00"
     }
   },
+  "treasury_source_year_mismatch_rows": 5,
   "validated_for_live_scoring": false,
   "eligible_for_point_in_time_backtest": false,
   "blockers": [
+    "treasury_source_year_mismatch_in_immutable_archive",
     "less_than_36_monthly_or_daily_periods_for_one_or_more_series",
     "official_historical_release_vintages_unverified",
     "asset_total_return_history_not_qualified",
