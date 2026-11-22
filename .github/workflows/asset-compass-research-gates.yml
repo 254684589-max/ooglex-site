@@ -45,7 +45,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install authenticated encryption dependency for V37 tests
-        run: python3 -m pip install cryptography==46.0.3
+        run: python3 -m pip install cryptography==46.0.4
       - name: Syntax validation
         run: python3 -m compileall -q scripts tests
       - name: Run isolated V18-V37 research gates
