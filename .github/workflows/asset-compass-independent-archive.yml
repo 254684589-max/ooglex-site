@@ -1,7 +1,7 @@
 name: Asset Compass Independent First-Seen Archive
 on:
-  # On workflow configuration changes merged to main, run a one-off controlled
-  # acceptance check. Ledger-only bot commits do not match this path, so no loop.
+  # Revalidate after workflow or provenance-extraction changes reach main.
+  # Ledger-only bot commits do not match these paths, preventing loops.
   push:
     branches:
       - main
