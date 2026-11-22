@@ -1,0 +1,22 @@
+name: SOFR V19 BlueGamma evaluation contract
+on:
+  pull_request:
+    paths:
+      - 'docs/data-rights/sofr-v19-bluegamma-evaluation.json'
+      - 'tests/test_sofr_v19_bluegamma_readiness.py'
+      - '.github/workflows/asset-compass-sofr-v19-check.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Offline vendor scope checks
+        run: python -m unittest discover -s tests -p test_sofr_v19_bluegamma_readiness.py -v
+      - name: Production history not modified
+        run: git diff --exit-code -- macro/swap-spreads-history.json
