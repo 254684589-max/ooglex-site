@@ -33,6 +33,7 @@ on:
       - 'apps/asset-tracker/history.json'
       - 'apps/asset-ranking/crypto.json'
       - 'scripts/score_macro_assets.py'
+      - 'scripts/build_asset_compass_factor_observations.py'
       - 'macro/model-config.json'
       - 'tests/test_macro_*.py'
       - '.github/workflows/macro-tests.yml'
@@ -87,6 +88,25 @@ jobs:
           assert r['licensing_review_required'] is True
           assert all(not a['eligible_for_return_backtest'] for a in r['assets'].values())
           print('Asset coverage verified:',{k:v['observation_count'] for k,v in r['assets'].items()})
+          PY
+      - name: Verify six-factor evidence fails closed against actual stored snapshot
+        run: |
+          python3 -m scripts.build_asset_compass_factor_observations --output /tmp/ooglex-factor-observations.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path("/tmp/ooglex-factor-observations.json").read_text())
+          assert report["schema_version"]==1
+          assert report["validated_for_live_scoring"] is False
+          assert report["factor_signals_calibrated"] is False
+          assert report["independent_factor_group_count_certified"] is False
+          assert report["groups"]["risk"]["observations"]==[]
+          assert report["groups"]["asset_specific"]["observations"]==[]
+          for group in report["groups"].values():
+              for observation in group["observations"]:
+                  assert observation["qualifies_as_model_factor_signal"] is False
+                  assert observation["validated_historical_release_time"] is False
+          print("Research-only six factor observation report verified")
           PY
       - name: Verify actual Treasury, BLS and NY Fed feeds
         run: |

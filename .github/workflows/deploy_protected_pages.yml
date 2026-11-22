@@ -95,6 +95,9 @@ jobs:
       - name: Build Finance Column 10 percent preview and full payload
         run: node scripts/pro/build_finance_column_pro.mjs
 
+      - name: Build Asset Compass auditable factor observation metadata
+        run: python3 -m scripts.build_asset_compass_factor_observations
+
       - name: Build Asset Compass archive readiness metadata
         run: python3 -m scripts.check_asset_compass_history_readiness
 
@@ -116,6 +119,15 @@ jobs:
               html=(root/name).read_text(encoding="utf-8")
               for target in ("index.html","overview.html","attribution.html","research.html"):
                   assert 'href="./'+target+'"' in html,(name,target)
+          import json
+          report_path=Path(".site/data/asset-compass-factor-observations.json")
+          assert report_path.is_file(),"factor observation audit missing from public build"
+          report=json.loads(report_path.read_text(encoding="utf-8"))
+          assert report["report_type"]=="asset_compass_factor_observations"
+          assert report["validated_for_live_scoring"] is False
+          assert report["factor_signals_calibrated"] is False
+          assert report["asset_specific_contributions_available"] is False
+          assert set(report["groups"])=={"rates","inflation","growth","liquidity","risk","asset_specific"}
           print("Asset Compass four-page public build verified")
           PY
 

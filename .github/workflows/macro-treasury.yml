@@ -31,6 +31,8 @@ jobs:
           python3 -m scripts.update_nyfed_recession
       - name: Evaluate guarded asset scoring model
         run: python3 scripts/score_macro_assets.py
+      - name: Build traceable research-only six-factor observations
+        run: python3 -m scripts.build_asset_compass_factor_observations
       - name: Archive first-seen macro observations (not original publication vintages)
         run: python3 -m scripts.archive_asset_compass_observations
       - name: Check historical archive readiness
@@ -39,7 +41,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/asset-scores.json data/asset-compass-observation-ledger.jsonl data/asset-compass-history-readiness.json
+          git add data/asset-scores.json data/asset-compass-observation-ledger.jsonl data/asset-compass-history-readiness.json data/asset-compass-factor-observations.json
           if ! git diff --cached --quiet; then
             git commit -m "data(macro): refresh official Treasury snapshot"
             git pull --rebase origin main
