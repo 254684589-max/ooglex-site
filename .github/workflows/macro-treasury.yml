@@ -45,6 +45,10 @@ jobs:
           python3 -m scripts.update_nyfed_recession
       - name: Evaluate guarded asset scoring model
         run: python3 scripts/score_macro_assets.py
+      - name: V31 verify source timestamps precede completed snapshot
+        run: |
+          python3 -m scripts.check_asset_compass_snapshot_timing_v31 \
+            --output /tmp/asset-compass-v31-timing.json --fail-on-issue
       - name: Build traceable research-only six-factor observations
         run: python3 -m scripts.build_asset_compass_factor_observations
       - name: Archive first-seen macro observations (not original publication vintages)

@@ -95,6 +95,9 @@ def main():
     # Neither a CI flag nor a synthetic test fixture may self-certify validation.
     # Real factor history & independent validation are not yet implemented.
     result=produce(data,config)
+    # End-of-aggregation timestamp: all source retrievals and the scoring gate
+    # have completed. This is NOT an official macro release timestamp.
+    result["generated_at"]=datetime.now(timezone.utc).isoformat()
     DATA.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("Scoring gate evaluated:",{a:s["blocked_by"] for a,s in result["assets"].items()})
 if __name__=="__main__":main()
