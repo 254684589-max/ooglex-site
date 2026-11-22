@@ -54,8 +54,13 @@ class MacroFourPagesTests(unittest.TestCase):
     def test_existing_indicator_elements_retained(self):
         html=(MACRO/"index.html").read_text(encoding="utf-8")
         for name in ('id="metrics"','id="labor"','id="nyfed-recession"',
-                     'id="fed-bea"','id="liquidity-panel"','id="assets"',
+                     'id="fed-bea"','id="liquidity-panel"',
                      'id="price-audit"','id="archive-total"'):
             self.assertIn(name,html)
+        # Assets moved to the V39+ overview; do not recreate a stale
+        # id="assets" panel on the indicators page to satisfy an old test.
+        overview=(MACRO/"overview.html").read_text(encoding="utf-8")
+        self.assertIn('id="asset-grid"',overview)
+        self.assertIn('id="scoring-readiness-v54"',overview)
 
 if __name__=="__main__":unittest.main()
