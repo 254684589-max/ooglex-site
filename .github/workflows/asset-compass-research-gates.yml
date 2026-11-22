@@ -13,6 +13,7 @@ on:
       - 'tests/smoke_asset_compass_trends_v42.cjs'
       - 'scripts/validate_asset_compass_treasury_trends_v42.py'
       - 'scripts/build_asset_compass_history_fred_v42.py'
+      - 'scripts/build_asset_compass_history_resilient_v42.py'
       - 'scripts/build_asset_compass_history.py'
       - '.github/workflows/asset-compass-treasury-trends-v42.yml'
       - 'macro/treasury-trends.js'
@@ -79,6 +80,7 @@ jobs:
           node tests/smoke_asset_compass_trends_v42.cjs
           python3 -m unittest discover -s tests -p 'test_asset_compass_treasury_trends_v42.py' -v
           python3 -m unittest discover -s tests -p 'test_asset_compass_h15_fred_v42.py' -v
+          python3 -m unittest discover -s tests -p 'test_asset_compass_treasury_priority_v42.py' -v
           python3 -m unittest discover -s tests -p 'test_macro_compass_frontend_v39.py' -v
       - name: Verify production scoring remains blocked
         run: |
