@@ -131,6 +131,9 @@ jobs:
           print("Asset Compass four-page public build verified")
           PY
 
+      - name: Validate V11 live acceptance regression tests
+        run: python3 -m unittest discover -s tests -p 'test_macro_production_v11.py' -v
+
       - name: V11 stamp exact deployed source and workflow identity
         shell: bash
         run: |
@@ -256,9 +259,6 @@ jobs:
         with:
           artifact_name: github-pages
 
-      - name: Verify live Global Cams V1.1
-        run: node scripts/verify_global_cams_live.mjs
-
       - name: V11 verify live macro console, data and exact deployment SHA
         id: macro_v11
         run: python3 -m scripts.verify_macro_live_v11 --base https://www.ooglex.com --sha "$GITHUB_SHA" --report /tmp/ooglex-v11-live-report.json
@@ -271,6 +271,9 @@ jobs:
           path: /tmp/ooglex-v11-live-report.json
           if-no-files-found: warn
 
+
+      - name: Verify live Global Cams V1.1
+        run: node scripts/verify_global_cams_live.mjs
 
       - name: Verify live TV V1.2
         run: |
