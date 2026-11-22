@@ -8,10 +8,14 @@ on:
       - 'scripts/asset_compass_asset_specific_v21.py'
       - 'scripts/asset_compass_independence_v22.py'
       - 'scripts/audit_asset_compass_real_history_v24.py'
+      - 'scripts/check_asset_compass_archive_continuity_v25.py'
       - 'tests/test_asset_compass_*_v*.py'
       - 'docs/ASSET_COMPASS_V1[8-9]_*'
       - 'docs/ASSET_COMPASS_V2[0-2]_*'
       - 'docs/ASSET_COMPASS_V24_*'
+      - 'docs/ASSET_COMPASS_V25_*'
+      - '.github/workflows/asset-compass-independent-archive.yml'
+      - '.github/workflows/macro-treasury.yml'
       - '.github/workflows/asset-compass-research-gates.yml'
   workflow_dispatch:
 permissions:
