@@ -1,0 +1,70 @@
+name: Asset Compass V52 Private Custody Recovery
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  private-offsite-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OOGLEX_BACKUP_PASSPHRASE: ${{ secrets.OOGLEX_BACKUP_PASSPHRASE }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      OOGLEX_R2_PRIVATE_BUCKET: ${{ secrets.OOGLEX_R2_PRIVATE_BUCKET }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install encrypted custody and S3 API dependencies
+        run: python3 -m pip install "cryptography==46.0.4" "boto3>=1.35,<2"
+      - name: Validate V52 custody and recovery safety tests offline
+        run: python3 -m unittest discover -s tests -p 'test_asset_compass_custody_v52.py' -v
+      - name: Require private R2 configuration before any historical capture
+        shell: bash
+        run: |
+          for name in OOGLEX_BACKUP_PASSPHRASE CLOUDFLARE_ACCOUNT_ID OOGLEX_R2_PRIVATE_BUCKET AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::Required private backup credential is not configured: $name"
+              exit 2
+            fi
+          done
+          if [ "${#OOGLEX_BACKUP_PASSPHRASE}" -lt 16 ]; then
+            echo "::error::V52 encrypted backup passphrase is too short"
+            exit 2
+          fi
+      - name: Download seven authentic BLS and BEA archive pages into temporary private workspace
+        run: |
+          mkdir -p /tmp/ooglex-v52/private /tmp/ooglex-v52/backups
+          chmod 700 /tmp/ooglex-v52/private /tmp/ooglex-v52/backups
+          python3 -m scripts.asset_compass_custody_v52 capture \
+            --private-dir /tmp/ooglex-v52/private --output /tmp/ooglex-v52/capture-report.json
+      - name: Encrypt, upload to private R2, download and independently restore all raw documents
+        run: |
+          python3 -m scripts.asset_compass_custody_v52 backup --offsite \
+            --private-dir /tmp/ooglex-v52/private --backup-dir /tmp/ooglex-v52/backups \
+            --output /tmp/ooglex-v52/backup-report.json
+      - name: Summarize verifiable encrypted private custody, never claim historical PIT
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+              f.write("### V52 private custody run (no raw HTML or secrets uploaded to Actions artifacts)\n")
+              for name in ("capture-report","backup-report"):
+                  p=Path("/tmp/ooglex-v52")/(name+".json")
+                  if p.exists():
+                      r=json.loads(p.read_text())
+                      assert r.get("historical_pit_series_approved")==0
+                      f.write(f"- {name}: "+("7/7 private original byte captures" if
+                          name=="capture-report" and r.get("retrieved_now")==7 else
+                          "encrypted backup + local restore + R2 restore VERIFIED" if
+                          name=="backup-report" and r.get("local_restore_verified") and r.get("offsite_restore_verified") else
+                          "PARTIAL or unverified; inspect run logs")+"\n")
+                  else:
+                      f.write(f"- {name}: MISSING; evidence not established\n")
+              f.write("No historical publication-time certification; no original-vintage score admission.\n")
+          PY
