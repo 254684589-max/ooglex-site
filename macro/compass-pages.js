@@ -235,6 +235,17 @@ function overview(data,readiness){
   inspect.setAttribute("aria-controls","asset-insights");
   inspect.addEventListener("click",()=>renderAssetSelection(id,rows));
   node.append(inspect);
+  // Separate user action connects the V41 asset explanation to V43 Treasury
+  // history. Do not silently infer future returns from the selected yields.
+  const trend=el("button","asset-trend-focus","查看关联利率趋势");
+  trend.type="button";
+  trend.dataset.trendAsset=id;
+  trend.addEventListener("click",()=>{
+   renderAssetSelection(id,rows);
+   if(typeof window!=="undefined"&&typeof window.ooglexTreasuryFocus==="function")
+    window.ooglexTreasuryFocus(id);
+  });
+  node.append(trend);
   const links=el("div","asset-links");
   const detail=el("a","","查看因子权重");detail.href="./attribution.html";
   const history=el("a","","查看回测准备度");history.href="./research.html";
