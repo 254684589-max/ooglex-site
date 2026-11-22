@@ -12,7 +12,24 @@ main{max-width:1120px;margin:auto;padding:30px 18px 70px}h1{font-size:clamp(26px
 <section class="grid" aria-label="利差摘要"><article class="card"><div class="minor">2年期利差</div><div class="big" id="k2">—</div><div class="minor">短端</div></article><article class="card"><div class="minor">10年期利差</div><div class="big" id="k10">—</div><div class="minor">基准期限</div></article><article class="card"><div class="minor">30年期利差</div><div class="big" id="k30">—</div><div class="minor">长端</div></article></section>
 <section class="card"><h2 style="margin-top:0">期限结构 · 横轴为年期</h2><svg id="term" class="chart" viewBox="0 0 900 340" role="img" aria-label="六期限SOFR互换利差横截面"></svg><p class="minor" id="term-desc"></p></section>
 <h2>历史时间序列</h2><section class="card"><label for="tenor-select">选择期限 <select id="tenor-select"><option value="2">2年</option><option value="3">3年</option><option value="5">5年</option><option value="7">7年</option><option value="10" selected>10年</option><option value="30">30年</option></select></label><svg id="history" class="chart" viewBox="0 0 900 320" role="img" aria-label="互换利差历史走势"></svg><p class="minor" id="history-desc">需要至少两个真实匹配日期才可形成时间序列。</p></section>
+<h2>历史分位数与利差变化</h2>
+<section class="card" aria-label="统计分析面板">
+  <label for="analytics-tenor">选择期限 <select id="analytics-tenor">
+    <option value="2">2年</option><option value="3">3年</option>
+    <option value="5">5年</option><option value="7">7年</option>
+    <option value="10" selected>10年</option><option value="30">30年</option>
+  </select></label>
+  <div class="grid" id="analytics-kpis" aria-live="polite">
+    <article class="card"><div class="minor">历史统计</div><div class="big">数据核验中</div></article>
+  </div>
+  <p class="minor" id="analytics-disclosure">仅对真实已归档交易日计算；样本不足时不发布分位数及变化。</p>
+  <div class="notice" id="analytics-status" role="status" aria-live="polite">等待数据校验</div>
+</section>
+<h2>2年与10年互换利差结构</h2>
+<section class="card" aria-label="相对期限结构"><p class="muted">10年互换利差 − 2年互换利差（bp）。仅比较同一观测日，不代表2s10s国债收益率曲线。</p><div class="big" id="analytics-2s10s">—</div><p class="minor" id="analytics-curve-change">样本不足时不计算环比。</p></section>
 <h2>各期限明细</h2><div class="card tablewrap"><table><thead><tr><th scope="col">期限</th><th scope="col">OIS互换(%)</th><th scope="col">美债(%)</th><th scope="col">利差(bp)</th><th scope="col">方法</th></tr></thead><tbody id="rows"></tbody></table></div>
 <h2>数据口径与风险</h2><section class="card"><p><strong>公式：</strong>Swap Spread (bp) = (SOFR OIS固定利率% − Treasury CMT收益率%) × 100。</p><p class="muted">互换端来自CheckMySwap基于DTCC公开成交报告建立的指示性SOFR OIS曲线，close-thin表示收盘窗口交易样本相对稀疏；国债端来自美国财政部每日平价收益率。不同市场的计息、支付和估值约定不完全一致，本页面计算的是研究参考利差，不是交易商可执行价差。发生数据缺失、日期不匹配或源站延迟时不会虚构新观测；历史只保留实际采集记录。</p><p class="minor">来源：<a target="_blank" rel="noopener noreferrer" href="https://www.checkmyswap.com/rates">CheckMySwap · 曲线与方法</a> · <a target="_blank" rel="noopener noreferrer" href="https://home.treasury.gov/treasury-daily-interest-rate-xml-feed">美国财政部官方利率XML数据</a></p></section>
 <footer>Ooglex · 日频延迟研究数据 · 非实时行情 · 不构成投资建议</footer></main>
+<script src="./swap-spreads-analytics.js" defer></script>
+<script src="./swap-spreads-analytics-panel.js" defer></script>
 <script src="./swap-spreads-history.js" defer></script></body></html>
