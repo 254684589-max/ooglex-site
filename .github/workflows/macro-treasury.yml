@@ -55,6 +55,8 @@ jobs:
         run: python3 -m scripts.archive_asset_compass_observations
       - name: Check historical archive readiness
         run: python3 -m scripts.check_asset_compass_history_readiness
+      - name: Build V54 six-asset source-to-signal scoring readiness report
+        run: python3 -m scripts.build_asset_compass_scoring_readiness_v54
       - name: Audit actual committed snapshot inputs and source gaps
         run: |
           python3 -m scripts.diagnose_asset_compass_sources_v28 \
@@ -74,7 +76,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/asset-scores.json data/asset-compass-observation-ledger.jsonl data/asset-compass-history-readiness.json data/asset-compass-factor-observations.json
+          git add data/asset-scores.json data/asset-compass-observation-ledger.jsonl data/asset-compass-history-readiness.json data/asset-compass-factor-observations.json data/asset-compass-scoring-readiness-v54.json
           if ! git diff --cached --quiet; then
             git commit -m "data(macro): refresh official Treasury snapshot"
             git pull --rebase origin main
@@ -87,8 +89,10 @@ jobs:
           git fetch origin main
           git show origin/main:data/asset-scores.json > /tmp/asset-compass-v30-remote-snapshot.json
           git show origin/main:data/asset-compass-observation-ledger.jsonl > /tmp/asset-compass-v30-remote-ledger.jsonl
+          git show origin/main:data/asset-compass-scoring-readiness-v54.json > /tmp/asset-compass-v54-remote-scoring-readiness.json
           cmp data/asset-scores.json /tmp/asset-compass-v30-remote-snapshot.json
           cmp data/asset-compass-observation-ledger.jsonl /tmp/asset-compass-v30-remote-ledger.jsonl
+          cmp data/asset-compass-scoring-readiness-v54.json /tmp/asset-compass-v54-remote-scoring-readiness.json
           python3 - <<'PY'
           import json, os
           from datetime import datetime, timezone
