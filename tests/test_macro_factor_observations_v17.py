@@ -65,7 +65,8 @@ class FactorObservationsTests(unittest.TestCase):
     def test_missing_is_not_neutral_or_imputed(self):
         s=sample();s["rates"]["real10y"]=None;s["rates"]["us10y"]=float("nan")
         r=collect(s,TODAY)
-        self.assertEqual(r["groups"]["rates"]["observations"][0]["id"],"effr")
+        self.assertNotIn("us10y",[x["id"] for x in r["groups"]["rates"]["observations"]])
+        self.assertNotIn("real10y",[x["id"] for x in r["groups"]["rates"]["observations"]])
         self.assertNotIn("breakeven10y",[x["id"] for x in r["groups"]["inflation"]["observations"]])
         self.assertTrue(r["no_missing_to_neutral_imputation"])
     def test_staleness_omits_observations(self):
