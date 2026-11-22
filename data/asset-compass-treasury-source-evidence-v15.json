@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_v15_treasury_raw_source_evidence",
+  "year": 2026,
+  "retrieved_at": "2026-11-22T17:45:06.883448+00:00",
+  "source": "U.S. Department of the Treasury",
+  "source_receipts": [
+    {
+      "type": "nominal",
+      "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_yield_curve&field_tdr_date_value=2026&page=&_format=csv",
+      "sha256": "3a48daf1c889672fedc4643d8c2fc0a46b99eadf4af5a8780b11996eaff11df4",
+      "bytes": 18173,
+      "observation_rows": 223,
+      "earliest_observation_date": "2026-01-02",
+      "latest_observation_date": "2026-11-20",
+      "retrieved_at": "2026-11-22T17:45:06.883448+00:00",
+      "http_date_unverified_publication_time": "Sun, 22 Nov 2026 17:45:26 GMT",
+      "http_last_modified_unverified_publication_time": null,
+      "etag_transport_metadata_only": null,
+      "original_release_time_verified": false
+    },
+    {
+      "type": "real",
+      "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?type=daily_treasury_real_yield_curve&field_tdr_date_value=2026&page=&_format=csv",
+      "sha256": "1282b12c4fc8d70c1a20fb9de974d6955ee83ac909ef590b34b5b939725929c9",
+      "bytes": 8070,
+      "observation_rows": 223,
+      "earliest_observation_date": "2026-01-02",
+      "latest_observation_date": "2026-11-20",
+      "retrieved_at": "2026-11-22T17:45:06.883448+00:00",
+      "http_date_unverified_publication_time": "Sun, 22 Nov 2026 17:45:44 GMT",
+      "http_last_modified_unverified_publication_time": null,
+      "etag_transport_metadata_only": null,
+      "original_release_time_verified": false
+    }
+  ],
+  "matched_three_series_observation_days": 223,
+  "latest_matched_observation": {
+    "date": "2026-11-20",
+    "treasury.us2y": 4.63,
+    "treasury.us10y": 4.92,
+    "treasury.real10y": 2.77
+  },
+  "historical_raw_source_content_sha256_captured": true,
+  "original_publication_time_verified": false,
+  "original_release_vintages_verified": false,
+  "historical_value_revision_chain_verified": false,
+  "historical_redistribution_rights_verified": false,
+  "eligible_for_point_in_time_backtest": false,
+  "validated_for_live_scoring": false,
+  "private_raw_csv_kept_out_of_public_site": true,
+  "note": "Downloaded official historical CSV responses are retrieval-time artifacts, not a certified reconstruction of previously available data. HTTP response headers do not establish first publication time."
+}
