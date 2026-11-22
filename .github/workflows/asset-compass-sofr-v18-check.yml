@@ -1,0 +1,25 @@
+name: SOFR V18 provider research eligibility
+on:
+  pull_request:
+    paths:
+      - 'docs/ASSET_COMPASS_SOFR_V18_ALTERNATIVE_SOURCES.md'
+      - 'docs/data-rights/sofr-v18-provider-matrix.json'
+      - 'tests/test_sofr_v18_provider_matrix.py'
+      - '.github/workflows/asset-compass-sofr-v18-check.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify non-substitution and no permission assumptions
+        run: python -m unittest discover -s tests -p test_sofr_v18_provider_matrix.py -v
+      - name: Confirm production history untouched
+        run: |
+          git diff --exit-code -- macro/swap-spreads-history.json
+          git diff --check
