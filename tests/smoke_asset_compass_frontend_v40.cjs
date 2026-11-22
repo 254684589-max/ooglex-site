@@ -5,7 +5,8 @@ const fs=require("node:fs"),path=require("node:path"),vm=require("node:vm"),asse
 const root=path.resolve(__dirname,".."),script=fs.readFileSync(path.join(root,"macro/compass-pages.js"),"utf8");
 const sample=JSON.parse(fs.readFileSync(path.join(root,"data/asset-scores.json"),"utf8"));
 class Element {
- constructor(tag="div"){this.tagName=tag;this.children=[];this.value="";this.textContent="";this.events={};this.className="";}
+ constructor(tag="div"){this.tagName=tag;this.children=[];this.value="";this.textContent="";this.events={};this.className="";this.dataset={};this.attributes={};}
+ setAttribute(name,value){this.attributes[name]=value}
  append(...children){this.children.push(...children)}
  replaceChildren(...children){this.children=children}
  addEventListener(name,fn){this.events[name]=fn}
