@@ -150,6 +150,7 @@ def calculate(history, snapshot, config, *, now=None,
         "source_retrieved_at": history["retrieved_at"],
         "source_history_sha256": canonical_hash(history),
         "source_snapshot_sha256": canonical_hash(snapshot),
+        "source_snapshot_generated_at": snapshot["generated_at"],
         "model_config_sha256": canonical_hash(config),
         "observed_age_calendar_days": age,
         "latest_history_usable_for_current_research": fresh,
@@ -184,10 +185,6 @@ def main():
     p.add_argument("--config", type=Path, default=CONFIG)
     p.add_argument("--output", type=Path, default=OUTPUT)
     a = p.parse_args()
-    if not a.output.resolve().is_relative_to(ROOT.resolve()):
-        # Manual research reports may be exported to /tmp, but default
-        # publication is a report with no raw subscription data.
-        pass
     with a.history.open(encoding="utf-8") as f: history = json.load(f)
     with a.snapshot.open(encoding="utf-8") as f: snapshot = json.load(f)
     with a.config.open(encoding="utf-8") as f: config = json.load(f)
