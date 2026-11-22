@@ -1,0 +1,73 @@
+name: Asset Compass Independent First-Seen Archive
+on:
+  # Runs after the official Mon-Fri UTC 23:40 macro pipeline.
+  # A stale or failed upstream snapshot will fail the freshness gate.
+  schedule:
+    - cron: '20 1 * * 2-6'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: asset-compass-ledger-main
+  cancel-in-progress: false
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Inspect latest committed macro snapshot and original ledger
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m scripts.check_asset_compass_archive_continuity_v25 --mode preflight
+          if test -f data/asset-compass-observation-ledger.jsonl; then
+            cp data/asset-compass-observation-ledger.jsonl /tmp/asset-compass-ledger-before.jsonl
+          else
+            : > /tmp/asset-compass-ledger-before.jsonl
+          fi
+      - name: Append real first-seen observations (never backdate)
+        run: python3 -m scripts.archive_asset_compass_observations
+      - name: Verify ledger was append-only and report remains research-only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m scripts.check_asset_compass_archive_continuity_v25 --mode postflight --before /tmp/asset-compass-ledger-before.jsonl
+          python3 -m scripts.check_asset_compass_history_readiness
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('data/asset-compass-history-readiness.json').read_text())
+          assert r['archived_observations'] > 0
+          assert r['validated_for_live_scoring'] is False
+          assert r['eligible_for_point_in_time_backtest'] is False
+          print('Validated archival metadata: no backtest or scoring authorization')
+          PY
+      - name: Persist ledger and confirm remote commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/asset-compass-observation-ledger.jsonl data/asset-compass-history-readiness.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data(macro): persist independently verified first-seen archive"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+          git fetch origin main
+          git show origin/main:data/asset-compass-observation-ledger.jsonl > /tmp/asset-compass-ledger-remote.jsonl
+          cmp data/asset-compass-observation-ledger.jsonl /tmp/asset-compass-ledger-remote.jsonl
+          echo "First-seen archive persisted on GitHub main"
+      - name: Show alert when archive cannot be verified
+        if: failure()
+        run: |
+          echo '::error::Asset Compass first-seen archive failed. Inspect upstream snapshot freshness, source ingestion, ledger integrity and GitHub push permissions.'
+          echo '### Ooglex first-seen archive failed' >> "$GITHUB_STEP_SUMMARY"
+          echo 'No artificial historical timestamps or data repair was performed.' >> "$GITHUB_STEP_SUMMARY"
