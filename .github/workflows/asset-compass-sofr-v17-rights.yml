@@ -1,0 +1,48 @@
+name: SOFR V17 historical publishing rights gate
+on:
+  pull_request:
+    paths:
+      - 'docs/data-rights/sofr-historical-publication.json'
+      - 'scripts/check_sofr_backfill_rights.py'
+      - 'tests/test_sofr_backfill_rights.py'
+      - '.github/workflows/asset-compass-sofr-v17-rights.yml'
+      - 'macro/swap-spreads-history.json'
+permissions:
+  contents: read
+jobs:
+  compliance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check schema and conditional release rules
+        run: |
+          python -m py_compile scripts/check_sofr_backfill_rights.py
+          python -m unittest discover -s tests -p test_sofr_backfill_rights.py -v
+      - name: Produce human-readable source-licensing status
+        run: python scripts/check_sofr_backfill_rights.py --output /tmp/sofr-v17-rights.json
+      - name: Detect any proposed changes to production history
+        shell: bash
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          git fetch origin "$GITHUB_BASE_REF" --depth=1
+          if git diff --quiet "origin/$GITHUB_BASE_REF"...HEAD -- macro/swap-spreads-history.json; then
+            echo "PR does not change historical market data."
+          else
+            echo "::error::This PR changes published SOFR history. Historical backfill requires independent manual rights review and an approved source-specific data PR."
+            python scripts/check_sofr_backfill_rights.py --require-clearance
+            exit 1
+          fi
+      - name: Upload licensing diagnostic (no source rates)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sofr-v17-rights-status
+          path: /tmp/sofr-v17-rights.json
+          retention-days: 14
+          if-no-files-found: ignore
