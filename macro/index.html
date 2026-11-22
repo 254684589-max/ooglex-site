@@ -17,7 +17,7 @@ footer{font-size:12px;color:#8796a8;margin-top:32px}
 <header><a href="/" class="brand" style="text-decoration:none">OOGLEX</a> <span class="muted"> / GLOBAL ASSET INTELLIGENCE</span><nav class="compass-nav" aria-label="全球资产罗盘页面导航"><a href="./overview.html">全球资产总览</a><a href="./index.html" aria-current="page">宏观指标中心</a><a href="./attribution.html">资产因子归因</a><a href="./research.html">回测与预警</a><a href="./swap-spreads.html">互换利差曲线</a><a href="./indicator-ratings.html">华尔街指标评级</a><a href="./operations.html">数据运营控制台</a></nav></header>
 <main>
 <p class="brand">ASSET COMPASS · MACRO MONITOR V1</p><h1>宏观指标中心</h1>
-<p>以官方宏观数据为基础，逐步构建黄金、美股、美债、美元、比特币与原油的因子评分。此页展示财政部、BLS、BEA、联储与纽约联储的最新可用观测。每条数据保留来源与日期；缺失和过期时不填造数字，未校准评分保持关闭。</p>
+<p>以官方宏观数据为基础，展示财政部、BLS、BEA、美联储与纽约联储的最新有效观测、单位及日期。完整40项指标的 A/B/C/D 分类和10项核心指标接入状态，请访问<a href="./indicator-ratings.html">华尔街指标目录</a>。本页不提供资产买卖评分。</p>
 <div class="note" id="status" role="status">正在读取最新数据……</div>
 <section class="grid" id="metrics" aria-label="美国国债核心指标"></section>
 <h2 style="margin-top:42px">美国通胀与就业（BLS）</h2><section class="grid" id="labor"></section><p id="cpi-note" class="muted" style="font-size:13px" aria-live="polite"></p><h2 style="margin-top:42px">纽约联储货币政策指标</h2><section class="grid" id="policy"></section><p class="muted" style="font-size:13px">纽约联储期限结构模型预测的是“12个月后的某个月份”的衰退概率，不是未来12个月任意时间发生衰退的累计概率。模型采用10年期与3个月期国债利差，而非10Y−2Y；该指标不是纽约联储官方预测。<a href="https://www.newyorkfed.org/research/capital_markets/ycfaq.html" target="_blank" rel="noopener">官方说明</a></p><section class="grid" id="nyfed-recession" aria-label="纽约联储12个月后衰退概率"></section>
@@ -27,28 +27,26 @@ footer{font-size:12px;color:#8796a8;margin-top:32px}
 <h2 style="margin-top:42px">美联储流动性组件</h2>
 <p class="muted">银行准备金、美国财政部一般账户（TGA）为H.4.1周平均口径；隔夜逆回购为纽约联储每日操作余额。单位和观测时点不同，不能直接加减作为可靠的净流动性或市场买卖信号。</p>
 <section class="grid" id="liquidity-panel" aria-label="银行准备金、TGA、隔夜逆回购"></section>
-<h2 style="margin-top:42px">资产评分看板</h2>
-<div class="grid" id="assets"></div>
-<h2 style="margin-top:42px">数据质量与回测准备度</h2>
+<div class="note"><strong>研究导航</strong>：<a href="./indicator-ratings.html">40项 A/B/C/D 指标目录</a> · <a href="./indicator-lab.html">历史曲线与研究档案</a> · <a href="./operations.html">数据质量与原始取证</a>。未验证的资产评分不在指标主页展示。</div>
+<h2 style="margin-top:42px">历史行情覆盖与数据质量</h2>
 <p class="muted">此处仅报告站内历史行情的覆盖情况，不是收益率回测或投资信号。比特币复用CoinGecko日度行情，其日期轴与其他Yahoo行情独立；期货、指数和ETF尚未统一总回报口径。</p>
 <div class="note" id="price-audit-status" role="status">正在检查历史行情覆盖率……</div>
 <section class="grid" id="price-audit" aria-label="六类资产历史行情覆盖率"></section>
 <h2 style="margin-top:42px">宏观历史归档进度</h2>
 <div class="card"><div class="label">真实观测归档 · 首次记录，不代表官方首次发布日期</div><div class="big neutral" id="archive-total" style="font-size:25px;margin:10px 0">读取中</div><p class="muted" id="archive-details">正在核对历史观测归档。</p></div>
-<h2 style="margin-top:42px">历史回测与模型验证</h2>
+<h2 style="margin-top:42px">研究模型状态（非指标评级）</h2>
 <div class="card"><div class="label">样本外验证状态</div><div class="big neutral" style="font-size:24px;margin:12px 0">尚未完成真实历史回测</div>
 <p>已建立可复现的研究工具：采用可用时间戳、21个交易日未来收益、按日期划分训练和测试区间，并排除训练集对测试期的未来信息依赖。数据未准备齐全时不发布胜率、模型收益率或经过校准的利多利空评分。</p>
 <p>回测需使用当时已经公开的宏观数据、合法取得的历史资产价格，并进一步进行多周期滚动样本外检验。评分不是上涨概率。</p>
 </div>
-<h2 style="margin-top:42px">计算方法与数据完整性</h2>
+<h2 style="margin-top:42px">研究说明与数据完整性</h2>
 <div class="card"><p>完整模型计划采用六大因子：利率、通胀、增长、流动性、金融风险和资产自身资金/估值。各资产权重不同，因子归一化后加权计算。<strong>尚未具备完整独立因子覆盖、校准和回测时，不发布完整综合评分或“利多/利空”结论</strong>。</p>
 <p>当前展示的是美国财政部、BLS与纽约联储的观测值与可用性状态；新增足够独立数据源并经过历史校准后，才会开启完整评分。10年期通胀补偿＝10年名义国债收益率－10年TIPS实际收益率；该数值不是纯粹的通胀预测。</p>
 <p>数据源：<a href="https://home.treasury.gov/treasury-daily-interest-rate-xml-feed" target="_blank" rel="noopener">美国财政部</a>、<a href="https://www.bls.gov/developers/" target="_blank" rel="noopener">美国劳工统计局</a>、<a href="https://www.newyorkfed.org/markets/reference-rates/effr" target="_blank" rel="noopener">纽约联储</a>。数据源按交易日或官方发布日更新；采集任务延迟或失败时显示缺失/过期提示；页面不宣称实时交易行情。</p></div>
 <footer>Ooglex Quant V1 · 公开研究预览 · 研究用途 · 非投资建议 · 不把分数解释成上涨概率</footer>
 </main>
 <script>
-const root=document.querySelector("#metrics"),assets=document.querySelector("#assets"),status=document.querySelector("#status"),labor=document.querySelector("#labor"),policy=document.querySelector("#policy"),cpiNote=document.querySelector("#cpi-note");
-const names=["黄金","美股","美国长期国债","美元","比特币","原油"];
+const root=document.querySelector("#metrics"),status=document.querySelector("#status"),labor=document.querySelector("#labor"),policy=document.querySelector("#policy"),cpiNote=document.querySelector("#cpi-note");
 const fmt=v=>typeof v==="number"&&Number.isFinite(v)?v.toFixed(2)+"%":"暂无数据";
 const safe=v=>typeof v==="number"&&Number.isFinite(v)?v:null;
 function show(data){
@@ -71,8 +69,7 @@ function show(data){
  const effr=effrFresh?safe(ny.effr_percent):null;
  policy.innerHTML='<article class="card"><div class="label">有效联邦基金利率 EFFR</div><div class="big">'+fmt(effr)+'</div><div class="label">纽约联储 · '+(ny.observation_date||"无日期")+'</div></article>';
  const usable=items.filter(([,v])=>safe(v)!==null).length;
- status.textContent=usable?"最新观测日："+data.observation_date+" ｜ 读取 "+usable+"/5 项国债指标；BLS数据 "+(["cpi","core_cpi","unemployment","payroll"].every(key=>recent(b[key]))?"已接入":"缺失或过期")+"；纽约联储EFFR "+(effr===null?"待验证":"已接入")+"。综合评分暂未启用。":"暂无经过验证的财政部观测数据，评分已安全停用。";
- assets.innerHTML=names.map(n=>'<article class="card"><div class="label">'+n+'</div><div class="big neutral">— / 100</div><div class="bar"><div class="fill"></div></div><div class="label">数据不足 · 暂不判定利多/利空</div></article>').join("");
+ status.textContent=usable?"最新观测日："+data.observation_date+" ｜ 读取 "+usable+"/5 项国债指标；BLS数据 "+(["cpi","core_cpi","unemployment","payroll"].every(key=>recent(b[key]))?"已接入":"缺失或过期")+"；纽约联储EFFR "+(effr===null?"待验证":"已接入")+"。所有值为指标观测，非投资评分。":"暂无经过验证的财政部观测数据，未显示数值。";
 }
 function showFedBea(data){
  const p=(data.bea||{}).core_pce||{},h=(data.fed_h41||{}).total_assets||{};
