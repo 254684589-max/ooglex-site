@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_v51_release_capture_candidates",
+  "status": "research_only",
+  "as_of": "2026-11-23",
+  "source_type": "official_archived_release_pages",
+  "publication_candidate_date_not_pit_time": true,
+  "known_not_published": [
+    {
+      "publisher": "BLS",
+      "release_kind": "cpi",
+      "observation_period": "2025-10",
+      "reason": "2025 federal appropriations lapse",
+      "verification_url": "https://www.bls.gov/bls/news-release/cpi.htm"
+    },
+    {
+      "publisher": "BLS",
+      "release_kind": "employment",
+      "observation_period": "2025-10",
+      "reason": "2025 federal appropriations lapse",
+      "verification_url": "https://www.bls.gov/bls/news-release/empsit.htm"
+    }
+  ],
+  "entries": [
+    {
+      "artifact_id": "bls-cpi-2024-12-release",
+      "publisher": "BLS",
+      "release_kind": "cpi",
+      "observation_period": "2024-12",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_01152025.htm",
+      "expected_document_subject": "Consumer Price Index",
+      "scheduled_release_date_candidate_unverified": "2025-01-15",
+      "covered_source_series": [
+        "bls.cpi",
+        "bls.core_cpi"
+      ],
+      "capture_status": "not_run",
+      "release_timestamp_independently_verified": false,
+      "original_bytes_available_at_candidate_time_verified": false,
+      "revision_lineage_complete": false,
+      "scoring_eligible": false
+    },
+    {
+      "artifact_id": "bls-cpi-2025-01-release",
+      "publisher": "BLS",
+      "release_kind": "cpi",
+      "observation_period": "2025-01",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_02122025.htm",
+      "expected_document_subject": "Consumer Price Index",
+      "scheduled_release_date_candidate_unverified": "2025-02-12",
+      "covered_source_series": [
+        "bls.cpi",
+        "bls.core_cpi"
+      ],
+      "capture_status": "not_run",
+      "release_timestamp_independently_verified": false,
+      "original_bytes_available_at_candidate_time_verified": false,
+      "revision_lineage_complete": false,
+      "scoring_eligible": false
+    },
+    {
+      "artifact_id": "bls-cpi-2025-02-release",
+      "publisher": "BLS",
+      "release_kind": "cpi",
+      "observation_period": "2025-02",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_03122025.htm",
+      "expected_document_subject": "Consumer Price Index",
+      "scheduled_release_date_candidate_unverified": "2025-03-12",
+      "covered_source_series": [
+        "bls.cpi",
+        "bls.core_cpi"
+      ],
+      "capture_status": "not_run",
+      "release_timestamp_independently_verified": false,
+      "original_bytes_available_at_candidate_time_verified": false,
+      "revision_lineage_complete": false,
+      "scoring_eligible": false
+    },
+    {
+      "artifact_id": "bls-empsit-2025-01-release",
+      "publisher": "BLS",
+      "release_kind": "employment",
+      "observation_period": "2025-01",
+      "source_url": "https://www.bls.gov/news.release/archives/empsit_02072025.htm",
+      "expected_document_subject": "Employment Situation",
+      "scheduled_release_date_candidate_unverified": "2025-02-07",
+      "covered_source_series": [
+        "bls.unemployment",
+        "bls.payroll"
+      ],
+      "capture_status": "not_run",
+      "release_timestamp_independently_verified": false,
+      "original_bytes_available_at_candidate_time_verified": false,
+      "revision_lineage_complete": false,
+      "scoring_eligible": false
+    },
+    {
+      "artifact_id": "bls-empsit-2025-02-release",
+      "publisher": "BLS",
+      "release_kind": "employment",
+      "observation_period": "2025-02",
+      "source_url": "https://www.bls.gov/news.release/archives/empsit_03072025.htm",
+      "expected_document_subject": "Employment Situation",
+      "scheduled_release_date_candidate_unverified": "2025-03-07",
+      "covered_source_series": [
+        "bls.unemployment",
+        "bls.payroll"
+      ],
+      "capture_status": "not_run",
+      "release_timestamp_independently_verified": false,
+      "original_bytes_available_at_candidate_time_verified": false,
+      "revision_lineage_complete": false,
+      "scoring_eligible": false
+    },
+    {
+      "artifact_id": "bea-pio-2025-08-release",
+      "publisher": "BEA",
+      "release_kind": "pio",
+      "observation_period": "2025-08",
+      "source_url": "https://www.bea.gov/news/2025/personal-income-and-outlays-august-2025",
+      "expected_document_subject": "Personal Income and Outlays",
+      "scheduled_release_date_candidate_unverified": "2025-09-26",
+      "covered_source_series": [
+        "bea.core_pce"
+      ],
+      "capture_status": "not_run",
+      "release_timestamp_independently_verified": false,
+      "original_bytes_available_at_candidate_time_verified": false,
+      "revision_lineage_complete": false,
+      "scoring_eligible": false
+    },
+    {
+      "artifact_id": "bea-pio-2025-09-release",
+      "publisher": "BEA",
+      "release_kind": "pio",
+      "observation_period": "2025-09",
+      "source_url": "https://www.bea.gov/news/2025/personal-income-and-outlays-september-2025",
+      "expected_document_subject": "Personal Income and Outlays",
+      "scheduled_release_date_candidate_unverified": "2025-12-05",
+      "covered_source_series": [
+        "bea.core_pce"
+      ],
+      "capture_status": "not_run",
+      "release_timestamp_independently_verified": false,
+      "original_bytes_available_at_candidate_time_verified": false,
+      "revision_lineage_complete": false,
+      "scoring_eligible": false
+    }
+  ]
+}
