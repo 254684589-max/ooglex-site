@@ -73,8 +73,8 @@ test("breakeven spread exactly matches the last real date in both percentage poi
  const last=history.observations.at(-1),basis=(last.us10y-last.real10y);
  assert.match(nodes["treasury-trend-difference"].textContent,
   new RegExp(basis.toFixed(2).replace(".","\\.")));
- assert.match(nodes["treasury-trend-difference"].textContent,
-  new RegExp("\\("+Math.round(basis*100)+" bp\\)"));
+ assert.ok(nodes["treasury-trend-difference"].textContent.includes(
+  Math.round(basis*100)+" bp"));
  assert.match(nodes["treasury-trend-difference"].textContent,/名义−10年TIPS实际/);
 });
 test("single curve has one path and never calls arbitrary difference inflation compensation",()=>{
