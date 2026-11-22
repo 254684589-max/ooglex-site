@@ -38,6 +38,13 @@ def score_one(asset,signals,config,validation=None):
     validate_config(config)
     if asset not in config["weights"]:raise ValueError("Unknown asset")
     validation=validation or {}
+    # V54: explicit per-asset validation contract consumed by the website.
+    # Unit-test booleans alone are not publisher PIT proof; production main()
+    # supplies no approval and remains blocked until externally audited.
+    validation_state={
+        "historical_calibration_passed":validation.get("historical_calibration_passed") is True,
+        "out_of_sample_passed":validation.get("out_of_sample_passed") is True,
+    }
     weights=dict(zip(config["factor_order"],config["weights"][asset]))
     accepted={}
     for name in weights:
@@ -59,7 +66,8 @@ def score_one(asset,signals,config,validation=None):
         reasons.append("out_of_sample_validation_not_passed")
     if reasons:
         return {"score":None,"label":None,"status":"unavailable","coverage_pct":round(coverage,2),
-                "covered_factors":sorted(accepted),"blocked_by":reasons}
+                "covered_factors":sorted(accepted),"blocked_by":reasons,
+                "validation":validation_state}
     raw=50+0.5*sum(weights[name]*accepted[name] for name in weights)
     score=round(min(100,max(0,raw)),2)
     tiers=config["tiers"]
@@ -72,6 +80,7 @@ def score_one(asset,signals,config,validation=None):
     if label is None:raise ValueError("Tier configuration does not cover score")
     return {"score":score,"label":label,"status":"calibrated","coverage_pct":round(coverage,2),
             "covered_factors":sorted(accepted),"blocked_by":[],
+            "validation":validation_state,
             "contributions":{name:round(weights[name]*accepted[name]*0.5,3) for name in accepted}}
 
 def produce(data,config,signals_by_asset=None,validation=None):
