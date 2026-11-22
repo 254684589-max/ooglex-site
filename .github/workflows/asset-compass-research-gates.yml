@@ -1,4 +1,4 @@
-name: Asset Compass Research V18-V49 Gates
+name: Asset Compass Research V18-V50 Gates
 on:
   pull_request:
     paths:
@@ -18,6 +18,10 @@ on:
       - 'tests/smoke_asset_compass_correlation_v47.cjs'
       - 'tests/smoke_asset_compass_independence_v48.cjs'
       - 'tests/smoke_asset_compass_qualification_v49.cjs'
+      - 'tests/smoke_asset_compass_evidence_v50.cjs'
+      - 'macro/asset-compass-evidence-v50.js'
+      - 'data/asset-compass-pit-evidence-v50.json'
+      - 'docs/ASSET_COMPASS_V50_*'
       - 'docs/ASSET_COMPASS_V49_*'
       - 'docs/ASSET_COMPASS_V48_*'
       - 'docs/ASSET_COMPASS_V47_*'
@@ -83,9 +87,9 @@ jobs:
         run: python3 -m pip install cryptography==46.0.4
       - name: Syntax validation
         run: python3 -m compileall -q scripts tests
-      - name: Run isolated V18-V49 research gates
+      - name: Run isolated V18-V50 research gates
         run: python3 -m unittest discover -s tests -p 'test_asset_compass_*_v*.py' -v
-      - name: V39-V49 verify factor qualification evidence and closed scoring gates
+      - name: V39-V50 verify factor qualification evidence and closed scoring gates
         run: |
           node --check macro/compass-pages.js
           node tests/smoke_asset_compass_frontend_v40.cjs
@@ -99,6 +103,8 @@ jobs:
           node tests/smoke_asset_compass_correlation_v47.cjs
           node tests/smoke_asset_compass_independence_v48.cjs
           node tests/smoke_asset_compass_qualification_v49.cjs
+          node --check macro/asset-compass-evidence-v50.js
+          node tests/smoke_asset_compass_evidence_v50.cjs
           python3 -m unittest discover -s tests -p 'test_asset_compass_treasury_trends_v42.py' -v
           python3 -m unittest discover -s tests -p 'test_asset_compass_h15_fred_v42.py' -v
           python3 -m unittest discover -s tests -p 'test_asset_compass_treasury_priority_v42.py' -v
