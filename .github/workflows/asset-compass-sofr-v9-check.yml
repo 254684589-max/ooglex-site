@@ -1,0 +1,29 @@
+name: SOFR V9 ingestion evidence tests
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/asset-compass-sofr-spreads.yml'
+      - '.github/workflows/asset-compass-sofr-v9-check.yml'
+      - 'scripts/report_swap_spread_ingest.py'
+      - 'tests/test_swap_spreads_ingest_report.py'
+permissions:
+  contents: read
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate scripts
+        run: python -m py_compile scripts/report_swap_spread_ingest.py scripts/update_swap_spreads.py
+      - name: Verify ingestion and reporting behavior
+        run: |
+          python -m unittest discover -s tests -p test_swap_spreads_history.py -v
+          python -m unittest discover -s tests -p test_swap_spreads_ingest_report.py -v
+      - name: Confirm data unchanged
+        run: |
+          git diff --exit-code -- macro/swap-spreads-history.json
+          git diff --check
