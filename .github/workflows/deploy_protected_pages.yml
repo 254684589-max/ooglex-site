@@ -155,6 +155,11 @@ jobs:
           print("V11 deployment identity:",payload["source_commit"],payload["workflow_run_id"])
           PYV11
 
+      - name: V12 build exact file-digest evidence
+        run: |
+          python3 -m unittest discover -s tests -p 'test_macro_production_v12.py' -v
+          python3 -m scripts.verify_macro_live_v12 --root .site --sha "$GITHUB_SHA"
+
       - name: V10 verify public macro pages, audit payloads and model gates
         run: |
           set -euo pipefail
@@ -271,6 +276,18 @@ jobs:
           path: /tmp/ooglex-v11-live-report.json
           if-no-files-found: warn
 
+
+      - name: V12 verify published macro file hashes
+        id: macro_v12
+        run: python3 -m scripts.verify_macro_live_v12 --base https://www.ooglex.com --sha "$GITHUB_SHA" --output /tmp/ooglex-v12-live-report.json
+
+      - name: Upload classified V12 content-drift evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: macro-v12-content-hash-evidence
+          path: /tmp/ooglex-v12-live-report.json
+          if-no-files-found: warn
 
       - name: Verify live Global Cams V1.1
         run: node scripts/verify_global_cams_live.mjs
