@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 
@@ -193,6 +194,25 @@ jobs:
               assert all(v["score"] is None for v in d["assets"].values())
               print("V56 two official research series in public build; 0 approved 0–100 scores")
           PYV56
+      - name: V57 validate source-provenance artifact when actual data exists
+        run: |
+          python3 - <<'PYV57'
+          import json
+          from pathlib import Path
+          p=Path(".site/data/asset-compass-asset-specific-v57.json")
+          if not p.exists():
+              print("V57 primary source report not captured yet: website shows unavailable instead of invented rows")
+          else:
+              r=json.loads(p.read_text(encoding="utf-8"))
+              assert r["report_type"]=="asset_compass_v57_authentic_asset_specific_source_research"
+              assert set(r["asset_specific_source_available_assets"])=={"gold","oil","us_long_bonds"}
+              assert r["first_publication_vintages_certified"]==0
+              assert r["independent_model_factor_qualified_count"]==0
+              assert r["approved_asset_scores"]==0
+              assert r["validated_for_live_scoring"] is False
+              assert all(a["score"] is None for a in r["assets"].values())
+              print("V57 official-source proof in static build, zero live scoring enabled")
+          PYV57
       - name: Validate V11 live acceptance regression tests
         run: python3 -m unittest discover -s tests -p 'test_macro_production_v11.py' -v
 
@@ -357,6 +377,33 @@ jobs:
       - name: Checkout deployment verifier
         uses: actions/checkout@v6
 
+      # GitHub's automatically generated "pages build and deployment"
+      # belongs to another workflow. Its deployment is NOT controlled by our
+      # own workflow's concurrency group and has caused actual HTTP 400 races.
+      # Wait for it to finish; never deliberately publish before a competing
+      # branch-mode Pages deployment or mark a collision as success.
+      - name: V57 serialize with GitHub's competing native Pages publishing
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 35); do
+            # actions:read is declared above. If the API cannot be queried,
+            # fail safe rather than skipping deployment conflict detection.
+            count="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs?per_page=70" \
+              --jq '[.workflow_runs[] | select(.name == "pages build and deployment" and (.status == "queued" or .status == "in_progress" or .status == "pending" or .status == "waiting"))] | length')"
+            if [ "$count" = "0" ]; then
+              echo "No competing native GitHub Pages deployment is active."
+              break
+            fi
+            echo "Competing native Pages workflow active: $count (attempt $attempt/35)."
+            if [ "$attempt" = "35" ]; then
+              echo "::error::Other Pages publisher did not settle. Do not attempt concurrent protected deployment."
+              exit 1
+            fi
+            sleep 7
+          done
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
