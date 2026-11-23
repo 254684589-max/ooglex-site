@@ -7,6 +7,8 @@ on:
       - main
     paths:
       - '.github/workflows/macro-treasury.yml'
+      - 'scripts/update_macro_bc_official_v1.py'
+      - 'tests/test_macro_bc_official_v1.py'
   schedule:
     - cron: '40 23 * * 1-5'
   workflow_dispatch:
