@@ -16,11 +16,14 @@ class V55RateResearchTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.history = json.loads((ROOT / "data/asset-compass-treasury-history.json").read_text())
+        # Test against the timestamp of the ACTUAL refreshed source, not a stale frozen clock.
+        # Production still rejects future retrieval timestamps via validate().
+        cls.audit_now = max(NOW, datetime.fromisoformat(cls.history["retrieved_at"].replace("Z", "+00:00")) + timedelta(seconds=1))
         cls.snapshot = json.loads((ROOT / "data/asset-scores.json").read_text())
         cls.config = json.loads((ROOT / "macro/model-config.json").read_text())
-    def build(self, history=None, snapshot=None, config=None, *, now=NOW, **opts):
+    def build(self, history=None, snapshot=None, config=None, *, now=None, **opts):
         return calculate(history or self.history, snapshot or self.snapshot,
-                         config or self.config, now=now, **opts)
+                         config or self.config, now=now or self.audit_now, **opts)
 
     def test_real_1472_treasury_rows_yield_numerical_rate_changes(self):
         r = self.build()
@@ -108,7 +111,7 @@ class V55RateResearchTests(unittest.TestCase):
             self.build(now=datetime(2025,1,1,tzinfo=timezone.utc))
 
     def test_stale_history_invalidates_both_hypotheses_no_approval(self):
-        r=self.build(now=NOW+timedelta(days=18))
+        r=self.build(now=self.audit_now+timedelta(days=18))
         self.assertFalse(r["latest_history_usable_for_current_research"])
         for value in r["assets"].values():
             self.assertIsNone(value["rate_pressure_candidate"])
