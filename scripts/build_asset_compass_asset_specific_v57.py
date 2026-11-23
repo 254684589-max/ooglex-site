@@ -24,7 +24,7 @@ OUT=ROOT/"data/asset-compass-asset-specific-v57.json"
 MODEL=ROOT/"macro/model-config.json"
 V56=ROOT/"data/asset-compass-new-sources-v56.json"
 CFTC_ENDPOINT="https://publicreporting.cftc.gov/resource/72hh-3qpy.json"
-FISCAL_ENDPOINT="https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/auctions_query"
+FISCAL_ENDPOINT="https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/treasury_securities_auctions_v2"
 CFTC_CODE="088691"
 ASSETS=("gold","us_equities","us_long_bonds","usd","bitcoin","oil")
 
@@ -35,9 +35,9 @@ CFTC_ARGS={
     "$limit":"350",
 }
 FISCAL_ARGS={
-    "fields":"auction_date,security_type,security_term,bid_to_cover_ratio,cusip",
-    "filter":"security_type:eq:Bond,auction_date:gte:2018-01-01",
-    "sort":"-auction_date",
+    "fields":"comp_auction_close_date,security_type,security_term,bid_to_cover_ratio,cusip",
+    "filter":"security_type:eq:Bond,comp_auction_close_date:gte:2018-01-01",
+    "sort":"-comp_auction_close_date",
     "page[size]":"250",
 }
 
@@ -143,7 +143,7 @@ def parse_treasury(raw, *, now=None):
             continue
         if r.get("bid_to_cover_ratio") in (None,"","null"):
             continue # a not-yet-auctioned official announcement, not a zero
-        day=_day(r.get("auction_date"),"30Y auction_date")
+        day=_day(r.get("comp_auction_close_date") or r.get("auction_date"),"30Y auction close date")
         if day>now.date():
             raise ValueError("Treasury auction result dated in future")
         cusip=str(r.get("cusip") or "")
