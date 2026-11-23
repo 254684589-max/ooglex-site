@@ -1,0 +1,111 @@
+name: Asset Compass V60 Return and PIT Research Audit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/audit_asset_compass_returns_v60.py'
+      - 'tests/test_asset_compass_returns_v60.py'
+      - '.github/workflows/asset-compass-returns-v60.yml'
+      - 'docs/ASSET_COMPASS_V60_RETURNS_PIT.md'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/audit_asset_compass_returns_v60.py'
+      - 'tests/test_asset_compass_returns_v60.py'
+      - '.github/workflows/asset-compass-returns-v60.yml'
+  schedule:
+    - cron: '50 17 * * 1-5'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: asset-compass-ledger-main
+  cancel-in-progress: false
+
+jobs:
+  audited-return-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: V60 test real historic prices, NAV cashflow math and PIT rejection
+        run: |
+          python3 -m py_compile scripts/audit_asset_compass_returns_v60.py
+          python3 -m unittest discover -s tests -p 'test_asset_compass_returns_v60.py' -v
+          python3 -m unittest discover -s tests -p 'test_macro_returns.py' -v
+          python3 -m unittest discover -s tests -p 'test_macro_price_audit.py' -v
+      - name: V60 prohibit promotion of historical price changes to live scores
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          v=json.loads(Path("data/asset-compass-model-gaps-v59.json").read_text())
+          assert v["asset_specific_observed_count"]==6
+          assert v["official_0_to_100_scores_published"]==0
+          assert v["audited_asset_total_return_count"]==0
+          assert v["oos_validated_assets"]==0
+          assert all(row["official_score"] is None for row in v["research_assets"].values())
+          print("V59 six authentic observations remain research-only, no score inference")
+          PY
+
+  persist-audit-main:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: audited-return-gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit actual Yahoo/CoinGecko archived coverage and official PIT blockers
+        run: python3 -m scripts.audit_asset_compass_returns_v60
+      - name: Guarantee no score/return certification, distributions invented or licensed levels copied
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path("data/asset-compass-return-pit-gaps-v60.json").read_text())
+          assert r["report_type"]=="asset_compass_v60_real_price_vs_investable_total_return_gap_audit"
+          assert set(r["assets"])=={"gold","us_equities","us_long_bonds","usd","bitcoin","oil"}
+          assert r["market_price_observed_assets"]==6
+          assert r["investable_total_return_certified_assets"]==0
+          assert r["independent_original_release_vintages_certified"]==0
+          assert r["oos_validated_assets"]==0
+          assert r["official_0_to_100_asset_scores_published"]==0
+          assert r["qualified_for_live_scoring"] is False
+          assert r["licensed_to_redistribute_research_source_prices"] is False
+          assert all(asset["score"] is None for asset in r["assets"].values())
+          assert all("returns" not in asset and "prices" not in asset for asset in r["assets"].values())
+          assert r["archived_treasury_source_year_mismatch_rows"]>=0
+          print("V60 genuine 6/6 price source coverage only, 0/6 licensed total returns and PIT proof")
+          PY
+      - name: Persist safe metadata with stable SHA and non-regressive main updates
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/asset-compass-return-pit-gaps-v60.json
+          if git diff --cached --quiet; then
+            echo 'V60 price/PIT evidence unchanged'
+            exit 0
+          fi
+          git commit -m 'data(asset-compass): archive V60 real price versus total-return blockers'
+          for attempt in 1 2 3; do
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              echo 'V60 metadata persisted to main'
+              exit 0
+            fi
+            sleep $((attempt*3))
+          done
+          echo '::error::V60 evidence not persisted; not claiming production verification'
+          exit 1
