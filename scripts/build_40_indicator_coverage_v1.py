@@ -13,6 +13,7 @@ ROOT=Path(__file__).resolve().parents[1]
 CATALOG=ROOT/"macro/indicator-ratings.html"
 SNAPSHOT=ROOT/"data/asset-scores.json"
 SOFR=ROOT/"data/asset-compass-a10-sofr.json"
+BC=ROOT/"data/asset-compass-bc-official-v1.json"
 OUTPUT=ROOT/"data/asset-compass-indicator-coverage-v1.json"
 
 def catalog_items(text):
@@ -40,7 +41,15 @@ def number(value):
     import math
     return type(value) in (int,float) and math.isfinite(value)
 
-def classify(name,d,sofr,now):
+def classify(name,d,sofr,now,bc=None):
+    bc=bc or {}
+    available=(bc.get("series") or {}) if bc.get("report_type")=="asset_compass_bc_official_observations_v1" and bc.get("validated_for_live_scoring") is False and bc.get("historical_pit_certified") is False else {}
+    observation=available.get(name)
+    if observation and observation.get("validated_for_live_scoring") is False and number(observation.get("latest_value")) and isinstance(observation.get("observation_period"),str):
+        period=observation["observation_period"]
+        max_age={"quarterly":160,"monthly":95,"weekly":20,"daily":16}.get(observation.get("frequency"),0)
+        if max_age>0:
+            return ("current" if age_ok(period,now,max_age) else "stale", "FRED public mirror of "+str(observation.get("original_agency"))+"; latest verifiable observation")
     rates=d.get("rates") or {}
     date=d.get("observation_date")
     if name in {
@@ -99,7 +108,7 @@ def classify(name,d,sofr,now):
             return ("current" if age_ok(c.get("period"),now,2,"month") else "stale","BLS CPI annual percent change")
     return ("missing","No separately verified indicator data feed")
 
-def build(rows,snapshot,sofr,*,now):
+def build(rows,snapshot,sofr,*,now,bc=None):
     if snapshot.get("schema_version")!=1 or not isinstance(snapshot.get("assets"),dict):
         raise ValueError("Source snapshot invalid")
     if any((a or {}).get("score") is not None for a in snapshot["assets"].values()):
@@ -107,7 +116,7 @@ def build(rows,snapshot,sofr,*,now):
     if now.tzinfo is None:raise ValueError("UTC now required")
     out=[]
     for grade,group,name,meaning,source,url in rows:
-        status,reason=classify(name,snapshot,sofr,now)
+        status,reason=classify(name,snapshot,sofr,now,bc)
         out.append({"grade":grade,"name":name,"status":status,"reason":reason})
     counts={grade:{status:sum(r["grade"]==grade and r["status"]==status for r in out)
                    for status in ("current","partial","stale","missing")}
@@ -116,6 +125,7 @@ def build(rows,snapshot,sofr,*,now):
       "schema_version":1,"report_type":"asset_compass_40_indicator_coverage_v1",
       "generated_at":now.astimezone(timezone.utc).isoformat(),
       "source_snapshot_generated_at":snapshot.get("generated_at"),
+      "bc_source_coverage":len((bc or {}).get("series") or {}),
       "items":out,"counts_by_grade":counts,
       "status_meanings":{"current":"recent supported indicator observation(s)",
                          "partial":"only some required components, frequencies or tenors",
@@ -133,7 +143,8 @@ def main():
     rows=catalog_items(CATALOG.read_text(encoding="utf-8"))
     snapshot=json.loads(SNAPSHOT.read_text(encoding="utf-8"))
     sofr=json.loads(SOFR.read_text(encoding="utf-8")) if SOFR.exists() else {}
-    report=build(rows,snapshot,sofr,now=datetime.now(timezone.utc))
+    bc=json.loads(BC.read_text(encoding="utf-8")) if BC.exists() else {}
+    report=build(rows,snapshot,sofr,now=datetime.now(timezone.utc),bc=bc)
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(report["counts_by_grade"],ensure_ascii=False))
