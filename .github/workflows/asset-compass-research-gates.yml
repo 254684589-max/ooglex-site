@@ -43,6 +43,8 @@ on:
       - 'tests/smoke_asset_compass_asset_specific_v57.cjs'
       - 'scripts/archive_asset_compass_v57_first_seen.py'
       - 'tests/test_asset_compass_first_seen_v57.py'
+      - 'scripts/audit_asset_compass_cross_source_v57.py'
+      - 'tests/test_asset_compass_cross_source_v57.py'
       - '.github/workflows/asset-compass-asset-specific-v57.yml'
       - 'docs/ASSET_COMPASS_V57_*'
       - 'macro/model-config.json'
@@ -191,11 +193,24 @@ jobs:
         run: |
           python3 -m unittest discover -s tests -p 'test_asset_compass_asset_specific_v57.py' -v
           python3 -m unittest discover -s tests -p 'test_asset_compass_first_seen_v57.py' -v
+          python3 -m unittest discover -s tests -p 'test_asset_compass_cross_source_v57.py' -v
           node --check macro/compass-pages.js
           node tests/smoke_asset_compass_asset_specific_v57.cjs
       - name: V57 download actual CFTC Gold and Treasury auctions, no synthesized inputs
         run: |
           python3 -m scripts.build_asset_compass_asset_specific_v57 --fetch --output /tmp/ooglex-v57-official.json
+          python3 -m scripts.audit_asset_compass_cross_source_v57 \
+            --v57 /tmp/ooglex-v57-official.json --output /tmp/ooglex-v57-overlap-real.json
+          python3 - <<'PYOVERLAP'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("/tmp/ooglex-v57-overlap-real.json").read_text())
+          assert p["source_comparison_count"]==4
+          assert p["score"] is None
+          assert p["historical_pit_qualified"] is False
+          assert p["available_for_investment_scoring"] is False
+          print("Real Gold, NFCI and Treasury factor overlap audited; 0/6 scores certified")
+          PYOVERLAP
           python3 - <<'PY'
           import json
           from pathlib import Path
