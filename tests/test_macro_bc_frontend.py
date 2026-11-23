@@ -14,7 +14,7 @@ class BCCatalogFrontendTests(unittest.TestCase):
         self.assertIn("redistribution_rights_independently_approved!==false",src)
         self.assertIn("historical_pit_certified!==false",src)
         for label in ("美国实际GDP增长率","美国工业生产指数","美国零售销售",
-                      "美国初请失业金人数","美元广义贸易加权指数","WTI原油现货价格"):
+                      "美国初请失业金人数","美国住房开工","美元广义贸易加权指数","WTI原油现货价格"):
             self.assertIn(label,src)
         self.assertNotIn("BAMLH0A0HYM2",src)
         self.assertNotIn("fake",src)
