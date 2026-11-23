@@ -9,10 +9,10 @@ const svg=document.getElementById("bc-history-svg");
 const caption=document.getElementById("bc-history-caption");
 if(!summary||!tbody||!select||!svg||!caption)return;
 const seriesNames=[
-"美国实际GDP增长率","美元广义贸易加权指数","美国工业生产指数","美国零售销售",
+"美国实际GDP增长率","美元广义贸易加权指数","美国工业生产指数","美国住房开工","美国零售销售",
 "美国初请失业金人数","美国10Y－3M国债利差","5Y5Y远期通胀补偿","WTI原油现货价格"];
 const unitMap={percent_annualized_qoq:"% · 季环比年化",index:"指数点",millions_usd_sa:"百万美元 · 季调",
- persons_sa:"人 · 季调",percentage_points:"百分点",percent:"%",usd_per_barrel:"美元/桶"};
+ persons_sa:"人 · 季调",thousands_units_saar:"千套 · 季调年率",percentage_points:"百分点",percent:"%",usd_per_barrel:"美元/桶"};
 const grace={quarterly:160,monthly:95,weekly:20,daily:16};
 const ns="http://www.w3.org/2000/svg";
 let data={};
@@ -53,7 +53,7 @@ try{
     d.validated_for_live_scoring!==false||d.historical_pit_certified!==false||
     d.redistribution_rights_independently_approved!==false||
     !d.series||typeof d.series!=="object"||
-    d.requested_series_count!==8||d.accepted_series_count!==Object.keys(d.series).length||
+    d.requested_series_count!==9||d.accepted_series_count!==Object.keys(d.series).length||
     Object.keys(d.series).some(k=>!seriesNames.includes(k)))throw Error("数据口径、安全门禁或来源清单不匹配");
  data=d.series;
  tbody.replaceChildren();select.replaceChildren();
@@ -73,7 +73,7 @@ try{
   }else td.textContent=missing[name]?.status||"尚未接入";
   tr.append(td);tbody.append(tr);
  }
- summary.textContent="B/C公开来源数据：成功核验 "+d.accepted_series_count+"/8，未核验 "+Object.keys(missing).length+
+ summary.textContent="B/C公开来源数据：成功核验 "+d.accepted_series_count+"/9，未核验 "+Object.keys(missing).length+
  " 项。8项均来自机构原始统计经FRED公开镜像；未声称历史首次发布时间，未接入ICE授权行情，也不生成资产投资评分。";
  chart();
 }catch(err){summary.textContent="B/C数据尚未核验："+err.message+"。目录和A级数据仍可独立使用。";tbody.replaceChildren();caption.textContent="暂无可核验的B/C走势图。";}
