@@ -8,6 +8,7 @@ const READY="../data/asset-compass-history-readiness.json";
 const OBSERVATIONS="../data/asset-compass-factor-observations.json";
 const SCORING_READINESS="../data/asset-compass-scoring-readiness-v54.json";
 const RATE_SHOCKS_V55="../data/asset-compass-rate-shocks-v55.json";
+const OFFICIAL_SOURCES_V56="../data/asset-compass-new-sources-v56.json";
 const $=q=>document.querySelector(q);
 const el=(tag,cls,content)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(content!==undefined)node.textContent=String(content);return node};
 const isNumber=n=>typeof n==="number"&&Number.isFinite(n);
@@ -330,6 +331,78 @@ function headline(data){
 
 
 // V55 genuine, latest-revised historical rate shocks: never scoring inputs.
+
+function renderOfficialSourcesV56(report){
+ const target=$("#new-sources-v56");if(!target)return;
+ target.replaceChildren();
+ const fail=(msg)=>target.replaceChildren(el("p","insights-warning",msg));
+ if(!report||report.schema_version!==1||
+    report.report_type!=="asset_compass_v56_official_risk_and_oil_research"||
+    !["research_only_two_official_sources_current","research_only_one_or_more_sources_stale"].includes(report.status)||
+    report.approved_asset_scores!==0||report.validated_for_live_scoring!==false||
+    report.eligible_for_point_in_time_backtest!==false||
+    report.independent_scoring_factor_groups_qualified!==0||
+    report.source_vintages_qualified!==0||
+    report.groups_with_any_observation_across_v54_and_v56!==6||
+    !report.sources||!report.assets||Object.keys(report.assets).length!==6){
+  fail("V56 官方数据尚未发布或未经完整来源/评分安全验证。风险与原油研究暂不展示，0–100正式评分仍不可用。");return;
+ }
+ const nfci=report.sources.nfci,oil=report.sources.oil_inventory;
+ const checks=[[nfci,"NFCI","risk"],[oil,"WCESTUS1","asset_specific"]];
+ for(const [v,sid,group] of checks){
+  if(!v||v.series_id!==sid||v.group!==group||
+     !/^([0-9a-f]{64})$/.test(v.source_raw_sha256||"")||
+     !isNumber(v.latest_level)||!isNumber(v.latest_week_delta)||
+     !Number.isSafeInteger(v.observation_count)||v.observation_count<112||
+     v.reference_104week_count!==104||
+     v.first_publication_vintages_verified!==false||
+     v.independent_scoring_signal_qualified!==false||
+     v.out_of_sample_calibration_passed!==false||
+     !Array.isArray(v.recent_observations)||!v.recent_observations.length||
+     (v.research_z_score!==null&&!isNumber(v.research_z_score))){
+   fail("V56 来源身份、数值、历史覆盖或PIT/评分门禁不一致，拒绝展示。");return;
+  }
+ }
+ if(Object.values(report.assets).some(a=>a.score!==null||
+    a.research_price_direction_signal!==null||
+    a.validated_for_live_scoring!==false||
+    a.independent_model_signal_coverage_pct!==0)){
+   fail("V56 含未经授权的资产分数或交易信号，拒绝展示。");return;
+ }
+ target.append(el("p","muted",
+  "V56新增两个可追溯官方观察系列：风险信用研究组有NFCI；原油资产专属研究组有EIA库存。"+
+  "结合旧版源观察，六个因子组已有数据入口，但仅原油取得本次资产专属数据；独立合格评分因子仍为0。"));
+ const table=el("table"),head=el("thead"),tr=el("tr");
+ for(const name of ["官方指标","最新周观测","实际观测值","与前周变化","研究标准化Z","状态"]){
+  const th=el("th","",name);th.scope="col";tr.append(th);
+ }
+ head.append(tr);table.append(head);const body=el("tbody");
+ const items=[
+  {s:nfci,name:"芝加哥联储NFCI",unit:"指数点",digits:3,delta:3},
+  {s:oil,name:"EIA商业原油库存（不含SPR）",unit:"千桶",digits:0,delta:0},
+ ];
+ for(const {s:source,name,unit,digits,delta} of items){
+  const fresh=isoDay(source.latest_observation_date,21)&&source.current_observation_fresh===true;
+  const r=el("tr");
+  const values=[name,source.latest_observation_date,
+   source.latest_level.toFixed(digits)+" "+unit,
+   source.latest_week_delta.toFixed(delta)+" "+unit,
+   source.research_z_score===null?"缺乏有效基准":source.research_z_score.toFixed(2),
+   fresh?"观察有效，未校准":"过期或未验证"];
+  for(const value of values)r.append(el("td","",value));body.append(r);
+ }
+ table.append(body);const wrap=el("div","table-wrap");wrap.append(table);target.append(wrap);
+ target.append(el("p","muted",
+  "NFCI正值通常代表金融条件较历史平均偏紧，负值较宽松；其内含利率与信用指标，不能与旧因子重复投票。"+
+  "原油库存是千桶存量，库存增加不等于油价必跌。库存周末日期不等于官方发布时刻，历史修订链未认证。"));
+ const sources=el("p","muted","官方数据：");
+ const l1=el("a","","芝加哥联储 NFCI，经FRED");l1.href="https://fred.stlouisfed.org/series/NFCI";
+ const l2=el("a","","美国能源信息署 EIA WCESTUS1");l2.href="https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?f=W&n=PET&s=WCESTUS1";
+ sources.append(l1,el("span",""," · "),l2);target.append(sources);
+ target.append(el("p","insights-warning",
+  "上述真实数据是研究观察，不是ICE高收益债OAS、六资产价格预测、历史PIT合格信号或正式0–100分。"));
+}
+
 function renderRateShocksV55(report,data){
  const target=$("#rate-shocks-v55");
  if(!target)return;
@@ -463,7 +536,7 @@ function renderScoringReadiness(report,data,observations){
   "研究用观测权重不是得分，也不是投资建议。"));
 }
 
-function overview(data,readiness,qualifications,scoringReadiness,rateShocks){
+function overview(data,readiness,qualifications,scoringReadiness,rateShocks,newSources){
  const snapshotValid=data?.schema_version===1&&data?.assets&&typeof data?.scoring?.calibration_verified==="boolean"&&typeof data?.scoring?.out_of_sample_verified==="boolean";
  const approved=snapshotValid?data:null;
  const rows=overviewObservations(approved);
@@ -471,6 +544,7 @@ function overview(data,readiness,qualifications,scoringReadiness,rateShocks){
  renderFactorQualification(rows,readiness,qualifications);
  renderScoringReadiness(scoringReadiness,approved,qualifications);
  renderRateShocksV55(rateShocks,approved);
+ renderOfficialSourcesV56(newSources);
  const usable=rows.filter(x=>x.state==="可用").length;
  const snapshotTime=approved?.generated_at?Date.parse(approved.generated_at):NaN;
  const age=Date.now()-snapshotTime;
@@ -592,5 +666,5 @@ function renderFactorObservations(report){
 }
 function research(price,readiness){const out=$("#price-grid");if(!price||price.report_type!=="price_coverage_audit"||price.validated_for_live_scoring!==false){out.replaceChildren(el("p","empty","历史价格覆盖报告尚未发布或无效。"));}else{out.replaceChildren(...Object.entries(ASSETS).map(([id,name])=>{const a=price.assets?.[id]||{};const n=isNumber(a.observation_count)?a.observation_count:0;const node=card(name,n+" 条价格观测","来源代理："+(a.symbol||"未记录")+" · "+(a.last_observation||"暂无有效日期"));node.append(el("div","label","非可投资总回报；未通过回测准入。"));return node}))}
 const block=$("#archive-data");if(readiness&&readiness.report_type==="asset_compass_history_readiness"&&readiness.validated_for_live_scoring===false){const count=readiness.archived_observations;block.replaceChildren(card("首次归档观测数",Number.isInteger(count)?count:"暂无数据","记录网站首次看到数值的时间，不代表官方最初发布时间。"));const list=$("#blockers");list.replaceChildren(...(readiness.blockers||[]).map(x=>el("li","",x)));}else{block.replaceChildren(card("首次归档状态","未发布","没有可核实的正式历史归档进度，不能把CI测试样本当作生产历史。"));$("#blockers").replaceChildren(el("li","","官方首发版本、统一总回报、独立样本外模型验收尚未通过。"))}$("#research-status").textContent="暂不公布历史命中率、资金曲线、最大回撤或资产预警阈值。数据来源及模型尚未达到可验证标准。";}
-async function run(){const page=document.body.dataset.page;if(page==="overview"){const [data,readiness,qualifications,scoringReadiness,rateShocks]=await Promise.all([optional(DATA),optional(READY),optional(OBSERVATIONS),optional(SCORING_READINESS),optional(RATE_SHOCKS_V55)]);overview(data,readiness,qualifications,scoringReadiness,rateShocks);return}if(page==="attribution"){const [config,data,observations]=await Promise.all([optional(CONFIG),optional(DATA),optional(OBSERVATIONS)]);attribution(config,data);renderFactorObservations(observations);return}if(page==="research"){const [price,readiness]=await Promise.all([optional(PRICE),optional(READY)]);research(price,readiness);return}}
+async function run(){const page=document.body.dataset.page;if(page==="overview"){const [data,readiness,qualifications,scoringReadiness,rateShocks,newSources]=await Promise.all([optional(DATA),optional(READY),optional(OBSERVATIONS),optional(SCORING_READINESS),optional(RATE_SHOCKS_V55),optional(OFFICIAL_SOURCES_V56)]);overview(data,readiness,qualifications,scoringReadiness,rateShocks,newSources);return}if(page==="attribution"){const [config,data,observations]=await Promise.all([optional(CONFIG),optional(DATA),optional(OBSERVATIONS)]);attribution(config,data);renderFactorObservations(observations);return}if(page==="research"){const [price,readiness]=await Promise.all([optional(PRICE),optional(READY)]);research(price,readiness);return}}
 run().catch(()=>{const node=$("#source-status")||$("#attribution-status")||$("#research-status");if(node)node.textContent="数据读取暂不可用；不会以示例数值代替真实数据。"});
