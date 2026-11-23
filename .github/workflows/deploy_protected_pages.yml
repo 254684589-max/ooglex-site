@@ -122,6 +122,20 @@ jobs:
           print("V14 original-release and license qualification remains fail-closed")
           PYV14
 
+      - name: Validate and generate 40-indicator source coverage
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s tests -p 'test_macro_40_indicator_coverage.py' -v
+          python3 -m scripts.build_40_indicator_coverage_v1
+          python3 - <<'PYCOVERAGE'
+          import json
+          from pathlib import Path
+          r=json.loads(Path("data/asset-compass-indicator-coverage-v1.json").read_text(encoding="utf-8"))
+          assert len(r["items"])==40 and r["not_an_asset_score"] is True
+          assert r["validated_for_live_scoring"] is False
+          print("40/40 indicator coverage audited; no synthetic investment scores")
+          PYCOVERAGE
+
       - name: Build protected public site
         run: python scripts/build_public_site.py --pro-cutover
 
@@ -241,6 +255,7 @@ jobs:
           assert 'id="v8-heading"' in research
           assert (Path(".site/macro/indicator-a10.js")).is_file()
           assert (Path(".site/macro/indicator-a10-guide.js")).is_file()
+          assert Path(".site/data/asset-compass-indicator-coverage-v1.json").is_file()
           print("Indicator-first production structure verified")
           PYCATALOG
 
