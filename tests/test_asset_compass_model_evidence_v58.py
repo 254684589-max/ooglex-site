@@ -72,6 +72,27 @@ class V58EvidenceTests(unittest.TestCase):
         self.assertEqual(result["source_url"],FED_XML_URL)
         self.assertIsNone(result["official_asset_score"])
 
+    def test_original_frb_h10_nd_missing_minus9999_is_not_an_index_value(self):
+        rows=usd_series()
+        xml="<Root><Series SERIES_NAME='JRXWTFB_N.B'>"
+        xml+="<Obs TIME_PERIOD='2007-01-02' OBS_VALUE='-9999' OBS_STATUS='ND'/>"
+        xml+="".join(f"<Obs TIME_PERIOD='{r['date']}' OBS_VALUE='{r['index']}' OBS_STATUS='A'/>" for r in rows)
+        xml+="</Series></Root>"
+        out=io.BytesIO()
+        with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED) as z:z.writestr("H10.xml",xml)
+        self.assertEqual(parse_fed_xml(out.getvalue()),rows)
+
+    def test_original_frb_h10_undocumented_negative_sentinel_must_fail(self):
+        rows=usd_series()
+        xml="<Root><Series SERIES_NAME='JRXWTFB_N.B'>"
+        xml+="<Obs TIME_PERIOD='2007-01-02' OBS_VALUE='-9999' OBS_STATUS='A'/>"
+        xml+="".join(f"<Obs TIME_PERIOD='{r['date']}' OBS_VALUE='{r['index']}'/>" for r in rows)
+        xml+="</Series></Root>"
+        out=io.BytesIO()
+        with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED) as z:z.writestr("H10.xml",xml)
+        with self.assertRaisesRegex(ValueError,"Invalid Federal Reserve XML"):
+            parse_fed_xml(out.getvalue())
+
     def test_unrelated_original_sdmx_series_is_not_mislabeled_usd(self):
         raw=io.BytesIO()
         with zipfile.ZipFile(raw,"w",zipfile.ZIP_DEFLATED) as z:
