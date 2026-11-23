@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_v59_bitcoin_mainnet_issuance_research",
+  "generated_at": "2026-11-23T16:24:12.601635+00:00",
+  "asset_id": "bitcoin",
+  "source_id": "bitcoin_mainnet_block_subsidy",
+  "network": "bitcoin_mainnet",
+  "source_owner": "Bitcoin consensus subsidy schedule; block headers via Blockstream Esplora",
+  "source_url": "https://blockstream.info/api/blocks/tip/height",
+  "citation_url": "https://blockstream.info/",
+  "api_documentation": "https://github.com/Blockstream/esplora/blob/master/API.md",
+  "observed_tip": {
+    "height": 977233,
+    "block_hash": "00000000000000000000be6c6947074c8b954f2fdcbd5fd68d861286c02fa59e",
+    "block_timestamp": "2026-11-23T15:54:40+00:00"
+  },
+  "historical_checkpoint": {
+    "height": 976225,
+    "block_hash": "000000000000000000018d7195ef4c909445b58b4ae517bcb7fa5cd94448eca9",
+    "block_timestamp": "2026-11-17T04:30:36+00:00"
+  },
+  "checkpoint_distance_blocks": 1008,
+  "nominal_subsidy_to_tip_sats": 2011635625000000,
+  "nominal_subsidy_to_tip_btc": 20116356.25,
+  "nominal_subsidy_new_over_1008_blocks_btc": 3150.0,
+  "source_response_sha256": {
+    "tip_height": "b80c256feaf09442512ee75a10729e2b4a7bcd984bb31d21a1aac34f3782608b",
+    "tip": {
+      "block_hash_lookup_sha256": "5d308fdbcb52459a814053777f0d547cb6aef10b3bc1de18f53fa4f1cad5d49d",
+      "block_header_sha256": "3a2c0678b431bfec0d3d64a846078bdff91b1e0eaf7a58f40b112c8d9e744c06"
+    },
+    "checkpoint": {
+      "block_hash_lookup_sha256": "fbd87cf054f10023fe7e40ddd1d14936a8fb6138f15d1d0d316ebd766488de80",
+      "block_header_sha256": "60fee9fac74b81af109b8342143698b86d18174d5411c9e61ee77c411b81fba9"
+    }
+  },
+  "fresh_for_research": true,
+  "source_observation_status": "observed_research_only",
+  "source_rights": "Bitcoin consensus data public; Blockstream free API rate-limited; independent node/license review outstanding",
+  "redistribution_rights_instrument_by_instrument_certified": false,
+  "independent_node_cross_checked": false,
+  "historical_first_publication_vintages_verified": false,
+  "investable_total_return_verified": false,
+  "independent_signal_verified": false,
+  "out_of_sample_validation_passed": false,
+  "validated_for_live_scoring": false,
+  "official_asset_score": null,
+  "limitations": [
+    "Nominal sum of allowed block subsidies is NOT the actual spendable circulating supply, UTXO set or ETF-held BTC.",
+    "Includes unspendable genesis subsidy and potential unclaimed or burned subsidy; actual liquid supply is lower.",
+    "1008 blocks is a block-count lookback, not exactly seven calendar days.",
+    "Single Esplora explorer observation is not independent Bitcoin full-node validation; reorganizations are possible.",
+    "Block fees, ETF flows, custody and Bitcoin total investment return are NOT measured."
+  ]
+}
