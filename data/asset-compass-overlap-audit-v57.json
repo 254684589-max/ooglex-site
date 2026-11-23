@@ -2,11 +2,11 @@
   "schema_version": 1,
   "report_type": "asset_compass_v57_descriptive_source_overlap_audit",
   "status": "research_only_no_predictive_certification",
-  "generated_at": "2026-11-23T09:06:17.110926+00:00",
+  "generated_at": "2026-11-23T16:24:46.914627+00:00",
   "inputs_sha256": {
-    "v57_gold_treasury": "2c7d5bcef6a363830848bd14c3c5d79a8ace6a6f3dc98e1afb09fd5269cb8a90",
+    "v57_gold_treasury": "d04e33837d2cd37250c2964c1d4f444c9ad4efd8f43a9e55deabb64af97b065a",
     "v56_nfci": "7c230f173a47d5355eb96e30efb2c8c646d152a033beeaf2a2bcffa44fe6ffc8",
-    "treasury_daily": "aa7c0e68b72326b0284ce6a993aeb05f5111345eeb0163ab820c1050115c70fc"
+    "treasury_daily": "d690b891730244060c67348cc81f99aa093e2704b75a8e92093ed8423a022d68"
   },
   "results": {
     "gold_positioning_vs_10y_real_yield": {
