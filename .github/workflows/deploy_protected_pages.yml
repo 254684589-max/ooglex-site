@@ -127,6 +127,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m unittest discover -s tests -p 'test_macro_40_indicator_coverage.py' -v
+          python3 -m unittest discover -s tests -p 'test_macro_bc_frontend.py' -v
           python3 -m scripts.build_40_indicator_coverage_v1
           python3 - <<'PYCOVERAGE'
           import json
@@ -266,6 +267,7 @@ jobs:
           python3 -m unittest discover -s tests -p 'test_macro_indicator_catalog_focus.py' -v
           node --check .site/macro/indicator-a10.js
           node --check .site/macro/indicator-a10-guide.js
+          node --check .site/macro/indicator-bc-official.js
           python3 - <<'PYCATALOG'
           from pathlib import Path
           page=Path(".site/macro/indicator-ratings.html").read_text(encoding="utf-8")
@@ -275,6 +277,7 @@ jobs:
           assert 'id="v8-heading"' in research
           assert (Path(".site/macro/indicator-a10.js")).is_file()
           assert (Path(".site/macro/indicator-a10-guide.js")).is_file()
+          assert Path(".site/macro/indicator-bc-official.js").is_file()
           assert Path(".site/data/asset-compass-indicator-coverage-v1.json").is_file()
           print("Indicator-first production structure verified")
           PYCATALOG
