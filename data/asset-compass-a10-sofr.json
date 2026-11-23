@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_a10_sofr_observation",
+  "source": "Federal Reserve Bank of New York",
+  "source_url": "https://markets.newyorkfed.org/api/rates/secured/sofr/last/10.json",
+  "observation_date": "2026-11-19",
+  "sofr_overnight_percent": 3.91,
+  "unit": "percent",
+  "sofr_forward_curve_available": false,
+  "original_official_release_time_independently_verified": false,
+  "eligible_for_point_in_time_backtest": false,
+  "validated_for_live_scoring": false,
+  "retrieved_at": "2026-11-23T08:09:20.543025+00:00"
+}

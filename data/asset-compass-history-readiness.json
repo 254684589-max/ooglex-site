@@ -2,13 +2,13 @@
   "schema_version": 1,
   "report_type": "asset_compass_history_readiness",
   "status": "research_data_collection_only",
-  "archived_observations": 21,
+  "archived_observations": 26,
   "series": {
     "bea.core_pce": {
-      "archived_versions": 1,
+      "archived_versions": 2,
       "distinct_observation_periods": 1,
       "first_recorded_at": "2026-11-22T08:19:52.789843+00:00",
-      "latest_recorded_at": "2026-11-22T08:19:52.789843+00:00"
+      "latest_recorded_at": "2026-11-23T08:09:27.140875+00:00"
     },
     "bls.core_cpi": {
       "archived_versions": 1,
@@ -35,28 +35,28 @@
       "latest_recorded_at": "2026-11-22T06:53:57.974839+00:00"
     },
     "fed_h41.total_assets": {
-      "archived_versions": 1,
+      "archived_versions": 2,
       "distinct_observation_periods": 1,
       "first_recorded_at": "2026-11-22T08:19:52.789843+00:00",
-      "latest_recorded_at": "2026-11-22T08:19:52.789843+00:00"
+      "latest_recorded_at": "2026-11-23T08:09:27.140875+00:00"
     },
     "liquidity.overnight_rrp": {
-      "archived_versions": 1,
+      "archived_versions": 2,
       "distinct_observation_periods": 1,
       "first_recorded_at": "2026-11-22T08:19:52.789843+00:00",
-      "latest_recorded_at": "2026-11-22T08:19:52.789843+00:00"
+      "latest_recorded_at": "2026-11-23T08:09:27.140875+00:00"
     },
     "liquidity.reserves": {
-      "archived_versions": 1,
+      "archived_versions": 2,
       "distinct_observation_periods": 1,
       "first_recorded_at": "2026-11-22T08:19:52.789843+00:00",
-      "latest_recorded_at": "2026-11-22T08:19:52.789843+00:00"
+      "latest_recorded_at": "2026-11-23T08:09:27.140875+00:00"
     },
     "liquidity.tga": {
-      "archived_versions": 1,
+      "archived_versions": 2,
       "distinct_observation_periods": 1,
       "first_recorded_at": "2026-11-22T08:19:52.789843+00:00",
-      "latest_recorded_at": "2026-11-22T08:19:52.789843+00:00"
+      "latest_recorded_at": "2026-11-23T08:09:27.140875+00:00"
     },
     "nyfed.effr": {
       "archived_versions": 1,

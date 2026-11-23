@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_factor_observations",
-  "generated_at": "2026-11-22T18:38:40.615386+00:00",
+  "generated_at": "2026-11-23T08:09:27.098557+00:00",
   "source_snapshot_observation_date": "2026-11-20",
   "groups": {
     "rates": {
@@ -89,7 +89,7 @@
           "unit": "percent",
           "observation_period": "2026-09",
           "source": "BEA via FRED",
-          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE&cosd=2023-01-01&coed=2026-11-22",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE&cosd=2023-01-01&coed=2026-11-23",
           "validated_historical_release_time": false,
           "qualifies_as_model_factor_signal": false
         }
@@ -147,7 +147,7 @@
           "unit": "millions_usd",
           "observation_period": "2026-11-18",
           "source": "Federal Reserve via FRED",
-          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WALCL&cosd=2025-01-01&coed=2026-11-22",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WALCL&cosd=2025-01-01&coed=2026-11-23",
           "validated_historical_release_time": false,
           "qualifies_as_model_factor_signal": false
         },
@@ -158,7 +158,7 @@
           "unit": "millions_usd",
           "observation_period": "2026-11-18",
           "source": "Federal Reserve Board H.4.1 via FRED",
-          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WRESBAL&cosd=2025-01-01&coed=2026-11-22",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WRESBAL&cosd=2025-01-01&coed=2026-11-23",
           "validated_historical_release_time": false,
           "qualifies_as_model_factor_signal": false
         },
@@ -169,7 +169,7 @@
           "unit": "millions_usd",
           "observation_period": "2026-11-18",
           "source": "Federal Reserve Board H.4.1 via FRED",
-          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WTREGEN&cosd=2025-01-01&coed=2026-11-22",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WTREGEN&cosd=2025-01-01&coed=2026-11-23",
           "validated_historical_release_time": false,
           "qualifies_as_model_factor_signal": false
         },
@@ -180,7 +180,7 @@
           "unit": "billions_usd",
           "observation_period": "2026-11-20",
           "source": "Federal Reserve Bank of New York via FRED",
-          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRPONTSYD&cosd=2025-01-01&coed=2026-11-22",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRPONTSYD&cosd=2025-01-01&coed=2026-11-23",
           "validated_historical_release_time": false,
           "qualifies_as_model_factor_signal": false
         }
