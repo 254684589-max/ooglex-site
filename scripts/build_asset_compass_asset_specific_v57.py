@@ -158,7 +158,14 @@ def parse_treasury(raw, *, now=None):
                      "bid_to_cover_ratio":round(ratio,5),"security_term":term})
     rows.sort(key=lambda x:(x["auction_date"],x["cusip"]))
     if len(rows)<36:
-        raise ValueError("Insufficient genuine 30Y completed bond auctions")
+        # Diagnostic records only public non-sensitive schema fields; no raw
+        # private payload or proprietary data is logged.
+        sample=[{k:r.get(k) for k in
+            ("security_type","security_term","comp_auction_close_date","auction_date","bid_to_cover_ratio")}
+            for r in d["data"][:8]]
+        raise ValueError("Insufficient genuine 30Y completed bond auctions: count="
+            +str(len(rows))+", source_rows="+str(len(d["data"]))+
+            ", first_rows="+json.dumps(sample))
     return rows
 
 
