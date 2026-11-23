@@ -14,7 +14,7 @@ from pathlib import Path
 from scripts.build_asset_compass_sources_v59 import (
     FRED_ID, CHAIN_URL, V58_FILE, SOURCE_BTC, SOURCE_EQUITIES, _get,
     build_equities, build_evidence, fetch_bitcoin, parse_block,
-    parse_equities_csv, subsidy_total_sats,
+    parse_equities_csv, parse_z1_official_html, FED_Z1_URL, subsidy_total_sats,
 )
 
 NOW = datetime(2026, 11, 24, 0, 0, tzinfo=timezone.utc)
@@ -34,6 +34,23 @@ def equity_fixture_csv():
 def equity_fixture():
     raw = equity_fixture_csv()
     return build_equities(parse_equities_csv(raw), raw_sha=hashlib.sha256(raw).hexdigest(), now=NOW)
+
+
+
+def equity_official_html_fixture():
+    """Synthetic HTML STRUCTURE only, not an actual source used in production."""
+    headers = ["Line","Description","Series","2023","2024","2025",
+               "2025:Q1","2025:Q2","2025:Q3","2025:Q4","2026:Q1","2026:Q2"]
+    values = ["Line 1","Issues at market value","LM893064105",
+              "76767.8","92360.3","108715.8","89638.5","98239.7",
+              "105694.8","108715.8","106042.9","123687.2"]
+    other = ["Line 2","Unrelated series","LM103164105",
+             "51751.5","62768.0","71994.9","59428.5","65333.3",
+             "70397.2","71994.9","70018.4","83050.8"]
+    def row(cells, tag):
+        return "<tr>" + "".join(f"<{tag}>{v}</{tag}>" for v in cells) + "</tr>"
+    return ("<!doctype html><title>FRB Z1 Test</title><h4>F51.1.s Corporate equities</h4>"
+            "<table>"+row(headers,"th")+row(values,"td")+row(other,"td")+"</table>").encode()
 
 
 class FakeResponse:
@@ -73,6 +90,53 @@ class V59SourceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.v58 = json.loads(V58_FILE.read_text())
+
+
+    def test_original_fed_z1_table_is_six_actual_quarters_not_invented_history(self):
+        raw=equity_official_html_fixture()
+        rows=parse_z1_official_html(raw)
+        self.assertEqual(len(rows),6)
+        self.assertEqual(rows[-1]["quarter"],"2026-Q2")
+        self.assertEqual(rows[-1]["observation_date"],"2026-06-30")
+        self.assertEqual(rows[-1]["market_value_millions_usd"],123687200)
+        report=build_equities(rows,raw_sha=hashlib.sha256(raw).hexdigest(),
+                              source_format="fed_original_html_table",now=NOW)
+        self.assertEqual(report["original_source_format"],"fed_original_html_table")
+        self.assertEqual(report["source_url"],FED_Z1_URL)
+        self.assertEqual(report["observation_count"],6)
+        self.assertEqual(report["latest_market_value_trillions_usd"],123.6872)
+        self.assertFalse(report["historical_depth_for_backtest_verified"])
+        self.assertFalse(report["investable_total_return_verified"])
+        self.assertIsNone(report["official_asset_score"])
+        v=build_evidence(self.v58,report,bitcoin_fixture(),now=NOW)
+        self.assertEqual(v["asset_specific_observed_count"],6)
+        self.assertEqual(v["official_0_to_100_scores_published"],0)
+
+    def test_official_z1_html_rejects_mismatched_series_id_or_row_name(self):
+        raw=equity_official_html_fixture()
+        for payload in (raw.replace(b"LM893064105",b"LM103164105",1),
+                        raw.replace(b"Issues at market value",b"Holdings at market value",1),
+                        raw.replace(b"F51.1.s",b"F51.1.t",1)):
+            with self.assertRaises(ValueError):
+                parse_z1_official_html(payload)
+
+    def test_official_z1_html_rejects_missing_quarters_and_forged_values(self):
+        raw=equity_official_html_fixture()
+        with self.assertRaises(ValueError):
+            parse_z1_official_html(raw.replace(b"2026:Q2",b"2026",1))
+        with self.assertRaises(ValueError):
+            parse_z1_official_html(raw.replace(b"123687.2",b"ND",1))
+        with self.assertRaises(ValueError):
+            parse_z1_official_html(raw.replace(b"2026:Q1",b"2025:Q4",1))
+
+    def test_6_quarter_html_cannot_masquerade_as_50_quarter_fred_history(self):
+        raw=equity_official_html_fixture()
+        rows=parse_z1_official_html(raw)
+        with self.assertRaisesRegex(ValueError,"quarterly history"):
+            build_equities(rows,raw_sha="e"*64,source_format="fred_csv",now=NOW)
+        with self.assertRaisesRegex(ValueError,"Unsupported"):
+            build_equities(rows,raw_sha="e"*64,source_format="unverified_html",now=NOW)
+
 
     def test_z1_parser_real_series_header_and_quarter(self):
         rows = parse_equities_csv(equity_fixture_csv())
