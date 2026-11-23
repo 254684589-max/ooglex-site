@@ -12,6 +12,7 @@ import io
 import json
 import math
 import statistics
+import time
 import urllib.parse
 import urllib.request
 from datetime import date, datetime, timezone
@@ -54,14 +55,28 @@ def parse_csv(data):
 def retrieve(*,opener=None):
     opener=opener or urllib.request.urlopen
     request=urllib.request.Request(URL,headers={"User-Agent":"Ooglex-AssetCompass-Research/1.0"})
-    with opener(request,timeout=35) as response:
-        actual=urllib.parse.urlsplit(response.geturl())
-        if actual.scheme!="https" or actual.hostname!="fred.stlouisfed.org":
-            raise ValueError("Unapproved source or redirect")
-        result=response.read(2_000_001)
-        if len(result)>2_000_000 or len(result)<100:
-            raise ValueError("Empty or unbounded source")
-        return result
+    # The FRED CSV graph endpoint occasionally stalls on GitHub Actions
+    # before response headers; bounded retries must NEVER substitute a
+    # generated series or mark stale historical values as current.
+    errors=[]
+    for attempt in range(3):
+        try:
+            with opener(request,timeout=18) as response:
+                actual=urllib.parse.urlsplit(response.geturl())
+                if actual.scheme!="https" or actual.hostname!="fred.stlouisfed.org":
+                    raise ValueError("Unapproved source or redirect")
+                result=response.read(2_000_001)
+                if len(result)>2_000_000 or len(result)<100:
+                    raise ValueError("Empty or unbounded source")
+                return result
+        except (OSError,TimeoutError) as exc:
+            errors.append(type(exc).__name__)
+            if attempt<2:
+                print("Official FRED H10 request transient failure:",type(exc).__name__,
+                      "attempt",attempt+1,"/3; retrying",flush=True)
+                time.sleep(3*(attempt+1))
+    raise ConnectionError("Official H10 source unavailable after 3 bounded HTTPS attempts: "+
+                          ",".join(errors))
 
 
 def build(rows,config,*,raw_sha,now=None):
