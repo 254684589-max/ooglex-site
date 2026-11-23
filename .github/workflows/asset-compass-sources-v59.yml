@@ -1,0 +1,121 @@
+name: Asset Compass V59 Equity Z1 and Bitcoin Chain Sources
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build_asset_compass_sources_v59.py'
+      - 'tests/test_asset_compass_sources_v59.py'
+      - '.github/workflows/asset-compass-sources-v59.yml'
+      - 'macro/asset-compass-sources-v59.js'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/build_asset_compass_sources_v59.py'
+      - 'tests/test_asset_compass_sources_v59.py'
+      - '.github/workflows/asset-compass-sources-v59.yml'
+      - 'macro/asset-compass-sources-v59.js'
+  schedule:
+    - cron: '20 15 * * 1-5'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: asset-compass-ledger-main
+  cancel-in-progress: false
+
+jobs:
+  deterministic-v59-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate real-source parsers and fail-closed non-trading evidence
+        run: |
+          python3 -m unittest discover -s tests -p 'test_asset_compass_sources_v59.py' -v
+          python3 -m py_compile scripts/build_asset_compass_sources_v59.py
+          node --check macro/asset-compass-sources-v59.js
+      - name: Validate existing V58 lineage contract without external network
+        run: python3 -m unittest discover -s tests -p 'test_asset_compass_model_evidence_v58.py' -v
+
+  collect-main-only:
+    needs: deterministic-v59-gates
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Capture actual Fed Z1 corporate equities, not SP500 or total returns
+        shell: bash
+        run: |
+          if python3 -m scripts.build_asset_compass_sources_v59 fetch-equities; then
+            echo 'Official quarterly corporate equity stock acquired'
+          else
+            echo '::warning::Fed Z1 unavailable/stale; V59 will not claim source coverage'
+          fi
+      - name: Capture actual Bitcoin mainnet block proofs, never synthetic history
+        shell: bash
+        run: |
+          if python3 -m scripts.build_asset_compass_sources_v59 fetch-bitcoin; then
+            echo 'Bitcoin block headers and nominal issuance proof acquired'
+          else
+            echo '::warning::Bitcoin explorer unavailable; V59 coverage remains evidence-qualified'
+          fi
+      - name: Derive new 4-6 research sources without unlocking any 0–100 scores
+        run: |
+          python3 -m scripts.build_asset_compass_sources_v59 build-evidence
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path("data/asset-compass-model-gaps-v59.json").read_text())
+          assert r["asset_specific_observed_count"] in (4,5,6)
+          assert r["asset_specific_observed_count"]+r["asset_specific_missing_count"]==6
+          assert r["official_0_to_100_scores_published"]==0
+          assert r["audited_asset_total_return_count"]==0
+          assert r["oos_validated_assets"]==0
+          assert r["historical_first_release_certified_source_count"]==0
+          assert r["qualified_for_live_scoring"] is False
+          assert all(row["official_score"] is None for row in r["research_assets"].values())
+          print("V59 verified actual coverage:",r["asset_specific_observed_count"],"/6")
+          PY
+      - name: Persist the verified evidence without overwriting competing main commits
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for file in \
+            data/asset-compass-equities-z1-v59.json \
+            data/asset-compass-bitcoin-chain-v59.json \
+            data/asset-compass-model-gaps-v59.json; do
+            if test -f "$file"; then git add "$file"; fi
+          done
+          if git diff --cached --quiet; then
+            echo 'Research evidence unchanged'
+            exit 0
+          fi
+          git commit -m 'data(asset-compass): refresh actual V59 US equity stock and Bitcoin block evidence'
+          for attempt in 1 2 3; do
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              echo 'Verified V59 evidence persisted to main'
+              exit 0
+            fi
+            echo "main moved or push failed (attempt $attempt/3)"
+            sleep $((attempt * 3))
+          done
+          echo '::error::Could not persist V59 research observations; not treating as deployed'
+          exit 1
