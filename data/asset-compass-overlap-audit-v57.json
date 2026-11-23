@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_v57_descriptive_source_overlap_audit",
+  "status": "research_only_no_predictive_certification",
+  "generated_at": "2026-11-23T09:01:05.559523+00:00",
+  "inputs_sha256": {
+    "v57_gold_treasury": "236c5a66c4a21d93b57d7498d33defd1d093c5aa5c611e8249b9e0d31171ab22",
+    "v56_nfci": "7c230f173a47d5355eb96e30efb2c8c646d152a033beeaf2a2bcffa44fe6ffc8",
+    "treasury_daily": "aa7c0e68b72326b0284ce6a993aeb05f5111345eeb0163ab820c1050115c70fc"
+  },
+  "results": {
+    "gold_positioning_vs_10y_real_yield": {
+      "aligned_weekly_observations": 110,
+      "aligned_first_date": "2024-10-15",
+      "aligned_last_date": "2026-11-17",
+      "treasury_series": "real10y",
+      "contemporaneous_pearson_latest_revised": 0.173844,
+      "causal_predictive_independence_qualified": false,
+      "historical_available_at_verified": false,
+      "oos_predictive_significance_tested": false
+    },
+    "nfci_vs_10y_nominal_yield": {
+      "aligned_weekly_observations": 156,
+      "aligned_first_date": "2023-11-24",
+      "aligned_last_date": "2026-11-13",
+      "treasury_series": "us10y",
+      "contemporaneous_pearson_latest_revised": -0.309134,
+      "causal_predictive_independence_qualified": false,
+      "historical_available_at_verified": false,
+      "oos_predictive_significance_tested": false
+    },
+    "nfci_vs_10y_real_yield": {
+      "aligned_weekly_observations": 156,
+      "aligned_first_date": "2023-11-24",
+      "aligned_last_date": "2026-11-13",
+      "treasury_series": "real10y",
+      "contemporaneous_pearson_latest_revised": -0.209936,
+      "causal_predictive_independence_qualified": false,
+      "historical_available_at_verified": false,
+      "oos_predictive_significance_tested": false
+    },
+    "nfci_vs_10y_2y_spread": {
+      "aligned_weekly_observations": 156,
+      "aligned_first_date": "2023-11-24",
+      "aligned_last_date": "2026-11-13",
+      "treasury_series": "spread10y2y",
+      "contemporaneous_pearson_latest_revised": -0.783524,
+      "causal_predictive_independence_qualified": false,
+      "historical_available_at_verified": false,
+      "oos_predictive_significance_tested": false
+    }
+  },
+  "source_comparison_count": 4,
+  "available_for_investment_scoring": false,
+  "historical_pit_qualified": false,
+  "independent_risk_credit_factor_approved": false,
+  "out_of_sample_return_calibration_passed": false,
+  "score": null,
+  "warnings": [
+    "Latest-revised same-date correlations are descriptive; neither causal nor predictive.",
+    "CFTC futures positions as-of Tuesday are released days later, and cannot inform same-day trades.",
+    "NFCI is a composite of interest-rate, credit, bank and risk factors; mechanically overlaps existing rates.",
+    "Derived Treasury spread shares rate data; high correlations must never be counted as multiple independent model votes.",
+    "No autocorrelation controls, multiple-testing correction, economic regime test, or out-of-sample returns are included.",
+    "This report creates no verified factor signals or six-asset 0-100 scores."
+  ]
+}

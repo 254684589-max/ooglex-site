@@ -1,0 +1,1140 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_v57_authentic_asset_specific_source_research",
+  "status": "research_only_no_model_promotion",
+  "generated_at": "2026-11-23T09:01:05.431910+00:00",
+  "sources": {
+    "cftc_gold": {
+      "reference_count": 104,
+      "reference_mean": 29.483966,
+      "reference_std": 4.873236,
+      "research_z_score": -0.870636,
+      "research_normalized_tanh": -0.409756,
+      "independently_calibrated": false,
+      "series_id": "CFTC_COMEX_GOLD_MANAGED_MONEY_FUTURES_ONLY",
+      "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24where=cftc_contract_market_code%3D%27088691%27&%24order=report_date_as_yyyy_mm_dd%20DESC&%24limit=350",
+      "series_home": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
+      "source_owner": "Commodity Futures Trading Commission",
+      "source_sha256": "244ac7e05f36f95768ef8eeae74318a9f7979dacecea7f7aa98d38078e34dceb",
+      "latest_observation_date": "2026-11-17",
+      "latest_managed_money_net_contracts": 102942,
+      "latest_managed_money_net_percent_oi": 25.241152,
+      "latest_open_interest_contracts": 407834,
+      "age_calendar_days": 6,
+      "fresh_for_research": true,
+      "recent_observations": [
+        {
+          "date": "2024-10-15",
+          "managed_money_net_contracts": 199421,
+          "managed_money_net_pct_open_interest": 36.845752,
+          "open_interest_contracts": 541232
+        },
+        {
+          "date": "2024-10-22",
+          "managed_money_net_contracts": 205160,
+          "managed_money_net_pct_open_interest": 35.757111,
+          "open_interest_contracts": 573760
+        },
+        {
+          "date": "2024-10-29",
+          "managed_money_net_contracts": 195173,
+          "managed_money_net_pct_open_interest": 33.681411,
+          "open_interest_contracts": 579468
+        },
+        {
+          "date": "2024-11-05",
+          "managed_money_net_contracts": 183003,
+          "managed_money_net_pct_open_interest": 32.794238,
+          "open_interest_contracts": 558034
+        },
+        {
+          "date": "2024-11-12",
+          "managed_money_net_contracts": 165296,
+          "managed_money_net_pct_open_interest": 30.839899,
+          "open_interest_contracts": 535981
+        },
+        {
+          "date": "2024-11-19",
+          "managed_money_net_contracts": 155174,
+          "managed_money_net_pct_open_interest": 30.852646,
+          "open_interest_contracts": 502952
+        },
+        {
+          "date": "2024-11-26",
+          "managed_money_net_contracts": 179290,
+          "managed_money_net_pct_open_interest": 37.932129,
+          "open_interest_contracts": 472660
+        },
+        {
+          "date": "2024-12-03",
+          "managed_money_net_contracts": 180735,
+          "managed_money_net_pct_open_interest": 39.116743,
+          "open_interest_contracts": 462040
+        },
+        {
+          "date": "2024-12-10",
+          "managed_money_net_contracts": 196078,
+          "managed_money_net_pct_open_interest": 40.566799,
+          "open_interest_contracts": 483346
+        },
+        {
+          "date": "2024-12-17",
+          "managed_money_net_contracts": 183502,
+          "managed_money_net_pct_open_interest": 39.32992,
+          "open_interest_contracts": 466571
+        },
+        {
+          "date": "2024-12-24",
+          "managed_money_net_contracts": 165497,
+          "managed_money_net_pct_open_interest": 36.401288,
+          "open_interest_contracts": 454646
+        },
+        {
+          "date": "2024-12-31",
+          "managed_money_net_contracts": 166169,
+          "managed_money_net_pct_open_interest": 36.235237,
+          "open_interest_contracts": 458584
+        },
+        {
+          "date": "2025-01-07",
+          "managed_money_net_contracts": 177641,
+          "managed_money_net_pct_open_interest": 37.237943,
+          "open_interest_contracts": 477043
+        },
+        {
+          "date": "2025-01-14",
+          "managed_money_net_contracts": 195622,
+          "managed_money_net_pct_open_interest": 37.157505,
+          "open_interest_contracts": 526467
+        },
+        {
+          "date": "2025-01-21",
+          "managed_money_net_contracts": 215869,
+          "managed_money_net_pct_open_interest": 37.779823,
+          "open_interest_contracts": 571387
+        },
+        {
+          "date": "2025-01-28",
+          "managed_money_net_contracts": 210540,
+          "managed_money_net_pct_open_interest": 36.456827,
+          "open_interest_contracts": 577505
+        },
+        {
+          "date": "2025-02-04",
+          "managed_money_net_contracts": 209533,
+          "managed_money_net_pct_open_interest": 38.65894,
+          "open_interest_contracts": 542004
+        },
+        {
+          "date": "2025-02-11",
+          "managed_money_net_contracts": 194803,
+          "managed_money_net_pct_open_interest": 36.844335,
+          "open_interest_contracts": 528719
+        },
+        {
+          "date": "2025-02-18",
+          "managed_money_net_contracts": 185329,
+          "managed_money_net_pct_open_interest": 35.481209,
+          "open_interest_contracts": 522330
+        },
+        {
+          "date": "2025-02-25",
+          "managed_money_net_contracts": 179812,
+          "managed_money_net_pct_open_interest": 35.107257,
+          "open_interest_contracts": 512179
+        },
+        {
+          "date": "2025-03-04",
+          "managed_money_net_contracts": 166658,
+          "managed_money_net_pct_open_interest": 34.062583,
+          "open_interest_contracts": 489270
+        },
+        {
+          "date": "2025-03-11",
+          "managed_money_net_contracts": 167576,
+          "managed_money_net_pct_open_interest": 32.776035,
+          "open_interest_contracts": 511276
+        },
+        {
+          "date": "2025-03-18",
+          "managed_money_net_contracts": 183834,
+          "managed_money_net_pct_open_interest": 34.453845,
+          "open_interest_contracts": 533566
+        },
+        {
+          "date": "2025-03-25",
+          "managed_money_net_contracts": 174732,
+          "managed_money_net_pct_open_interest": 34.161906,
+          "open_interest_contracts": 511482
+        },
+        {
+          "date": "2025-04-01",
+          "managed_money_net_contracts": 141999,
+          "managed_money_net_pct_open_interest": 28.471206,
+          "open_interest_contracts": 498746
+        },
+        {
+          "date": "2025-04-08",
+          "managed_money_net_contracts": 130986,
+          "managed_money_net_pct_open_interest": 29.404132,
+          "open_interest_contracts": 445468
+        },
+        {
+          "date": "2025-04-15",
+          "managed_money_net_contracts": 124854,
+          "managed_money_net_pct_open_interest": 27.342607,
+          "open_interest_contracts": 456628
+        },
+        {
+          "date": "2025-04-22",
+          "managed_money_net_contracts": 120902,
+          "managed_money_net_pct_open_interest": 25.980819,
+          "open_interest_contracts": 465351
+        },
+        {
+          "date": "2025-04-29",
+          "managed_money_net_contracts": 105895,
+          "managed_money_net_pct_open_interest": 23.434941,
+          "open_interest_contracts": 451868
+        },
+        {
+          "date": "2025-05-06",
+          "managed_money_net_contracts": 102091,
+          "managed_money_net_pct_open_interest": 22.565836,
+          "open_interest_contracts": 452414
+        },
+        {
+          "date": "2025-05-13",
+          "managed_money_net_contracts": 101227,
+          "managed_money_net_pct_open_interest": 22.962195,
+          "open_interest_contracts": 440842
+        },
+        {
+          "date": "2025-05-20",
+          "managed_money_net_contracts": 107629,
+          "managed_money_net_pct_open_interest": 24.02433,
+          "open_interest_contracts": 448000
+        },
+        {
+          "date": "2025-05-27",
+          "managed_money_net_contracts": 110816,
+          "managed_money_net_pct_open_interest": 25.327172,
+          "open_interest_contracts": 437538
+        },
+        {
+          "date": "2025-06-03",
+          "managed_money_net_contracts": 123582,
+          "managed_money_net_pct_open_interest": 29.711425,
+          "open_interest_contracts": 415941
+        },
+        {
+          "date": "2025-06-10",
+          "managed_money_net_contracts": 124091,
+          "managed_money_net_pct_open_interest": 29.747832,
+          "open_interest_contracts": 417143
+        },
+        {
+          "date": "2025-06-17",
+          "managed_money_net_contracts": 130511,
+          "managed_money_net_pct_open_interest": 29.579977,
+          "open_interest_contracts": 441214
+        },
+        {
+          "date": "2025-06-24",
+          "managed_money_net_contracts": 125128,
+          "managed_money_net_pct_open_interest": 28.767835,
+          "open_interest_contracts": 434958
+        },
+        {
+          "date": "2025-07-01",
+          "managed_money_net_contracts": 130360,
+          "managed_money_net_pct_open_interest": 29.785542,
+          "open_interest_contracts": 437662
+        },
+        {
+          "date": "2025-07-08",
+          "managed_money_net_contracts": 128942,
+          "managed_money_net_pct_open_interest": 29.097088,
+          "open_interest_contracts": 443144
+        },
+        {
+          "date": "2025-07-15",
+          "managed_money_net_contracts": 136727,
+          "managed_money_net_pct_open_interest": 30.483289,
+          "open_interest_contracts": 448531
+        },
+        {
+          "date": "2025-07-22",
+          "managed_money_net_contracts": 159934,
+          "managed_money_net_pct_open_interest": 32.678072,
+          "open_interest_contracts": 489423
+        },
+        {
+          "date": "2025-07-29",
+          "managed_money_net_contracts": 134256,
+          "managed_money_net_pct_open_interest": 30.152338,
+          "open_interest_contracts": 445259
+        },
+        {
+          "date": "2025-08-05",
+          "managed_money_net_contracts": 153987,
+          "managed_money_net_pct_open_interest": 34.246198,
+          "open_interest_contracts": 449647
+        },
+        {
+          "date": "2025-08-12",
+          "managed_money_net_contracts": 148287,
+          "managed_money_net_pct_open_interest": 33.236879,
+          "open_interest_contracts": 446152
+        },
+        {
+          "date": "2025-08-19",
+          "managed_money_net_contracts": 137385,
+          "managed_money_net_pct_open_interest": 31.327744,
+          "open_interest_contracts": 438541
+        },
+        {
+          "date": "2025-08-26",
+          "managed_money_net_contracts": 141917,
+          "managed_money_net_pct_open_interest": 31.980575,
+          "open_interest_contracts": 443760
+        },
+        {
+          "date": "2025-09-02",
+          "managed_money_net_contracts": 161502,
+          "managed_money_net_pct_open_interest": 32.765141,
+          "open_interest_contracts": 492908
+        },
+        {
+          "date": "2025-09-09",
+          "managed_money_net_contracts": 163519,
+          "managed_money_net_pct_open_interest": 32.086142,
+          "open_interest_contracts": 509625
+        },
+        {
+          "date": "2025-09-16",
+          "managed_money_net_contracts": 158971,
+          "managed_money_net_pct_open_interest": 30.795144,
+          "open_interest_contracts": 516221
+        },
+        {
+          "date": "2025-09-23",
+          "managed_money_net_contracts": 160549,
+          "managed_money_net_pct_open_interest": 30.361638,
+          "open_interest_contracts": 528789
+        },
+        {
+          "date": "2025-09-30",
+          "managed_money_net_contracts": 145227,
+          "managed_money_net_pct_open_interest": 29.413182,
+          "open_interest_contracts": 493748
+        },
+        {
+          "date": "2025-10-07",
+          "managed_money_net_contracts": 129759,
+          "managed_money_net_pct_open_interest": 26.723632,
+          "open_interest_contracts": 485559
+        },
+        {
+          "date": "2025-10-14",
+          "managed_money_net_contracts": 108310,
+          "managed_money_net_pct_open_interest": 22.295734,
+          "open_interest_contracts": 485788
+        },
+        {
+          "date": "2025-10-21",
+          "managed_money_net_contracts": 92227,
+          "managed_money_net_pct_open_interest": 19.522206,
+          "open_interest_contracts": 472421
+        },
+        {
+          "date": "2025-10-28",
+          "managed_money_net_contracts": 104159,
+          "managed_money_net_pct_open_interest": 22.785821,
+          "open_interest_contracts": 457122
+        },
+        {
+          "date": "2025-11-04",
+          "managed_money_net_contracts": 100545,
+          "managed_money_net_pct_open_interest": 22.32354,
+          "open_interest_contracts": 450399
+        },
+        {
+          "date": "2025-11-10",
+          "managed_money_net_contracts": 104087,
+          "managed_money_net_pct_open_interest": 22.627756,
+          "open_interest_contracts": 459997
+        },
+        {
+          "date": "2025-11-18",
+          "managed_money_net_contracts": 98205,
+          "managed_money_net_pct_open_interest": 20.808216,
+          "open_interest_contracts": 471953
+        },
+        {
+          "date": "2025-11-25",
+          "managed_money_net_contracts": 109309,
+          "managed_money_net_pct_open_interest": 25.247721,
+          "open_interest_contracts": 432946
+        },
+        {
+          "date": "2025-12-02",
+          "managed_money_net_contracts": 120324,
+          "managed_money_net_pct_open_interest": 28.751942,
+          "open_interest_contracts": 418490
+        },
+        {
+          "date": "2025-12-09",
+          "managed_money_net_contracts": 123548,
+          "managed_money_net_pct_open_interest": 28.561455,
+          "open_interest_contracts": 432569
+        },
+        {
+          "date": "2025-12-16",
+          "managed_money_net_contracts": 132596,
+          "managed_money_net_pct_open_interest": 28.146459,
+          "open_interest_contracts": 471093
+        },
+        {
+          "date": "2025-12-23",
+          "managed_money_net_contracts": 136270,
+          "managed_money_net_pct_open_interest": 27.691357,
+          "open_interest_contracts": 492103
+        },
+        {
+          "date": "2025-12-30",
+          "managed_money_net_contracts": 126040,
+          "managed_money_net_pct_open_interest": 26.156649,
+          "open_interest_contracts": 481866
+        },
+        {
+          "date": "2026-01-06",
+          "managed_money_net_contracts": 123213,
+          "managed_money_net_pct_open_interest": 25.242565,
+          "open_interest_contracts": 488116
+        },
+        {
+          "date": "2026-01-13",
+          "managed_money_net_contracts": 134745,
+          "managed_money_net_pct_open_interest": 25.546255,
+          "open_interest_contracts": 527455
+        },
+        {
+          "date": "2026-01-20",
+          "managed_money_net_contracts": 137444,
+          "managed_money_net_pct_open_interest": 26.030863,
+          "open_interest_contracts": 528004
+        },
+        {
+          "date": "2026-01-27",
+          "managed_money_net_contracts": 118159,
+          "managed_money_net_pct_open_interest": 24.189959,
+          "open_interest_contracts": 488463
+        },
+        {
+          "date": "2026-02-03",
+          "managed_money_net_contracts": 92072,
+          "managed_money_net_pct_open_interest": 22.473358,
+          "open_interest_contracts": 409694
+        },
+        {
+          "date": "2026-02-10",
+          "managed_money_net_contracts": 92022,
+          "managed_money_net_pct_open_interest": 22.755699,
+          "open_interest_contracts": 404391
+        },
+        {
+          "date": "2026-02-17",
+          "managed_money_net_contracts": 95893,
+          "managed_money_net_pct_open_interest": 23.556419,
+          "open_interest_contracts": 407078
+        },
+        {
+          "date": "2026-02-24",
+          "managed_money_net_contracts": 95974,
+          "managed_money_net_pct_open_interest": 22.841055,
+          "open_interest_contracts": 420182
+        },
+        {
+          "date": "2026-03-03",
+          "managed_money_net_contracts": 97917,
+          "managed_money_net_pct_open_interest": 23.894492,
+          "open_interest_contracts": 409789
+        },
+        {
+          "date": "2026-03-10",
+          "managed_money_net_contracts": 98399,
+          "managed_money_net_pct_open_interest": 23.770401,
+          "open_interest_contracts": 413956
+        },
+        {
+          "date": "2026-03-17",
+          "managed_money_net_contracts": 102043,
+          "managed_money_net_pct_open_interest": 24.804564,
+          "open_interest_contracts": 411388
+        },
+        {
+          "date": "2026-03-24",
+          "managed_money_net_contracts": 91621,
+          "managed_money_net_pct_open_interest": 22.682676,
+          "open_interest_contracts": 403925
+        },
+        {
+          "date": "2026-03-31",
+          "managed_money_net_contracts": 92814,
+          "managed_money_net_pct_open_interest": 25.681153,
+          "open_interest_contracts": 361409
+        },
+        {
+          "date": "2026-04-07",
+          "managed_money_net_contracts": 90032,
+          "managed_money_net_pct_open_interest": 25.369917,
+          "open_interest_contracts": 354877
+        },
+        {
+          "date": "2026-04-14",
+          "managed_money_net_contracts": 95141,
+          "managed_money_net_pct_open_interest": 26.262166,
+          "open_interest_contracts": 362274
+        },
+        {
+          "date": "2026-04-21",
+          "managed_money_net_contracts": 92976,
+          "managed_money_net_pct_open_interest": 25.41425,
+          "open_interest_contracts": 365842
+        },
+        {
+          "date": "2026-04-28",
+          "managed_money_net_contracts": 89752,
+          "managed_money_net_pct_open_interest": 24.28815,
+          "open_interest_contracts": 369530
+        },
+        {
+          "date": "2026-05-05",
+          "managed_money_net_contracts": 94254,
+          "managed_money_net_pct_open_interest": 25.617234,
+          "open_interest_contracts": 367932
+        },
+        {
+          "date": "2026-05-12",
+          "managed_money_net_contracts": 98015,
+          "managed_money_net_pct_open_interest": 26.033477,
+          "open_interest_contracts": 376496
+        },
+        {
+          "date": "2026-05-19",
+          "managed_money_net_contracts": 93540,
+          "managed_money_net_pct_open_interest": 24.659593,
+          "open_interest_contracts": 379325
+        },
+        {
+          "date": "2026-05-26",
+          "managed_money_net_contracts": 97446,
+          "managed_money_net_pct_open_interest": 27.566912,
+          "open_interest_contracts": 353489
+        },
+        {
+          "date": "2026-06-02",
+          "managed_money_net_contracts": 112179,
+          "managed_money_net_pct_open_interest": 34.405248,
+          "open_interest_contracts": 326052
+        },
+        {
+          "date": "2026-06-09",
+          "managed_money_net_contracts": 105863,
+          "managed_money_net_pct_open_interest": 31.818496,
+          "open_interest_contracts": 332709
+        },
+        {
+          "date": "2026-06-16",
+          "managed_money_net_contracts": 113721,
+          "managed_money_net_pct_open_interest": 33.513394,
+          "open_interest_contracts": 339330
+        },
+        {
+          "date": "2026-06-23",
+          "managed_money_net_contracts": 115395,
+          "managed_money_net_pct_open_interest": 32.767125,
+          "open_interest_contracts": 352167
+        },
+        {
+          "date": "2026-06-30",
+          "managed_money_net_contracts": 120091,
+          "managed_money_net_pct_open_interest": 32.497341,
+          "open_interest_contracts": 369541
+        },
+        {
+          "date": "2026-07-07",
+          "managed_money_net_contracts": 116161,
+          "managed_money_net_pct_open_interest": 31.244889,
+          "open_interest_contracts": 371776
+        },
+        {
+          "date": "2026-07-14",
+          "managed_money_net_contracts": 120779,
+          "managed_money_net_pct_open_interest": 31.478359,
+          "open_interest_contracts": 383689
+        },
+        {
+          "date": "2026-07-21",
+          "managed_money_net_contracts": 124831,
+          "managed_money_net_pct_open_interest": 32.561664,
+          "open_interest_contracts": 383368
+        },
+        {
+          "date": "2026-07-28",
+          "managed_money_net_contracts": 119795,
+          "managed_money_net_pct_open_interest": 31.147703,
+          "open_interest_contracts": 384603
+        },
+        {
+          "date": "2026-08-04",
+          "managed_money_net_contracts": 130766,
+          "managed_money_net_pct_open_interest": 35.19463,
+          "open_interest_contracts": 371551
+        },
+        {
+          "date": "2026-08-11",
+          "managed_money_net_contracts": 137662,
+          "managed_money_net_pct_open_interest": 34.388935,
+          "open_interest_contracts": 400309
+        },
+        {
+          "date": "2026-08-18",
+          "managed_money_net_contracts": 141648,
+          "managed_money_net_pct_open_interest": 34.866342,
+          "open_interest_contracts": 406260
+        },
+        {
+          "date": "2026-08-25",
+          "managed_money_net_contracts": 144747,
+          "managed_money_net_pct_open_interest": 33.822791,
+          "open_interest_contracts": 427957
+        },
+        {
+          "date": "2026-09-01",
+          "managed_money_net_contracts": 136771,
+          "managed_money_net_pct_open_interest": 32.94131,
+          "open_interest_contracts": 415196
+        },
+        {
+          "date": "2026-09-08",
+          "managed_money_net_contracts": 134972,
+          "managed_money_net_pct_open_interest": 32.821775,
+          "open_interest_contracts": 411227
+        },
+        {
+          "date": "2026-09-15",
+          "managed_money_net_contracts": 133116,
+          "managed_money_net_pct_open_interest": 32.475317,
+          "open_interest_contracts": 409899
+        },
+        {
+          "date": "2026-09-22",
+          "managed_money_net_contracts": 127389,
+          "managed_money_net_pct_open_interest": 30.859738,
+          "open_interest_contracts": 412800
+        },
+        {
+          "date": "2026-09-29",
+          "managed_money_net_contracts": 120318,
+          "managed_money_net_pct_open_interest": 29.601728,
+          "open_interest_contracts": 406456
+        },
+        {
+          "date": "2026-10-06",
+          "managed_money_net_contracts": 110987,
+          "managed_money_net_pct_open_interest": 28.019308,
+          "open_interest_contracts": 396109
+        },
+        {
+          "date": "2026-10-13",
+          "managed_money_net_contracts": 107089,
+          "managed_money_net_pct_open_interest": 27.019137,
+          "open_interest_contracts": 396345
+        },
+        {
+          "date": "2026-10-20",
+          "managed_money_net_contracts": 104206,
+          "managed_money_net_pct_open_interest": 25.903912,
+          "open_interest_contracts": 402279
+        },
+        {
+          "date": "2026-10-27",
+          "managed_money_net_contracts": 105562,
+          "managed_money_net_pct_open_interest": 26.602656,
+          "open_interest_contracts": 396810
+        },
+        {
+          "date": "2026-11-03",
+          "managed_money_net_contracts": 103614,
+          "managed_money_net_pct_open_interest": 25.957427,
+          "open_interest_contracts": 399169
+        },
+        {
+          "date": "2026-11-10",
+          "managed_money_net_contracts": 112341,
+          "managed_money_net_pct_open_interest": 27.757366,
+          "open_interest_contracts": 404725
+        },
+        {
+          "date": "2026-11-17",
+          "managed_money_net_contracts": 102942,
+          "managed_money_net_pct_open_interest": 25.241152,
+          "open_interest_contracts": 407834
+        }
+      ],
+      "observation_count": 350,
+      "non_tuesday_report_dates": [
+        "2020-12-21",
+        "2023-07-03",
+        "2025-11-10"
+      ],
+      "non_tuesday_exception_approved_as_pit": false,
+      "report_date_is_publication_time": false,
+      "signal_verified": false,
+      "known_release_lag": "Tuesday position snapshot generally published Friday; holiday/delayed reports vary",
+      "not_a_gold_spot_etf_flow": true
+    },
+    "treasury_30y": {
+      "reference_count": 36,
+      "reference_mean": 2.450278,
+      "reference_std": 0.140525,
+      "research_z_score": -0.642434,
+      "research_normalized_tanh": -0.310607,
+      "independently_calibrated": false,
+      "series_id": "TREASURY_30Y_BOND_AUCTION_BID_TO_COVER",
+      "source_url": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/treasury_securities_auctions_v2?fields=comp_auction_close_date,security_type,security_term,bid_to_cover_ratio,cusip&filter=security_type:eq:Bond,comp_auction_close_date:gte:2018-01-01&sort=-comp_auction_close_date&page%5Bsize%5D=250",
+      "historical_source_url": "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/auctions_query?fields=auction_date,security_type,security_term,bid_to_cover_ratio,cusip&filter=security_type:eq:Bond,auction_date:gte:2018-01-01&sort=-auction_date&page%5Bsize%5D=250",
+      "source_combines_legacy_and_updated_v2": true,
+      "series_home": "https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
+      "source_owner": "U.S. Department of the Treasury (FiscalData)",
+      "source_sha256": "04b0548399ba0da08fcab6748af743881dc9561f51444f2bdfdf878f9267fbf7",
+      "latest_auction_date": "2026-11-12",
+      "latest_auction_cusip": "912810UY2",
+      "latest_bid_to_cover_ratio": 2.36,
+      "age_calendar_days": 11,
+      "fresh_for_research": true,
+      "recent_auctions": [
+        {
+          "auction_date": "2023-07-13",
+          "cusip": "912810TR9",
+          "bid_to_cover_ratio": 2.43,
+          "security_term": "29-Year 10-Month"
+        },
+        {
+          "auction_date": "2023-08-10",
+          "cusip": "912810TT5",
+          "bid_to_cover_ratio": 2.42,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2023-08-24",
+          "cusip": "912810TP3",
+          "bid_to_cover_ratio": 2.42,
+          "security_term": "29-Year 6-Month"
+        },
+        {
+          "auction_date": "2023-09-13",
+          "cusip": "912810TT5",
+          "bid_to_cover_ratio": 2.46,
+          "security_term": "29-Year 11-Month"
+        },
+        {
+          "auction_date": "2023-10-12",
+          "cusip": "912810TT5",
+          "bid_to_cover_ratio": 2.35,
+          "security_term": "29-Year 10-Month"
+        },
+        {
+          "auction_date": "2023-11-09",
+          "cusip": "912810TV0",
+          "bid_to_cover_ratio": 2.24,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2023-12-12",
+          "cusip": "912810TV0",
+          "bid_to_cover_ratio": 2.43,
+          "security_term": "29-Year 11-Month"
+        },
+        {
+          "auction_date": "2024-01-11",
+          "cusip": "912810TV0",
+          "bid_to_cover_ratio": 2.37,
+          "security_term": "29-Year 10-Month"
+        },
+        {
+          "auction_date": "2024-02-08",
+          "cusip": "912810TX6",
+          "bid_to_cover_ratio": 2.4,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2024-02-22",
+          "cusip": "912810TY4",
+          "bid_to_cover_ratio": 2.43,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2024-03-13",
+          "cusip": "912810TX6",
+          "bid_to_cover_ratio": 2.47,
+          "security_term": "29-Year 11-Month"
+        },
+        {
+          "auction_date": "2024-04-11",
+          "cusip": "912810TX6",
+          "bid_to_cover_ratio": 2.37,
+          "security_term": "29-Year 10-Month"
+        },
+        {
+          "auction_date": "2024-05-09",
+          "cusip": "912810UA4",
+          "bid_to_cover_ratio": 2.41,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2024-06-13",
+          "cusip": "912810UA4",
+          "bid_to_cover_ratio": 2.49,
+          "security_term": "29-Year 11-Month"
+        },
+        {
+          "auction_date": "2024-07-11",
+          "cusip": "912810UA4",
+          "bid_to_cover_ratio": 2.3,
+          "security_term": "29-Year 10-Month"
+        },
+        {
+          "auction_date": "2024-08-08",
+          "cusip": "912810UC0",
+          "bid_to_cover_ratio": 2.31,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2024-08-22",
+          "cusip": "912810TY4",
+          "bid_to_cover_ratio": 2.61,
+          "security_term": "29-Year 6-Month"
+        },
+        {
+          "auction_date": "2024-09-12",
+          "cusip": "912810UC0",
+          "bid_to_cover_ratio": 2.38,
+          "security_term": "29-Year 11-Month"
+        },
+        {
+          "auction_date": "2024-10-10",
+          "cusip": "912810UC0",
+          "bid_to_cover_ratio": 2.5,
+          "security_term": "29-Year 10-Month"
+        },
+        {
+          "auction_date": "2024-11-06",
+          "cusip": "912810UE6",
+          "bid_to_cover_ratio": 2.64,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2024-12-12",
+          "cusip": "912810UE6",
+          "bid_to_cover_ratio": 2.39,
+          "security_term": "29-Year 11-Month"
+        },
+        {
+          "auction_date": "2025-01-08",
+          "cusip": "912810UE6",
+          "bid_to_cover_ratio": 2.52,
+          "security_term": "29-Year 10-Month"
+        },
+        {
+          "auction_date": "2025-02-13",
+          "cusip": "912810UG1",
+          "bid_to_cover_ratio": 2.33,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2025-02-20",
+          "cusip": "912810UH9",
+          "bid_to_cover_ratio": 2.48,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2025-03-13",
+          "cusip": "912810UG1",
+          "bid_to_cover_ratio": 2.37,
+          "security_term": "29-Year 11-Month"
+        },
+        {
+          "auction_date": "2025-04-10",
+          "cusip": "912810UG1",
+          "bid_to_cover_ratio": 2.43,
+          "security_term": "29-Year 10-Month"
+        },
+        {
+          "auction_date": "2025-05-08",
+          "cusip": "912810UK2",
+          "bid_to_cover_ratio": 2.31,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2025-06-12",
+          "cusip": "912810UK2",
+          "bid_to_cover_ratio": 2.43,
+          "security_term": "29-Year 11-Month"
+        },
+        {
+          "auction_date": "2025-07-10",
+          "cusip": "912810UK2",
+          "bid_to_cover_ratio": 2.38,
+          "security_term": "29-Year 10-Month"
+        },
+        {
+          "auction_date": "2025-08-07",
+          "cusip": "912810UM8",
+          "bid_to_cover_ratio": 2.27,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2025-08-21",
+          "cusip": "912810UH9",
+          "bid_to_cover_ratio": 2.78,
+          "security_term": "29-Year 6-Month"
+        },
+        {
+          "auction_date": "2025-09-11",
+          "cusip": "912810UM8",
+          "bid_to_cover_ratio": 2.38,
+          "security_term": "29-Year 11-Month"
+        },
+        {
+          "auction_date": "2025-10-09",
+          "cusip": "912810UM8",
+          "bid_to_cover_ratio": 2.38,
+          "security_term": "29-Year 10-Month"
+        },
+        {
+          "auction_date": "2025-11-13",
+          "cusip": "912810UP1",
+          "bid_to_cover_ratio": 2.29,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2025-12-11",
+          "cusip": "912810UP1",
+          "bid_to_cover_ratio": 2.36,
+          "security_term": "29-Year 11-Month"
+        },
+        {
+          "auction_date": "2026-01-13",
+          "cusip": "912810UP1",
+          "bid_to_cover_ratio": 2.42,
+          "security_term": "29-Year 10-Month"
+        },
+        {
+          "auction_date": "2026-02-12",
+          "cusip": "912810UR7",
+          "bid_to_cover_ratio": 2.66,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2026-02-19",
+          "cusip": "912810US5",
+          "bid_to_cover_ratio": 2.75,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2026-03-12",
+          "cusip": "912810UR7",
+          "bid_to_cover_ratio": 2.45,
+          "security_term": "29-Year 11-Month"
+        },
+        {
+          "auction_date": "2026-04-09",
+          "cusip": "912810UR7",
+          "bid_to_cover_ratio": 2.39,
+          "security_term": "29-Year 10-Month"
+        },
+        {
+          "auction_date": "2026-05-13",
+          "cusip": "912810UU0",
+          "bid_to_cover_ratio": 2.3,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2026-06-11",
+          "cusip": "912810UU0",
+          "bid_to_cover_ratio": 2.33,
+          "security_term": "29-Year 11-Month"
+        },
+        {
+          "auction_date": "2026-07-09",
+          "cusip": "912810UU0",
+          "bid_to_cover_ratio": 2.44,
+          "security_term": "29-Year 10-Month"
+        },
+        {
+          "auction_date": "2026-08-13",
+          "cusip": "912810UW6",
+          "bid_to_cover_ratio": 2.39,
+          "security_term": "30-Year"
+        },
+        {
+          "auction_date": "2026-08-20",
+          "cusip": "912810US5",
+          "bid_to_cover_ratio": 2.82,
+          "security_term": "29-Year 6-Month"
+        },
+        {
+          "auction_date": "2026-09-10",
+          "cusip": "912810UW6",
+          "bid_to_cover_ratio": 2.61,
+          "security_term": "29-Year 11-Month"
+        },
+        {
+          "auction_date": "2026-10-08",
+          "cusip": "912810UW6",
+          "bid_to_cover_ratio": 2.54,
+          "security_term": "29-Year 10-Month"
+        },
+        {
+          "auction_date": "2026-11-12",
+          "cusip": "912810UY2",
+          "bid_to_cover_ratio": 2.36,
+          "security_term": "30-Year"
+        }
+      ],
+      "auction_count": 126,
+      "auction_date_is_publication_time": false,
+      "signal_verified": false,
+      "not_a_total_return_or_whole_curve_demand": true
+    }
+  },
+  "v56_observed_at": "2026-11-23T08:11:42.773397+00:00",
+  "v56_oil_source_date": "2026-11-13",
+  "assets": {
+    "gold": {
+      "asset_specific_research_source_available": true,
+      "sources": [
+        "cftc_gold"
+      ],
+      "verified_asset_specific_model_signal": false,
+      "historic_as_published_vintages_certified": false,
+      "historical_calibration_passed": false,
+      "out_of_sample_validation_passed": false,
+      "score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "us_equities": {
+      "asset_specific_research_source_available": false,
+      "sources": [],
+      "verified_asset_specific_model_signal": false,
+      "historic_as_published_vintages_certified": false,
+      "historical_calibration_passed": false,
+      "out_of_sample_validation_passed": false,
+      "score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "us_long_bonds": {
+      "asset_specific_research_source_available": true,
+      "sources": [
+        "treasury_30y"
+      ],
+      "verified_asset_specific_model_signal": false,
+      "historic_as_published_vintages_certified": false,
+      "historical_calibration_passed": false,
+      "out_of_sample_validation_passed": false,
+      "score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "usd": {
+      "asset_specific_research_source_available": false,
+      "sources": [],
+      "verified_asset_specific_model_signal": false,
+      "historic_as_published_vintages_certified": false,
+      "historical_calibration_passed": false,
+      "out_of_sample_validation_passed": false,
+      "score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "bitcoin": {
+      "asset_specific_research_source_available": false,
+      "sources": [],
+      "verified_asset_specific_model_signal": false,
+      "historic_as_published_vintages_certified": false,
+      "historical_calibration_passed": false,
+      "out_of_sample_validation_passed": false,
+      "score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "oil": {
+      "asset_specific_research_source_available": true,
+      "sources": [
+        "v56_oil_inventory"
+      ],
+      "verified_asset_specific_model_signal": false,
+      "historic_as_published_vintages_certified": false,
+      "historical_calibration_passed": false,
+      "out_of_sample_validation_passed": false,
+      "score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    }
+  },
+  "asset_specific_source_available_assets": [
+    "gold",
+    "oil",
+    "us_long_bonds"
+  ],
+  "asset_specific_source_missing_assets": [
+    "bitcoin",
+    "us_equities",
+    "usd"
+  ],
+  "source_completeness_6_assets": 3,
+  "first_publication_vintages_certified": 0,
+  "independent_model_factor_qualified_count": 0,
+  "approved_asset_scores": 0,
+  "validated_for_live_scoring": false,
+  "eligible_for_point_in_time_backtest": false,
+  "automated_trading_alerts_enabled": false,
+  "limitations": [
+    "CFTC dates are Tuesday positioning snapshots, not public availability timestamps.",
+    "Treasury auction date is not proof of exact first-released timestamp or revision vintage.",
+    "CFTC net managed-money positioning can indicate crowdedness, not future gold return.",
+    "30Y bid-to-cover is specific-auction demand, not total-return or ETF demand.",
+    "No exposure is treated as an independent certified signal or input to 0–100 scoring.",
+    "Only three assets have some asset-specific source data; the other three still lack inputs.",
+    "No PIT-certified historical returns, licensed spread or sample-out-of-sample calibration."
+  ]
+}
