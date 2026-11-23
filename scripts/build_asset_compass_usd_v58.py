@@ -7,6 +7,8 @@ No original release-vintage proof, verified price direction or live model score.
 from __future__ import annotations
 import argparse
 import csv
+import zipfile
+import xml.etree.ElementTree as ET
 import hashlib
 import io
 import json
@@ -22,6 +24,8 @@ from scripts.score_macro_assets import score_one, validate_config
 
 ROOT=Path(__file__).resolve().parents[1]
 URL="https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS&cosd=2021-01-01"
+FED_XML_URL="https://www.federalreserve.gov/releases/h10/data/FRB_h10_xml.zip"
+FED_SERIES="JRXWTFB_N.B"
 OUTPUT=ROOT/"data/asset-compass-usd-h10-v58.json"
 MODEL=ROOT/"macro/model-config.json"
 
@@ -52,6 +56,62 @@ def parse_csv(data):
     return observed
 
 
+
+def parse_fed_xml(raw:bytes):
+    """Parse only FRB H10 JRXWTFB_N.B daily values, never a different index."""
+    result=[]
+    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+        files=[name for name in archive.namelist() if name.lower().endswith(".xml")
+               and not name.startswith("__MACOSX/")]
+        if not files or len(files)>20:
+            raise ValueError("Unexpected Federal Reserve H10 XML archive files")
+        for name in files:
+            if archive.getinfo(name).file_size>120_000_000:
+                raise ValueError("Unbounded official H10 XML member")
+            with archive.open(name) as fp:
+                active=False
+                series_depth=0
+                for event,element in ET.iterparse(fp,events=("start","end")):
+                    tag=element.tag.split("}")[-1]
+                    if event=="start" and tag=="Series":
+                        series_depth+=1
+                        attrs={k.split("}")[-1].upper():str(v) for k,v in element.attrib.items()}
+                        active=FED_SERIES in attrs.values()
+                    if event=="end" and tag=="Obs" and active:
+                        attrs={k.split("}")[-1].upper():str(v) for k,v in element.attrib.items()}
+                        day=attrs.get("TIME_PERIOD")
+                        val=attrs.get("OBS_VALUE")
+                        if day and val and val not in (".","NaN","nan",""):
+                            dt=date.fromisoformat(day)
+                            value=float(val)
+                            if not math.isfinite(value) or not 20<value<400:
+                                raise ValueError("Invalid Federal Reserve XML dollar-index value")
+                            result.append({"date":dt.isoformat(),"index":value})
+                    if event=="end" and tag=="Series":
+                        active=False
+                        series_depth=max(0,series_depth-1)
+                    if event=="end":
+                        element.clear()
+    if len(result)<310:
+        raise ValueError("Federal Reserve H10 nominal broad index missing in XML")
+    result=sorted(result,key=lambda x:x["date"])
+    if len({x["date"] for x in result})!=len(result):
+        raise ValueError("Duplicate FRB H10 broad index date across XML")
+    return result
+
+def retrieve_fed_xml(*,opener=None):
+    opener=opener or urllib.request.urlopen
+    request=urllib.request.Request(FED_XML_URL,
+                                  headers={"User-Agent":"Ooglex-AssetCompass-Research/1.0"})
+    with opener(request,timeout=50) as response:
+        actual=urllib.parse.urlsplit(response.geturl())
+        if actual.scheme!="https" or actual.hostname!="www.federalreserve.gov":
+            raise ValueError("Unapproved Federal Reserve XML redirect")
+        raw=response.read(34_000_001)
+    if not 500< len(raw)<=34_000_000:
+        raise ValueError("Invalid official Federal Reserve H10 ZIP size")
+    return raw
+
 def retrieve(*,opener=None):
     opener=opener or urllib.request.urlopen
     request=urllib.request.Request(URL,headers={"User-Agent":"Ooglex-AssetCompass-Research/1.0"})
@@ -79,12 +139,14 @@ def retrieve(*,opener=None):
                           ",".join(errors))
 
 
-def build(rows,config,*,raw_sha,now=None):
+def build(rows,config,*,raw_sha,source_kind="fred_csv",now=None):
     now=now or datetime.now(timezone.utc)
     if now.tzinfo is None or now.utcoffset() is None:
         raise ValueError("UTC-aware verification clock required")
     now=now.astimezone(timezone.utc)
     validate_config(config)
+    if source_kind not in ("fred_csv","fed_original_xml"):
+        raise ValueError("Unrecognized authentic H10 source form")
     if not isinstance(raw_sha,str) or len(raw_sha)!=64 or any(c not in "0123456789abcdef" for c in raw_sha):
         raise ValueError("Source digest absent")
     if len(rows)<310 or len(rows)!=len({r["date"] for r in rows}):
@@ -111,8 +173,10 @@ def build(rows,config,*,raw_sha,now=None):
       "schema_version":1,"report_type":"asset_compass_v58_fed_h10_usd_research",
       "generated_at":now.isoformat(),"source_series_id":"DTWEXBGS",
       "source_owner":"Board of Governors of the Federal Reserve System",
-      "distribution_channel":"FRED (Federal Reserve Bank of St. Louis)",
-      "source_url":URL,"citation_url":"https://fred.stlouisfed.org/series/DTWEXBGS",
+      "distribution_channel":"FRED (Federal Reserve Bank of St. Louis)" if source_kind=="fred_csv" else "Federal Reserve Board original H10 SDMX ZIP",
+      "source_url":URL if source_kind=="fred_csv" else FED_XML_URL,
+      "citation_url":"https://fred.stlouisfed.org/series/DTWEXBGS" if source_kind=="fred_csv" else "https://www.federalreserve.gov/releases/h10/",
+      "original_source_format":source_kind,
       "raw_source_sha256":raw_sha,"observation_count":len(rows),
       "first_observation_date":rows[0]["date"],"latest_observation_date":latest["date"],
       "latest_index":current,"index_base":"January 2006 = 100",
@@ -147,9 +211,22 @@ def main():
     a=p.parse_args()
     if a.fetch==bool(a.csv):
         p.error("Choose exactly --fetch OR --csv real downloaded source")
-    data=retrieve() if a.fetch else a.csv.read_bytes()
+    source_kind="fred_csv"
+    if a.fetch:
+        try:
+            data=retrieve()
+            rows=parse_csv(data)
+        except (OSError,ConnectionError,TimeoutError,ValueError,UnicodeError) as exc:
+            print("FRED H10 unavailable, testing original FRB H10 SDMX source:",
+                  type(exc).__name__,flush=True)
+            data=retrieve_fed_xml()
+            rows=parse_fed_xml(data)
+            source_kind="fed_original_xml"
+    else:
+        data=a.csv.read_bytes()
+        rows=parse_csv(data)
     config=json.loads(MODEL.read_text(encoding="utf-8"))
-    result=build(parse_csv(data),config,raw_sha=hashlib.sha256(data).hexdigest())
+    result=build(rows,config,raw_sha=hashlib.sha256(data).hexdigest(),source_kind=source_kind)
     a.output.parent.mkdir(parents=True,exist_ok=True)
     a.output.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps({"status":"research_only","observations":result["observation_count"],
