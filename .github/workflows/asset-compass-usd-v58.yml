@@ -1,0 +1,88 @@
+name: Asset Compass V58 H10 USD and Model Evidence
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build_asset_compass_usd_v58.py'
+      - 'scripts/build_asset_compass_model_evidence_v58.py'
+      - '.github/workflows/asset-compass-usd-v58.yml'
+  schedule:
+    - cron: '45 16 * * 1-5'
+permissions:
+  contents: write
+concurrency:
+  group: asset-compass-ledger-main
+  cancel-in-progress: false
+jobs:
+  h10-and-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate source, provenance, return and scoring restrictions
+        run: python3 -m unittest discover -s tests -p 'test_asset_compass_model_evidence_v58.py' -v
+      - name: Fetch real Federal Reserve Board H10 broad dollar index through FRED
+        run: python3 -m scripts.build_asset_compass_usd_v58 --fetch
+      - name: Verify V54–V58 original public research inputs and model evidence gaps
+        run: python3 -m scripts.build_asset_compass_model_evidence_v58
+      - name: Ensure genuine USD source, 4 assets observed, zero scores or OOS claims
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          usd=json.loads(Path("data/asset-compass-usd-h10-v58.json").read_text())
+          m=json.loads(Path("data/asset-compass-model-gaps-v58.json").read_text())
+          assert usd["source_series_id"]=="DTWEXBGS" and usd["observation_count"]>=310
+          assert usd["fresh_for_research"] is True
+          assert usd["historical_first_publication_vintages_verified"] is False
+          assert usd["official_asset_score"] is None
+          assert m["asset_specific_observed_count"]==4
+          assert set(m["asset_specific_missing_assets"])=={"us_equities","bitcoin"}
+          assert m["official_0_to_100_scores_published"]==0
+          assert m["audited_asset_total_return_count"]==0
+          assert m["oos_validated_assets"]==0
+          assert m["historical_first_release_certified_source_count"]==0
+          assert m["qualified_for_live_scoring"] is False
+          assert all(v["official_score"] is None for v in m["research_assets"].values())
+          print("V58 authentic H10 and full scoring evidence gate passed")
+          PY
+      - name: Persist only verified official source summaries and research blockers
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/asset-compass-usd-h10-v58.json data/asset-compass-model-gaps-v58.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data(asset-compass): refresh Fed H10 USD and six-asset V58 research status"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Verify persisted main report remains non-scoring
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git show origin/main:data/asset-compass-usd-h10-v58.json > /tmp/v58-usd.json
+          git show origin/main:data/asset-compass-model-gaps-v58.json > /tmp/v58-evidence.json
+          cmp data/asset-compass-usd-h10-v58.json /tmp/v58-usd.json
+          cmp data/asset-compass-model-gaps-v58.json /tmp/v58-evidence.json
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          a=json.loads(Path("/tmp/v58-usd.json").read_text())
+          b=json.loads(Path("/tmp/v58-evidence.json").read_text())
+          assert a["historical_first_publication_vintages_verified"] is False
+          assert a["official_asset_score"] is None
+          assert b["official_0_to_100_scores_published"]==0
+          assert b["oos_validated_assets"]==0
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+              f.write("## V58 verified official H10 and 0–100 model gaps\n")
+              f.write(f"Broad dollar index: {a['latest_index']}; date {a['latest_observation_date']}\n")
+              f.write(f"Assets with an observed asset-specific source: {b['asset_specific_observed_count']}/6\n")
+              f.write("Official scores: 0/6; OOS certified: 0/6; historical first-release certification: 0\n")
+          PY
