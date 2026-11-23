@@ -38,7 +38,7 @@ jobs:
       - name: Verify real-source correlation audits cannot promote model scoring
         run: python3 -m unittest discover -s tests -p 'test_asset_compass_cross_source_v57.py' -v
       - name: Fetch CFTC gold positioning and 30y US Treasury bond auctions
-        run: python3 -m scripts.build_asset_compass_asset_specific_v57.py --fetch
+        run: python3 -m scripts.build_asset_compass_asset_specific_v57 --fetch
       - name: Validate actual source coverage, provenance and score ban
         run: |
           python3 - <<'PY'
