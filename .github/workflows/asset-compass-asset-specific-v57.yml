@@ -7,6 +7,8 @@ on:
       - '.github/workflows/asset-compass-asset-specific-v57.yml'
       - 'scripts/build_asset_compass_asset_specific_v57.py'
       - 'tests/test_asset_compass_asset_specific_v57.py'
+      - 'scripts/archive_asset_compass_v57_first_seen.py'
+      - 'tests/test_asset_compass_first_seen_v57.py'
   schedule:
     # CFTC Tuesday positioning usually releases Friday ~3:30 PM US ET,
     # and Treasury auction results are available after auctions.
@@ -29,6 +31,8 @@ jobs:
           python-version: '3.12'
       - name: Check gold/30y official parsers and strict score lock
         run: python3 -m unittest discover -s tests -p 'test_asset_compass_asset_specific_v57.py' -v
+      - name: V57 verify first-seen immutable evidence-chain behavior
+        run: python3 -m unittest discover -s tests -p 'test_asset_compass_first_seen_v57.py' -v
       - name: Fetch CFTC gold positioning and 30y US Treasury bond auctions
         run: python3 -m scripts.build_asset_compass_asset_specific_v57.py --fetch
       - name: Validate actual source coverage, provenance and score ban
@@ -54,13 +58,17 @@ jobs:
                 x["sources"]["treasury_30y"]["latest_auction_date"],
                 "— 3/6 source observation only, 0 scores")
           PY
+      - name: Append SHA256 chained first-seen captures (not original PIT)
+        run: |
+          python3 -m scripts.archive_asset_compass_v57_first_seen
+          python3 -m scripts.archive_asset_compass_v57_first_seen --verify-only
       - name: Persist official source results to GitHub main
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/asset-compass-asset-specific-v57.json
+          git add data/asset-compass-asset-specific-v57.json data/asset-compass-asset-specific-first-seen-v57.jsonl
           if ! git diff --cached --quiet; then
             git commit -m "data(asset-compass): actual CFTC gold and 30y Treasury demand observations"
             git pull --rebase origin main
@@ -71,7 +79,11 @@ jobs:
           set -euo pipefail
           git fetch origin main
           git show origin/main:data/asset-compass-asset-specific-v57.json > /tmp/ooglex-v57-published.json
+          git show origin/main:data/asset-compass-asset-specific-first-seen-v57.jsonl > /tmp/ooglex-v57-first-seen-published.jsonl
           cmp data/asset-compass-asset-specific-v57.json /tmp/ooglex-v57-published.json
+          cmp data/asset-compass-asset-specific-first-seen-v57.jsonl /tmp/ooglex-v57-first-seen-published.jsonl
+          python3 -m scripts.archive_asset_compass_v57_first_seen \
+            --ledger /tmp/ooglex-v57-first-seen-published.jsonl --verify-only
           python3 - <<'PY'
           import json,os
           from pathlib import Path
