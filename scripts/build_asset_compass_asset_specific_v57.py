@@ -330,6 +330,11 @@ def main():
       "status":report["status"],
       "gold_cot_weeks":report["sources"]["cftc_gold"]["observation_count"],
       "treasury_30y_auctions":report["sources"]["treasury_30y"]["auction_count"],
+      "gold_latest_date":report["sources"]["cftc_gold"]["latest_observation_date"],
+      "treasury_latest_date":report["sources"]["treasury_30y"]["latest_auction_date"],
+      "gold_age_days":report["sources"]["cftc_gold"]["age_calendar_days"],
+      "treasury_age_days":report["sources"]["treasury_30y"]["age_calendar_days"],
+      "cftc_holiday_exceptions":report["sources"]["cftc_gold"]["non_tuesday_report_dates"],
       "asset_specific_source_available":report["asset_specific_source_available_assets"],
       "scores_published":0,"pit_vintages_certified":0,
     },ensure_ascii=False))
