@@ -28,6 +28,7 @@ from scripts.score_macro_assets import score_one, validate_config
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "asset-compass-new-sources-v56.json"
 MODEL = ROOT / "macro" / "model-config.json"
+READINESS = ROOT / "data" / "asset-compass-scoring-readiness-v54.json"
 FRED_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id=NFCI&cosd=2019-01-01"
 EIA_URL = "https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?f=W&n=PET&s=WCESTUS1"
 ASSETS = ("gold", "us_equities", "us_long_bonds", "usd", "bitcoin", "oil")
@@ -219,6 +220,24 @@ def build(nfci_rows, oil_rows, config, *, nfci_sha, oil_sha, now=None):
     validate_config(config)
     if set(config["weights"]) != set(ASSETS):
         raise ValueError("Unknown model asset set")
+    # V54 records source observations in the original daily snapshot. V56
+    # extends that inventory; never hardcode "6/6" or treat group presence
+    # as independent predictive/model-qualified evidence.
+    previous = json.loads(READINESS.read_text(encoding="utf-8"))
+    if (previous.get("report_type") != "asset_compass_v54_scoring_readiness"
+            or previous.get("validated_for_live_scoring") is not False
+            or previous.get("source_pit_qualified_count") != 0
+            or not isinstance(previous.get("groups"), dict)
+            or set(previous["groups"]) != set(config["factor_order"])):
+        raise ValueError("V54 audited source-readiness lineage invalid")
+    prior_groups = set()
+    for group, item in previous["groups"].items():
+        n = item.get("source_observation_count")
+        if type(n) is not int or n < 0:
+            raise ValueError("V54 source observations missing or invalid")
+        if n:
+            prior_groups.add(group)
+    covered_groups = prior_groups | {"risk", "asset_specific"}
     risk = numeric_summary(nfci_rows, kind="nfci", now=now)
     oil = numeric_summary(oil_rows, kind="oil_inventory", now=now)
     for name in (nfci_sha, oil_sha):
@@ -281,7 +300,10 @@ def build(nfci_rows, oil_rows, config, *, nfci_sha, oil_sha, now=None):
         "status": status,
         "sources": {"nfci": risk, "oil_inventory": oil},
         "actual_observation_groups_added": ["risk", "asset_specific"],
-        "groups_with_any_observation_across_v54_and_v56": 6,
+        "groups_with_any_observation_across_v54_and_v56": len(covered_groups),
+        "group_ids_with_any_observation": sorted(covered_groups),
+        "v54_daily_snapshot_group_ids": sorted(prior_groups),
+        "v54_source_snapshot_generated_at": previous.get("source_snapshot_generated_at"),
         "assets_with_asset_specific_source_observations": ["oil"],
         "ice_bofa_high_yield_oas_research": "not_collected_permission_pending",
         "source_licensing_review_status": "source_specific_citation_required_not_a_general_redistribution_license",
