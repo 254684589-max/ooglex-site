@@ -21,6 +21,8 @@ class IndicatorCatalogFocusTests(unittest.TestCase):
         self.assertIn('id="a10-rows"',self.catalog)
         self.assertIn('id="indicator-rows"',self.catalog)
         self.assertIn('id="catalog-coverage-status"',self.catalog)
+        self.assertIn('id="data-status"',self.catalog)
+        self.assertIn('dataStatus.value',self.catalog)
         self.assertIn('asset-compass-indicator-coverage-v1.json',self.catalog)
         self.assertIn('实际数据接入',self.catalog)
         self.assertLess(self.catalog.index('id="a10-rows"'),self.catalog.index('id="indicator-rows"'))
