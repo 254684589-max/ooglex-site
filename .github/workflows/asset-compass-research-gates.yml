@@ -41,6 +41,8 @@ on:
       - 'scripts/build_asset_compass_asset_specific_v57.py'
       - 'tests/test_asset_compass_asset_specific_v57.py'
       - 'tests/smoke_asset_compass_asset_specific_v57.cjs'
+      - 'scripts/archive_asset_compass_v57_first_seen.py'
+      - 'tests/test_asset_compass_first_seen_v57.py'
       - '.github/workflows/asset-compass-asset-specific-v57.yml'
       - 'docs/ASSET_COMPASS_V57_*'
       - 'macro/model-config.json'
@@ -188,6 +190,7 @@ jobs:
       - name: V57 verify gold CFTC + Treasury auction parsers and website zero-score contract
         run: |
           python3 -m unittest discover -s tests -p 'test_asset_compass_asset_specific_v57.py' -v
+          python3 -m unittest discover -s tests -p 'test_asset_compass_first_seen_v57.py' -v
           node --check macro/compass-pages.js
           node tests/smoke_asset_compass_asset_specific_v57.cjs
       - name: V57 download actual CFTC Gold and Treasury auctions, no synthesized inputs
