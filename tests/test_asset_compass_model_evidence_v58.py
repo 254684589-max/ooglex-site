@@ -4,10 +4,12 @@ import hashlib
 import json
 import math
 import unittest
+import io
+import zipfile
 from datetime import date,datetime,timedelta,timezone
 from pathlib import Path
 
-from scripts.build_asset_compass_usd_v58 import build,parse_csv,URL
+from scripts.build_asset_compass_usd_v58 import build,parse_csv,parse_fed_xml,URL,FED_XML_URL
 from scripts.build_asset_compass_model_evidence_v58 import produce,PATHS
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -45,6 +47,37 @@ class V58EvidenceTests(unittest.TestCase):
         d=copy.deepcopy(self.inputs)
         d["v58_usd"]=self.validated_usd()
         return d
+
+    def test_original_federal_reserve_sdmx_zip_series_attribute(self):
+        rows=usd_series()
+        xml="<Root><Series SERIES_NAME='JRXWTFB_N.B'>"+ "".join(
+          f"<Obs TIME_PERIOD='{r['date']}' OBS_VALUE='{r['index']}'/>" for r in rows
+        )+"</Series><Series SERIES_NAME='JRXWTFN_N.B'><Obs TIME_PERIOD='2026-11-13' OBS_VALUE='101.0'/></Series></Root>"
+        out=io.BytesIO()
+        with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED) as z:
+            z.writestr("H10.xml",xml)
+        self.assertEqual(parse_fed_xml(out.getvalue()),rows)
+
+    def test_original_federal_reserve_nested_sdmx_key_and_source_disclosure(self):
+        rows=usd_series()
+        xml="<Root><Series><SeriesKey><Value id='SERIES_NAME' value='JRXWTFB_N.B'/></SeriesKey>"+ "".join(
+          f"<Obs TIME_PERIOD='{r['date']}' OBS_VALUE='{r['index']}'/>" for r in rows
+        )+"</Series></Root>"
+        out=io.BytesIO()
+        with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED) as z:
+            z.writestr("h10_data.xml",xml)
+        self.assertEqual(parse_fed_xml(out.getvalue()),rows)
+        result=build(rows,self.cfg,raw_sha="a"*64,source_kind="fed_original_xml",now=NOW)
+        self.assertEqual(result["original_source_format"],"fed_original_xml")
+        self.assertEqual(result["source_url"],FED_XML_URL)
+        self.assertIsNone(result["official_asset_score"])
+
+    def test_unrelated_original_sdmx_series_is_not_mislabeled_usd(self):
+        raw=io.BytesIO()
+        with zipfile.ZipFile(raw,"w",zipfile.ZIP_DEFLATED) as z:
+            z.writestr("H10.xml","<Root><Series SERIES_NAME='JRXWTFN_N.B'><Obs TIME_PERIOD='2026-11-13' OBS_VALUE='100'/></Series></Root>")
+        with self.assertRaisesRegex(ValueError,"missing"):
+            parse_fed_xml(raw.getvalue())
 
     def test_source_csv_parses_correct_official_series(self):
         a=usd_series()
