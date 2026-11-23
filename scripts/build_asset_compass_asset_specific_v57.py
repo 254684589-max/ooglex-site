@@ -25,6 +25,7 @@ MODEL=ROOT/"macro/model-config.json"
 V56=ROOT/"data/asset-compass-new-sources-v56.json"
 CFTC_ENDPOINT="https://publicreporting.cftc.gov/resource/72hh-3qpy.json"
 FISCAL_ENDPOINT="https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/treasury_securities_auctions_v2"
+LEGACY_FISCAL_ENDPOINT="https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/auctions_query"
 CFTC_CODE="088691"
 ASSETS=("gold","us_equities","us_long_bonds","usd","bitcoin","oil")
 
@@ -33,6 +34,12 @@ CFTC_ARGS={
     "$where":"cftc_contract_market_code='088691'",
     "$order":"report_date_as_yyyy_mm_dd DESC",
     "$limit":"350",
+}
+LEGACY_FISCAL_ARGS={
+    "fields":"auction_date,security_type,security_term,bid_to_cover_ratio,cusip",
+    "filter":"security_type:eq:Bond,auction_date:gte:2018-01-01",
+    "sort":"-auction_date",
+    "page[size]":"250",
 }
 FISCAL_ARGS={
     "fields":"comp_auction_close_date,security_type,security_term,bid_to_cover_ratio,cusip",
@@ -125,7 +132,7 @@ def parse_gold(raw, *, now=None):
     return rows
 
 
-def parse_treasury(raw, *, now=None):
+def parse_treasury(raw, *, now=None, minimum=36):
     now=now or datetime.now(timezone.utc)
     try:
         d=json.loads(raw)
@@ -139,7 +146,9 @@ def parse_treasury(raw, *, now=None):
         if r.get("security_type")!="Bond":
             continue
         term=str(r.get("security_term") or "")
-        if not re.match(r"^30[- ]Year",term,re.I):
+        # 30Y reopenings are listed by REMAINING term, e.g. 29-Year 11-Month.
+        # These are distinct completed long-bond auction events.
+        if not re.match(r"^(?:29|30)[- ]Year",term,re.I):
             continue
         if r.get("bid_to_cover_ratio") in (None,"","null"):
             continue # a not-yet-auctioned official announcement, not a zero
@@ -157,7 +166,7 @@ def parse_treasury(raw, *, now=None):
         rows.append({"auction_date":day.isoformat(),"cusip":cusip,
                      "bid_to_cover_ratio":round(ratio,5),"security_term":term})
     rows.sort(key=lambda x:(x["auction_date"],x["cusip"]))
-    if len(rows)<36:
+    if len(rows)<minimum:
         # Diagnostic records only public non-sensitive schema fields; no raw
         # private payload or proprietary data is logged.
         sample=[{k:r.get(k) for k in
@@ -167,6 +176,29 @@ def parse_treasury(raw, *, now=None):
             +str(len(rows))+", source_rows="+str(len(d["data"]))+
             ", first_rows="+json.dumps(sample))
     return rows
+
+
+
+def combine_auction_sources(legacy,updated):
+    """Respect official updated v2 rows; merge historical legacy rows by CUSIP/date.
+
+    No current-data backfill by invented auctions and no claims about official
+    as-published vintage. A revision discrepancy outside rounding fails safe.
+    """
+    unique={}
+    for row in legacy:
+        unique[(row["auction_date"],row["cusip"])]=dict(row)
+    for row in updated:
+        key=(row["auction_date"],row["cusip"])
+        earlier=unique.get(key)
+        if (earlier and abs(earlier["bid_to_cover_ratio"]-
+                            row["bid_to_cover_ratio"])>0.1):
+            raise ValueError("Inconsistent official 30Y auction result across datasets")
+        unique[key]=dict(row)
+    results=sorted(unique.values(),key=lambda r:(r["auction_date"],r["cusip"]))
+    if len(results)<37:
+        raise ValueError("Not enough genuine unique 30-year issue and reopening auctions")
+    return results
 
 
 def _normalized(values,current):
@@ -238,6 +270,8 @@ def build(gold,bond,config,v56,*,now=None,source_hashes=None):
     bond_stat.update({
         "series_id":"TREASURY_30Y_BOND_AUCTION_BID_TO_COVER",
         "source_url":address(FISCAL_ENDPOINT,FISCAL_ARGS),
+        "historical_source_url":address(LEGACY_FISCAL_ENDPOINT,LEGACY_FISCAL_ARGS),
+        "source_combines_legacy_and_updated_v2":True,
         "series_home":"https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/",
         "source_owner":"U.S. Department of the Treasury (FiscalData)",
         "source_sha256":source_hashes["treasury_30y"],
@@ -308,28 +342,35 @@ def main():
     p.add_argument("--fetch",action="store_true")
     p.add_argument("--cftc-json",type=Path)
     p.add_argument("--treasury-json",type=Path)
+    p.add_argument("--treasury-v2-json",type=Path)
     p.add_argument("--v56",type=Path,default=V56)
     p.add_argument("--model",type=Path,default=MODEL)
     p.add_argument("--output",type=Path,default=OUT)
     a=p.parse_args()
-    if a.fetch==bool(a.cftc_json or a.treasury_json):
-        p.error("Provide --fetch OR both --cftc-json and --treasury-json")
+    if a.fetch==bool(a.cftc_json or a.treasury_json or a.treasury_v2_json):
+        p.error("Provide --fetch OR all three local real source files")
     if a.fetch:
         c=retrieve(address(CFTC_ENDPOINT,CFTC_ARGS),"publicreporting.cftc.gov")
+        historical=retrieve(address(LEGACY_FISCAL_ENDPOINT,LEGACY_FISCAL_ARGS),
+                            "api.fiscaldata.treasury.gov")
         t=retrieve(address(FISCAL_ENDPOINT,FISCAL_ARGS),"api.fiscaldata.treasury.gov")
     else:
-        if not (a.cftc_json and a.treasury_json):
-            p.error("Both original JSON files required")
-        c,t=a.cftc_json.read_bytes(),a.treasury_json.read_bytes()
+        if not (a.cftc_json and a.treasury_json and a.treasury_v2_json):
+            p.error("All three real downloaded JSON files required")
+        c=a.cftc_json.read_bytes()
+        historical=a.treasury_json.read_bytes()
+        t=a.treasury_v2_json.read_bytes()
     now=datetime.now(timezone.utc)
     gold=parse_gold(c,now=now)
-    bond=parse_treasury(t,now=now)
+    bond=combine_auction_sources(
+        parse_treasury(historical,now=now,minimum=0),
+        parse_treasury(t,now=now,minimum=0))
     report=build(gold,bond,
        json.loads(a.model.read_text(encoding="utf-8")),
        json.loads(a.v56.read_text(encoding="utf-8")),
        now=now,source_hashes={
         "cftc_gold":hashlib.sha256(c).hexdigest(),
-        "treasury_30y":hashlib.sha256(t).hexdigest(),
+        "treasury_30y":hashlib.sha256(historical+b"\\n--two-treasury-official-datasets--\\n"+t).hexdigest(),
        })
     a.output.parent.mkdir(parents=True,exist_ok=True)
     a.output.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
