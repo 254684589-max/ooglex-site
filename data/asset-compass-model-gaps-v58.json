@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_v58_six_asset_model_evidence",
+  "generated_at": "2026-11-23T09:57:41.780936+00:00",
+  "status": "research_only_no_authorized_scores",
+  "input_sha256": {
+    "snapshot": "8b2d6aa33becb319e39b27619383047bffe2ddc7566e099825c19533e0bfae5d",
+    "v54": "1395f2dbb8edd54ad709201049b539a728611eeec88bee29dea17f90493049ed",
+    "v55": "bfbb4a0c33d27809a0b358bca0b907b7d38943bd018e5837483e44bc990243c0",
+    "v56": "7c230f173a47d5355eb96e30efb2c8c646d152a033beeaf2a2bcffa44fe6ffc8",
+    "v57": "2c7d5bcef6a363830848bd14c3c5d79a8ace6a6f3dc98e1afb09fd5269cb8a90",
+    "v57_overlap": "e56504837b25b510b2e212e8776686a961e4ab19e6d321fa1a81864f24150399",
+    "v58_usd": "bc11aaae28d77595dd7fdbea0f641cde133ae58641023f72ce9356fa660bdd8f",
+    "history": "c148f4696aaff9b40e7230295eb312ed44c9b29a85f989296aa6f7d5153f2537",
+    "model": "a1d5a1a5f3dad358df8d770d639ef9d8eab78ba793360ad89355093daf4a4c4f"
+  },
+  "macro_observation_group_count": 6,
+  "asset_specific_observed_assets": [
+    "gold",
+    "us_long_bonds",
+    "usd",
+    "oil"
+  ],
+  "asset_specific_missing_assets": [
+    "us_equities",
+    "bitcoin"
+  ],
+  "asset_specific_observed_count": 4,
+  "asset_specific_missing_count": 2,
+  "historical_first_release_certified_source_count": 0,
+  "audited_asset_total_return_count": 0,
+  "approved_independent_model_factor_group_count": 0,
+  "oos_validated_assets": 0,
+  "official_0_to_100_scores_published": 0,
+  "research_assets": {
+    "gold": {
+      "label": "黄金",
+      "source_observation_status": "observed_research_only",
+      "source_ids": [
+        "cftc_gold"
+      ],
+      "research_source_count": 1,
+      "completeness_in_six_assets_pct": 100,
+      "research_proxy_not_price_total_return": true,
+      "macro_group_raw_sources": 6,
+      "model_qualified_factor_group_count": 0,
+      "model_qualified_weight_pct": 0,
+      "model_calibration_verified": false,
+      "point_in_time_provenance_verified": false,
+      "investable_total_return_verified": false,
+      "out_of_sample_backtest_verified": false,
+      "official_score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ],
+      "missing_evidence": [
+        "point_in_time_history",
+        "total_returns",
+        "out_of_sample",
+        "factor_calibration",
+        "source_independence",
+        "legal_rights"
+      ],
+      "next_evidence": "CFTC reporting_asof_not_release_datetime; historical direction to be validated"
+    },
+    "us_equities": {
+      "label": "美国股票",
+      "source_observation_status": "missing_specific_source",
+      "source_ids": [],
+      "research_source_count": 0,
+      "completeness_in_six_assets_pct": 0,
+      "research_proxy_not_price_total_return": true,
+      "macro_group_raw_sources": 6,
+      "model_qualified_factor_group_count": 0,
+      "model_qualified_weight_pct": 0,
+      "model_calibration_verified": false,
+      "point_in_time_provenance_verified": false,
+      "investable_total_return_verified": false,
+      "out_of_sample_backtest_verified": false,
+      "official_score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ],
+      "missing_evidence": [
+        "point_in_time_history",
+        "total_returns",
+        "out_of_sample",
+        "factor_calibration",
+        "source_independence",
+        "legal_rights"
+      ],
+      "next_evidence": "official_index_level_is_not_total_return; seek properly licensed index-valuation/earnings or SEC source"
+    },
+    "us_long_bonds": {
+      "label": "美国长期国债",
+      "source_observation_status": "observed_research_only",
+      "source_ids": [
+        "treasury_30y"
+      ],
+      "research_source_count": 1,
+      "completeness_in_six_assets_pct": 100,
+      "research_proxy_not_price_total_return": true,
+      "macro_group_raw_sources": 6,
+      "model_qualified_factor_group_count": 0,
+      "model_qualified_weight_pct": 0,
+      "model_calibration_verified": false,
+      "point_in_time_provenance_verified": false,
+      "investable_total_return_verified": false,
+      "out_of_sample_backtest_verified": false,
+      "official_score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ],
+      "missing_evidence": [
+        "point_in_time_history",
+        "total_returns",
+        "out_of_sample",
+        "factor_calibration",
+        "source_independence",
+        "legal_rights"
+      ],
+      "next_evidence": "Treasury auction bid_cover_not_investable_total_return"
+    },
+    "usd": {
+      "label": "美元",
+      "source_observation_status": "observed_research_only",
+      "source_ids": [
+        "fed_h10_dollar"
+      ],
+      "research_source_count": 1,
+      "completeness_in_six_assets_pct": 100,
+      "research_proxy_not_price_total_return": true,
+      "macro_group_raw_sources": 6,
+      "model_qualified_factor_group_count": 0,
+      "model_qualified_weight_pct": 0,
+      "model_calibration_verified": false,
+      "point_in_time_provenance_verified": false,
+      "investable_total_return_verified": false,
+      "out_of_sample_backtest_verified": false,
+      "official_score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ],
+      "missing_evidence": [
+        "point_in_time_history",
+        "total_returns",
+        "out_of_sample",
+        "factor_calibration",
+        "source_independence",
+        "legal_rights"
+      ],
+      "next_evidence": "Fed H10 broad_index_is_not_fx_carry_total_return"
+    },
+    "bitcoin": {
+      "label": "比特币",
+      "source_observation_status": "missing_specific_source",
+      "source_ids": [],
+      "research_source_count": 0,
+      "completeness_in_six_assets_pct": 0,
+      "research_proxy_not_price_total_return": true,
+      "macro_group_raw_sources": 6,
+      "model_qualified_factor_group_count": 0,
+      "model_qualified_weight_pct": 0,
+      "model_calibration_verified": false,
+      "point_in_time_provenance_verified": false,
+      "investable_total_return_verified": false,
+      "out_of_sample_backtest_verified": false,
+      "official_score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ],
+      "missing_evidence": [
+        "point_in_time_history",
+        "total_returns",
+        "out_of_sample",
+        "factor_calibration",
+        "source_independence",
+        "legal_rights"
+      ],
+      "next_evidence": "licensed_chain_supply_or_verifiable_ETF_holding_or_market_aggregate_required"
+    },
+    "oil": {
+      "label": "原油",
+      "source_observation_status": "observed_research_only",
+      "source_ids": [
+        "eia_commercial_oil_inventory"
+      ],
+      "research_source_count": 1,
+      "completeness_in_six_assets_pct": 100,
+      "research_proxy_not_price_total_return": true,
+      "macro_group_raw_sources": 6,
+      "model_qualified_factor_group_count": 0,
+      "model_qualified_weight_pct": 0,
+      "model_calibration_verified": false,
+      "point_in_time_provenance_verified": false,
+      "investable_total_return_verified": false,
+      "out_of_sample_backtest_verified": false,
+      "official_score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ],
+      "missing_evidence": [
+        "point_in_time_history",
+        "total_returns",
+        "out_of_sample",
+        "factor_calibration",
+        "source_independence",
+        "legal_rights"
+      ],
+      "next_evidence": "EIA weekly_inventory_is_not_futures_roll_adjusted_return"
+    }
+  },
+  "blockers": {
+    "point_in_time_history": "historical_first_publication_and_revisions_not_certified",
+    "total_returns": "investable_total_return_with_distributions_and_fx_or_roll_not_certified",
+    "out_of_sample": "multi_regime_independent_walkforward_evidence_not_certified",
+    "factor_calibration": "asset_direction_sensitivity_and_weight_calibration_not_certified",
+    "source_independence": "risk_and_rate_source_overlap_not_resolved",
+    "legal_rights": "series_specific_redistribution_rights_not_universally_verified"
+  },
+  "model_scoring_qualification": "not_approved",
+  "qualified_for_live_scoring": false,
+  "automated_investment_actions_enabled": false,
+  "limitations": [
+    "Four assets have an observable research proxy but none has independently certified factor score.",
+    "Gold CFTC, long-bond Treasury auction, crude EIA stocks and Fed H10 USD index are incomparable units.",
+    "H10 index is a broad nominal currency value, not a tradable carry-adjusted USD total return.",
+    "Raw macro source presence is not as-of publish vintage, calibration or tested trading performance.",
+    "No purchase/sell/asset-allocation rating is authorized by this document."
+  ]
+}
