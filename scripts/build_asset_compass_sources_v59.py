@@ -12,9 +12,11 @@ Both sources are latest available, NOT certified point-in-time release vintages.
 from __future__ import annotations
 
 import argparse
+import calendar
 import csv
 import hashlib
 import io
+from html.parser import HTMLParser
 import json
 import math
 import re
@@ -109,11 +111,92 @@ def parse_equities_csv(raw):
     return results
 
 
-def build_equities(rows, *, raw_sha, now=None):
+class _Z1HTMLRows(HTMLParser):
+    """Strict structural HTML table extraction; never infer missing numbers."""
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.rows = []
+        self.in_row = False
+        self.in_cell = False
+        self.cells = []
+        self.parts = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "tr":
+            self.in_row = True
+            self.cells = []
+        elif tag in ("td", "th") and self.in_row:
+            self.in_cell = True
+            self.parts = []
+
+    def handle_data(self, data):
+        if self.in_cell:
+            self.parts.append(data)
+
+    def handle_endtag(self, tag):
+        if tag in ("td", "th") and self.in_cell:
+            self.cells.append(" ".join("".join(self.parts).split()))
+            self.in_cell = False
+        elif tag == "tr" and self.in_row:
+            if self.cells:
+                self.rows.append(self.cells)
+            self.in_row = False
+
+
+def parse_z1_official_html(raw):
+    """Parse only F51.1.s row 1 LM893064105 (Issues at market value).
+
+    The Board's published HTML table has six recent quarterly columns,
+    not the 50+ long FRED history; this is explicit and not backtest-ready.
+    """
+    html = raw.decode("utf-8-sig")
+    if "F51.1.s" not in html and "F51_1_s" not in html:
+        raise ValueError("Wrong Federal Reserve Z.1 table title")
+    parser = _Z1HTMLRows()
+    parser.feed(html)
+    quarter = re.compile(r"^(\d{4}):Q([1-4])$")
+    headers = [row for row in parser.rows
+               if sum(quarter.fullmatch(c) is not None for c in row) >= 6]
+    if len(headers) != 1:
+        raise ValueError("Ambiguous official Z.1 quarterly header")
+    header = headers[0]
+    quarters = [m.groups() for cell in header if (m := quarter.fullmatch(cell))]
+    if len(quarters) != 6 or not all(quarter.fullmatch(x) for x in header[-6:]):
+        raise ValueError("Unexpected Z.1 quarterly table layout")
+    if [int(y)*4+int(q) for y,q in quarters] != sorted(
+            set(int(y)*4+int(q) for y,q in quarters)):
+        raise ValueError("Non-ascending or duplicate Z.1 official quarters")
+    matches = [row for row in parser.rows if
+               "LM893064105" in row and "Issues at market value" in row]
+    if len(matches) != 1 or len(matches[0]) != len(header):
+        raise ValueError("Missing or ambiguous F51.1.s market-value row")
+    cells = matches[0][-6:]
+    rows = []
+    for (year, q), cell in zip(quarters, cells):
+        if not re.fullmatch(r"\d+(?:\.\d+)?", cell):
+            raise ValueError("Missing or malformed official Z.1 quarter value")
+        billions = float(cell)
+        millions = billions * 1000
+        if not math.isfinite(millions) or not 1_000_000 < millions < 1_000_000_000:
+            raise ValueError("Implausible official Z.1 corporate equity stock")
+        y, qi = int(year), int(q)
+        month = qi * 3
+        rows.append({
+            "observation_date": date(y, month, calendar.monthrange(y, month)[1]).isoformat(),
+            "quarter": f"{y}-Q{qi}",
+            "market_value_millions_usd": millions
+        })
+    return rows
+
+
+def build_equities(rows, *, raw_sha, source_format="fred_csv", now=None):
     now = _utc(now)
     if not HEX64.fullmatch(raw_sha):
-        raise ValueError("Missing official CSV SHA256")
-    if len(rows) < 50 or len(set(r["quarter"] for r in rows)) != len(rows):
+        raise ValueError("Missing official source SHA256")
+    required = {"fred_csv": 50, "fed_original_html_table": 6}.get(source_format)
+    if required is None:
+        raise ValueError("Unsupported Z.1 source format")
+    if len(rows) < required or len(set(r["quarter"] for r in rows)) != len(rows):
         raise ValueError("Invalid quarterly history")
     if any(date.fromisoformat(r["observation_date"]) > now.date() for r in rows):
         raise ValueError("Future Z.1 record")
@@ -126,7 +209,10 @@ def build_equities(rows, *, raw_sha, now=None):
         "generated_at": now.isoformat(), "asset_id": "us_equities",
         "source_id": SOURCE_EQUITIES, "series_id": FRED_ID,
         "source_owner": "Board of Governors of the Federal Reserve System",
-        "source_url": FRED_URL, "citation_url": FRED_CITATION,
+        "source_url": FRED_URL if source_format == "fred_csv" else FED_Z1_URL,
+        "citation_url": FRED_CITATION if source_format == "fred_csv" else FED_Z1_URL,
+        "original_source_format": source_format,
+        "historical_depth_for_backtest_verified": False,
         "official_table_url": FED_Z1_URL, "raw_source_sha256": raw_sha,
         "units": "millions_usd", "frequency": "quarterly_end_of_period",
         "observation_count": len(rows), "latest_observation_period": latest["quarter"],
@@ -139,7 +225,7 @@ def build_equities(rows, *, raw_sha, now=None):
         "fresh_for_research": 0 <= age <= 300,
         "observation_calendar_days_old": age,
         "source_observation_status": "observed_research_only",
-        "source_rights": "Federal Reserve public-domain data; citation requested via FRED metadata",
+        "source_rights": "Federal Reserve public-domain data; attribution requested",
         "redistribution_rights_instrument_by_instrument_certified": False,
         "historical_first_publication_vintages_verified": False,
         "investable_total_return_verified": False, "independent_signal_verified": False,
@@ -149,7 +235,8 @@ def build_equities(rows, *, raw_sha, now=None):
             "Z.1 all-sector corporate equity market-value STOCK includes more than publicly traded US stocks; not the S&P 500.",
             "Levels change with valuation, issuance, sector and methodological revisions; changes are not investor returns.",
             "Quarter-end observation date is NOT official publication date; no original historical vintage certified.",
-            "Source is latest-revised quarterly data, not a calibrated asset pricing factor."
+            "Source is latest-revised quarterly data, not a calibrated asset pricing factor.",
+            "When Federal Reserve HTML is used it contains only six recent quarters; no claim of long historical backtest depth."
         ]
     }
 
@@ -314,7 +401,10 @@ def build_evidence(v58, equities=None, bitcoin=None, *, now=None):
                 elif aid == "us_equities":
                     latest = date.fromisoformat(doc["latest_observation_date"])
                     if (doc.get("series_id") != FRED_ID or doc.get("units") != "millions_usd" or
-                        doc.get("observation_count", 0) < 50 or not
+                        doc.get("original_source_format") not in ("fred_csv", "fed_original_html_table") or
+                        doc.get("observation_count", 0) < (
+                            50 if doc.get("original_source_format") == "fred_csv" else 6) or
+                        doc.get("historical_depth_for_backtest_verified") is not False or not
                         HEX64.fullmatch(doc.get("raw_source_sha256", "")) or
                         not 0 <= (now.date() - latest).days <= 300):
                         reason = "quarterly_market_value_unverified"
@@ -385,13 +475,27 @@ def main():
     p.add_argument("task", choices=("fetch-equities", "fetch-bitcoin", "build-evidence"))
     args = p.parse_args()
     if args.task == "fetch-equities":
-        raw = _get(FRED_URL, host="fred.stlouisfed.org")
-        data = build_equities(parse_equities_csv(raw), raw_sha=_digest(raw))
+        # Board original table is preferred because FRED graph CSV times out
+        # on GitHub-hosted runners. Do not silently invent missing quarters.
+        try:
+            raw = _get(FED_Z1_URL, host="www.federalreserve.gov",
+                       limit=1_000_000, retries=2)
+            rows = parse_z1_official_html(raw)
+            source_format = "fed_original_html_table"
+        except (OSError, TimeoutError, UnicodeError, ValueError, ConnectionError) as exc:
+            print("Official Board table unavailable/invalid; trying Federal Reserve FRED mirror:",
+                  type(exc).__name__, str(exc)[:120], flush=True)
+            raw = _get(FRED_URL, host="fred.stlouisfed.org")
+            rows = parse_equities_csv(raw)
+            source_format = "fred_csv"
+        data = build_equities(rows, raw_sha=_digest(raw), source_format=source_format)
         if not data["fresh_for_research"]:
             raise SystemExit("Official Z.1 observation stale; refusing to promote as available")
         write_json(EQUITY_FILE, data)
         print(json.dumps({"source": SOURCE_EQUITIES, "quarter": data["latest_observation_period"],
-                          "trillions_usd": data["latest_market_value_trillions_usd"]}))
+                          "trillions_usd": data["latest_market_value_trillions_usd"],
+                          "format": data["original_source_format"],
+                          "quarters": data["observation_count"]}))
     elif args.task == "fetch-bitcoin":
         data = fetch_bitcoin()
         if not data["fresh_for_research"]:
