@@ -1,0 +1,93 @@
+name: Asset Compass V57 CFTC Gold and Treasury Long-Bond Primary Source Evidence
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/asset-compass-asset-specific-v57.yml'
+      - 'scripts/build_asset_compass_asset_specific_v57.py'
+      - 'tests/test_asset_compass_asset_specific_v57.py'
+  schedule:
+    # CFTC Tuesday positioning usually releases Friday ~3:30 PM US ET,
+    # and Treasury auction results are available after auctions.
+    - cron: '30 2 * * 6'
+permissions:
+  contents: write
+concurrency:
+  group: asset-compass-ledger-main
+  cancel-in-progress: false
+jobs:
+  official-asset-specific-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check gold/30y official parsers and strict score lock
+        run: python3 -m unittest discover -s tests -p 'test_asset_compass_asset_specific_v57.py' -v
+      - name: Fetch CFTC gold positioning and 30y US Treasury bond auctions
+        run: python3 -m scripts.build_asset_compass_asset_specific_v57.py --fetch
+      - name: Validate actual source coverage, provenance and score ban
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path("data/asset-compass-asset-specific-v57.json").read_text())
+          assert x["report_type"]=="asset_compass_v57_authentic_asset_specific_source_research"
+          assert x["sources"]["cftc_gold"]["observation_count"]>=105
+          assert x["sources"]["treasury_30y"]["auction_count"]>=37
+          assert x["sources"]["cftc_gold"]["series_id"]=="CFTC_COMEX_GOLD_MANAGED_MONEY_FUTURES_ONLY"
+          assert x["sources"]["treasury_30y"]["series_id"]=="TREASURY_30Y_BOND_AUCTION_BID_TO_COVER"
+          assert x["asset_specific_source_available_assets"]==["gold","oil","us_long_bonds"]
+          assert x["asset_specific_source_missing_assets"]==["bitcoin","us_equities","usd"]
+          assert x["source_completeness_6_assets"]==3
+          assert x["first_publication_vintages_certified"]==0
+          assert x["independent_model_factor_qualified_count"]==0
+          assert x["approved_asset_scores"]==0
+          assert x["validated_for_live_scoring"] is False
+          assert all(a["score"] is None for a in x["assets"].values())
+          print("V57 genuine sources:", x["sources"]["cftc_gold"]["latest_observation_date"],
+                x["sources"]["treasury_30y"]["latest_auction_date"],
+                "— 3/6 source observation only, 0 scores")
+          PY
+      - name: Persist official source results to GitHub main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/asset-compass-asset-specific-v57.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data(asset-compass): actual CFTC gold and 30y Treasury demand observations"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Verify the actual remote file contains no unauthorized score
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git show origin/main:data/asset-compass-asset-specific-v57.json > /tmp/ooglex-v57-published.json
+          cmp data/asset-compass-asset-specific-v57.json /tmp/ooglex-v57-published.json
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=json.loads(Path("/tmp/ooglex-v57-published.json").read_text())
+          assert p["approved_asset_scores"]==0
+          assert p["first_publication_vintages_certified"]==0
+          assert all(a["score"] is None for a in p["assets"].values())
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as o:
+             o.write("### Ooglex V57 actual source report\n")
+             o.write("CFTC GOLD: "+str(p["sources"]["cftc_gold"]["observation_count"])+" weeks\n\n")
+             o.write("Treasury 30Y: "+str(p["sources"]["treasury_30y"]["auction_count"])+" auctions\n\n")
+             o.write("**3/6 assets have asset-specific source observations, but 0/6 scoring certified.**\n")
+          PY
+      - name: Retain derived evidence, no republished raw CFTC payload
+        uses: actions/upload-artifact@v4
+        with:
+          name: asset-compass-v57-gold-bond-audit
+          path: data/asset-compass-asset-specific-v57.json
+          retention-days: 30
