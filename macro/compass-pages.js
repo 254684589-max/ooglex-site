@@ -10,6 +10,8 @@ const SCORING_READINESS="../data/asset-compass-scoring-readiness-v54.json";
 const RATE_SHOCKS_V55="../data/asset-compass-rate-shocks-v55.json";
 const OFFICIAL_SOURCES_V56="../data/asset-compass-new-sources-v56.json";
 const ASSET_SPECIFIC_V57="../data/asset-compass-asset-specific-v57.json";
+const MODEL_GAPS_V58="../data/asset-compass-model-gaps-v58.json";
+const FED_USD_V58="../data/asset-compass-usd-h10-v58.json";
 const $=q=>document.querySelector(q);
 const el=(tag,cls,content)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(content!==undefined)node.textContent=String(content);return node};
 const isNumber=n=>typeof n==="number"&&Number.isFinite(n);
@@ -334,6 +336,83 @@ function headline(data){
 // V55 genuine, latest-revised historical rate shocks: never scoring inputs.
 
 
+
+function renderModelEvidenceV58(report,usd,approved){
+ const target=$("#model-evidence-v58");if(!target)return;
+ const fail=(msg)=>target.replaceChildren(el("p","insights-warning",msg));
+ target.replaceChildren();
+ if(!report||!usd||report.schema_version!==1||
+    report.report_type!=="asset_compass_v58_six_asset_model_evidence"||
+    report.status!=="research_only_no_authorized_scores"||
+    report.qualified_for_live_scoring!==false||
+    report.official_0_to_100_scores_published!==0||
+    report.oos_validated_assets!==0||report.audited_asset_total_return_count!==0||
+    report.historical_first_release_certified_source_count!==0||
+    report.approved_independent_model_factor_group_count!==0||
+    report.macro_observation_group_count!==6||
+    report.asset_specific_observed_count!==4||
+    usd.report_type!=="asset_compass_v58_fed_h10_usd_research"||
+    usd.asset_id!=="usd"||usd.source_series_id!=="DTWEXBGS"||
+    usd.historical_first_publication_vintages_verified!==false||
+    usd.independent_signal_verified!==false||
+    usd.sample_out_of_sample_calibration_passed!==false||
+    usd.validated_for_live_scoring!==false||
+    usd.official_asset_score!==null||
+    report.input_sha256?.snapshot===undefined||
+    !report.research_assets||Object.keys(report.research_assets).length!==6||
+    !Array.isArray(report.asset_specific_missing_assets)||
+    !isNumber(usd.latest_index)||!isNumber(usd.daily_observed_last_21_session_change_percent)){
+  fail("V58 六资产研究证据或美元官方源不存在、缺失或模型状态异常；禁止展示伪造认证与分数。");return;
+ }
+ const expected=new Set(["gold","us_long_bonds","usd","oil"]);
+ const names=Object.keys(ASSETS);
+ if(names.some(id=>!report.research_assets[id])||
+    report.asset_specific_observed_assets?.length!==4||
+    report.asset_specific_observed_assets.some(id=>!expected.has(id))||
+    report.asset_specific_missing_assets.some(id=>expected.has(id))||
+    Object.values(report.research_assets).some(v=>
+       v.official_score!==null||v.model_qualified_weight_pct!==0||
+       v.model_qualified_factor_group_count!==0||
+       v.point_in_time_provenance_verified!==false||
+       v.investable_total_return_verified!==false||
+       v.out_of_sample_backtest_verified!==false)){
+  fail("V58 单资产资料或正式评分门禁检查失败，拒绝展示。");return;
+ }
+ target.append(el("p","muted",
+  "六因子组有原始资料入口：6/6；六资产有专属研究来源：4/6；"+
+  "已通过历史首发时点、完整总回报和样本外认证的资产：0/6；正式0–100分：0/6。"+
+  "缺少资产专属来源："+report.asset_specific_missing_assets.map(id=>ASSETS[id]).join("、")+"。"));
+ const table=el("table"),head=el("thead"),h=el("tr");
+ for(const t of ["资产","专属研究来源","历史首发证据","可投资总回报","样本外验证","正式0–100分"]){
+  const th=el("th","",t);th.scope="col";h.append(th);
+ }
+ head.append(h);table.append(head);const body=el("tbody");
+ for(const [id,label] of Object.entries(ASSETS)){
+  const row=report.research_assets[id];
+  const tr=el("tr");
+  const sources=row.source_ids.map(name=>({
+    cftc_gold:"CFTC黄金管理资金持仓",
+    treasury_30y:"美国财政部30年债券拍卖",
+    fed_h10_dollar:"联储H.10广义美元指数",
+    eia_commercial_oil_inventory:"EIA原油商业库存"
+  }[name]||name)).join("、")||"缺失";
+  for(const value of [label,sources,"未认证","未认证","未认证","— / 100"])tr.append(el("td","",value));
+  body.append(tr);
+ }
+ table.append(body);const wrap=el("div","table-wrap");wrap.append(table);target.append(wrap);
+ const fresh=isoDay(usd.latest_observation_date,16)&&usd.fresh_for_research===true;
+ target.append(el("p","muted",
+  "联储H.10广义美元指数（DTWEXBGS，2006年1月=100）："+usd.latest_index.toFixed(3)+
+  "；观测日 "+usd.latest_observation_date+
+  "；最近21个有效观测期变化 "+usd.daily_observed_last_21_session_change_percent.toFixed(2)+"%；"+
+  "当前状态："+(fresh?"研究观测有效，未经方向验证":"研究时效过期或未核证")+
+  "。这不是可投资的美元总回报或交易信号。"));
+ const l=el("a","","美联储H.10美元指数官方出处，经FRED");l.href="https://fred.stlouisfed.org/series/DTWEXBGS";
+ const p=el("p","muted");p.append(l);target.append(p);
+ target.append(el("p","insights-warning",
+  "当前主要障碍：资产历史首次可得版本、六资产统一总回报、风险/利率独立性、多经济周期样本外检验和正式参数校准尚未完成。禁止提前发布强利多/强利空评分。"));
+}
+
 function renderAssetSpecificV57(report,v56){
  const target=$("#asset-specific-v57");if(!target)return;
  target.replaceChildren();
@@ -609,7 +688,7 @@ function renderScoringReadiness(report,data,observations){
   "研究用观测权重不是得分，也不是投资建议。"));
 }
 
-function overview(data,readiness,qualifications,scoringReadiness,rateShocks,newSources,assetSpecific){
+function overview(data,readiness,qualifications,scoringReadiness,rateShocks,newSources,assetSpecific,usdV58,modelV58){
  const snapshotValid=data?.schema_version===1&&data?.assets&&typeof data?.scoring?.calibration_verified==="boolean"&&typeof data?.scoring?.out_of_sample_verified==="boolean";
  const approved=snapshotValid?data:null;
  const rows=overviewObservations(approved);
@@ -619,6 +698,7 @@ function overview(data,readiness,qualifications,scoringReadiness,rateShocks,newS
  renderRateShocksV55(rateShocks,approved);
  renderOfficialSourcesV56(newSources);
  renderAssetSpecificV57(assetSpecific,newSources);
+ renderModelEvidenceV58(modelV58,usdV58,approved);
  const usable=rows.filter(x=>x.state==="可用").length;
  const snapshotTime=approved?.generated_at?Date.parse(approved.generated_at):NaN;
  const age=Date.now()-snapshotTime;
@@ -740,5 +820,5 @@ function renderFactorObservations(report){
 }
 function research(price,readiness){const out=$("#price-grid");if(!price||price.report_type!=="price_coverage_audit"||price.validated_for_live_scoring!==false){out.replaceChildren(el("p","empty","历史价格覆盖报告尚未发布或无效。"));}else{out.replaceChildren(...Object.entries(ASSETS).map(([id,name])=>{const a=price.assets?.[id]||{};const n=isNumber(a.observation_count)?a.observation_count:0;const node=card(name,n+" 条价格观测","来源代理："+(a.symbol||"未记录")+" · "+(a.last_observation||"暂无有效日期"));node.append(el("div","label","非可投资总回报；未通过回测准入。"));return node}))}
 const block=$("#archive-data");if(readiness&&readiness.report_type==="asset_compass_history_readiness"&&readiness.validated_for_live_scoring===false){const count=readiness.archived_observations;block.replaceChildren(card("首次归档观测数",Number.isInteger(count)?count:"暂无数据","记录网站首次看到数值的时间，不代表官方最初发布时间。"));const list=$("#blockers");list.replaceChildren(...(readiness.blockers||[]).map(x=>el("li","",x)));}else{block.replaceChildren(card("首次归档状态","未发布","没有可核实的正式历史归档进度，不能把CI测试样本当作生产历史。"));$("#blockers").replaceChildren(el("li","","官方首发版本、统一总回报、独立样本外模型验收尚未通过。"))}$("#research-status").textContent="暂不公布历史命中率、资金曲线、最大回撤或资产预警阈值。数据来源及模型尚未达到可验证标准。";}
-async function run(){const page=document.body.dataset.page;if(page==="overview"){const [data,readiness,qualifications,scoringReadiness,rateShocks,newSources,assetSpecific]=await Promise.all([optional(DATA),optional(READY),optional(OBSERVATIONS),optional(SCORING_READINESS),optional(RATE_SHOCKS_V55),optional(OFFICIAL_SOURCES_V56),optional(ASSET_SPECIFIC_V57)]);overview(data,readiness,qualifications,scoringReadiness,rateShocks,newSources,assetSpecific);return}if(page==="attribution"){const [config,data,observations]=await Promise.all([optional(CONFIG),optional(DATA),optional(OBSERVATIONS)]);attribution(config,data);renderFactorObservations(observations);return}if(page==="research"){const [price,readiness]=await Promise.all([optional(PRICE),optional(READY)]);research(price,readiness);return}}
+async function run(){const page=document.body.dataset.page;if(page==="overview"){const [data,readiness,qualifications,scoringReadiness,rateShocks,newSources,assetSpecific,usdV58,modelV58]=await Promise.all([optional(DATA),optional(READY),optional(OBSERVATIONS),optional(SCORING_READINESS),optional(RATE_SHOCKS_V55),optional(OFFICIAL_SOURCES_V56),optional(ASSET_SPECIFIC_V57),optional(FED_USD_V58),optional(MODEL_GAPS_V58)]);overview(data,readiness,qualifications,scoringReadiness,rateShocks,newSources,assetSpecific,usdV58,modelV58);return}if(page==="attribution"){const [config,data,observations]=await Promise.all([optional(CONFIG),optional(DATA),optional(OBSERVATIONS)]);attribution(config,data);renderFactorObservations(observations);return}if(page==="research"){const [price,readiness]=await Promise.all([optional(PRICE),optional(READY)]);research(price,readiness);return}}
 run().catch(()=>{const node=$("#source-status")||$("#attribution-status")||$("#research-status");if(node)node.textContent="数据读取暂不可用；不会以示例数值代替真实数据。"});
