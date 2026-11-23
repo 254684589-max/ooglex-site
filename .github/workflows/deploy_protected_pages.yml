@@ -213,6 +213,29 @@ jobs:
               assert all(a["score"] is None for a in r["assets"].values())
               print("V57 official-source proof in static build, zero live scoring enabled")
           PYV57
+      - name: V58 ensure authentic H10 and published score-readiness report remain non-trading
+        run: |
+          python3 - <<'PYV58'
+          import json
+          from pathlib import Path
+          one=Path(".site/data/asset-compass-usd-h10-v58.json")
+          two=Path(".site/data/asset-compass-model-gaps-v58.json")
+          if not one.exists() or not two.exists():
+              print("V58 first official USD capture not yet present. Frontend fails closed instead of simulated research.")
+          else:
+              usd=json.loads(one.read_text())
+              model=json.loads(two.read_text())
+              assert usd["source_series_id"]=="DTWEXBGS"
+              assert usd["historical_first_publication_vintages_verified"] is False
+              assert usd["official_asset_score"] is None
+              assert model["asset_specific_observed_count"]==4
+              assert model["official_0_to_100_scores_published"]==0
+              assert model["audited_asset_total_return_count"]==0
+              assert model["oos_validated_assets"]==0
+              assert model["qualified_for_live_scoring"] is False
+              assert all(v["official_score"] is None for v in model["research_assets"].values())
+              print("V58 authentic Fed H10 and six-asset evidence report packaged, all scores null")
+          PYV58
       - name: Validate V11 live acceptance regression tests
         run: python3 -m unittest discover -s tests -p 'test_macro_production_v11.py' -v
 
