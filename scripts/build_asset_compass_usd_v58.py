@@ -91,7 +91,7 @@ def parse_fed_xml(raw:bytes):
                             dt=date.fromisoformat(day)
                             value=float(val)
                             if not math.isfinite(value) or not 20<value<400:
-                                raise ValueError(f"Invalid Federal Reserve XML dollar-index value: date={dt}, raw={val}, status={attrs.get(\'OBS_STATUS\')}")
+                                raise ValueError(f"Invalid Federal Reserve XML dollar-index value: date={dt}, raw={val}, status={attrs.get('OBS_STATUS')}")
                             result.append({"date":dt.isoformat(),"index":value})
                     if event=="end" and tag=="Series":
                         active=False
