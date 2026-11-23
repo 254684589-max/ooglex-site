@@ -108,9 +108,8 @@ class V56SourcesTests(unittest.TestCase):
     def test_eia_value_underflow_does_not_create_synthetic_stocks(self):
         _,o,_=fixture()
         bad=html_input(o).replace(f"{o[-1]['value']:,}".encode(),b"49,000")
-        result=parse_eia(bad)
-        self.assertEqual(len(result),len(o)-1)
-        self.assertEqual(result[-1]["date"],o[-2]["date"])
+        with self.assertRaisesRegex(ValueError,"impossible"):
+            parse_eia(bad)
 
     def test_two_actual_source_groups_not_independent_scores(self):
         n,o,cfg=fixture()
