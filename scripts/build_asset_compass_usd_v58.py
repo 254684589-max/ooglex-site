@@ -91,7 +91,7 @@ def parse_fed_xml(raw:bytes):
                             dt=date.fromisoformat(day)
                             value=float(val)
                             if not math.isfinite(value) or not 20<value<400:
-                                raise ValueError("Invalid Federal Reserve XML dollar-index value")
+                                raise ValueError(f"Invalid Federal Reserve XML dollar-index value: date={dt}, raw={val}, status={attrs.get(\'OBS_STATUS\')}")
                             result.append({"date":dt.isoformat(),"index":value})
                     if event=="end" and tag=="Series":
                         active=False
@@ -219,15 +219,19 @@ def main():
         p.error("Choose exactly --fetch OR --csv real downloaded source")
     source_kind="fred_csv"
     if a.fetch:
+        # Official original FRB SDMX ZIP is preferred: it succeeds on
+        # GitHub-hosted runners where the FRED graph CSV intermittently hangs.
+        # FRED is an independent public mirror, never an imputed fallback.
         try:
-            data=retrieve()
-            rows=parse_csv(data)
-        except (OSError,ConnectionError,TimeoutError,ValueError,UnicodeError) as exc:
-            print("FRED H10 unavailable, testing original FRB H10 SDMX source:",
-                  type(exc).__name__,flush=True)
             data=retrieve_fed_xml()
             rows=parse_fed_xml(data)
             source_kind="fed_original_xml"
+        except (OSError,ConnectionError,TimeoutError,ValueError,UnicodeError,zipfile.BadZipFile) as exc:
+            print("Original FRB H10 source unavailable; attempting approved FRED mirror:",
+                  type(exc).__name__,str(exc)[:250],flush=True)
+            data=retrieve()
+            rows=parse_csv(data)
+            source_kind="fred_csv"
     else:
         data=a.csv.read_bytes()
         rows=parse_csv(data)
