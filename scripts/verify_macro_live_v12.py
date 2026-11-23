@@ -23,6 +23,7 @@ FILES=(
  "macro/indicator-lab.html",
  "macro/indicator-monitor-v8.js",
  "data/asset-scores.json",
+ "data/asset-compass-indicator-coverage-v1.json",
  "data/asset-compass-history-readiness.json",
  "data/asset-compass-provenance-v7.json",
  "data/asset-compass-monitor-v8.json",
