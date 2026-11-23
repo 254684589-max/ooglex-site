@@ -1,35 +1,34 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_v59_two_missing_asset_research_provenance",
-  "generated_at": "2026-11-23T16:24:15.449705+00:00",
+  "generated_at": "2026-11-23T16:32:01.361671+00:00",
   "parent_report": "data/asset-compass-model-gaps-v58.json",
   "parent_report_sha256": "ad0032f197885742ca57f77e92911be32013d174f80e44e8b88399c222430a5e",
   "source_verification": {
     "us_equities": {
-      "observed": false,
-      "reason": "capture_absent",
+      "observed": true,
+      "reason": null,
       "source_id": "fed_z1_corporate_equities_all_sectors",
-      "source_report_sha256": null
+      "source_report_sha256": "e348c1b859e4f003c60fe9ec34d614e0c85fa9b5284e9aae1abea272bae83ef0"
     },
     "bitcoin": {
       "observed": true,
       "reason": null,
       "source_id": "bitcoin_mainnet_block_subsidy",
-      "source_report_sha256": "30aabfb8da64d402fd59cc4637f4ff805f1a9c77e03afe881e7b840c74f946ce"
+      "source_report_sha256": "2eea7b1375f4a32e42e816866f4be1064219f2ca405c23c89a6dd6e9fd4b0e9e"
     }
   },
   "asset_specific_observed_assets": [
     "gold",
+    "us_equities",
     "us_long_bonds",
     "usd",
     "bitcoin",
     "oil"
   ],
-  "asset_specific_missing_assets": [
-    "us_equities"
-  ],
-  "asset_specific_observed_count": 5,
-  "asset_specific_missing_count": 1,
+  "asset_specific_missing_assets": [],
+  "asset_specific_observed_count": 6,
+  "asset_specific_missing_count": 0,
   "research_assets": {
     "gold": {
       "label": "黄金",
@@ -66,10 +65,12 @@
     },
     "us_equities": {
       "label": "美国股票",
-      "source_observation_status": "missing_specific_source",
-      "source_ids": [],
-      "research_source_count": 0,
-      "completeness_in_six_assets_pct": 0,
+      "source_observation_status": "observed_research_only",
+      "source_ids": [
+        "fed_z1_corporate_equities_all_sectors"
+      ],
+      "research_source_count": 1,
+      "completeness_in_six_assets_pct": 100,
       "research_proxy_not_price_total_return": true,
       "macro_group_raw_sources": 6,
       "model_qualified_factor_group_count": 0,
@@ -93,7 +94,7 @@
         "source_independence",
         "legal_rights"
       ],
-      "next_evidence": "official_index_level_is_not_total_return; seek properly licensed index-valuation/earnings or SEC source"
+      "next_evidence": "Z1_all_sector_corporate_equities_not_public_stock_return_or_first_release_PIT"
     },
     "us_long_bonds": {
       "label": "美国长期国债",

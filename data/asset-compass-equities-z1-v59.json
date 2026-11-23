@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_v59_us_equities_z1_research",
+  "generated_at": "2026-11-23T16:32:00.024755+00:00",
+  "asset_id": "us_equities",
+  "source_id": "fed_z1_corporate_equities_all_sectors",
+  "series_id": "BOGZ1LM893064105Q",
+  "source_owner": "Board of Governors of the Federal Reserve System",
+  "source_url": "https://www.federalreserve.gov/releases/z1/current/html/F51_1_s.htm",
+  "citation_url": "https://www.federalreserve.gov/releases/z1/current/html/F51_1_s.htm",
+  "original_source_format": "fed_original_html_table",
+  "historical_depth_for_backtest_verified": false,
+  "official_table_url": "https://www.federalreserve.gov/releases/z1/current/html/F51_1_s.htm",
+  "raw_source_sha256": "0f1b160b4663da2526785a7a8ecc37d0de0d8e2892e7b2d48b6b63f84a0fd444",
+  "units": "millions_usd",
+  "frequency": "quarterly_end_of_period",
+  "observation_count": 6,
+  "latest_observation_period": "2026-Q2",
+  "latest_observation_date": "2026-06-30",
+  "latest_market_value_millions_usd": 123687200.0,
+  "latest_market_value_trillions_usd": 123.6872,
+  "quarter_over_quarter_change_pct": 16.638832,
+  "recent_quarterly_observations": [
+    {
+      "observation_date": "2025-03-31",
+      "quarter": "2025-Q1",
+      "market_value_millions_usd": 89638500.0
+    },
+    {
+      "observation_date": "2025-06-30",
+      "quarter": "2025-Q2",
+      "market_value_millions_usd": 98239700.0
+    },
+    {
+      "observation_date": "2025-09-30",
+      "quarter": "2025-Q3",
+      "market_value_millions_usd": 105694800.0
+    },
+    {
+      "observation_date": "2025-12-31",
+      "quarter": "2025-Q4",
+      "market_value_millions_usd": 108715800.0
+    },
+    {
+      "observation_date": "2026-03-31",
+      "quarter": "2026-Q1",
+      "market_value_millions_usd": 106042900.0
+    },
+    {
+      "observation_date": "2026-06-30",
+      "quarter": "2026-Q2",
+      "market_value_millions_usd": 123687200.0
+    }
+  ],
+  "fresh_for_research": true,
+  "observation_calendar_days_old": 146,
+  "source_observation_status": "observed_research_only",
+  "source_rights": "Federal Reserve public-domain data; attribution requested",
+  "redistribution_rights_instrument_by_instrument_certified": false,
+  "historical_first_publication_vintages_verified": false,
+  "investable_total_return_verified": false,
+  "independent_signal_verified": false,
+  "out_of_sample_validation_passed": false,
+  "validated_for_live_scoring": false,
+  "official_asset_score": null,
+  "limitations": [
+    "Z.1 all-sector corporate equity market-value STOCK includes more than publicly traded US stocks; not the S&P 500.",
+    "Levels change with valuation, issuance, sector and methodological revisions; changes are not investor returns.",
+    "Quarter-end observation date is NOT official publication date; no original historical vintage certified.",
+    "Source is latest-revised quarterly data, not a calibrated asset pricing factor.",
+    "When Federal Reserve HTML is used it contains only six recent quarters; no claim of long historical backtest depth."
+  ]
+}
