@@ -20,13 +20,13 @@ class BCOfficialTests(unittest.TestCase):
                     b"<html>maintenance</html>"):
             with self.assertRaises(ValueError):
                 parse(raw,"ICSA",NOW,20)
-    def test_eight_fresh_series_one_error_is_explicit(self):
+    def test_nine_fresh_series_one_error_is_explicit(self):
         def fetch(url):
             from urllib.parse import parse_qs,urlparse
             sid=parse_qs(urlparse(url).query)["id"][0]
             return fixture(sid,missing=(sid=="INDPRO"))
         d=collect(fetch,NOW)
-        self.assertEqual(d["accepted_series_count"],7)
+        self.assertEqual(d["accepted_series_count"],8)
         self.assertEqual(len(d["failed_sources"]),1)
         self.assertIn("美国工业生产指数",d["failed_sources"])
         self.assertFalse(d["historical_pit_certified"])
