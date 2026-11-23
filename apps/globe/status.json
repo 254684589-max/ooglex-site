@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-11-22T13:27:50Z",
+  "updatedAt": "2026-11-23T16:14:47Z",
   "frequency": "daily",
-  "status": "ok",
+  "status": "partial",
   "demo": false,
   "sources": {
     "celestrak": {
@@ -19,32 +19,32 @@
   },
   "items": {
     "celestrak/stations": {
-      "ok": true,
-      "detail": "13 颗"
+      "ok": false,
+      "detail": "抓取失败: The read operation timed out；保留上一份"
     },
     "celestrak/visual": {
-      "ok": true,
-      "detail": "156 颗"
+      "ok": false,
+      "detail": "抓取失败: HTTP Error 503: Service Unavailable；保留上一份"
     },
     "celestrak/gps-ops": {
-      "ok": true,
-      "detail": "32 颗"
+      "ok": false,
+      "detail": "抓取失败: HTTP Error 503: Service Unavailable；保留上一份"
     },
     "celestrak/glo-ops": {
       "ok": true,
       "detail": "25 颗"
     },
     "celestrak/galileo": {
-      "ok": true,
-      "detail": "32 颗"
+      "ok": false,
+      "detail": "抓取失败: HTTP Error 500: Internal Server Error；保留上一份"
     },
     "celestrak/geo": {
-      "ok": true,
-      "detail": "568 颗"
+      "ok": false,
+      "detail": "抓取失败: HTTP Error 500: Internal Server Error；保留上一份"
     },
     "launches": {
       "ok": true,
-      "detail": "23 条发射记录"
+      "detail": "21 条发射记录"
     }
   }
 }
