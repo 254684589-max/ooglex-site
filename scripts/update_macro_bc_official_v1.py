@@ -19,6 +19,7 @@ SPEC={
  "美国实际GDP增长率":("A191RL1Q225SBEA","BEA","quarterly","percent_annualized_qoq",160),
  "美元广义贸易加权指数":("DTWEXBGS","Federal Reserve Board","daily","index",12),
  "美国工业生产指数":("INDPRO","Federal Reserve Board","monthly","index",95),
+ "美国住房开工":("HOUST","US Census Bureau","monthly","thousands_units_saar",95),
  "美国零售销售":("RSAFS","US Census Bureau","monthly","millions_usd_sa",95),
  "美国初请失业金人数":("ICSA","US Department of Labor","weekly","persons_sa",20),
  "美国10Y－3M国债利差":("T10Y3M","Federal Reserve Board/Treasury","daily","percentage_points",12),
