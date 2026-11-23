@@ -24,7 +24,7 @@ def equity_fixture_csv():
     out = io.StringIO()
     writer = csv.writer(out)
     writer.writerow(["observation_date", FRED_ID])
-    for i in range(104):
+    for i in range(106):
         year = 2000 + i // 4
         month = (i % 4) * 3 + 1
         writer.writerow([f"{year}-{month:02d}-01", 30_000_000 + 600_000 * i])
@@ -76,15 +76,15 @@ class V59SourceTests(unittest.TestCase):
 
     def test_z1_parser_real_series_header_and_quarter(self):
         rows = parse_equities_csv(equity_fixture_csv())
-        self.assertEqual(len(rows), 104)
-        self.assertEqual(rows[-1]["quarter"], "2025-Q4")
-        self.assertEqual(rows[-1]["market_value_millions_usd"], 91_800_000)
+        self.assertEqual(len(rows), 106)
+        self.assertEqual(rows[-1]["quarter"], "2026-Q2")
+        self.assertEqual(rows[-1]["market_value_millions_usd"], 93_000_000)
 
     def test_z1_changes_are_not_total_return(self):
         report = equity_fixture()
         self.assertEqual(report["source_id"], SOURCE_EQUITIES)
         self.assertEqual(report["units"], "millions_usd")
-        self.assertEqual(report["latest_market_value_trillions_usd"], 91.8)
+        self.assertEqual(report["latest_market_value_trillions_usd"], 93.0)
         self.assertIsNone(report["official_asset_score"])
         self.assertFalse(report["investable_total_return_verified"])
         self.assertFalse(report["historical_first_publication_vintages_verified"])
