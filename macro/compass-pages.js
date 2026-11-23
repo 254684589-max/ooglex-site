@@ -9,6 +9,7 @@ const OBSERVATIONS="../data/asset-compass-factor-observations.json";
 const SCORING_READINESS="../data/asset-compass-scoring-readiness-v54.json";
 const RATE_SHOCKS_V55="../data/asset-compass-rate-shocks-v55.json";
 const OFFICIAL_SOURCES_V56="../data/asset-compass-new-sources-v56.json";
+const ASSET_SPECIFIC_V57="../data/asset-compass-asset-specific-v57.json";
 const $=q=>document.querySelector(q);
 const el=(tag,cls,content)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(content!==undefined)node.textContent=String(content);return node};
 const isNumber=n=>typeof n==="number"&&Number.isFinite(n);
@@ -332,6 +333,78 @@ function headline(data){
 
 // V55 genuine, latest-revised historical rate shocks: never scoring inputs.
 
+
+function renderAssetSpecificV57(report,v56){
+ const target=$("#asset-specific-v57");if(!target)return;
+ target.replaceChildren();
+ const reject=(msg)=>target.replaceChildren(el("p","insights-warning",msg));
+ if(!report||report.schema_version!==1||
+  report.report_type!=="asset_compass_v57_authentic_asset_specific_source_research"||
+  report.status!=="research_only_no_model_promotion"||
+  report.validated_for_live_scoring!==false||
+  report.eligible_for_point_in_time_backtest!==false||
+  report.approved_asset_scores!==0||report.first_publication_vintages_certified!==0||
+  report.independent_model_factor_qualified_count!==0||
+  !report.sources||!report.assets||Object.keys(report.assets).length!==6||
+  !v56||report.v56_observed_at!==v56.generated_at||
+  report.v56_oil_source_date!==v56.sources?.oil_inventory?.latest_observation_date){
+  reject("V57资产专属官方报告未发布、已过期或不匹配原油源历史。正式六资产评分保持关闭。");return;
+ }
+ const gold=report.sources.cftc_gold,bond=report.sources.treasury_30y;
+ if(!gold||gold.series_id!=="CFTC_COMEX_GOLD_MANAGED_MONEY_FUTURES_ONLY"||
+   !bond||bond.series_id!=="TREASURY_30Y_BOND_AUCTION_BID_TO_COVER"||
+   !/^[a-f0-9]{64}$/.test(gold.source_sha256||"")||
+   !/^[a-f0-9]{64}$/.test(bond.source_sha256||"")||
+   !Number.isSafeInteger(gold.observation_count)||gold.observation_count<105||
+   !Number.isSafeInteger(bond.auction_count)||bond.auction_count<37||
+   gold.reference_count!==104||bond.reference_count!==36||
+   gold.report_date_is_publication_time!==false||
+   bond.auction_date_is_publication_time!==false||
+   gold.signal_verified!==false||bond.signal_verified!==false||
+   !isNumber(gold.latest_managed_money_net_percent_oi)||
+   !isNumber(gold.latest_managed_money_net_contracts)||
+   !isNumber(bond.latest_bid_to_cover_ratio)||
+   (gold.research_z_score!==null&&!isNumber(gold.research_z_score))||
+   (bond.research_z_score!==null&&!isNumber(bond.research_z_score))||
+   Object.values(report.assets).some(a=>a.score!==null||
+     a.verified_asset_specific_model_signal!==false||
+     a.historic_as_published_vintages_certified!==false||
+     a.historical_calibration_passed!==false||
+     a.out_of_sample_validation_passed!==false)){
+  reject("V57来源、历史标准化或者正式评分安全标志未通过审计，拒绝展示数据。");return;
+ }
+ target.append(el("p","muted","来源观测：黄金CFTC持仓、长期国债30年期拍卖、原油EIA库存。其余三种资产专属数据尚缺；合格方向信号仍为0/6，正式0–100评分全部未开放。"));
+ const specs=[
+   {name:"黄金 · CFTC管理资金净持仓",date:gold.latest_observation_date,level:gold.latest_managed_money_net_contracts.toLocaleString("en-US")+" 张合约",z:gold.research_z_score,source:"CFTC·周二仓位",fresh:gold.fresh_for_research===true&&isoDay(gold.latest_observation_date,18)},
+   {name:"美国长期国债 · 30年拍卖投标倍数",date:bond.latest_auction_date,level:bond.latest_bid_to_cover_ratio.toFixed(2)+" 倍",z:bond.research_z_score,source:"财政部·单次拍卖",fresh:bond.fresh_for_research===true&&isoDay(bond.latest_auction_date,75)},
+   {name:"原油 · EIA商业库存",date:v56.sources.oil_inventory.latest_observation_date,level:v56.sources.oil_inventory.latest_level.toLocaleString("en-US")+" 千桶",z:v56.sources.oil_inventory.research_z_score,source:"EIA·周频存量",fresh:v56.sources.oil_inventory.current_observation_fresh===true&&isoDay(v56.sources.oil_inventory.latest_observation_date,21)}
+ ];
+ if(specs.some(x=>x.z!==null&&!isNumber(x.z))){
+  reject("V57组合来源数值异常，不展示历史计算。");return;
+ }
+ const table=el("table"),head=el("thead"),tr=el("tr");
+ for(const label of ["资产专属观测","观测日","实际数值","描述性Z值","观测可用性"]){
+  const th=el("th","",label);th.scope="col";tr.append(th);
+ }
+ head.append(tr);table.append(head);const body=el("tbody");
+ for(const src of specs){
+  const row=el("tr");
+  for(const value of [src.name,src.date,src.level,
+   src.z===null?"无有效方差":src.z.toFixed(2),src.fresh?"近期观测（未校准）":"过期或未验证"]){
+   row.append(el("td","",value));
+  }
+  body.append(row);
+ }
+ table.append(body);const wrap=el("div","table-wrap");wrap.append(table);target.append(wrap);
+ const missing=Object.keys(ASSETS).filter(id=>!report.assets[id]?.asset_specific_research_source_available).map(id=>ASSETS[id]);
+ target.append(el("p","muted","仍缺专属数据："+(missing.join("、")||"无")+"。有来源仅代表可分析原始观察值，不代表资产方向经过历史回测。"));
+ const links=el("p","muted","官方原始资料：");
+ const g=el("a","","CFTC Commitments of Traders");g.href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm";
+ const b=el("a","","美国财政部拍卖记录");b.href="https://fiscaldata.treasury.gov/datasets/treasury-securities-auctions-data/";
+ links.append(g,el("span",""," · "),b);target.append(links);
+ target.append(el("p","insights-warning","CFTC净持仓不是黄金ETF资金流；财政部投标倍数不是长期债券总回报；观测日不等于首次公开发布时间，禁止作为已验证评分输入。"));
+}
+
 function renderOfficialSourcesV56(report){
  const target=$("#new-sources-v56");if(!target)return;
  target.replaceChildren();
@@ -536,7 +609,7 @@ function renderScoringReadiness(report,data,observations){
   "研究用观测权重不是得分，也不是投资建议。"));
 }
 
-function overview(data,readiness,qualifications,scoringReadiness,rateShocks,newSources){
+function overview(data,readiness,qualifications,scoringReadiness,rateShocks,newSources,assetSpecific){
  const snapshotValid=data?.schema_version===1&&data?.assets&&typeof data?.scoring?.calibration_verified==="boolean"&&typeof data?.scoring?.out_of_sample_verified==="boolean";
  const approved=snapshotValid?data:null;
  const rows=overviewObservations(approved);
@@ -545,6 +618,7 @@ function overview(data,readiness,qualifications,scoringReadiness,rateShocks,newS
  renderScoringReadiness(scoringReadiness,approved,qualifications);
  renderRateShocksV55(rateShocks,approved);
  renderOfficialSourcesV56(newSources);
+ renderAssetSpecificV57(assetSpecific,newSources);
  const usable=rows.filter(x=>x.state==="可用").length;
  const snapshotTime=approved?.generated_at?Date.parse(approved.generated_at):NaN;
  const age=Date.now()-snapshotTime;
@@ -666,5 +740,5 @@ function renderFactorObservations(report){
 }
 function research(price,readiness){const out=$("#price-grid");if(!price||price.report_type!=="price_coverage_audit"||price.validated_for_live_scoring!==false){out.replaceChildren(el("p","empty","历史价格覆盖报告尚未发布或无效。"));}else{out.replaceChildren(...Object.entries(ASSETS).map(([id,name])=>{const a=price.assets?.[id]||{};const n=isNumber(a.observation_count)?a.observation_count:0;const node=card(name,n+" 条价格观测","来源代理："+(a.symbol||"未记录")+" · "+(a.last_observation||"暂无有效日期"));node.append(el("div","label","非可投资总回报；未通过回测准入。"));return node}))}
 const block=$("#archive-data");if(readiness&&readiness.report_type==="asset_compass_history_readiness"&&readiness.validated_for_live_scoring===false){const count=readiness.archived_observations;block.replaceChildren(card("首次归档观测数",Number.isInteger(count)?count:"暂无数据","记录网站首次看到数值的时间，不代表官方最初发布时间。"));const list=$("#blockers");list.replaceChildren(...(readiness.blockers||[]).map(x=>el("li","",x)));}else{block.replaceChildren(card("首次归档状态","未发布","没有可核实的正式历史归档进度，不能把CI测试样本当作生产历史。"));$("#blockers").replaceChildren(el("li","","官方首发版本、统一总回报、独立样本外模型验收尚未通过。"))}$("#research-status").textContent="暂不公布历史命中率、资金曲线、最大回撤或资产预警阈值。数据来源及模型尚未达到可验证标准。";}
-async function run(){const page=document.body.dataset.page;if(page==="overview"){const [data,readiness,qualifications,scoringReadiness,rateShocks,newSources]=await Promise.all([optional(DATA),optional(READY),optional(OBSERVATIONS),optional(SCORING_READINESS),optional(RATE_SHOCKS_V55),optional(OFFICIAL_SOURCES_V56)]);overview(data,readiness,qualifications,scoringReadiness,rateShocks,newSources);return}if(page==="attribution"){const [config,data,observations]=await Promise.all([optional(CONFIG),optional(DATA),optional(OBSERVATIONS)]);attribution(config,data);renderFactorObservations(observations);return}if(page==="research"){const [price,readiness]=await Promise.all([optional(PRICE),optional(READY)]);research(price,readiness);return}}
+async function run(){const page=document.body.dataset.page;if(page==="overview"){const [data,readiness,qualifications,scoringReadiness,rateShocks,newSources,assetSpecific]=await Promise.all([optional(DATA),optional(READY),optional(OBSERVATIONS),optional(SCORING_READINESS),optional(RATE_SHOCKS_V55),optional(OFFICIAL_SOURCES_V56),optional(ASSET_SPECIFIC_V57)]);overview(data,readiness,qualifications,scoringReadiness,rateShocks,newSources,assetSpecific);return}if(page==="attribution"){const [config,data,observations]=await Promise.all([optional(CONFIG),optional(DATA),optional(OBSERVATIONS)]);attribution(config,data);renderFactorObservations(observations);return}if(page==="research"){const [price,readiness]=await Promise.all([optional(PRICE),optional(READY)]);research(price,readiness);return}}
 run().catch(()=>{const node=$("#source-status")||$("#attribution-status")||$("#research-status");if(node)node.textContent="数据读取暂不可用；不会以示例数值代替真实数据。"});
