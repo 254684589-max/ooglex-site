@@ -226,7 +226,7 @@ def main():
             data=retrieve_fed_xml()
             rows=parse_fed_xml(data)
             source_kind="fed_original_xml"
-        except (OSError,ConnectionError,TimeoutError,ValueError,UnicodeError,zipfile.BadZipFile) as exc:
+        except (OSError,ConnectionError,TimeoutError,UnicodeError,zipfile.BadZipFile) as exc:
             print("Original FRB H10 source unavailable; attempting approved FRED mirror:",
                   type(exc).__name__,str(exc)[:250],flush=True)
             data=retrieve()
