@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-11-23T01:33:57Z",
+  "updatedAt": "2026-11-23T22:01:36Z",
   "asOf": "2026-11-23",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-11-22 ~ 2026-11-28",
-  "count": 75,
+  "count": 74,
   "highCount": 5,
   "events": [
     {
@@ -175,7 +175,7 @@
       "actual": null
     },
     {
-      "ts": "2026-11-23T13:30:00Z",
+      "ts": "2026-11-23T13:32:00Z",
       "ccy": "CAD",
       "country": "加拿大",
       "flag": "🇨🇦",
@@ -235,18 +235,6 @@
       "actual": null
     },
     {
-      "ts": "2026-11-24T07:02:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "Foreign Direct Investment ytd/y",
-      "titleEn": "Foreign Direct Investment ytd/y",
-      "impact": "low",
-      "forecast": null,
-      "previous": "-4.3%",
-      "actual": null
-    },
-    {
       "ts": "2026-11-24T09:00:00Z",
       "ccy": "EUR",
       "country": "欧元区",
@@ -254,7 +242,7 @@
       "title": "German ifo Business Climate",
       "titleEn": "German ifo Business Climate",
       "impact": "low",
-      "forecast": "90.6",
+      "forecast": "90.5",
       "previous": "90.2",
       "actual": null
     },
@@ -266,7 +254,7 @@
       "title": "CBI Realized Sales",
       "titleEn": "CBI Realized Sales",
       "impact": "low",
-      "forecast": "-24",
+      "forecast": "-27",
       "previous": "-10",
       "actual": null
     },
@@ -314,7 +302,7 @@
       "title": "Belgian NBB Business Climate",
       "titleEn": "Belgian NBB Business Climate",
       "impact": "low",
-      "forecast": "-9.3",
+      "forecast": "-9.4",
       "previous": "-9.8",
       "actual": null
     },
@@ -350,7 +338,7 @@
       "title": "消费者信心指数",
       "titleEn": "CB Consumer Confidence",
       "impact": "medium",
-      "forecast": "92.1",
+      "forecast": "92.4",
       "previous": "91.7",
       "actual": null
     },
@@ -362,7 +350,7 @@
       "title": "Richmond Manufacturing Index",
       "titleEn": "Richmond Manufacturing Index",
       "impact": "low",
-      "forecast": "-3",
+      "forecast": "-2",
       "previous": "-2",
       "actual": null
     },
@@ -422,7 +410,7 @@
       "title": "CPI（消费者物价指数） 同比",
       "titleEn": "CPI y/y",
       "impact": "high",
-      "forecast": "4.8%",
+      "forecast": "4.7%",
       "previous": "4.3%",
       "actual": null
     },
@@ -539,18 +527,6 @@
       "ccy": "USD",
       "country": "美国",
       "flag": "🇺🇸",
-      "title": "申请失业金人数",
-      "titleEn": "Unemployment Claims",
-      "impact": "medium",
-      "forecast": "201K",
-      "previous": "203K",
-      "actual": null
-    },
-    {
-      "ts": "2026-11-25T13:30:00Z",
-      "ccy": "USD",
-      "country": "美国",
-      "flag": "🇺🇸",
       "title": "耐用品订单 环比",
       "titleEn": "Core Durable Goods Orders m/m",
       "impact": "low",
@@ -566,7 +542,7 @@
       "title": "耐用品订单 环比",
       "titleEn": "Durable Goods Orders m/m",
       "impact": "low",
-      "forecast": "0.5%",
+      "forecast": "0.7%",
       "previous": "1.8%",
       "actual": null
     },
@@ -595,6 +571,18 @@
       "actual": null
     },
     {
+      "ts": "2026-11-25T13:30:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "申请失业金人数",
+      "titleEn": "Unemployment Claims",
+      "impact": "low",
+      "forecast": "201K",
+      "previous": "203K",
+      "actual": null
+    },
+    {
       "ts": "2026-11-25T15:00:00Z",
       "ccy": "USD",
       "country": "美国",
@@ -602,7 +590,7 @@
       "title": "新屋销售",
       "titleEn": "New Home Sales",
       "impact": "low",
-      "forecast": "649K",
+      "forecast": "650K",
       "previous": "676K",
       "actual": null
     },
@@ -626,7 +614,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": null,
+      "forecast": "-19B",
       "previous": "20B",
       "actual": null
     },
@@ -650,7 +638,7 @@
       "title": "Private Capital Expenditure q/q",
       "titleEn": "Private Capital Expenditure q/q",
       "impact": "low",
-      "forecast": "4.4%",
+      "forecast": "4.5%",
       "previous": "-3.6%",
       "actual": null
     },
@@ -770,7 +758,7 @@
       "title": "核心 CPI 同比",
       "titleEn": "Tokyo Core CPI y/y",
       "impact": "medium",
-      "forecast": "2.9%",
+      "forecast": "3.0%",
       "previous": "2.6%",
       "actual": null
     },
@@ -782,7 +770,7 @@
       "title": "法国消费支出 环比",
       "titleEn": "French Consumer Spending m/m",
       "impact": "low",
-      "forecast": "0.2%",
+      "forecast": "0.1%",
       "previous": "-0.5%",
       "actual": null
     },
@@ -806,7 +794,7 @@
       "title": "CPI（消费者物价指数） 环比",
       "titleEn": "French Prelim CPI m/m",
       "impact": "low",
-      "forecast": "-0.1%",
+      "forecast": "-0.2%",
       "previous": "0.4%",
       "actual": null
     },
@@ -830,7 +818,7 @@
       "title": "CPI（消费者物价指数） 同比",
       "titleEn": "Spanish Flash CPI y/y",
       "impact": "low",
-      "forecast": "4.8%",
+      "forecast": "4.7%",
       "previous": "4.9%",
       "actual": null
     },
@@ -878,7 +866,7 @@
       "title": "经常账户",
       "titleEn": "Current Account",
       "impact": "low",
-      "forecast": "9.6B",
+      "forecast": "9.5B",
       "previous": "8.8B",
       "actual": null
     },
@@ -890,7 +878,7 @@
       "title": "贸易帐",
       "titleEn": "Goods Trade Balance",
       "impact": "low",
-      "forecast": "-134.4B",
+      "forecast": "-135.9B",
       "previous": "-134.9B",
       "actual": null
     },
@@ -902,7 +890,7 @@
       "title": "Prelim Wholesale Inventories m/m",
       "titleEn": "Prelim Wholesale Inventories m/m",
       "impact": "low",
-      "forecast": "0.7%",
+      "forecast": "0.5%",
       "previous": "0.6%",
       "actual": null
     }
