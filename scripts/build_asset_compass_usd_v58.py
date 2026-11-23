@@ -90,8 +90,14 @@ def parse_fed_xml(raw:bytes):
                         if day and val and val not in (".","NaN","nan",""):
                             dt=date.fromisoformat(day)
                             value=float(val)
+                            status=attrs.get("OBS_STATUS","")
+                            # FRB H10 explicit "ND" missing observation encoded
+                            # as -9999. Never store it as an actual dollar index.
+                            if value==-9999 and status=="ND":
+                                continue
                             if not math.isfinite(value) or not 20<value<400:
-                                raise ValueError(f"Invalid Federal Reserve XML dollar-index value: date={dt}, raw={val}, status={attrs.get('OBS_STATUS')}")
+                                raise ValueError(
+                                  f"Invalid Federal Reserve XML dollar-index value: date={dt}, raw={val}, status={status}")
                             result.append({"date":dt.isoformat(),"index":value})
                     if event=="end" and tag=="Series":
                         active=False
