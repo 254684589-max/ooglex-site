@@ -159,6 +159,26 @@ jobs:
           print("Asset Compass four-page public build verified")
           PY
 
+      - name: Verify published V56 source report only when a real official capture exists
+        run: |
+          python3 - <<'PYV56'
+          import json
+          from pathlib import Path
+          p=Path(".site/data/asset-compass-new-sources-v56.json")
+          if not p.exists():
+              print("V56 real official source report not yet collected; website must display unavailable, not synthesized data")
+          else:
+              d=json.loads(p.read_text(encoding="utf-8"))
+              assert d["report_type"]=="asset_compass_v56_official_risk_and_oil_research"
+              assert d["sources"]["nfci"]["series_id"]=="NFCI"
+              assert d["sources"]["oil_inventory"]["series_id"]=="WCESTUS1"
+              assert d["approved_asset_scores"]==0
+              assert d["independent_scoring_factor_groups_qualified"]==0
+              assert d["source_vintages_qualified"]==0
+              assert d["validated_for_live_scoring"] is False
+              assert all(v["score"] is None for v in d["assets"].values())
+              print("V56 two official research series in public build; 0 approved 0–100 scores")
+          PYV56
       - name: Validate V11 live acceptance regression tests
         run: python3 -m unittest discover -s tests -p 'test_macro_production_v11.py' -v
 
