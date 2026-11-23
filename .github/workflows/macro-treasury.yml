@@ -49,6 +49,12 @@ jobs:
         run: |
           python3 -m pip install -q xlrd==2.0.2
           python3 -m scripts.update_nyfed_recession
+      - name: Collect eight official-origin B/C macro series (research-only)
+        id: bc_official
+        continue-on-error: true
+        run: |
+          python3 -m unittest discover -s tests -p 'test_macro_bc_official_v1.py' -v
+          python3 -m scripts.update_macro_bc_official_v1
       - name: Evaluate guarded asset scoring model
         run: python3 scripts/score_macro_assets.py
       - name: V31 verify source timestamps precede completed snapshot
@@ -84,7 +90,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/asset-scores.json data/asset-compass-a10-sofr.json data/asset-compass-observation-ledger.jsonl data/asset-compass-history-readiness.json data/asset-compass-factor-observations.json data/asset-compass-scoring-readiness-v54.json data/asset-compass-rate-shocks-v55.json
+          git add data/asset-scores.json data/asset-compass-a10-sofr.json data/asset-compass-bc-official-v1.json data/asset-compass-observation-ledger.jsonl data/asset-compass-history-readiness.json data/asset-compass-factor-observations.json data/asset-compass-scoring-readiness-v54.json data/asset-compass-rate-shocks-v55.json
           if ! git diff --cached --quiet; then
             git commit -m "data(macro): refresh official Treasury snapshot"
             git pull --rebase origin main
@@ -102,6 +108,10 @@ jobs:
           if [ -f data/asset-compass-a10-sofr.json ]; then
             git show origin/main:data/asset-compass-a10-sofr.json > /tmp/a10-sofr-remote.json
             cmp data/asset-compass-a10-sofr.json /tmp/a10-sofr-remote.json
+          fi
+          if [ -f data/asset-compass-bc-official-v1.json ]; then
+            git show origin/main:data/asset-compass-bc-official-v1.json > /tmp/bc-official-remote.json
+            cmp data/asset-compass-bc-official-v1.json /tmp/bc-official-remote.json
           fi
           cmp data/asset-scores.json /tmp/asset-compass-v30-remote-snapshot.json
           cmp data/asset-compass-observation-ledger.jsonl /tmp/asset-compass-v30-remote-ledger.jsonl
