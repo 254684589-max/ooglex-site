@@ -34,6 +34,18 @@ class IndicatorCatalogFocusTests(unittest.TestCase):
         self.assertIn('href="./indicator-lab.html"',self.catalog)
         self.assertIn('href="./indicator-ratings.html"',self.research)
 
+    def test_a10_history_and_source_integration(self):
+        handbook=(ROOT/'macro/indicator-a10-guide.js').read_text(encoding='utf-8')
+        for marker in ('id="a10-guide"','id="a10-history-svg"','indicator-a10-guide.js'):
+            self.assertIn(marker,self.catalog)
+        self.assertIn('asset-compass-treasury-history.json',handbook)
+        self.assertIn('not_valid_for_point_in_time_backtest!==true',handbook)
+        for name in ('美国10年期实际收益率','SOFR及SOFR远期曲线','高收益债OAS信用利差'):
+            self.assertIn(name,handbook)
+        for marker in ('target_range_lower','target_range_upper','monthly_change_thousands',
+                       'asset-compass-a10-sofr.json','sofr_forward_curve_available===false'):
+            self.assertIn(marker,self.a10)
+
     def test_a10_is_exactly_ten_and_does_not_fabricate_forward_rates(self):
         self.assertEqual(len(re.findall(r'\{name:"',self.a10)),10)
         self.assertIn('id="a10-summary"',self.catalog)
