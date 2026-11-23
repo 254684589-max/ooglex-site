@@ -7,7 +7,7 @@ from pathlib import Path
 
 from scripts.archive_asset_compass_v57_first_seen import append_evidence,read_rows,digest
 from scripts.build_asset_compass_asset_specific_v57 import build,parse_gold,parse_treasury
-from tests.test_asset_compass_asset_specific_v57 import gold_raw,treasury_raw,ROOT,NOW
+from test_asset_compass_asset_specific_v57 import gold_raw,treasury_raw,ROOT,NOW
 
 
 class V57FirstSeenTests(unittest.TestCase):
