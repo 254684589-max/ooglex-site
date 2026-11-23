@@ -1,4 +1,4 @@
-name: Asset Compass Research V18-V55 Gates
+name: Asset Compass Research V18-V56 Gates
 on:
   pull_request:
     paths:
@@ -33,6 +33,11 @@ on:
       - 'tests/test_asset_compass_rate_shocks_v55.py'
       - 'tests/smoke_asset_compass_rate_shocks_v55.cjs'
       - 'docs/ASSET_COMPASS_V55_*'
+      - 'scripts/build_asset_compass_new_sources_v56.py'
+      - 'tests/test_asset_compass_new_sources_v56.py'
+      - 'tests/smoke_asset_compass_new_sources_v56.cjs'
+      - '.github/workflows/asset-compass-new-sources-v56.yml'
+      - 'docs/ASSET_COMPASS_V56_*'
       - 'macro/model-config.json'
       - '.github/workflows/asset-compass-release-values-v53.yml'
       - 'docs/ASSET_COMPASS_V53_*'
@@ -112,9 +117,9 @@ jobs:
         run: python3 -m pip install cryptography==46.0.4
       - name: Syntax validation
         run: python3 -m compileall -q scripts tests
-      - name: Run isolated V18-V55 research gates
+      - name: Run isolated V18-V56 research gates
         run: python3 -m unittest discover -s tests -p 'test_asset_compass_*_v*.py' -v
-      - name: V39-V55 verify factor qualification evidence and closed scoring gates
+      - name: V39-V56 verify factor qualification evidence and closed scoring gates
         run: |
           node --check macro/compass-pages.js
           node tests/smoke_asset_compass_frontend_v40.cjs
@@ -156,6 +161,25 @@ jobs:
           python3 -m scripts.build_asset_compass_rate_shocks_v55 --output /tmp/ooglex-v55-rate-shocks.json
           python3 -m scripts.build_asset_compass_rate_shocks_v55
           node tests/smoke_asset_compass_rate_shocks_v55.cjs
+      - name: V56 official NFCI and EIA parser, coverage and scoring fail-closed
+        run: |
+          python3 -m unittest discover -s tests -p 'test_asset_compass_new_sources_v56.py' -v
+          node --check macro/compass-pages.js
+          node tests/smoke_asset_compass_new_sources_v56.cjs
+      - name: V56 fetch real Chicago Fed NFCI and EIA crude inventory (not synthetic)
+        run: |
+          python3 -m scripts.build_asset_compass_new_sources_v56 --fetch --output /tmp/ooglex-v56-real-official-research.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("/tmp/ooglex-v56-real-official-research.json").read_text())
+          assert d["sources"]["nfci"]["observation_count"]>=112
+          assert d["sources"]["oil_inventory"]["observation_count"]>=112
+          assert d["approved_asset_scores"]==0
+          assert d["independent_scoring_factor_groups_qualified"]==0
+          assert d["status"]=="research_only_two_official_sources_current"
+          print("V56 truly downloaded both official sources; no live scores")
+          PY
       - name: Verify production scoring remains blocked
         run: |
           python3 - <<'PY'
