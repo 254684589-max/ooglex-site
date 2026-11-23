@@ -30,12 +30,12 @@ def parse(raw,series_id,now,max_age_days):
         raise ValueError("FRED response is not a bounded CSV")
     text=raw.decode("utf-8-sig")
     rd=csv.DictReader(io.StringIO(text))
-    if not rd.fieldnames or "DATE" not in rd.fieldnames or series_id not in rd.fieldnames:
+    if not rd.fieldnames or not any(k in rd.fieldnames for k in ("DATE","observation_date")) or series_id not in rd.fieldnames:
         raise ValueError("Wrong FRED CSV header")
     rows=[]
     seen=set()
     for rec in rd:
-        period=rec.get("DATE","")
+        period=rec.get("DATE") or rec.get("observation_date") or ""
         try: day=datetime.strptime(period,"%Y-%m-%d").date()
         except ValueError:raise ValueError("Invalid FRED period date")
         if day in seen:raise ValueError("Duplicate FRED observation period")
