@@ -1,32 +1,32 @@
 {
   "schema_version": 3,
   "stage": "v1_1_universe_1000",
-  "generated_at": "2026-11-16T12:57:27Z",
+  "generated_at": "2026-11-23T14:59:13Z",
   "requested_limit": 1000,
   "record_count": 1000,
   "exchange_counts": {
-    "NASDAQ": 409,
-    "NYSE": 591
+    "NASDAQ": 408,
+    "NYSE": 592
   },
   "sector_counts": {
-    "Unknown": 634,
-    "科技": 63,
+    "Unknown": 633,
+    "科技": 62,
     "金融": 59,
     "工业": 57,
     "医疗健康": 45,
     "可选消费": 36,
     "公用事业": 27,
-    "必需消费": 23,
+    "必需消费": 24,
     "能源": 18,
     "房地产": 14,
-    "原材料": 12,
+    "原材料": 13,
     "通信服务": 12
   },
   "priority_method_counts": {
-    "market_cap": 366,
-    "sec_filer_category_proxy": 634
+    "market_cap": 367,
+    "sec_filer_category_proxy": 633
   },
-  "market_data_as_of": "2026-11-15",
+  "market_data_as_of": "2026-11-23",
   "sources": {
     "sec_identity": "https://www.sec.gov/files/company_tickers_exchange.json",
     "market_cap_priority": "apps/companies/data.json",
