@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_bc_official_observations_v1",
-  "generated_at": "2026-11-23T09:38:26.228196+00:00",
+  "generated_at": "2026-11-23T09:41:51.600763+00:00",
   "series": {
     "美国实际GDP增长率": {
       "fred_series_id": "A191RL1Q225SBEA",
@@ -91,7 +91,7 @@
         }
       ],
       "source_observation_count": 19,
-      "retrieved_at": "2026-11-23T09:38:26.228196+00:00",
+      "retrieved_at": "2026-11-23T09:41:51.600763+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
@@ -1147,7 +1147,7 @@
         }
       ],
       "source_observation_count": 1218,
-      "retrieved_at": "2026-11-23T09:38:26.228196+00:00",
+      "retrieved_at": "2026-11-23T09:41:51.600763+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
@@ -1395,7 +1395,255 @@
         }
       ],
       "source_observation_count": 58,
-      "retrieved_at": "2026-11-23T09:38:26.228196+00:00",
+      "retrieved_at": "2026-11-23T09:41:51.600763+00:00",
+      "historical_release_vintages_verified": false,
+      "validated_for_live_scoring": false
+    },
+    "美国住房开工": {
+      "fred_series_id": "HOUST",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=HOUST&cosd=2022-01-01&coed=2026-11-23",
+      "original_agency": "US Census Bureau",
+      "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
+      "frequency": "monthly",
+      "unit": "thousands_units_saar",
+      "observation_period": "2026-10-01",
+      "latest_value": 1309.0,
+      "observations": [
+        {
+          "date": "2022-01-01",
+          "value": 1693.0
+        },
+        {
+          "date": "2022-02-01",
+          "value": 1730.0
+        },
+        {
+          "date": "2022-03-01",
+          "value": 1700.0
+        },
+        {
+          "date": "2022-04-01",
+          "value": 1807.0
+        },
+        {
+          "date": "2022-05-01",
+          "value": 1546.0
+        },
+        {
+          "date": "2022-06-01",
+          "value": 1556.0
+        },
+        {
+          "date": "2022-07-01",
+          "value": 1382.0
+        },
+        {
+          "date": "2022-08-01",
+          "value": 1532.0
+        },
+        {
+          "date": "2022-09-01",
+          "value": 1481.0
+        },
+        {
+          "date": "2022-10-01",
+          "value": 1446.0
+        },
+        {
+          "date": "2022-11-01",
+          "value": 1434.0
+        },
+        {
+          "date": "2022-12-01",
+          "value": 1296.0
+        },
+        {
+          "date": "2023-01-01",
+          "value": 1358.0
+        },
+        {
+          "date": "2023-02-01",
+          "value": 1395.0
+        },
+        {
+          "date": "2023-03-01",
+          "value": 1366.0
+        },
+        {
+          "date": "2023-04-01",
+          "value": 1343.0
+        },
+        {
+          "date": "2023-05-01",
+          "value": 1609.0
+        },
+        {
+          "date": "2023-06-01",
+          "value": 1420.0
+        },
+        {
+          "date": "2023-07-01",
+          "value": 1464.0
+        },
+        {
+          "date": "2023-08-01",
+          "value": 1321.0
+        },
+        {
+          "date": "2023-09-01",
+          "value": 1369.0
+        },
+        {
+          "date": "2023-10-01",
+          "value": 1380.0
+        },
+        {
+          "date": "2023-11-01",
+          "value": 1522.0
+        },
+        {
+          "date": "2023-12-01",
+          "value": 1504.0
+        },
+        {
+          "date": "2024-01-01",
+          "value": 1378.0
+        },
+        {
+          "date": "2024-02-01",
+          "value": 1555.0
+        },
+        {
+          "date": "2024-03-01",
+          "value": 1297.0
+        },
+        {
+          "date": "2024-04-01",
+          "value": 1379.0
+        },
+        {
+          "date": "2024-05-01",
+          "value": 1329.0
+        },
+        {
+          "date": "2024-06-01",
+          "value": 1318.0
+        },
+        {
+          "date": "2024-07-01",
+          "value": 1269.0
+        },
+        {
+          "date": "2024-08-01",
+          "value": 1394.0
+        },
+        {
+          "date": "2024-09-01",
+          "value": 1357.0
+        },
+        {
+          "date": "2024-10-01",
+          "value": 1370.0
+        },
+        {
+          "date": "2024-11-01",
+          "value": 1300.0
+        },
+        {
+          "date": "2024-12-01",
+          "value": 1494.0
+        },
+        {
+          "date": "2025-01-01",
+          "value": 1353.0
+        },
+        {
+          "date": "2025-02-01",
+          "value": 1491.0
+        },
+        {
+          "date": "2025-03-01",
+          "value": 1346.0
+        },
+        {
+          "date": "2025-04-01",
+          "value": 1400.0
+        },
+        {
+          "date": "2025-05-01",
+          "value": 1289.0
+        },
+        {
+          "date": "2025-06-01",
+          "value": 1379.0
+        },
+        {
+          "date": "2025-07-01",
+          "value": 1432.0
+        },
+        {
+          "date": "2025-08-01",
+          "value": 1291.0
+        },
+        {
+          "date": "2025-09-01",
+          "value": 1319.0
+        },
+        {
+          "date": "2025-10-01",
+          "value": 1273.0
+        },
+        {
+          "date": "2025-11-01",
+          "value": 1319.0
+        },
+        {
+          "date": "2025-12-01",
+          "value": 1378.0
+        },
+        {
+          "date": "2026-01-01",
+          "value": 1385.0
+        },
+        {
+          "date": "2026-02-01",
+          "value": 1346.0
+        },
+        {
+          "date": "2026-03-01",
+          "value": 1522.0
+        },
+        {
+          "date": "2026-04-01",
+          "value": 1414.0
+        },
+        {
+          "date": "2026-05-01",
+          "value": 1182.0
+        },
+        {
+          "date": "2026-06-01",
+          "value": 1439.0
+        },
+        {
+          "date": "2026-07-01",
+          "value": 1369.0
+        },
+        {
+          "date": "2026-08-01",
+          "value": 1280.0
+        },
+        {
+          "date": "2026-09-01",
+          "value": 1191.0
+        },
+        {
+          "date": "2026-10-01",
+          "value": 1309.0
+        }
+      ],
+      "source_observation_count": 58,
+      "retrieved_at": "2026-11-23T09:41:51.600763+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
@@ -1643,7 +1891,7 @@
         }
       ],
       "source_observation_count": 58,
-      "retrieved_at": "2026-11-23T09:38:26.228196+00:00",
+      "retrieved_at": "2026-11-23T09:41:51.600763+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
@@ -2679,7 +2927,7 @@
         }
       ],
       "source_observation_count": 255,
-      "retrieved_at": "2026-11-23T09:38:26.228196+00:00",
+      "retrieved_at": "2026-11-23T09:41:51.600763+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
@@ -3735,7 +3983,7 @@
         }
       ],
       "source_observation_count": 1221,
-      "retrieved_at": "2026-11-23T09:38:26.228196+00:00",
+      "retrieved_at": "2026-11-23T09:41:51.600763+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
@@ -4791,7 +5039,7 @@
         }
       ],
       "source_observation_count": 1221,
-      "retrieved_at": "2026-11-23T09:38:26.228196+00:00",
+      "retrieved_at": "2026-11-23T09:41:51.600763+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
@@ -5847,14 +6095,14 @@
         }
       ],
       "source_observation_count": 1218,
-      "retrieved_at": "2026-11-23T09:38:26.228196+00:00",
+      "retrieved_at": "2026-11-23T09:41:51.600763+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     }
   },
   "failed_sources": {},
-  "requested_series_count": 8,
-  "accepted_series_count": 8,
+  "requested_series_count": 9,
+  "accepted_series_count": 9,
   "historical_pit_certified": false,
   "validated_for_live_scoring": false,
   "source_context": "FRED public access mirrors primary agencies; not the original publication vintage.",
