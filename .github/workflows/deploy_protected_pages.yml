@@ -404,6 +404,22 @@ jobs:
             fi
             sleep 7
           done
+      # Unlike GitHub's native Pages publisher, this protected artifact was
+      # built at the triggering SHA. Data ingest may have written newer official
+      # observations to main while we waited. Never overwrite latest main
+      # with an artifact that predates those observations.
+      - name: V57 refuse stale protected artifact before deployment
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          latest="$(gh api "repos/${GITHUB_REPOSITORY}/commits/main" --jq .sha)"
+          if [ "$latest" != "$GITHUB_SHA" ]; then
+            echo "::error::Protected Pages artifact is for $GITHUB_SHA but main is $latest. Refusing rollback; latest official data collector must dispatch a fresh protected Pages workflow."
+            exit 1
+          fi
+          echo "Protected Pages source commit is current main: $latest"
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

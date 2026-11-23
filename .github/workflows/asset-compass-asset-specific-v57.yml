@@ -17,6 +17,7 @@ on:
     - cron: '30 2 * * 6'
 permissions:
   contents: write
+  actions: write
 concurrency:
   group: asset-compass-ledger-main
   cancel-in-progress: false
@@ -79,6 +80,7 @@ jobs:
             git commit -m "data(asset-compass): actual CFTC gold and 30y Treasury demand observations"
             git pull --rebase origin main
             git push origin HEAD:main
+            echo "PUBLISHED_CHANGED=1" >> "$GITHUB_ENV"
           fi
       - name: Verify the actual remote file contains no unauthorized score
         run: |
@@ -110,6 +112,21 @@ jobs:
              o.write("Treasury 30Y: "+str(p["sources"]["treasury_30y"]["auction_count"])+" auctions\n\n")
              o.write("**3/6 assets have asset-specific source observations, but 0/6 scoring certified.**\n")
           PY
+      # A workflow commit pushed via GITHUB_TOKEN does not trigger the usual
+      # push-based protected Pages workflow. Explicit workflow_dispatch ensures
+      # that its checkout includes the newly persisted CFTC/Treasury report,
+      # cross-source audit and first-seen ledger, rather than overwriting
+      # new data with the prior merge commit's static artifact.
+      - name: V57 request protected Pages rebuild at newest data commit
+        if: env.PUBLISHED_CHANGED == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh workflow run deploy_protected_pages.yml --ref main; then
+            echo "Protected Pages rebuild dispatched for latest main with persisted V57 data."
+          else
+            echo "::warning::Workflow dispatch unavailable. Protected Pages 15-minute schedule will retry on latest main; data remains safe in main."
+          fi
       - name: Retain derived evidence, no republished raw CFTC payload
         uses: actions/upload-artifact@v4
         with:
