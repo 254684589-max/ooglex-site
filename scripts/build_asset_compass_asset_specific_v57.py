@@ -106,8 +106,11 @@ def parse_gold(raw, *, now=None):
         if "GOLD" not in contract:
             raise ValueError("CFTC result not gold")
         day=_day(r.get("report_date_as_yyyy_mm_dd"),"CFTC report date")
-        if day.weekday()!=1 or day>now.date() or day.isoformat() in seen:
-            raise ValueError(f"CFTC date not a unique past Tuesday: day={day.isoformat()} weekday={day.weekday()} duplicate={day.isoformat() in seen}; contract={contract[:65]}")
+        # CFTC may move the report-as-of day to MONDAY when the regular
+        # Tuesday is a US holiday, e.g. 2025-11-10 before Veterans Day.
+        # Preserve actual date instead of silently relabeling it Tuesday.
+        if day.weekday() not in (0,1) or day>now.date() or day.isoformat() in seen:
+            raise ValueError(f"CFTC report date not unique past Monday holiday exception or Tuesday: {day.isoformat()} weekday={day.weekday()} duplicate={day.isoformat() in seen}")
         seen.add(day.isoformat())
         oi=_decimal(r.get("open_interest_all"),"open interest",lo=1000,hi=100_000_000)
         longs=_decimal(r.get("m_money_positions_long_all"),"managed long",lo=0,hi=oi)
@@ -217,6 +220,9 @@ def build(gold,bond,config,v56,*,now=None,source_hashes=None):
         "fresh_for_research":gold_age<=18,
         "recent_observations":gold[-110:],
         "observation_count":len(gold),
+        "non_tuesday_report_dates": [r["date"] for r in gold if
+            date.fromisoformat(r["date"]).weekday()!=1][-24:],
+        "non_tuesday_exception_approved_as_pit":False,
         "report_date_is_publication_time":False,
         "signal_verified":False,
         "known_release_lag":"Tuesday position snapshot generally published Friday; holiday/delayed reports vary",
