@@ -66,7 +66,7 @@ def parse_fed_xml(raw:bytes):
         if not files or len(files)>20:
             raise ValueError("Unexpected Federal Reserve H10 XML archive files")
         for name in files:
-            if archive.getinfo(name).file_size>120_000_000:
+            if archive.getinfo(name).file_size>400_000_000:
                 raise ValueError("Unbounded official H10 XML member")
             with archive.open(name) as fp:
                 active=False
@@ -77,6 +77,12 @@ def parse_fed_xml(raw:bytes):
                         series_depth+=1
                         attrs={k.split("}")[-1].upper():str(v) for k,v in element.attrib.items()}
                         active=FED_SERIES in attrs.values()
+                    # Some SDMX exports encode the series identifier in
+                    # nested SeriesKey/Value elements, not Series attributes.
+                    if event=="start" and tag=="Value" and series_depth:
+                        attrs={k.split("}")[-1].upper():str(v) for k,v in element.attrib.items()}
+                        if attrs.get("ID","").upper()=="SERIES_NAME" and attrs.get("VALUE")==FED_SERIES:
+                            active=True
                     if event=="end" and tag=="Obs" and active:
                         attrs={k.split("}")[-1].upper():str(v) for k,v in element.attrib.items()}
                         day=attrs.get("TIME_PERIOD")
