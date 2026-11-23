@@ -1,0 +1,220 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_v60_investable_return_accounting_readiness",
+  "generated_at": "2026-11-23T17:00:05.726612+00:00",
+  "source_v59_sha256": "2e2ea5694b4e9c9f0fc1bd3884d30327dbdb642f03eb818e09e5fdb4a43d3dfb",
+  "source_model_sha256": "a1d5a1a5f3dad358df8d770d639ef9d8eab78ba793360ad89355093daf4a4c4f",
+  "price_audit_sha256": null,
+  "asset_specific_research_coverage": 6,
+  "accounting_contracts_defined": 6,
+  "actual_investable_ledgers_certified": 0,
+  "audited_asset_total_return_count": 0,
+  "historical_first_release_certified_source_count": 0,
+  "qualified_independent_factor_groups": 0,
+  "oos_validated_assets": 0,
+  "official_0_to_100_scores_published": 0,
+  "validated_for_live_scoring": false,
+  "status": "accounting_requirements_only_no_authorized_returns",
+  "assets": {
+    "gold": {
+      "proposed_vehicle": "physically_backed_gold_etf",
+      "example": "GLD",
+      "accounting_class": "fund_nav",
+      "requires": [
+        "unadjusted_nav_per_share",
+        "distributions_per_share",
+        "split_factor",
+        "management_fees_nav_treatment",
+        "trade_commissions",
+        "bid_ask_slippage"
+      ],
+      "fallback_existing": "GC=F unadjusted continuous futures price; not roll-adjusted",
+      "alternative": "gold_futures_collateralized_roll_account",
+      "asset_id": "gold",
+      "existing_price_proxy": "GC=F",
+      "existing_price_observations": 0,
+      "existing_source_is_price_only": true,
+      "real_accounting_ledger_connected": false,
+      "real_dividends_coupons_or_rolls_certified": false,
+      "public_redistribution_licensed": false,
+      "historical_point_in_time_verified": false,
+      "investable_total_return_certified": false,
+      "oos_calibrated": false,
+      "official_score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "us_equities": {
+      "proposed_vehicle": "sp500_tracking_etf",
+      "example": "SPY",
+      "accounting_class": "fund_nav",
+      "requires": [
+        "unadjusted_nav_per_share",
+        "distributions_per_share",
+        "split_factor",
+        "management_fees_nav_treatment",
+        "trade_commissions",
+        "bid_ask_slippage"
+      ],
+      "fallback_existing": "^GSPC price-only S&P 500 index; excludes dividends",
+      "asset_id": "us_equities",
+      "existing_price_proxy": "^GSPC",
+      "existing_price_observations": 0,
+      "existing_source_is_price_only": true,
+      "real_accounting_ledger_connected": false,
+      "real_dividends_coupons_or_rolls_certified": false,
+      "public_redistribution_licensed": false,
+      "historical_point_in_time_verified": false,
+      "investable_total_return_certified": false,
+      "oos_calibrated": false,
+      "official_score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "us_long_bonds": {
+      "proposed_vehicle": "long_treasury_etf",
+      "example": "TLT",
+      "accounting_class": "fund_nav",
+      "requires": [
+        "unadjusted_nav_per_share",
+        "distributions_per_share",
+        "split_factor",
+        "management_fees_nav_treatment",
+        "trade_commissions",
+        "bid_ask_slippage"
+      ],
+      "fallback_existing": "TLT unadjusted close; missing coupon distributions",
+      "asset_id": "us_long_bonds",
+      "existing_price_proxy": "TLT",
+      "existing_price_observations": 0,
+      "existing_source_is_price_only": true,
+      "real_accounting_ledger_connected": false,
+      "real_dividends_coupons_or_rolls_certified": false,
+      "public_redistribution_licensed": false,
+      "historical_point_in_time_verified": false,
+      "investable_total_return_certified": false,
+      "oos_calibrated": false,
+      "official_score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "usd": {
+      "proposed_vehicle": "usd_cash_vs_explicit_foreign_currency_basket",
+      "example": "USD foreign exchange basket with declared funding",
+      "accounting_class": "fx_funded",
+      "requires": [
+        "base_currency",
+        "quote_currency",
+        "opening_fx_rate",
+        "closing_fx_rate",
+        "usd_interest_income",
+        "foreign_funding_cost",
+        "trade_commissions",
+        "bid_ask_slippage"
+      ],
+      "fallback_existing": "DX-Y.NYB index level / FRB H10 nominal index; not FX carry",
+      "note": "A dollar index level is not investable total return; basket and financing must be fixed ex ante.",
+      "asset_id": "usd",
+      "existing_price_proxy": "DX-Y.NYB",
+      "existing_price_observations": 0,
+      "existing_source_is_price_only": true,
+      "real_accounting_ledger_connected": false,
+      "real_dividends_coupons_or_rolls_certified": false,
+      "public_redistribution_licensed": false,
+      "historical_point_in_time_verified": false,
+      "investable_total_return_certified": false,
+      "oos_calibrated": false,
+      "official_score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "bitcoin": {
+      "proposed_vehicle": "spot_btc_custody_account",
+      "example": "BTC spot; declared custody",
+      "accounting_class": "cash_asset",
+      "requires": [
+        "btc_spot_reference",
+        "units_held",
+        "custody_fees",
+        "trade_commissions",
+        "bid_ask_slippage",
+        "funding_cost",
+        "fork_airdrop_treatment"
+      ],
+      "fallback_existing": "BTC-USD / CoinGecko spot price; excludes investor costs",
+      "asset_id": "bitcoin",
+      "existing_price_proxy": "BTC-USD",
+      "existing_price_observations": 0,
+      "existing_source_is_price_only": true,
+      "real_accounting_ledger_connected": false,
+      "real_dividends_coupons_or_rolls_certified": false,
+      "public_redistribution_licensed": false,
+      "historical_point_in_time_verified": false,
+      "investable_total_return_certified": false,
+      "oos_calibrated": false,
+      "official_score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    },
+    "oil": {
+      "proposed_vehicle": "collateralized_wti_futures_roll_account",
+      "example": "front-WTI with documented roll schedule",
+      "accounting_class": "futures_collateral",
+      "requires": [
+        "dated_contract_identifiers",
+        "contract_multiplier",
+        "settlement_prices",
+        "signed_contract_quantities",
+        "realized_roll_pnl",
+        "unrealized_mark_pnl",
+        "cash_collateral_interest",
+        "trade_commissions",
+        "bid_ask_slippage",
+        "margin_and_financing"
+      ],
+      "fallback_existing": "CL=F continuous price; no contract roll return",
+      "asset_id": "oil",
+      "existing_price_proxy": "CL=F",
+      "existing_price_observations": 0,
+      "existing_source_is_price_only": true,
+      "real_accounting_ledger_connected": false,
+      "real_dividends_coupons_or_rolls_certified": false,
+      "public_redistribution_licensed": false,
+      "historical_point_in_time_verified": false,
+      "investable_total_return_certified": false,
+      "oos_calibrated": false,
+      "official_score": null,
+      "blocked_by": [
+        "insufficient_factor_groups",
+        "insufficient_weight_coverage",
+        "historical_calibration_not_passed",
+        "out_of_sample_validation_not_passed"
+      ]
+    }
+  },
+  "limitations": [
+    "Six independently specified accounting conventions are not six live, audited returns.",
+    "Price series, ETF closes, USD spot indices and futures continuous quotes cannot be relabeled total return.",
+    "No historical point-in-time macro vintage, OOS result, redistribution license or live 0–100 score is certified."
+  ]
+}
