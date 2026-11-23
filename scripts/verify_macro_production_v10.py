@@ -15,7 +15,7 @@ SCRIPTS = ("compass-pages.js","treasury-trends.js",
            "indicator-correlations.js","indicator-leadlag.js",
            "indicator-quality.js","indicator-provenance-v7.js",
            "indicator-monitor-v8.js","operations-v9.js","indicator-a10.js","indicator-a10-guide.js")
-DATA = ("asset-scores.json","asset-compass-treasury-history.json",
+DATA = ("asset-scores.json","asset-compass-indicator-coverage-v1.json","asset-compass-treasury-history.json",
         "asset-compass-history-readiness.json",
         "asset-compass-observation-ledger.jsonl",
         "asset-compass-provenance-v7.json",
