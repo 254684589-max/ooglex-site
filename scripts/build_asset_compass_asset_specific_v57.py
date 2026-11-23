@@ -107,7 +107,7 @@ def parse_gold(raw, *, now=None):
             raise ValueError("CFTC result not gold")
         day=_day(r.get("report_date_as_yyyy_mm_dd"),"CFTC report date")
         if day.weekday()!=1 or day>now.date() or day.isoformat() in seen:
-            raise ValueError("CFTC date not a unique past Tuesday")
+            raise ValueError(f"CFTC date not a unique past Tuesday: day={day.isoformat()} weekday={day.weekday()} duplicate={day.isoformat() in seen}; contract={contract[:65]}")
         seen.add(day.isoformat())
         oi=_decimal(r.get("open_interest_all"),"open interest",lo=1000,hi=100_000_000)
         longs=_decimal(r.get("m_money_positions_long_all"),"managed long",lo=0,hi=oi)
