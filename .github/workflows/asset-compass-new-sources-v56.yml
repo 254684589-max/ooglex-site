@@ -1,0 +1,90 @@
+name: Asset Compass V56 Official NFCI and EIA Oil Observations
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build_asset_compass_new_sources_v56.py'
+      - 'tests/test_asset_compass_new_sources_v56.py'
+      - '.github/workflows/asset-compass-new-sources-v56.yml'
+  schedule:
+    # NFCI Wednesday; EIA WPSR Wednesday US ET, later on US holidays.
+    - cron: '20 16 * * 4'
+permissions:
+  contents: write
+concurrency:
+  group: asset-compass-ledger-main
+  cancel-in-progress: false
+jobs:
+  official-source-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Offline source parser, rights and 0-100 fail-closed tests
+        run: python3 -m unittest discover -s tests -p 'test_asset_compass_new_sources_v56.py' -v
+      - name: Fetch actual Chicago Fed NFCI and EIA weekly crude inventories
+        run: python3 -m scripts.build_asset_compass_new_sources_v56 --fetch
+      - name: Verify official-source identities, numeric inputs and no model promotion
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path("data/asset-compass-new-sources-v56.json").read_text())
+          assert r["status"]=="research_only_two_official_sources_current"
+          assert r["sources"]["nfci"]["series_id"]=="NFCI"
+          assert r["sources"]["oil_inventory"]["series_id"]=="WCESTUS1"
+          assert r["sources"]["nfci"]["observation_count"]>=112
+          assert r["sources"]["oil_inventory"]["observation_count"]>=112
+          assert r["groups_with_any_observation_across_v54_and_v56"]==6
+          assert r["assets_with_asset_specific_source_observations"]==["oil"]
+          assert r["source_vintages_qualified"]==0
+          assert r["independent_scoring_factor_groups_qualified"]==0
+          assert r["approved_asset_scores"]==0
+          assert r["validated_for_live_scoring"] is False
+          assert all(item["score"] is None for item in r["assets"].values())
+          print("V56 official research only:",r["sources"]["nfci"]["latest_observation_date"],
+                r["sources"]["oil_inventory"]["latest_observation_date"])
+          PY
+      - name: Persist verifiable official derived observations
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/asset-compass-new-sources-v56.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data(asset-compass): refresh Chicago NFCI and EIA inventories for V56 research"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Check remote persisted report and provenance
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git show origin/main:data/asset-compass-new-sources-v56.json > /tmp/ooglex-v56-republished.json
+          cmp data/asset-compass-new-sources-v56.json /tmp/ooglex-v56-republished.json
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          report=json.loads(Path("/tmp/ooglex-v56-republished.json").read_text())
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+            f.write("### V56 real official data and no scoring\n")
+            for key in ("nfci","oil_inventory"):
+              s=report["sources"][key]
+              f.write(f"- {s['series_id']}: {s['observation_count']} observations; ")
+              f.write(f"latest {s['latest_observation_date']} = {s['latest_level']}  \n")
+            f.write("**Historical PIT vintages: 0; live 0–100 asset scores: 0**\n")
+          print("Verified remote V56 evidence:",report["sources"]["nfci"]["source_raw_sha256"])
+          PY
+      - name: Upload report (metadata only, not copyrighted raw capture)
+        uses: actions/upload-artifact@v4
+        with:
+          name: asset-compass-v56-official-derived-report
+          path: data/asset-compass-new-sources-v56.json
+          retention-days: 30
