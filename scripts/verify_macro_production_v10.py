@@ -14,7 +14,7 @@ SCRIPTS = ("compass-pages.js","treasury-trends.js",
            "indicator-observations.js","indicator-history.js",
            "indicator-correlations.js","indicator-leadlag.js",
            "indicator-quality.js","indicator-provenance-v7.js",
-           "indicator-monitor-v8.js","operations-v9.js","indicator-a10.js")
+           "indicator-monitor-v8.js","operations-v9.js","indicator-a10.js","indicator-a10-guide.js")
 DATA = ("asset-scores.json","asset-compass-treasury-history.json",
         "asset-compass-history-readiness.json",
         "asset-compass-observation-ledger.jsonl",
@@ -44,7 +44,8 @@ def accept(root):
                             ("indicator-lab.html","indicator-leadlag.js"),
                             ("indicator-lab.html","indicator-quality.js"),
                             ("indicator-lab.html","indicator-monitor-v8.js"),
-                            ("indicator-ratings.html","indicator-a10.js")):
+                            ("indicator-ratings.html","indicator-a10.js"),
+                            ("indicator-ratings.html","indicator-a10-guide.js")):
         path=root/"macro"/filename
         if path.is_file() and 'src="./'+script+'"' not in path.read_text(encoding="utf-8"):
             errors.append(filename+" missing "+script)
