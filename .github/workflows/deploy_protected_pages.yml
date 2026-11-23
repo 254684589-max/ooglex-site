@@ -231,6 +231,7 @@ jobs:
         run: |
           python3 -m unittest discover -s tests -p 'test_macro_indicator_catalog_focus.py' -v
           node --check .site/macro/indicator-a10.js
+          node --check .site/macro/indicator-a10-guide.js
           python3 - <<'PYCATALOG'
           from pathlib import Path
           page=Path(".site/macro/indicator-ratings.html").read_text(encoding="utf-8")
@@ -239,6 +240,7 @@ jobs:
           assert 'id="v8-heading"' not in page
           assert 'id="v8-heading"' in research
           assert (Path(".site/macro/indicator-a10.js")).is_file()
+          assert (Path(".site/macro/indicator-a10-guide.js")).is_file()
           print("Indicator-first production structure verified")
           PYCATALOG
 
