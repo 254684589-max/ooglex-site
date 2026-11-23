@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "report_type": "asset_compass_v61_original_release_pit_admission_contract",
+  "generated_at": "2026-11-23T17:06:17.755262+00:00",
+  "parent_sha256": {
+    "v50": "049604f1a34a13b628d9b350845097c9488c6cccb06c9094c45673745457f8c2",
+    "v59": "2e2ea5694b4e9c9f0fc1bd3884d30327dbdb642f03eb818e09e5fdb4a43d3dfb",
+    "v60": "3f80c47a4a5a70b20145fe5761c191a30456adcb393c488065bbefac8dce19f9"
+  },
+  "required_macro_series": 14,
+  "registered_release_reference_series": 14,
+  "independently_certified_original_release_series": 0,
+  "independently_verified_revision_chains": 0,
+  "investable_total_return_certified_assets": 0,
+  "oos_validated_assets": 0,
+  "approved_independent_factor_groups": 0,
+  "official_0_to_100_scores_published": 0,
+  "first_seen_or_observation_date_is_official_release_proof": false,
+  "model_scoring_enabled": false,
+  "eligible_for_historical_pit_backtest": false,
+  "status": "research_registry_only_no_original_release_certification",
+  "series": {
+    "treasury.us10y": {
+      "public_reference_only": true,
+      "official_first_publication_record_count": 0,
+      "independent_publisher_artifact_hash_verified": false,
+      "real_release_datetime_timezone_verified": false,
+      "historical_revision_chain_verified": false,
+      "redistribution_rights_verified": false,
+      "available_for_pit_backtest": false,
+      "next_required": "authentic_original_release_artifact_and_independently_correlated_UTC_publication_clock"
+    },
+    "treasury.real10y": {
+      "public_reference_only": true,
+      "official_first_publication_record_count": 0,
+      "independent_publisher_artifact_hash_verified": false,
+      "real_release_datetime_timezone_verified": false,
+      "historical_revision_chain_verified": false,
+      "redistribution_rights_verified": false,
+      "available_for_pit_backtest": false,
+      "next_required": "authentic_original_release_artifact_and_independently_correlated_UTC_publication_clock"
+    },
+    "treasury.us2y": {
+      "public_reference_only": true,
+      "official_first_publication_record_count": 0,
+      "independent_publisher_artifact_hash_verified": false,
+      "real_release_datetime_timezone_verified": false,
+      "historical_revision_chain_verified": false,
+      "redistribution_rights_verified": false,
+      "available_for_pit_backtest": false,
+      "next_required": "authentic_original_release_artifact_and_independently_correlated_UTC_publication_clock"
+    },
+    "nyfed.effr": {
+      "public_reference_only": true,
+      "official_first_publication_record_count": 0,
+      "independent_publisher_artifact_hash_verified": false,
+      "real_release_datetime_timezone_verified": false,
+      "historical_revision_chain_verified": false,
+      "redistribution_rights_verified": false,
+      "available_for_pit_backtest": false,
+      "next_required": "authentic_original_release_artifact_and_independently_correlated_UTC_publication_clock"
+    },
+    "bls.cpi": {
+      "public_reference_only": true,
+      "official_first_publication_record_count": 0,
+      "independent_publisher_artifact_hash_verified": false,
+      "real_release_datetime_timezone_verified": false,
+      "historical_revision_chain_verified": false,
+      "redistribution_rights_verified": false,
+      "available_for_pit_backtest": false,
+      "next_required": "authentic_original_release_artifact_and_independently_correlated_UTC_publication_clock"
+    },
+    "bls.core_cpi": {
+      "public_reference_only": true,
+      "official_first_publication_record_count": 0,
+      "independent_publisher_artifact_hash_verified": false,
+      "real_release_datetime_timezone_verified": false,
+      "historical_revision_chain_verified": false,
+      "redistribution_rights_verified": false,
+      "available_for_pit_backtest": false,
+      "next_required": "authentic_original_release_artifact_and_independently_correlated_UTC_publication_clock"
+    },
+    "bls.unemployment": {
+      "public_reference_only": true,
+      "official_first_publication_record_count": 0,
+      "independent_publisher_artifact_hash_verified": false,
+      "real_release_datetime_timezone_verified": false,
+      "historical_revision_chain_verified": false,
+      "redistribution_rights_verified": false,
+      "available_for_pit_backtest": false,
+      "next_required": "authentic_original_release_artifact_and_independently_correlated_UTC_publication_clock"
+    },
+    "bls.payroll": {
+      "public_reference_only": true,
+      "official_first_publication_record_count": 0,
+      "independent_publisher_artifact_hash_verified": false,
+      "real_release_datetime_timezone_verified": false,
+      "historical_revision_chain_verified": false,
+      "redistribution_rights_verified": false,
+      "available_for_pit_backtest": false,
+      "next_required": "authentic_original_release_artifact_and_independently_correlated_UTC_publication_clock"
+    },
+    "bea.core_pce": {
+      "public_reference_only": true,
+      "official_first_publication_record_count": 0,
+      "independent_publisher_artifact_hash_verified": false,
+      "real_release_datetime_timezone_verified": false,
+      "historical_revision_chain_verified": false,
+      "redistribution_rights_verified": false,
+      "available_for_pit_backtest": false,
+      "next_required": "authentic_original_release_artifact_and_independently_correlated_UTC_publication_clock"
+    },
+    "fed_h41.total_assets": {
+      "public_reference_only": true,
+      "official_first_publication_record_count": 0,
+      "independent_publisher_artifact_hash_verified": false,
+      "real_release_datetime_timezone_verified": false,
+      "historical_revision_chain_verified": false,
+      "redistribution_rights_verified": false,
+      "available_for_pit_backtest": false,
+      "next_required": "authentic_original_release_artifact_and_independently_correlated_UTC_publication_clock"
+    },
+    "liquidity.reserves": {
+      "public_reference_only": true,
+      "official_first_publication_record_count": 0,
+      "independent_publisher_artifact_hash_verified": false,
+      "real_release_datetime_timezone_verified": false,
+      "historical_revision_chain_verified": false,
+      "redistribution_rights_verified": false,
+      "available_for_pit_backtest": false,
+      "next_required": "authentic_original_release_artifact_and_independently_correlated_UTC_publication_clock"
+    },
+    "liquidity.tga": {
+      "public_reference_only": true,
+      "official_first_publication_record_count": 0,
+      "independent_publisher_artifact_hash_verified": false,
+      "real_release_datetime_timezone_verified": false,
+      "historical_revision_chain_verified": false,
+      "redistribution_rights_verified": false,
+      "available_for_pit_backtest": false,
+      "next_required": "authentic_original_release_artifact_and_independently_correlated_UTC_publication_clock"
+    },
+    "liquidity.overnight_rrp": {
+      "public_reference_only": true,
+      "official_first_publication_record_count": 0,
+      "independent_publisher_artifact_hash_verified": false,
+      "real_release_datetime_timezone_verified": false,
+      "historical_revision_chain_verified": false,
+      "redistribution_rights_verified": false,
+      "available_for_pit_backtest": false,
+      "next_required": "authentic_original_release_artifact_and_independently_correlated_UTC_publication_clock"
+    },
+    "nyfed_recession.probability": {
+      "public_reference_only": true,
+      "official_first_publication_record_count": 0,
+      "independent_publisher_artifact_hash_verified": false,
+      "real_release_datetime_timezone_verified": false,
+      "historical_revision_chain_verified": false,
+      "redistribution_rights_verified": false,
+      "available_for_pit_backtest": false,
+      "next_required": "authentic_original_release_artifact_and_independently_correlated_UTC_publication_clock"
+    }
+  },
+  "limitations": [
+    "Release-reference URLs are not archived original release artifacts or verified timestamps.",
+    "First-seen, observation period, and latest-revised series are not contemporaneously available PIT evidence.",
+    "Any independently attested release audit must separately corroborate original publisher bytes, timezone, availability and revisions.",
+    "No asset score or predictive validation is unlocked by this registry."
+  ]
+}
