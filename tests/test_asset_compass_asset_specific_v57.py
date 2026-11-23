@@ -8,7 +8,7 @@ from pathlib import Path
 
 from scripts.build_asset_compass_asset_specific_v57 import (
  CFTC_CODE,ASSETS,CFTC_ENDPOINT,FISCAL_ENDPOINT,CFTC_ARGS,FISCAL_ARGS,
- address,parse_gold,parse_treasury,build,retrieve,
+ address,parse_gold,parse_treasury,combine_auction_sources,build,retrieve,
 )
 ROOT=Path(__file__).resolve().parents[1]
 NOW=datetime(2026,11,23,10,0,tzinfo=timezone.utc)
@@ -114,6 +114,48 @@ class V57AssetTests(unittest.TestCase):
         j=json.loads(treasury_raw());j["data"][0]["auction_date"]="2026-12-15"
         with self.assertRaisesRegex(ValueError,"future"):
             parse_treasury(json.dumps(j).encode(),now=NOW)
+    def test_updated_v2_reopening_is_identified_by_remaining_29year_term(self):
+        source={"data":[{
+            "comp_auction_close_date":"2026-11-12",
+            "security_type":"Bond","security_term":"30-Year",
+            "bid_to_cover_ratio":"2.36","cusip":"912810AAA",
+        },{
+            "comp_auction_close_date":"2026-10-08",
+            "security_type":"Bond","security_term":"29-Year 10-Month",
+            "bid_to_cover_ratio":"2.54","cusip":"912810AAB",
+        },{
+            "comp_auction_close_date":"2026-10-21",
+            "security_type":"Bond","security_term":"19-Year 10-Month",
+            "bid_to_cover_ratio":"2.73","cusip":"912810AAC",
+        }]}
+        b=parse_treasury(json.dumps(source).encode(),now=NOW,minimum=0)
+        self.assertEqual(len(b),2)
+        self.assertEqual(b[-1]["auction_date"],"2026-11-12")
+
+    def test_legacy_new_data_combination_has_no_double_count(self):
+        old=self.make()[1]
+        duplicate=dict(old[-1])
+        latest={"auction_date":"2026-11-20","cusip":"912810XYZ",
+                "bid_to_cover_ratio":2.65,"security_term":"29-Year 11-Month"}
+        merged=combine_auction_sources(old,[duplicate,latest])
+        self.assertEqual(len(merged),len(old)+1)
+        self.assertEqual(merged[-1]["auction_date"],"2026-11-20")
+
+    def test_conflicting_updated_auction_bid_cover_is_refused(self):
+        old=self.make()[1]
+        duplicate=dict(old[-1])
+        duplicate["bid_to_cover_ratio"]+=0.8
+        with self.assertRaisesRegex(ValueError,"Inconsistent"):
+            combine_auction_sources(old,[duplicate])
+
+    def test_cftc_monday_holiday_observation_preserved_not_forced_tuesday(self):
+        raw=json.loads(gold_raw())
+        found=[r for r in raw if r["report_date_as_yyyy_mm_dd"].startswith("2025-11-11")]
+        self.assertEqual(len(found),1)
+        found[0]["report_date_as_yyyy_mm_dd"]="2025-11-10T00:00:00.000"
+        accepted=parse_gold(json.dumps(raw).encode(),now=NOW)
+        self.assertIn("2025-11-10",[x["date"] for x in accepted])
+
     def test_auction_time_not_first_publication_certificate(self):
         r=self.build()
         self.assertFalse(r["sources"]["treasury_30y"]["auction_date_is_publication_time"])
