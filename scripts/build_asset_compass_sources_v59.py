@@ -136,7 +136,7 @@ def build_equities(rows, *, raw_sha, now=None):
         "quarter_over_quarter_change_pct": round(
             (latest["market_value_millions_usd"] / rows[-2]["market_value_millions_usd"] - 1) * 100, 6),
         "recent_quarterly_observations": rows[-16:],
-        "fresh_for_research": 0 <= age <= 245,
+        "fresh_for_research": 0 <= age <= 300,
         "observation_calendar_days_old": age,
         "source_observation_status": "observed_research_only",
         "source_rights": "Federal Reserve public-domain data; citation requested via FRED metadata",
@@ -316,7 +316,7 @@ def build_evidence(v58, equities=None, bitcoin=None, *, now=None):
                     if (doc.get("series_id") != FRED_ID or doc.get("units") != "millions_usd" or
                         doc.get("observation_count", 0) < 50 or not
                         HEX64.fullmatch(doc.get("raw_source_sha256", "")) or
-                        not 0 <= (now.date() - latest).days <= 245):
+                        not 0 <= (now.date() - latest).days <= 300):
                         reason = "quarterly_market_value_unverified"
                 else:
                     tip = doc["observed_tip"]
