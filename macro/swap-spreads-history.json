@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-11-22T00:00:00Z",
+  "updatedAt": "2026-11-24T14:10:34Z",
   "status": "ok",
   "frequency": "daily",
   "demo": false,
@@ -62,6 +62,54 @@
           "swap": 4.64,
           "treasury": 5.31,
           "spreadBp": -67,
+          "method": "close"
+        }
+      ]
+    },
+    {
+      "asOf": "2026-11-23",
+      "quality": "indicative",
+      "tenors": [
+        {
+          "years": 2,
+          "swap": 4.52,
+          "treasury": 4.63,
+          "spreadBp": -11.0,
+          "method": "close"
+        },
+        {
+          "years": 3,
+          "swap": 4.48,
+          "treasury": 4.69,
+          "spreadBp": -21.0,
+          "method": "close"
+        },
+        {
+          "years": 5,
+          "swap": 4.45,
+          "treasury": 4.74,
+          "spreadBp": -29.0,
+          "method": "close"
+        },
+        {
+          "years": 7,
+          "swap": 4.47,
+          "treasury": 4.81,
+          "spreadBp": -34.0,
+          "method": "close-thin"
+        },
+        {
+          "years": 10,
+          "swap": 4.53,
+          "treasury": 4.92,
+          "spreadBp": -39.0,
+          "method": "close"
+        },
+        {
+          "years": 30,
+          "swap": 4.64,
+          "treasury": 5.29,
+          "spreadBp": -65.0,
           "method": "close"
         }
       ]

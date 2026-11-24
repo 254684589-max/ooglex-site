@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "type": "sofr-last-successful-ingestion",
+  "status": "successful",
+  "runResult": "new_observation",
+  "lastSuccessAt": "2026-11-24T14:10:34Z",
+  "lastDataAsOf": "2026-11-23",
+  "observations": 2,
+  "runId": "45411091588",
+  "source": "CheckMySwap indicative USD SOFR OIS plus U.S. Treasury CMT",
+  "frequency": "scheduled_US_weekday_reference",
+  "note": "Last successful ingest only. Later failed runs are not reflected here. Not real-time or executable prices."
+}
