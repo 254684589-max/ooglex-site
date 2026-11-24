@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_factor_observations",
-  "generated_at": "2026-11-23T09:41:56.402523+00:00",
-  "source_snapshot_observation_date": "2026-11-20",
+  "generated_at": "2026-11-24T07:07:35.488468+00:00",
+  "source_snapshot_observation_date": "2026-11-23",
   "groups": {
     "rates": {
       "label": "利率与货币政策",
@@ -12,7 +12,7 @@
           "label": "美国10年期名义国债收益率",
           "value": 4.92,
           "unit": "percent",
-          "observation_period": "2026-11-20",
+          "observation_period": "2026-11-23",
           "source": "US Treasury",
           "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
           "validated_historical_release_time": false,
@@ -23,7 +23,7 @@
           "label": "美国2年期名义国债收益率",
           "value": 4.63,
           "unit": "percent",
-          "observation_period": "2026-11-20",
+          "observation_period": "2026-11-23",
           "source": "US Treasury",
           "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
           "validated_historical_release_time": false,
@@ -32,9 +32,9 @@
         {
           "id": "real10y",
           "label": "美国10年期TIPS实际收益率",
-          "value": 2.77,
+          "value": 2.79,
           "unit": "percent",
-          "observation_period": "2026-11-20",
+          "observation_period": "2026-11-23",
           "source": "US Treasury",
           "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_real_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
           "validated_historical_release_time": false,
@@ -45,7 +45,7 @@
           "label": "10Y−2Y期限利差",
           "value": 0.29,
           "unit": "percentage_points",
-          "observation_period": "2026-11-20",
+          "observation_period": "2026-11-23",
           "source": "US Treasury (derived same-day rates)",
           "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
           "validated_historical_release_time": false,
@@ -57,7 +57,7 @@
           "label": "有效联邦基金利率 EFFR",
           "value": 3.88,
           "unit": "percent",
-          "observation_period": "2026-11-19",
+          "observation_period": "2026-11-20",
           "source": "New York Fed",
           "source_url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/last/10.json",
           "validated_historical_release_time": false,
@@ -73,9 +73,9 @@
         {
           "id": "breakeven10y",
           "label": "10年期盈亏平衡通胀补偿",
-          "value": 2.15,
+          "value": 2.13,
           "unit": "percentage_points",
-          "observation_period": "2026-11-20",
+          "observation_period": "2026-11-23",
           "source": "US Treasury (derived same-day nominal/TIPS)",
           "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2025/all?type=daily_treasury_real_yield_curve&field_tdr_date_value=2025&page=&_format=csv",
           "validated_historical_release_time": false,
@@ -89,7 +89,7 @@
           "unit": "percent",
           "observation_period": "2026-09",
           "source": "BEA via FRED",
-          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE&cosd=2023-01-01&coed=2026-11-23",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE&cosd=2023-01-01&coed=2026-11-24",
           "validated_historical_release_time": false,
           "qualifies_as_model_factor_signal": false
         }
@@ -147,7 +147,7 @@
           "unit": "millions_usd",
           "observation_period": "2026-11-18",
           "source": "Federal Reserve via FRED",
-          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WALCL&cosd=2025-01-01&coed=2026-11-23",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WALCL&cosd=2025-01-01&coed=2026-11-24",
           "validated_historical_release_time": false,
           "qualifies_as_model_factor_signal": false
         },
@@ -158,7 +158,7 @@
           "unit": "millions_usd",
           "observation_period": "2026-11-18",
           "source": "Federal Reserve Board H.4.1 via FRED",
-          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WRESBAL&cosd=2025-01-01&coed=2026-11-23",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WRESBAL&cosd=2025-01-01&coed=2026-11-24",
           "validated_historical_release_time": false,
           "qualifies_as_model_factor_signal": false
         },
@@ -169,18 +169,18 @@
           "unit": "millions_usd",
           "observation_period": "2026-11-18",
           "source": "Federal Reserve Board H.4.1 via FRED",
-          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WTREGEN&cosd=2025-01-01&coed=2026-11-23",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WTREGEN&cosd=2025-01-01&coed=2026-11-24",
           "validated_historical_release_time": false,
           "qualifies_as_model_factor_signal": false
         },
         {
           "id": "overnight_rrp",
           "label": "隔夜逆回购",
-          "value": 0.401,
+          "value": 0.35,
           "unit": "billions_usd",
-          "observation_period": "2026-11-20",
+          "observation_period": "2026-11-23",
           "source": "Federal Reserve Bank of New York via FRED",
-          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRPONTSYD&cosd=2025-01-01&coed=2026-11-23",
+          "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRPONTSYD&cosd=2025-01-01&coed=2026-11-24",
           "validated_historical_release_time": false,
           "qualifies_as_model_factor_signal": false
         }

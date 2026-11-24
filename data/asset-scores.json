@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "observation_date": "2026-11-20",
-  "generated_at": "2026-11-23T09:41:56.341118+00:00",
+  "observation_date": "2026-11-23",
+  "generated_at": "2026-11-24T07:07:35.391950+00:00",
   "status": "partial_data_no_full_score",
   "source": "US Department of the Treasury",
   "source_urls": [
@@ -13,8 +13,8 @@
   "rates": {
     "us10y": 4.92,
     "us2y": 4.63,
-    "real10y": 2.77,
-    "breakeven10y": 2.15,
+    "real10y": 2.79,
+    "breakeven10y": 2.13,
     "spread10y2y": 0.29
   },
   "assets": {
@@ -156,7 +156,7 @@
       "core_cpi_yoy_available": false,
       "payroll_delta_available": true
     },
-    "retrieved_at": "2026-11-23T09:41:48.120728+00:00",
+    "retrieved_at": "2026-11-24T07:07:24.966446+00:00",
     "source_url": "https://api.bls.gov/publicAPI/v1/timeseries/data/",
     "note": "Preliminary data may be revised by BLS."
   },
@@ -166,13 +166,13 @@
       "value": 130.902,
       "unit": "index",
       "source": "Bureau of Economic Analysis via FRED",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE&cosd=2023-01-01&coed=2026-11-23",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE&cosd=2023-01-01&coed=2026-11-24",
       "original_source_url": "https://www.bea.gov/data/personal-consumption-expenditures-price-index",
       "source_series_id": "PCEPILFE",
       "release_timestamp_verified": false,
       "yoy_percent": 3.121
     },
-    "retrieved_at": "2026-11-23T09:41:48.438291+00:00"
+    "retrieved_at": "2026-11-24T07:07:25.430269+00:00"
   },
   "fed_h41": {
     "total_assets": {
@@ -180,22 +180,22 @@
       "value_millions_usd": 6741452.0,
       "unit": "millions_usd",
       "source": "Federal Reserve Board H.4.1 via FRED",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WALCL&cosd=2025-01-01&coed=2026-11-23",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WALCL&cosd=2025-01-01&coed=2026-11-24",
       "original_source_url": "https://www.federalreserve.gov/releases/h41/",
       "source_series_id": "WALCL",
       "release_timestamp_verified": false
     },
-    "retrieved_at": "2026-11-23T09:41:48.438291+00:00"
+    "retrieved_at": "2026-11-24T07:07:25.430269+00:00"
   },
   "liquidity": {
-    "retrieved_at": "2026-11-23T09:41:49.936998+00:00",
+    "retrieved_at": "2026-11-24T07:07:27.979445+00:00",
     "reserves": {
       "observation_date": "2026-11-18",
       "value": 2979656.0,
       "unit": "millions_usd",
       "source_series_id": "WRESBAL",
       "source": "Federal Reserve Board H.4.1 via FRED",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WRESBAL&cosd=2025-01-01&coed=2026-11-23",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WRESBAL&cosd=2025-01-01&coed=2026-11-24",
       "release_timestamp_verified": false,
       "frequency": "weekly",
       "frequency_detail": "H.4.1 week-average estimate"
@@ -206,18 +206,18 @@
       "unit": "millions_usd",
       "source_series_id": "WTREGEN",
       "source": "Federal Reserve Board H.4.1 via FRED",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WTREGEN&cosd=2025-01-01&coed=2026-11-23",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WTREGEN&cosd=2025-01-01&coed=2026-11-24",
       "release_timestamp_verified": false,
       "frequency": "weekly",
       "frequency_detail": "H.4.1 week-average estimate"
     },
     "overnight_rrp": {
-      "observation_date": "2026-11-20",
-      "value": 0.401,
+      "observation_date": "2026-11-23",
+      "value": 0.35,
       "unit": "billions_usd",
       "source_series_id": "RRPONTSYD",
       "source": "Federal Reserve Bank of New York via FRED",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRPONTSYD&cosd=2025-01-01&coed=2026-11-23",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRPONTSYD&cosd=2025-01-01&coed=2026-11-24",
       "release_timestamp_verified": false,
       "frequency": "daily",
       "frequency_detail": "daily overnight operation balance"
@@ -234,10 +234,10 @@
     "official_forecast": false,
     "release_timestamp_verified": false,
     "unit": "percent",
-    "retrieved_at": "2026-11-23T09:41:51.490692+00:00"
+    "retrieved_at": "2026-11-24T07:07:29.606397+00:00"
   },
   "nyfed": {
-    "observation_date": "2026-11-19",
+    "observation_date": "2026-11-20",
     "effr_percent": 3.88,
     "target_range_lower": 3.75,
     "target_range_upper": 4.0,
@@ -246,7 +246,7 @@
   },
   "scoring": {
     "model": "ooglex-macro-v1-precalibration",
-    "generated_at": "2026-11-23T09:41:56.341106+00:00",
+    "generated_at": "2026-11-24T07:07:35.391936+00:00",
     "calibration_verified": false,
     "out_of_sample_verified": false
   }
