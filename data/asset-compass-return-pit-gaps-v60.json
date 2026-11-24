@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_v60_real_price_vs_investable_total_return_gap_audit",
-  "generated_at": "2026-11-23T16:45:39.715075+00:00",
+  "generated_at": "2026-11-24T03:30:34.482695+00:00",
   "status": "research_observation_coverage_only_no_authorized_returns",
   "input_sha256": {
-    "tracker": "e4b40841ed00b159d0b190eaaf9dbdffbc4770812113260955760b25edbe6e8e",
+    "tracker": "f21a925bdb066102d22f861bdb60ded8184ac3c6898d8e022f095502a368c32a",
     "crypto": "936e860d46c7e33ae40556c1fbc8b170b2ae1fce8cc02e0035b727ae198d5dee",
     "v59": "2e2ea5694b4e9c9f0fc1bd3884d30327dbdb642f03eb818e09e5fdb4a43d3dfb",
     "history": "c148f4696aaff9b40e7230295eb312ed44c9b29a85f989296aa6f7d5153f2537"
@@ -51,14 +51,14 @@
       "calendar_type": "market_source_calendar_nullable",
       "status": "source_prices_present_total_return_unqualified",
       "calendar_rows": 260,
-      "actual_observed_prices": 210,
-      "missing_or_null_prices": 50,
-      "actual_price_coverage_percent": 80.77,
-      "first_observed_date": "2026-01-26",
+      "actual_observed_prices": 211,
+      "missing_or_null_prices": 49,
+      "actual_price_coverage_percent": 81.15,
+      "first_observed_date": "2026-01-23",
       "last_observed_date": "2026-11-23",
-      "research_only_close_to_close_windows": 209,
+      "research_only_close_to_close_windows": 210,
       "skipped_long_calendar_gaps": 0,
-      "calendar_days_since_last": 0
+      "calendar_days_since_last": 1
     },
     "us_equities": {
       "source": "Yahoo Finance",
@@ -81,14 +81,14 @@
       "calendar_type": "market_source_calendar_nullable",
       "status": "source_prices_present_total_return_unqualified",
       "calendar_rows": 260,
-      "actual_observed_prices": 209,
-      "missing_or_null_prices": 51,
-      "actual_price_coverage_percent": 80.38,
-      "first_observed_date": "2026-01-26",
-      "last_observed_date": "2026-11-20",
-      "research_only_close_to_close_windows": 208,
+      "actual_observed_prices": 211,
+      "missing_or_null_prices": 49,
+      "actual_price_coverage_percent": 81.15,
+      "first_observed_date": "2026-01-23",
+      "last_observed_date": "2026-11-23",
+      "research_only_close_to_close_windows": 210,
       "skipped_long_calendar_gaps": 0,
-      "calendar_days_since_last": 3
+      "calendar_days_since_last": 1
     },
     "us_long_bonds": {
       "source": "Yahoo Finance",
@@ -111,14 +111,14 @@
       "calendar_type": "market_source_calendar_nullable",
       "status": "source_prices_present_total_return_unqualified",
       "calendar_rows": 260,
-      "actual_observed_prices": 209,
-      "missing_or_null_prices": 51,
-      "actual_price_coverage_percent": 80.38,
-      "first_observed_date": "2026-01-26",
-      "last_observed_date": "2026-11-20",
-      "research_only_close_to_close_windows": 208,
+      "actual_observed_prices": 211,
+      "missing_or_null_prices": 49,
+      "actual_price_coverage_percent": 81.15,
+      "first_observed_date": "2026-01-23",
+      "last_observed_date": "2026-11-23",
+      "research_only_close_to_close_windows": 210,
       "skipped_long_calendar_gaps": 0,
-      "calendar_days_since_last": 3
+      "calendar_days_since_last": 1
     },
     "usd": {
       "source": "Yahoo Finance",
@@ -140,14 +140,14 @@
       "calendar_type": "market_source_calendar_nullable",
       "status": "source_prices_present_total_return_unqualified",
       "calendar_rows": 260,
-      "actual_observed_prices": 210,
-      "missing_or_null_prices": 50,
-      "actual_price_coverage_percent": 80.77,
-      "first_observed_date": "2026-01-26",
+      "actual_observed_prices": 211,
+      "missing_or_null_prices": 49,
+      "actual_price_coverage_percent": 81.15,
+      "first_observed_date": "2026-01-23",
       "last_observed_date": "2026-11-23",
-      "research_only_close_to_close_windows": 209,
+      "research_only_close_to_close_windows": 210,
       "skipped_long_calendar_gaps": 0,
-      "calendar_days_since_last": 0
+      "calendar_days_since_last": 1
     },
     "bitcoin": {
       "source": "CoinGecko",
@@ -176,7 +176,7 @@
       "last_observed_date": "2026-11-23",
       "research_only_close_to_close_windows": 259,
       "skipped_long_calendar_gaps": 0,
-      "calendar_days_since_last": 0
+      "calendar_days_since_last": 1
     },
     "oil": {
       "source": "Yahoo Finance",
@@ -199,14 +199,14 @@
       "calendar_type": "market_source_calendar_nullable",
       "status": "source_prices_present_total_return_unqualified",
       "calendar_rows": 260,
-      "actual_observed_prices": 210,
-      "missing_or_null_prices": 50,
-      "actual_price_coverage_percent": 80.77,
-      "first_observed_date": "2026-01-26",
+      "actual_observed_prices": 211,
+      "missing_or_null_prices": 49,
+      "actual_price_coverage_percent": 81.15,
+      "first_observed_date": "2026-01-23",
       "last_observed_date": "2026-11-23",
-      "research_only_close_to_close_windows": 209,
+      "research_only_close_to_close_windows": 210,
       "skipped_long_calendar_gaps": 0,
-      "calendar_days_since_last": 0
+      "calendar_days_since_last": 1
     }
   },
   "limitations": [
