@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_monitor_v8",
-  "checked_at": "2026-11-22T17:03:17.233692+00:00",
-  "run_id": "45047210436",
+  "checked_at": "2026-11-24T12:57:50.856910+00:00",
+  "run_id": "45398537070",
   "operational_status": "healthy",
   "issues": [],
   "consecutive_alert_runs": 0,
   "alert_severity": "none",
-  "archive_ledger_sha256": "dbe0eebc0faf986b3f6564cc1632a9527efbd3102efdb43d10cd5025eb7e1be9",
+  "archive_ledger_sha256": "ac186a1e12319bdd10b74f95bf194ed8adb1cf0b4059f0ddef62f94dcafb8042",
   "validated_for_live_scoring": false,
   "point_in_time_backtest_eligible": false,
   "note": "Operational health is separate from PIT/model-scoring certification. No auto repair."
