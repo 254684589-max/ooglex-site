@@ -47,7 +47,7 @@
     {
       "id": "dtcc_sec",
       "name": "DTCC SEC public dissemination",
-      "status": "public_download_reuse_unresolved_binary_not_verified",
+      "status": "statutory_public_credit_zip_schema_verified_price_admission_pending",
       "url": "https://pddata.dtcc.com/ppd/secdashboard",
       "terms": "https://www.dtcc.com/terms",
       "public_display": false
@@ -1525,5 +1525,54 @@
       }
     ],
     "publication_enabled": false
+  },
+  "source_audit_v8": {
+    "as_of": "2026-11-25",
+    "source_scope": "SEC Regulation SBSR mandatory public transaction data only",
+    "regulatory_basis_urls": [
+      "https://www.sec.gov/news/pressrelease/2016-139.html",
+      "https://regulations.justia.com/regulations/fedreg/2016/08/12/2016-17032.html",
+      "https://www.sec.gov/newsroom/press-releases/2021-80",
+      "https://www.law.cornell.edu/cfr/text/17/242.902",
+      "https://www.sec.gov/rules-regulations/staff-guidance/trading-markets-frequently-asked-questions/frequently-asked-questions-regulation-sbsr"
+    ],
+    "general_website_terms_scope_conflict": "not a blanket license; no non-regulatory DTCC scraping or commercial data reuse",
+    "single_report_date": "2026-11-24",
+    "direct_zip_retrieved": true,
+    "official_csv_schema_verified": true,
+    "admitted_spreads": 0,
+    "publication_enabled": false,
+    "workflow": "cds-dtcc-probe-v8.yml",
+    "price_blockers": [
+      "exact UPI-reference entity",
+      "new trade versus lifecycle",
+      "notional cap or rounding",
+      "clean upfront sign and units",
+      "dates and conventions",
+      "ISDA validation"
+    ],
+    "observed_report_date": "2026-11-24",
+    "diagnostic": {
+      "run_id": 45617514283,
+      "job_id": 139216650220,
+      "sha256": "f3a148d663bf8897e93e903e06705ce0257450056ddefa5305a6438afe5d44ae",
+      "rows": 1225,
+      "columns": 110,
+      "upfront_numeric_rows": 787,
+      "upfront_fixed_notional_present_rows": 714,
+      "numeric_spread_rows": 366,
+      "potentially_capped_or_large_notional_rows": 672,
+      "payment_direction_group_recognized": false,
+      "nonstandard_flag_group_recognized": false,
+      "action_counts": {
+        "NEWT": 776,
+        "MODI": 219,
+        "CORR": 109,
+        "TERM": 84,
+        "EROR": 36,
+        "REVI": 1
+      },
+      "native_tests_passed": 7
+    }
   }
 }
