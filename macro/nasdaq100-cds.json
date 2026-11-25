@@ -1591,5 +1591,26 @@
     "verified_reference_entities": 0,
     "admitted_spreads": 0,
     "publication_enabled": false
+  },
+  "source_audit_v10": {
+    "window_start": "2026-11-18",
+    "window_end": "2026-11-24",
+    "report_dates": 7,
+    "failed_dates": 0,
+    "report_rows": 8139,
+    "non_new_rows": 4253,
+    "quarantined_new_rows": 717,
+    "unlinked_new_rows_in_window": 3169,
+    "exact_name_unlinked_new_rows": 158,
+    "candidate_issuer_count": 7,
+    "cross_day_reference_rows": 229,
+    "same_day_reference_rows": 672,
+    "unresolved_original_rows": 3352,
+    "native_tests_passed": 21,
+    "run_id": 45635199780,
+    "job_id": 139278654533,
+    "verified_reference_entities": 0,
+    "admitted_spreads": 0,
+    "publication_enabled": false
   }
 }
