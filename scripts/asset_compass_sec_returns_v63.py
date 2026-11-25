@@ -38,13 +38,15 @@ def parse_filing(raw, accession, registry=FILINGS):
     if root.tag != "edgarSubmission":
         raise ValueError("Not an EDGAR submission")
     def single(name):
-        values = root.findall(".//" + name)
+        # The header may repeat the series identity. Only Part A genInfo
+        # defines the reporting series and period.
+        values = root.findall("./formData/genInfo/" + name)
         if len(values) != 1 or not values[0].text:
             raise ValueError("Missing or ambiguous " + name)
         return values[0].text.strip()
     if single("seriesId") != SERIES or single("repPdDate") != registry[accession]:
         raise ValueError("Wrong fund or reporting period")
-    rows = root.findall(".//monthlyTotReturns/monthlyTotReturn")
+    rows = root.findall("./formData/fundInfo/returnInfo/monthlyTotReturns/monthlyTotReturn")
     if len(rows) != 1 or rows[0].get("classId") != CLASS:
         raise ValueError("Wrong or ambiguous fund class")
     end = date.fromisoformat(registry[accession])

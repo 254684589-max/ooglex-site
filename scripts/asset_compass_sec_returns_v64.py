@@ -5,6 +5,7 @@ import argparse
 import json
 import time
 import urllib.request
+import urllib.error
 from pathlib import Path
 from decimal import Decimal
 from scripts.asset_compass_sec_returns_v63 import ROOT, MAX_BYTES, parse_filing, source_url
@@ -69,8 +70,13 @@ def fetch(accession):
     url = source_url(accession, REGISTRY)
     req = urllib.request.Request(url, headers={"User-Agent":"Ooglex Research (https://www.ooglex.com/; research backfill)", "Accept":"application/xml,text/xml"})
     with urllib.request.build_opener(NoRedirect()).open(req, timeout=25) as res:
-        if res.geturl() != url or "xml" not in res.headers.get("Content-Type","").lower():
-            raise ValueError("Unexpected SEC response")
+        if res.geturl() != url:
+            raise ValueError("Unexpected SEC response URL")
+        media = res.headers.get("Content-Type", "").split(";",1)[0].strip().lower()
+        # Archives can serve raw XML as generic text or bytes; the strict
+        # XML parser and fund/period checks remain mandatory. Never accept HTML.
+        if media not in {"application/xml","text/xml","text/plain","application/octet-stream"}:
+            raise ValueError("Unexpected SEC response media type")
         raw = res.read(MAX_BYTES+1)
     return raw
 
@@ -87,6 +93,7 @@ def main():
     inputs={}
     failures={}
     for accession in REGISTRY:
+        stage="download" if args.download else "local_read"
         try:
             if args.download:
                 time.sleep(1)
@@ -95,16 +102,29 @@ def main():
                 with (args.xml_dir/(accession+".xml")).open("rb") as f:
                     raw=f.read(MAX_BYTES+1)
             # Validate each response before allowing it to enter the batch.
-            check_reference(parse_filing(raw,accession,REGISTRY))
+            stage="xml_identity_and_values"
+            filing=parse_filing(raw,accession,REGISTRY)
+            stage="reference_reconciliation"
+            check_reference(filing)
             inputs[accession]=raw
-        except (OSError, ValueError) as exc:
-            failures[accession]=type(exc).__name__
+        except urllib.error.HTTPError as exc:
+            failures[accession]={"stage":stage,"type":"HTTPError","http_status":exc.code}
+            if exc.code in (403,429):
+                # Respect access denial/rate limit; do not retry or bypass.
+                break
+        except ValueError as exc:
+            failures[accession]={"stage":stage,"type":"ValueError","reason":str(exc)}
+        except OSError as exc:
+            failures[accession]={"stage":stage,"type":type(exc).__name__}
+    for accession in REGISTRY:
+        if accession not in inputs and accession not in failures:
+            failures[accession]={"stage":"not_attempted","type":"stopped_after_access_denial"}
     result=build(inputs)
     result["source_failures"]=failures
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(json.dumps(result,indent=2,allow_nan=False)+"\n",encoding="utf-8")
     print(json.dumps({k:result[k] for k in ("target_months","parsed_months","missing_months","complete_target_window","source_failures","eligible_for_live_scoring")}))
-    if args.require_complete and failures:
+    if args.require_complete and not result["complete_target_window"]:
         raise SystemExit(1)
 
 if __name__=="__main__":

@@ -22,6 +22,17 @@ class BackfillTests(unittest.TestCase):
         a=next(iter(REFERENCE))
         with self.assertRaisesRegex(ValueError,"Mismatch"):
             build({a:sample(a,("0","0","0"))})
+    def test_header_series_is_not_part_a_identity(self):
+        a=next(iter(REFERENCE))
+        raw=sample(a).replace(b"<formData>",b"<headerData><seriesId>S000004360</seriesId></headerData><formData>")
+        self.assertEqual(build({a:raw})["parsed_months"],3)
+        wrong=raw.replace(b"<genInfo><seriesId>S000004360",b"<genInfo><seriesId>S999999999")
+        with self.assertRaisesRegex(ValueError,"Wrong fund"):
+            build({a:wrong})
+    def test_html_error_document_not_accepted(self):
+        a=next(iter(REFERENCE))
+        with self.assertRaises(ValueError):
+            build({a:b"<html><body>Access denied</body></html>"})
     def test_empty_and_unknown(self):
         self.assertEqual(build({})["missing_months"],month_range())
         with self.assertRaises(ValueError):
