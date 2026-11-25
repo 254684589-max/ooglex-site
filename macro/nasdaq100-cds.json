@@ -1459,5 +1459,71 @@
       "verified product and signed clean upfront with true notional, dates and terms",
       "actual DTCC/Tradeweb download unavailable in current runtime"
     ]
+  },
+  "source_audit_v7": {
+    "as_of": "2026-11-25",
+    "tradeweb_backfill": {
+      "first_report": "2026-10-27",
+      "last_report": "2026-11-24",
+      "valid_dates": 20,
+      "attempted_dates": 22,
+      "product_rows": 426,
+      "candidate_issuer_ids": [
+        "amd",
+        "amzn",
+        "crwv",
+        "alphabet",
+        "intc",
+        "meta",
+        "msft",
+        "nvda",
+        "spcx",
+        "tmus"
+      ],
+      "admitted_spreads": 0
+    },
+    "cross_reference_review": {
+      "source_url": "https://productlisting.bloombergsbsef.com.igslb.bloomberg.com/",
+      "listing_as_of": "2026-11-24",
+      "reviewed_issuer_ids": [
+        "amd",
+        "amzn",
+        "crwv",
+        "alphabet",
+        "intc",
+        "meta",
+        "msft",
+        "nvda",
+        "spcx",
+        "tmus"
+      ],
+      "scope": "manual_reference_obligation_name_corroboration_only",
+      "t_mobile_subsidiary_name_differs": true,
+      "verified_tradeweb_upis": 0,
+      "verified_5y_contracts": 0,
+      "raw_vendor_list_redistributed": false
+    },
+    "alternative_sources": [
+      {
+        "id": "tullett",
+        "url": "https://www.tullettprebon.com/swap_execution_facility/sbsef_activity_summary.aspx",
+        "status": "manual_html_report_viewed",
+        "observed_report_date": "2026-11-20",
+        "verified_target_spreads": 0
+      },
+      {
+        "id": "bloomberg",
+        "url": "https://data.bloombergsef.com/",
+        "status": "dynamic_page_no_rows_retrieved",
+        "verified_target_spreads": 0
+      },
+      {
+        "id": "ice_swap_trade",
+        "url": "https://www.ice.com/report/303",
+        "status": "official_report_entrance_only",
+        "verified_target_spreads": 0
+      }
+    ],
+    "publication_enabled": false
   }
 }

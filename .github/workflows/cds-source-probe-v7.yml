@@ -1,0 +1,29 @@
+name: CDS alternate regulatory source probe
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/cds-source-probe-v7.yml'
+      - 'scripts/cds_source_probe_v7.py'
+      - 'tests/test_cds_source_probe_v7.py'
+  pull_request:
+    paths:
+      - '.github/workflows/cds-source-probe-v7.yml'
+      - 'scripts/cds_source_probe_v7.py'
+      - 'tests/test_cds_source_probe_v7.py'
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Run source-probe tests
+        run: python3 -m unittest discover -s tests -p test_cds_source_probe_v7.py -v
+      - name: Read-only availability and schema probe
+        if: github.event_name != 'pull_request'
+        run: python3 scripts/cds_source_probe_v7.py
