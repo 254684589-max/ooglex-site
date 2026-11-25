@@ -1,0 +1,46 @@
+name: Asset Compass V69-V73 Extended Monthly Research
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/asset_compass_sec_returns_v66.py'
+      - 'scripts/asset_compass_monthly_diagnostic_v69.py'
+      - 'tests/test_asset_compass_monthly_diagnostic_v69.py'
+      - '.github/workflows/asset-compass-monthly-diagnostic-v69.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m py_compile scripts/asset_compass_sec_returns_v66.py scripts/asset_compass_monthly_diagnostic_v69.py
+      - run: python3 -m unittest discover -s tests -p 'test_asset_compass_monthly_diagnostic_v69.py' -v
+      - name: Download candidate historical filings and retain coverage
+        run: python3 -m scripts.asset_compass_sec_returns_v66 --extended --download --output /tmp/ooglex-panel-private.json --metadata /tmp/ooglex-extended-coverage.json
+      - name: Run actual lagged research diagnostic
+        run: python3 -m scripts.asset_compass_monthly_diagnostic_v69 --panel /tmp/ooglex-panel-private.json --output /tmp/ooglex-monthly-diagnostic.json
+      - name: Require full coverage separately
+        run: |
+          python3 - <<'PY'
+          import json
+          r=json.load(open('/tmp/ooglex-extended-coverage.json'))
+          assert not r['source_failures'],r['source_failures']
+          assert all(not f['missing_months'] for f in r['funds'].values())
+          assert len(r['amendment_reviews'])==1
+          assert r['eligible_for_live_scoring'] is False
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v69-research-metadata
+          path: |
+            /tmp/ooglex-extended-coverage.json
+            /tmp/ooglex-monthly-diagnostic.json
+          retention-days: 30
+          if-no-files-found: error

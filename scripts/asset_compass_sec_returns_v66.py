@@ -36,6 +36,16 @@ FUNDS = {
     "TLT":("us_long_bonds","S000004360","C000012090",TLT),
     "IVV":("us_equities","S000004310","C000012040",IVV),
 }
+# Optional earlier candidate filings; identity and actual report date must
+# pass the same raw XML checks before a month is counted.
+EXTENDED = {
+    "TLT":{"000175272423012198":"2022-11-30","000175272423086769":"2023-02-28"},
+    "IVV":{"000175272424043113":"2023-12-31","000175272424123331":"2024-03-31","000175272424194289":"2024-06-30"},
+}
+def fund_registry(extended=False):
+    return {k:(asset,series,cls,{**(EXTENDED[k] if extended else {}),**registry})
+            for k,(asset,series,cls,registry) in FUNDS.items()}
+
 MIN_TRAIN_MONTHS = 36
 MIN_TEST_MONTHS = 12
 
@@ -43,11 +53,13 @@ def months(first,last):
     a,b = date.fromisoformat(first+"-01"),date.fromisoformat(last+"-01")
     return [f"{i//12:04d}-{i%12+1:02d}" for i in range(a.year*12+a.month-1,b.year*12+b.month)]
 
-def target(ticker):
-    return months("2023-03","2026-08") if ticker=="TLT" else months("2024-07","2026-06")
+def target(ticker, extended=False):
+    if ticker=="TLT":
+        return months("2022-09" if extended else "2023-03","2026-08")
+    return months("2023-10" if extended else "2024-07","2026-06")
 
-def parse(ticker, accession, raw, *, amendment=False):
-    asset,series,cls,registry=FUNDS[ticker]
+def parse(ticker, accession, raw, *, amendment=False, extended=False):
+    asset,series,cls,registry=fund_registry(extended)[ticker]
     if amendment:
         if ticker!="IVV": raise ValueError("Unexpected amendment")
         registry=AMEND
@@ -68,30 +80,31 @@ def reconcile(original, amendment):
             "historical_publication_clock_verified":False,
             "original_retained_no_silent_revision":True}
 
-def build(raw, amendments=None):
-    allowed=set(TLT)|set(IVV)
+def build(raw, amendments=None, *, extended=False):
+    registry_by_fund=fund_registry(extended)
+    allowed=set().union(*(set(v[3]) for v in registry_by_fund.values()))
     if set(raw)-allowed or set(amendments or {})-set(AMEND):
         raise ValueError("Unknown filing")
     funds={}
     revisions=[]
-    for ticker,(asset,series,cls,registry) in FUNDS.items():
+    for ticker,(asset,series,cls,registry) in registry_by_fund.items():
         rows,receipts,parsed={},[],{}
         for accession in registry:
             if accession not in raw: continue
-            f=parse(ticker,accession,raw[accession])
+            f=parse(ticker,accession,raw[accession],extended=extended)
             parsed[accession]=f
             receipts.append({k:v for k,v in f.items() if k!="monthly_observations"})
             for r in f["monthly_observations"]:
                 m=r["month"]
-                if m in rows or m not in target(ticker):
+                if m in rows or m not in target(ticker,extended):
                     raise ValueError("Duplicate or out-of-window month")
                 rows[m]={**r,"accession":accession}
         if ticker=="IVV" and amendments and "000207169125007634" in parsed:
             for accession,content in amendments.items():
                 revisions.append(reconcile(parsed["000207169125007634"],parse("IVV",accession,content,amendment=True)))
-        missing=[m for m in target(ticker) if m not in rows]
+        missing=[m for m in target(ticker,extended) if m not in rows]
         funds[ticker]={"asset":asset,"ticker":ticker,"series_id":series,"class_id":cls,
-            "target_months":len(target(ticker)),"parsed_months":len(rows),"missing_months":missing,
+            "target_months":len(target(ticker,extended)),"parsed_months":len(rows),"missing_months":missing,
             "source_receipts":receipts,"monthly_observations":[rows[m] for m in sorted(rows)],
             "fund_reported_return_not_investor_execution":True,"investable_total_return_certified":False}
     common=sorted(set(x["month"] for x in funds["TLT"]["monthly_observations"]) &
@@ -127,11 +140,12 @@ def main():
     p.add_argument("--output",type=Path,required=True)
     p.add_argument("--metadata",type=Path,required=True)
     p.add_argument("--require-complete",action="store_true")
+    p.add_argument("--extended",action="store_true")
     args=p.parse_args()
     if any(x.resolve().is_relative_to(ROOT) for x in (args.output,args.metadata)) or args.output.resolve()==args.metadata.resolve():
         p.error("Distinct output paths outside the website repo required")
     raw,amendments,failures={}, {}, {}
-    tasks=[(ticker,a,reg,False) for ticker,(_,_,_,reg) in FUNDS.items() for a in reg]
+    tasks=[(ticker,a,reg,False) for ticker,(_,_,_,reg) in fund_registry(args.extended).items() for a in reg]
     tasks.extend(("IVV",a,AMEND,True) for a in AMEND)
     for ticker,accession,registry,is_amend in tasks:
         stage="download" if args.download else "local_read"
@@ -142,7 +156,7 @@ def main():
             else:
                 with (args.xml_dir/(accession+".xml")).open("rb") as f: content=f.read(MAX_BYTES+1)
             stage="parse_and_identity"
-            parse(ticker,accession,content,amendment=is_amend)
+            parse(ticker,accession,content,amendment=is_amend,extended=args.extended)
             (amendments if is_amend else raw)[accession]=content
         except urllib.error.HTTPError as exc:
             failures[accession]={"stage":stage,"http_status":exc.code}
@@ -153,7 +167,7 @@ def main():
     for _,a,_,_ in tasks:
         if a not in raw and a not in amendments and a not in failures:
             failures[a]={"stage":"not_attempted_after_access_denial"}
-    result=build(raw,amendments)
+    result=build(raw,amendments,extended=args.extended)
     result["source_failures"]=failures
     for file,report in ((args.output,result),(args.metadata,metadata(result))):
         file.parent.mkdir(parents=True,exist_ok=True)
