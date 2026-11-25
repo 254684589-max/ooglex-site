@@ -71,7 +71,15 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": {
+        "legal_name": "Apple Inc.",
+        "lei": "HWUPKR0MPOU8FGXBT394",
+        "source": "https://lei.bloomberg.com/leis/view/HWUPKR0MPOU8FGXBT394",
+        "checked_on": "2026-11-25",
+        "status": "issuer_identity_evidence_only"
+      },
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "abnb",
@@ -82,7 +90,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "adbe",
@@ -93,7 +103,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "adi",
@@ -104,7 +116,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "adp",
@@ -115,7 +129,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "adsk",
@@ -126,7 +142,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "aep",
@@ -137,7 +155,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "alab",
@@ -148,7 +168,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "alny",
@@ -159,7 +181,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "amat",
@@ -170,7 +194,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "amd",
@@ -181,7 +207,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "amgn",
@@ -192,7 +220,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "amzn",
@@ -203,7 +233,15 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": {
+        "legal_name": "AMAZON.COM, INC.",
+        "lei": "ZXTILKJKG63JELOEG630",
+        "source": "https://lei.bloomberg.com/leis/view/ZXTILKJKG63JELOEG630",
+        "checked_on": "2026-11-25",
+        "status": "issuer_identity_evidence_only"
+      },
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "app",
@@ -214,7 +252,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "arm",
@@ -225,7 +265,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "asml",
@@ -236,7 +278,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "avgo",
@@ -247,7 +291,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "axon",
@@ -258,7 +304,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "bkng",
@@ -269,7 +317,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "bkr",
@@ -280,7 +330,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "ccep",
@@ -291,7 +343,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "cdns",
@@ -302,7 +356,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "ceg",
@@ -313,7 +369,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "cmcsa",
@@ -324,7 +382,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "cost",
@@ -335,7 +395,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "cprt",
@@ -346,7 +408,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "crwd",
@@ -357,7 +421,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "crwv",
@@ -368,7 +434,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "csco",
@@ -379,7 +447,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "csx",
@@ -390,7 +460,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "ctas",
@@ -401,7 +473,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "dash",
@@ -412,7 +486,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "ddog",
@@ -423,7 +499,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "dxcm",
@@ -434,7 +512,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "exc",
@@ -445,7 +525,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "fang",
@@ -456,7 +538,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "fast",
@@ -467,7 +551,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "fer",
@@ -478,7 +564,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "ftnt",
@@ -489,7 +577,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "gehc",
@@ -500,7 +590,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "gild",
@@ -511,7 +603,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "alphabet",
@@ -523,7 +617,15 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": {
+        "legal_name": "ALPHABET INC.",
+        "lei": "5493006MHB84DD0ZWV18",
+        "source": "https://lei.bloomberg.com/leis/view/5493006MHB84DD0ZWV18",
+        "checked_on": "2026-11-25",
+        "status": "issuer_identity_evidence_only"
+      },
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "hon",
@@ -534,7 +636,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "hona",
@@ -545,7 +649,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "idxx",
@@ -556,7 +662,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "intc",
@@ -567,7 +675,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "intu",
@@ -578,7 +688,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "isrg",
@@ -589,7 +701,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "kdp",
@@ -600,7 +714,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "klac",
@@ -611,7 +727,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "lin",
@@ -622,7 +740,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "lite",
@@ -633,7 +753,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "lrcx",
@@ -644,7 +766,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "mar",
@@ -655,7 +779,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "mchp",
@@ -666,7 +792,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "mdlz",
@@ -677,7 +805,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "meli",
@@ -688,7 +818,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "meta",
@@ -699,7 +831,15 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": {
+        "legal_name": "META PLATFORMS, INC.",
+        "lei": "BQ4BKCS1HXDV9HN80Z93",
+        "source": "https://lei.bloomberg.com/leis/view/BQ4BKCS1HXDV9HN80Z93",
+        "checked_on": "2026-11-25",
+        "status": "issuer_identity_evidence_only"
+      },
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "mnst",
@@ -710,7 +850,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "mpwr",
@@ -721,7 +863,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "mrna",
@@ -732,7 +876,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "mrvl",
@@ -743,7 +889,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "msft",
@@ -754,7 +902,15 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": {
+        "legal_name": "MICROSOFT CORPORATION",
+        "lei": "INR2EJN1ERAN0W5ZP974",
+        "source": "https://lei.bloomberg.com/leis/view/INR2EJN1ERAN0W5ZP974",
+        "checked_on": "2026-11-25",
+        "status": "issuer_identity_evidence_only"
+      },
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "mstr",
@@ -765,7 +921,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "mu",
@@ -776,7 +934,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "nbis",
@@ -787,7 +947,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "nflx",
@@ -798,7 +960,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "nvda",
@@ -809,7 +973,15 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": {
+        "legal_name": "NVIDIA CORPORATION",
+        "lei": "549300S4KLFTLO7GSQ80",
+        "source": "https://www.sec.gov/Archives/edgar/data/1645194/000094040026020741/primary_doc.xml",
+        "checked_on": "2026-11-25",
+        "status": "issuer_identity_evidence_only"
+      },
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "nxpi",
@@ -820,7 +992,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "odfl",
@@ -831,7 +1005,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "orly",
@@ -842,7 +1018,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "panw",
@@ -853,7 +1031,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "payx",
@@ -864,7 +1044,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "pcar",
@@ -875,7 +1057,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "pdd",
@@ -886,7 +1070,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "pep",
@@ -897,7 +1083,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "pltr",
@@ -908,7 +1096,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "pypl",
@@ -919,7 +1109,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "qcom",
@@ -930,7 +1122,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "regn",
@@ -941,7 +1135,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "rklb",
@@ -952,7 +1148,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "rop",
@@ -963,7 +1161,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "rost",
@@ -974,7 +1174,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "sbux",
@@ -985,7 +1187,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "shop",
@@ -996,7 +1200,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "sndk",
@@ -1007,7 +1213,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "snps",
@@ -1018,7 +1226,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "spcx",
@@ -1029,7 +1239,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "stx",
@@ -1040,7 +1252,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "ter",
@@ -1051,7 +1265,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "tmus",
@@ -1062,7 +1278,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "tri",
@@ -1073,7 +1291,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "tsla",
@@ -1084,7 +1304,15 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": {
+        "legal_name": "TESLA, INC.",
+        "lei": "54930043XZGB27CTOV49",
+        "source": "https://lei.bloomberg.com/leis/view/54930043XZGB27CTOV49",
+        "checked_on": "2026-11-25",
+        "status": "issuer_identity_evidence_only"
+      },
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "ttwo",
@@ -1095,7 +1323,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "txn",
@@ -1106,7 +1336,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "vrtx",
@@ -1117,7 +1349,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "wday",
@@ -1128,7 +1362,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "wdc",
@@ -1139,7 +1375,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "wmt",
@@ -1150,7 +1388,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     },
     {
       "issuer_id": "xel",
@@ -1161,7 +1401,9 @@
       "reference_entity_id": null,
       "mapping_status": "unverified",
       "quote": null,
-      "history": []
+      "history": [],
+      "issuer_identity": null,
+      "cds_mapping_evidence": null
     }
   ],
   "source_audit_v2": {
@@ -1184,5 +1426,16 @@
     "candidate_scope": "examples verified in 2026-11-23 report; not full historical coverage or verified UPI mapping",
     "verified_par_spreads": 0,
     "dtcc_direct_zip_test": "not retrieved; DNS/network restriction"
+  },
+  "mapping_audit_v3": {
+    "as_of": "2026-11-25",
+    "status": "partial_issuer_identity_evidence_only",
+    "issuer_identity_count": 7,
+    "verified_reference_entity_count": 0,
+    "verified_upi_count": 0,
+    "dsb_policy_url": "https://www.anna-dsb.com/upi-fees-rules-2026/",
+    "dsb_access": "registered_free_delayed_archive_no_free_search_api_no_archive_redistribution",
+    "dsb_archive_retrieved": false,
+    "gleif_api_retrieved": false
   }
 }
