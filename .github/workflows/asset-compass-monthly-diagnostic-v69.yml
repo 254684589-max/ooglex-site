@@ -9,6 +9,8 @@ on:
       - 'scripts/asset_compass_six_feature_v90.py'
       - 'scripts/asset_compass_alfred_v138.py'
       - 'scripts/asset_compass_partial_vintage_v146.py'
+      - 'scripts/asset_compass_full_vintage_v153.py'
+      - 'tests/test_asset_compass_full_vintage_v153.py'
       - 'tests/test_asset_compass_partial_vintage_v146.py'
       - 'scripts/asset_compass_quarterly_v117.py'
       - 'scripts/asset_compass_cost_v124.py'
@@ -68,8 +70,9 @@ jobs:
           python3 -m py_compile scripts/asset_compass_six_feature_v90.py
           python3 -m unittest discover -s tests -p 'test_asset_compass_six_feature_v90.py' -v
           python3 -m unittest discover -s tests -p 'test_asset_compass_partial_vintage_v146.py' -v
+          python3 -m unittest discover -s tests -p 'test_asset_compass_full_vintage_v153.py' -v
       - name: Run real multi-source diagnostic on same fund panel
-        run: python3 -m scripts.asset_compass_multisource_v74 --panel /tmp/ooglex-panel-private.json --additional-fund-panel /tmp/ooglex-extra-funds-private.json --output /tmp/ooglex-multisource-v74.json --six-feature-output /tmp/ooglex-six-feature-v90.json --partial-vintage-output /tmp/ooglex-partial-vintage-v146.json
+        run: python3 -m scripts.asset_compass_multisource_v74 --panel /tmp/ooglex-panel-private.json --additional-fund-panel /tmp/ooglex-extra-funds-private.json --output /tmp/ooglex-multisource-v74.json --six-feature-output /tmp/ooglex-six-feature-v90.json --partial-vintage-output /tmp/ooglex-partial-vintage-v146.json --full-vintage-output /tmp/ooglex-full-vintage-v153.json
       - name: Require quarterly research evidence separately
         if: always()
         run: test "${{ steps.quarterly_research.outcome }}" = success
@@ -97,6 +100,7 @@ jobs:
             /tmp/ooglex-multisource-v74.json
             /tmp/ooglex-six-feature-v90.json
             /tmp/ooglex-partial-vintage-v146.json
+            /tmp/ooglex-full-vintage-v153.json
             /tmp/ooglex-sec-clock-v97.json
             /tmp/ooglex-quarterly-v117.json
             /tmp/ooglex-extra-funds-coverage.json

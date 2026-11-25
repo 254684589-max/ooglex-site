@@ -23,10 +23,11 @@ def cutoff(month):
     if d>=datetime.now(timezone.utc).date():raise ValueError("Future decision date")
     return d.isoformat()
 
-def collect(months,fetcher=fetch,wait=time.sleep):
+def collect(months,fetcher=fetch,wait=time.sleep,*,series=SERIES):
+    if not series or len(set(series))!=len(series):raise ValueError("Invalid snapshot series")
     dates=sorted({cutoff(m) for m in months})
-    snapshots={s:{} for s in SERIES};receipts=[];fail={};stop=False
-    for sid in SERIES:
+    snapshots={s:{} for s in series};receipts=[];fail={};stop=False
+    for sid in series:
         if stop:break
         for i in range(0,len(dates),BATCH):
             batch=dates[i:i+BATCH]
@@ -97,7 +98,7 @@ def compare(current,snapshots):
         current_direction_hits=r["direction_hits"]["six_source"],partial_vintage_direction_hits=v["direction_hits"]["six_source"])
     return result
 
-def build(panel,history,usd,nfci,data):
+def build(panel,history,usd,nfci,data,*,snapshot_bundle=None):
     current={};base_gaps={}
     for ticker,fund in panel["funds"].items():
         base,gaps=align(fund,history["observations"],usd,nfci)
@@ -105,7 +106,8 @@ def build(panel,history,usd,nfci,data):
         base_gaps[ticker]=sorted(set(gaps+more))
     target=sorted({r["month"] for rows in current.values() for r in rows})
     if not target:raise ValueError("No matched current history")
-    snapshots,receipts,fail=collect(target)
+    snapshots,receipts,fail=collect(target) if snapshot_bundle is None else snapshot_bundle
+    if set(snapshots)!=set(SERIES):raise ValueError("Partial vintage registry mismatch")
     assets={k:{**compare(rows,snapshots),"excluded_current_source_months":base_gaps[k]} for k,rows in current.items()}
     return {"report_type":"asset_compass_v146_partial_vintage_sensitivity",
         "generated_at":datetime.now(timezone.utc).isoformat(),"features":list(NAMES),

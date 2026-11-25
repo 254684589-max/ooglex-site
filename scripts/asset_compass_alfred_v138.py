@@ -34,6 +34,13 @@ MAPPING={
 BOUNDS={"CPIAUCNS":(Decimal(0),Decimal(1000)),
         "UNRATE":(Decimal(-1),Decimal(100)),
         "PAYEMS":(Decimal(0),Decimal(300000))}
+# Keep the BLS crosscheck registry separate from the model registry.
+MODEL_BOUNDS={**BOUNDS,
+    "DGS10":(Decimal("-5"),Decimal("30")),
+    "DTWEXBGS":(Decimal(0),Decimal(1000)),
+    "NFCI":(Decimal("-20"),Decimal("20")),
+    "WALCL":(Decimal(0),Decimal(100000000))}
+FREQUENCIES={"DGS10":"daily","DTWEXBGS":"daily","NFCI":"friday","WALCL":"wednesday"}
 STATUSES=("within_reported_rounding","different_vintage_value","vintage_value_missing")
 
 def candidates(records):
@@ -67,7 +74,7 @@ def candidates(records):
 
 def url_for(sid,vintages,*,start=START):
     if start not in (START,"2020-01-01"):raise ValueError("Unsupported research start date")
-    if sid not in BOUNDS or not 1<=len(vintages)<=BATCH or len(set(vintages))!=len(vintages):
+    if sid not in MODEL_BOUNDS or not 1<=len(vintages)<=BATCH or len(set(vintages))!=len(vintages):
         raise ValueError("Unsupported vintage batch")
     if any(date.fromisoformat(v).isoformat()!=v or date.fromisoformat(v)>=datetime.now(timezone.utc).date() for v in vintages):
         raise ValueError("Invalid vintage dates")
@@ -83,6 +90,8 @@ def fetch(url):
     return raw
 
 def parse(raw,sid,vintages):
+    if sid not in MODEL_BOUNDS:raise ValueError("Unknown ALFRED series")
+    freq=FREQUENCIES.get(sid,"monthly")
     reader=csv.reader(io.StringIO(raw.decode("utf-8-sig")))
     header=next(reader,None)
     columns=[sid+"_"+v.replace("-","") for v in vintages]
@@ -92,15 +101,20 @@ def parse(raw,sid,vintages):
     for row in reader:
         if len(row)!=len(header):raise ValueError("Truncated ALFRED row")
         day=date.fromisoformat(row[0])
-        if row[0]<=last or day.day!=1:raise ValueError("Invalid monthly ALFRED order/date")
+        if (row[0]<=last or row[0]!=day.isoformat() or
+            (freq=="monthly" and day.day!=1) or
+            (freq=="daily" and day.weekday()>4) or
+            (freq=="friday" and day.weekday()!=4) or
+            (freq=="wednesday" and day.weekday()!=2)):
+            raise ValueError("Invalid ALFRED order or observation frequency")
         last=row[0]
         for v,value in zip(vintages,row[1:]):
             if value.strip() in ("","."):continue
             if day>date.fromisoformat(v):raise ValueError("Nonblank future observation in vintage")
             num=Decimal(value)
-            lo,hi=BOUNDS[sid]
+            lo,hi=MODEL_BOUNDS[sid]
             if not num.is_finite() or not lo<num<=hi:raise ValueError("Invalid ALFRED value")
-            results[v][row[0][:7]]=num
+            results[v][row[0][:7] if freq=="monthly" else row[0]]=num
     return results
 
 def compare_one(candidate,observations,source_sha):
