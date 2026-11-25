@@ -1,0 +1,39 @@
+name: Asset Compass V66-V68 SEC Monthly Research Panel
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/asset_compass_sec_returns_v6*.py'
+      - 'tests/test_asset_compass_sec_returns_v6*.py'
+      - '.github/workflows/asset-compass-sec-panel-v66.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m py_compile scripts/asset_compass_sec_returns_v66.py
+      - run: python3 -m unittest discover -s tests -p 'test_asset_compass_sec_returns_v6*.py' -v
+  live-panel:
+    needs: offline
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m scripts.asset_compass_sec_returns_v66 --download --output /tmp/ooglex-panel-private.json --metadata /tmp/ooglex-panel-metadata.json --require-complete
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v66-sec-panel-coverage-metadata
+          path: /tmp/ooglex-panel-metadata.json
+          retention-days: 30
+          if-no-files-found: error

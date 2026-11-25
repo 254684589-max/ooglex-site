@@ -1,0 +1,22 @@
+name: Asset Compass V63 SEC Return Pilot
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/asset_compass_sec_returns_v63.py'
+      - 'tests/test_asset_compass_sec_returns_v63.py'
+      - '.github/workflows/asset-compass-sec-returns-v63.yml'
+      - 'docs/ASSET_COMPASS_V63_SEC_RETURNS.md'
+permissions:
+  contents: read
+jobs:
+  offline-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m py_compile scripts/asset_compass_sec_returns_v63.py
+      - run: python3 -m unittest discover -s tests -p 'test_asset_compass_sec_returns_v63.py' -v

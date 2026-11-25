@@ -1,0 +1,108 @@
+name: Asset Compass V69-V73 Extended Monthly Research
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/asset_compass_sec_returns_v66.py'
+      - 'scripts/asset_compass_monthly_diagnostic_v69.py'
+      - 'scripts/asset_compass_multisource_v74.py'
+      - 'scripts/asset_compass_six_feature_v90.py'
+      - 'scripts/asset_compass_alfred_v138.py'
+      - 'scripts/asset_compass_partial_vintage_v146.py'
+      - 'scripts/asset_compass_full_vintage_v153.py'
+      - 'tests/test_asset_compass_full_vintage_v153.py'
+      - 'tests/test_asset_compass_partial_vintage_v146.py'
+      - 'scripts/asset_compass_quarterly_v117.py'
+      - 'scripts/asset_compass_cost_v124.py'
+      - 'tests/test_asset_compass_cost_v124.py'
+      - 'tests/test_asset_compass_quarterly_v117.py'
+      - 'scripts/asset_compass_sec_clock_v97.py'
+      - 'tests/test_asset_compass_sec_clock_v97.py'
+      - 'tests/test_asset_compass_six_feature_v90.py'
+      - 'scripts/asset_compass_sec_performance_v84.py'
+      - 'tests/test_asset_compass_sec_performance_v84.py'
+      - 'tests/test_asset_compass_multisource_v74.py'
+      - 'tests/test_asset_compass_monthly_diagnostic_v69.py'
+      - '.github/workflows/asset-compass-monthly-diagnostic-v69.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m py_compile scripts/asset_compass_sec_returns_v66.py scripts/asset_compass_monthly_diagnostic_v69.py
+      - run: python3 -m unittest discover -s tests -p 'test_asset_compass_monthly_diagnostic_v69.py' -v
+      - name: Download candidate historical filings and retain coverage
+        run: python3 -m scripts.asset_compass_sec_returns_v66 --extended --download --output /tmp/ooglex-panel-private.json --metadata /tmp/ooglex-extended-coverage.json
+      - name: SEC acceptance-clock evidence
+        id: sec_clock
+        continue-on-error: true
+        run: |
+          python3 -m py_compile scripts/asset_compass_sec_clock_v97.py
+          python3 -m unittest discover -s tests -p 'test_asset_compass_sec_clock_v97.py' -v
+          python3 -m scripts.asset_compass_sec_clock_v97 --coverage /tmp/ooglex-extended-coverage.json --output /tmp/ooglex-sec-clock-v97.json
+      - name: Run actual lagged research diagnostic
+        run: python3 -m scripts.asset_compass_monthly_diagnostic_v69 --panel /tmp/ooglex-panel-private.json --output /tmp/ooglex-monthly-diagnostic.json
+      - name: V74-V78 multi-source regression tests
+        run: |
+          python3 -m py_compile scripts/asset_compass_multisource_v74.py
+          python3 -m unittest discover -s tests -p 'test_asset_compass_multisource_v74.py' -v
+      - name: V84-V89 SEC performance table regression and live source
+        run: |
+          python3 -m py_compile scripts/asset_compass_sec_performance_v84.py
+          python3 -m unittest discover -s tests -p 'test_asset_compass_sec_performance_v84.py' -v
+          python3 -m scripts.asset_compass_sec_performance_v84 --output /tmp/ooglex-extra-funds-private.json --metadata /tmp/ooglex-extra-funds-coverage.json
+      - name: V117 quarterly source coverage and same-quarter comparison
+        id: quarterly_research
+        continue-on-error: true
+        run: |
+          python3 -m unittest discover -s tests -p 'test_asset_compass_quarterly_v117.py' -v
+          python3 -m unittest discover -s tests -p 'test_asset_compass_cost_v124.py' -v
+          python3 -m scripts.asset_compass_quarterly_v117 --panel /tmp/ooglex-panel-private.json --extra /tmp/ooglex-extra-funds-private.json --metadata /tmp/ooglex-quarterly-v117.json
+      - name: V90 six-feature offline tests
+        run: |
+          python3 -m py_compile scripts/asset_compass_six_feature_v90.py
+          python3 -m unittest discover -s tests -p 'test_asset_compass_six_feature_v90.py' -v
+          python3 -m unittest discover -s tests -p 'test_asset_compass_partial_vintage_v146.py' -v
+          python3 -m unittest discover -s tests -p 'test_asset_compass_full_vintage_v153.py' -v
+      - name: Run real multi-source diagnostic on same fund panel
+        run: python3 -m scripts.asset_compass_multisource_v74 --panel /tmp/ooglex-panel-private.json --additional-fund-panel /tmp/ooglex-extra-funds-private.json --output /tmp/ooglex-multisource-v74.json --six-feature-output /tmp/ooglex-six-feature-v90.json --partial-vintage-output /tmp/ooglex-partial-vintage-v146.json --full-vintage-output /tmp/ooglex-full-vintage-v153.json
+      - name: Require quarterly research evidence separately
+        if: always()
+        run: test "${{ steps.quarterly_research.outcome }}" = success
+      - name: Require SEC acceptance evidence separately
+        if: always()
+        run: test "${{ steps.sec_clock.outcome }}" = success
+      - name: Require full coverage separately
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          r=json.load(open('/tmp/ooglex-extended-coverage.json'))
+          assert not r['source_failures'],r['source_failures']
+          assert all(not f['missing_months'] for f in r['funds'].values())
+          assert len(r['amendment_reviews'])==1
+          assert r['eligible_for_live_scoring'] is False
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v69-research-metadata
+          path: |
+            /tmp/ooglex-extended-coverage.json
+            /tmp/ooglex-monthly-diagnostic.json
+            /tmp/ooglex-multisource-v74.json
+            /tmp/ooglex-six-feature-v90.json
+            /tmp/ooglex-partial-vintage-v146.json
+            /tmp/ooglex-full-vintage-v153.json
+            /tmp/ooglex-sec-clock-v97.json
+            /tmp/ooglex-quarterly-v117.json
+            /tmp/ooglex-extra-funds-coverage.json
+          retention-days: 30
+          if-no-files-found: error
