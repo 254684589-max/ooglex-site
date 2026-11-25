@@ -20,7 +20,7 @@ jobs:
           python-version: '3.12'
       - run: python3 -m py_compile scripts/asset_compass_bls_archive_v79.py
       - run: python3 -m unittest discover -s tests -p 'test_asset_compass_bls_archive_v79.py' -v
-      - run: python3 -m scripts.asset_compass_bls_archive_v79 --private-dir /tmp/ooglex-bls-v79-private --metadata /tmp/ooglex-bls-v79-metadata.json --require-complete
+      - run: python3 -m scripts.asset_compass_bls_archive_v79 --private-dir /tmp/ooglex-bls-v79-private --metadata /tmp/ooglex-bls-v79-metadata.json --extended-years --require-complete
       - uses: actions/upload-artifact@v4
         if: always()
         with:

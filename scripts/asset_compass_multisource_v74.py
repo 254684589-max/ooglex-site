@@ -84,6 +84,8 @@ def fit(train,indices):
     beta=solve(gram,rhs)
     def predict(row):
         return ym+sum(b*(row["x"][i]-m)/d for b,i,m,d in zip(beta,indices,mu,sd))
+    predict.standardized_coefficients=tuple(beta)
+    predict.feature_indices=tuple(indices)
     return predict
 
 def correlation(train,i,j):

@@ -8,6 +8,13 @@ class ArchiveTests(unittest.TestCase):
         self.assertEqual(r["2025-09"]["scheduled_release_date_candidate_unverified"],"2025-10-24")
         self.assertEqual(len(expected_periods()),23)
         self.assertNotIn("2025-10",expected_periods())
+    def test_older_pdf_index_html_candidate(self):
+        raw=b'<a href="/news.release/archives/empsit_01052024.pdf">December 2023 Employment Situation (PDF)</a>'
+        r=discover(raw,"employment",(2022,2023,2024,2025))
+        self.assertEqual(r["2023-12"]["source_url"],"https://www.bls.gov/news.release/archives/empsit_01052024.htm")
+        self.assertTrue(r["2023-12"]["html_candidate_from_pdf_index"])
+        self.assertEqual(len(expected_periods((2022,2023,2024,2025))),47)
+        self.assertEqual(discover(raw,"employment"),{})
     def test_reject_wrong_family_and_blocked_month(self):
         for raw in [b'<a href="/news.release/archives/empsit_10242025.htm">September 2025 Consumer Price Index</a>',
                     b'<a href="/news.release/archives/cpi_11142025.htm">October 2025 Consumer Price Index</a>']:

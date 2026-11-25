@@ -22,5 +22,11 @@ class SecClockTests(unittest.TestCase):
         with self.assertRaises(ValueError):parse_rows(c,e,"CIK0001100663.json","a"*64)
         e,a,c=self.fixture();c["reportDate"][0]="2020-01-01"
         with self.assertRaises(ValueError):parse_rows(c,e,"CIK0001100663.json","a"*64)
+    def test_official_xsl_path_not_arbitrary_document(self):
+        e,a,c=self.fixture()
+        c["primaryDocument"][0]="xslFormNPORT-P_X01/primary_doc.xml"
+        self.assertIn(a,parse_rows(c,e,"CIK0001100663.json","a"*64))
+        c["primaryDocument"][0]="../primary_doc.xml"
+        with self.assertRaises(ValueError):parse_rows(c,e,"CIK0001100663.json","a"*64)
     def test_registry_count(self):
         self.assertEqual(len(registry()),28)

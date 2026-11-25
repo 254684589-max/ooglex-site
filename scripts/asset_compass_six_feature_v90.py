@@ -62,6 +62,19 @@ def extend(base,data):
         out.append({**row,"x":x})
     return out,missing
 
+def stability(folds):
+    # Standardized coefficients: return percentage points per one training SD.
+    # These are not allocated model weights or independent statistical evidence.
+    out={}
+    for name in NAMES:
+        vals=[f["six_source_training_coefficients"][name] for f in folds]
+        pos=sum(v>1e-10 for v in vals);neg=sum(v < -1e-10 for v in vals)
+        out[name]={"fold_count":len(vals),"positive_folds":pos,"negative_folds":neg,
+                   "near_zero_folds":len(vals)-pos-neg,"sign_changed":bool(pos and neg),
+                   "minimum":round(min(vals),6),"maximum":round(max(vals),6),
+                   "mean":round(fmean(vals),6),"certified_model_weight":False}
+    return out
+
 def evaluate(rows):
     if not rows:return {"status":"no_common_observations","folds":[]}
     by={r["month"]:r for r in rows}
@@ -82,6 +95,7 @@ def evaluate(rows):
         actual=[r["y"] for r in test]
         fold={"train_count":len(train),"train_last":train[-1]["month"],"test_first":test[0]["month"],"test_last":test[-1]["month"],"test_count":len(test),"mae_pct":{},
               "training_correlations":{NAMES[i]+"__"+NAMES[j]:correlation(train,i,j) for i in range(6) for j in range(i+1,6)}}
+        fold["six_source_training_coefficients"]=dict(zip(NAMES,models["six_source"].standardized_coefficients))
         for k,vals in preds.items():
             e=[abs(a-b) for a,b in zip(vals,actual)]
             errors[k].extend(e)
@@ -91,7 +105,7 @@ def evaluate(rows):
     result={"status":"exploratory_reused_history_not_pit" if folds else "insufficient_complete_folds","aligned_months":len(rows),"calendar_months":len(cal),"folds":folds,"evaluated_months":len(errors["six_source"]),"formal_oos_validated":False}
     if folds:
         mae={k:round(fmean(v),6) for k,v in errors.items()}
-        result.update(mae_pct=mae,direction_hits=hits,incremental_mae_delta_pct={k:round(v-mae["six_source"],6) for k,v in mae.items() if k.startswith("without_")})
+        result.update(mae_pct=mae,direction_hits=hits,incremental_mae_delta_pct={k:round(v-mae["six_source"],6) for k,v in mae.items() if k.startswith("without_")},training_coefficient_stability=stability(folds),six_source_improves_mean_baseline=mae["six_source"]<mae["training_mean"],six_source_improves_three_source=mae["six_source"]<mae["three_source"])
     return result
 
 def build(panel,history,usd,nfci,data,receipts):

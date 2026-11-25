@@ -42,10 +42,10 @@ class Links(HTMLParser):
             self.links.append((href," ".join("".join(parts).split())))
             self.current=None
 
-def expected_periods():
-    return {f"{y}-{m:02d}" for y in YEARS for m in range(1,13)}-{BLOCKED}
+def expected_periods(years=YEARS):
+    return {f"{y}-{m:02d}" for y in years for m in range(1,13)}-{BLOCKED}
 
-def discover(raw,kind):
+def discover(raw,kind,years=YEARS):
     if not raw or len(raw)>MAX_BYTES:raise ValueError("Invalid BLS index size")
     p=Links()
     p.feed(raw.decode("utf-8"))
@@ -53,11 +53,16 @@ def discover(raw,kind):
     prefix="cpi" if kind=="cpi" else "empsit"
     title=TITLES[kind]
     for href,label in p.links:
-        m=re.fullmatch(r"("+"|".join(MONTH)+r") (2024|2025) "+re.escape(title),label,re.I)
+        m=re.fullmatch(r"("+"|".join(MONTH)+r") ("+"|".join(map(str,years))+r") "+re.escape(title)+r"(?: \(PDF\))?",label,re.I)
         if not m:continue
         period=f"{m[2]}-{MONTH.index(m[1].title())+1:02d}"
         if period==BLOCKED:raise ValueError("Unexpected October 2025 archive link; manual review")
-        url=_canonical(urljoin(INDEX[kind],href),"BLS")
+        listed=urljoin(INDEX[kind],href)
+        # Older index links point to PDFs. Candidate sibling HTML is separately
+        # validated against the same BLS host, release kind, month and header.
+        # This does not parse PDF bytes or bypass a denied request.
+        candidate=listed[:-4]+".htm" if listed.endswith(".pdf") else listed
+        url=_canonical(candidate,"BLS")
         d=re.fullmatch(r"/news.release/archives/"+prefix+r"_(\d{8})\.htm",urllib.parse.urlsplit(url).path)
         if not d:raise ValueError("Wrong BLS archive URL family")
         day=datetime.strptime(d[1],"%m%d%Y").date()
@@ -68,6 +73,7 @@ def discover(raw,kind):
             raise ValueError("Ambiguous archive link for period")
         result[period]={"artifact_id":f"bls-{kind}-{period}","publisher":"BLS",
             "release_kind":kind,"observation_period":period,"source_url":url,
+            "index_listed_url":listed,"html_candidate_from_pdf_index":listed!=url,
             "scheduled_release_date_candidate_unverified":day.isoformat(),
             "covered_source_series": ["bls.cpi","bls.core_cpi"] if kind=="cpi" else ["bls.unemployment","bls.payroll"]}
     return result
@@ -113,13 +119,13 @@ def inspect(source,raw):
             "metrics":result["reported_metrics"],"revision_claims":claims,
             "original_bytes_at_historical_time_verified":False,"pit_qualified":False}
 
-def summary(records,indexes,failures):
+def summary(records,indexes,failures,years=YEARS):
     by_family={}
     for kind in INDEX:
         rows=[r for r in records if r["source"]["release_kind"]==kind]
         seen={r["source"]["observation_period"] for r in rows}
-        by_family[kind]={"target_releases":len(expected_periods()),"retrieved_and_parsed":len(rows),
-            "missing_periods":sorted(expected_periods()-seen),
+        by_family[kind]={"target_releases":len(expected_periods(years)),"retrieved_and_parsed":len(rows),
+            "missing_periods":sorted(expected_periods(years)-seen),
             "complete_metric_releases":sum(r["metric_count"]==r["expected_metrics"] for r in rows),
             "extracted_metrics":sum(r["metric_count"] for r in rows),
             "matching_embargo_headers":sum(r["header"]["header_status"]=="publisher_header_matches_archive_date" for r in rows),
@@ -138,7 +144,9 @@ def main():
     p.add_argument("--private-dir",type=Path,required=True)
     p.add_argument("--metadata",type=Path,required=True)
     p.add_argument("--require-complete",action="store_true")
+    p.add_argument("--extended-years",action="store_true")
     a=p.parse_args()
+    years=(2022,2023,2024,2025) if a.extended_years else YEARS
     private=_private_path(a.private_dir);output=_private_path(a.metadata)
     if output==private or output.is_relative_to(private):
         p.error("Coverage metadata must be outside private raw archive")
@@ -149,10 +157,10 @@ def main():
         if stop:break
         try:
             raw=fetch_index(kind)
-            registry=discover(raw,kind)
+            registry=discover(raw,kind,years)
             indexes[kind]={"url":INDEX[kind],"sha256":hashlib.sha256(raw).hexdigest(),"discovered":len(registry)}
-            if set(registry)!=expected_periods():
-                failures[kind+"-index"]={"missing":sorted(expected_periods()-set(registry))}
+            if set(registry)!=expected_periods(years):
+                failures[kind+"-index"]={"missing":sorted(expected_periods(years)-set(registry))}
         except (OSError,ValueError) as exc:
             failures[kind+"-index"]={"type":type(exc).__name__}
             if isinstance(exc,urllib.error.HTTPError) and exc.code in (403,429):stop=True
@@ -169,7 +177,7 @@ def main():
                 if isinstance(exc,urllib.error.HTTPError) and exc.code in (403,429):
                     stop=True
                     break
-    report=summary(records,indexes,failures)
+    report=summary(records,indexes,failures,years)
     output.parent.mkdir(parents=True,exist_ok=True)
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+"\n")
     # Numeric headline records are kept locally, not uploaded.

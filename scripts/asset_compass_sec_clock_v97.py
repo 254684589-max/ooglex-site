@@ -35,8 +35,10 @@ def fetch(name):
     url=BASE+name
     req=urllib.request.Request(url,headers={"User-Agent":"Ooglex Research (https://www.ooglex.com/; research backfill)","Accept":"application/json"})
     with urllib.request.build_opener(NoRedirect()).open(req,timeout=35) as res:
-        if res.geturl()!=url or "json" not in res.headers.get("Content-Type","").lower():
-            raise ValueError("Unexpected SEC submissions response")
+        if res.geturl()!=url:raise ValueError("Unexpected SEC submissions response URL")
+        media=res.headers.get("Content-Type","").split(";",1)[0].strip().lower()
+        if media not in ("application/json","text/json","text/plain","application/octet-stream"):
+            raise ValueError("Unexpected SEC submissions response media type")
         raw=res.read(MAX_BYTES+1)
     if not raw or len(raw)>MAX_BYTES:raise ValueError("Empty or excessive SEC metadata")
     return raw
@@ -55,7 +57,9 @@ def parse_rows(columns,expected,source_name,digest):
         r={k:columns[k][i] for k in FIELDS};e=expected[acc]
         if r["reportDate"]!=e["period"]:raise ValueError("SEC reporting period mismatch: "+acc)
         allowed=("NPORT-P/A",) if e["amendment"] else ("NPORT-P",)
-        if r["form"] not in allowed or r["primaryDocument"]!="primary_doc.xml":
+        # EDGAR metadata can identify either raw XML or the official XSL display path.
+        primary=r["primaryDocument"]
+        if r["form"] not in allowed or not isinstance(primary,str) or not re.fullmatch(r"(?:xslFormNPORT-P_X\d{2}/)?primary_doc\.xml",primary):
             raise ValueError("SEC document or amendment mismatch: "+acc)
         accepted=datetime.fromisoformat(r["acceptanceDateTime"].replace("Z","+00:00"))
         if accepted.tzinfo is None or accepted.utcoffset() is None:
@@ -80,7 +84,8 @@ def collect(expected,fetcher=fetch):
     if str(doc.get("cik")).lstrip("0")!="1100663":raise ValueError("Wrong SEC filer")
     def consume(columns,name,raw):
         digest=hashlib.sha256(raw).hexdigest()
-        found=parse_rows(columns,expected,name,digest)
+        try:found=parse_rows(columns,expected,name,digest)
+        except ValueError as exc:raise ValueError(name+": "+str(exc)) from exc
         if set(found)&set(all_rows):raise ValueError("Repeated accession across SEC shards")
         all_rows.update(found)
         receipts.append({"url":BASE+name,"sha256":digest,"tracked_accessions":len(found)})
@@ -147,7 +152,7 @@ def main():
     except (OSError,ValueError,KeyError) as exc:
         # No alternative host or access bypass after denial.
         report={"report_type":"asset_compass_v97_sec_acceptance_research","status":"source_failed",
-                "reason":type(exc).__name__,"http_status":getattr(exc,"code",None),
+                "reason":type(exc).__name__,"detail":str(exc)[:240] if isinstance(exc,(ValueError,KeyError)) else None,"http_status":getattr(exc,"code",None),
                 "eligible_for_live_scoring":False}
         a.output.write_text(json.dumps(report,indent=2)+"\n")
         print(json.dumps(report))

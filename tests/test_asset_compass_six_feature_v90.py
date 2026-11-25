@@ -13,6 +13,13 @@ class SixFeatureTests(unittest.TestCase):
         q=evaluate(rows)
         self.assertEqual(q["evaluated_months"],24)
         self.assertEqual(q["folds"][0]["test_first"],"2023-10")
+    def test_coefficient_sign_stability(self):
+        from scripts.asset_compass_six_feature_v90 import stability,NAMES
+        folds=[{"six_source_training_coefficients":dict.fromkeys(NAMES,v)} for v in (1,-1,2)]
+        r=stability(folds)
+        self.assertTrue(r[NAMES[0]]["sign_changed"])
+        self.assertEqual(r[NAMES[0]]["positive_folds"],2)
+        self.assertFalse(r[NAMES[0]]["certified_model_weight"])
     def test_lag_and_missing(self):
         base=[{"month":"2024-04","x":[1,2,3],"y":0}]
         d={"CPIAUCNS":[{"date":"2023-02-01","value":100},{"date":"2024-02-01","value":105}],"UNRATE":[{"date":"2024-02-01","value":4}],"WALCL":[{"date":"2024-01-31","value":100},{"date":"2024-02-28","value":110}]}
