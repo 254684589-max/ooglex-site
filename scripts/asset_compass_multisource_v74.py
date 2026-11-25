@@ -165,8 +165,11 @@ def main():
     p.add_argument("--additional-fund-panel",type=Path)
     p.add_argument("--output",type=Path,required=True)
     p.add_argument("--six-feature-output",type=Path)
+    p.add_argument("--partial-vintage-output",type=Path)
     a=p.parse_args()
-    if a.output.resolve().is_relative_to(ROOT):p.error("Research output outside website repository only")
+    outputs=[x.resolve() for x in (a.output,a.six_feature_output,a.partial_vintage_output) if x is not None]
+    if len(set(outputs))!=len(outputs) or any(x.is_relative_to(ROOT) for x in outputs):p.error("Distinct research outputs outside website repository only")
+    if a.partial_vintage_output and not a.six_feature_output:p.error("Partial vintage research requires six-feature research")
     usd_raw=retrieve_fed_xml()
     usd=parse_fed_xml(usd_raw)
     # Reuse V56 publisher-approved CSV parser and URL. No fabricated fallback.
@@ -198,5 +201,11 @@ def main():
         six=build_six(panel,history,usd,nfci,extra_macro,receipts)
         a.six_feature_output.write_text(json.dumps(six,indent=2,allow_nan=False)+"\n")
         print(json.dumps({"six_feature_sources":receipts,"assets":six["assets"],"eligible_for_live_scoring":False}))
+        if a.partial_vintage_output:
+            from scripts.asset_compass_partial_vintage_v146 import build as build_vintage
+            v=build_vintage(panel,history,usd,nfci,extra_macro)
+            a.partial_vintage_output.write_text(json.dumps(v,indent=2,allow_nan=False)+"\n")
+            print(json.dumps({k:v[k] for k in ("target_decision_dates","retrieved_decision_dates","source_failures","assets","eligible_for_live_scoring")}))
+            if v["source_failures"] or any(n!=v["target_decision_dates"] for n in v["retrieved_decision_dates"].values()) or any(not a["evaluated_months"] for a in v["assets"].values()):raise SystemExit(1)
 
 if __name__=="__main__":main()

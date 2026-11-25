@@ -65,13 +65,14 @@ def candidates(records):
                         "archive_value":v,"archive_sha256":r["sha256"]})
     return sorted(out,key=lambda x:(x["series"],x["vintage"],x["period"]))
 
-def url_for(sid,vintages):
+def url_for(sid,vintages,*,start=START):
+    if start not in (START,"2020-01-01"):raise ValueError("Unsupported research start date")
     if sid not in BOUNDS or not 1<=len(vintages)<=BATCH or len(set(vintages))!=len(vintages):
         raise ValueError("Unsupported vintage batch")
     if any(date.fromisoformat(v).isoformat()!=v or date.fromisoformat(v)>=datetime.now(timezone.utc).date() for v in vintages):
         raise ValueError("Invalid vintage dates")
     return BASE+"?"+urllib.parse.urlencode({"id":",".join([sid]*len(vintages)),
-        "vintage_date":",".join(vintages),"cosd":",".join([START]*len(vintages))})
+        "vintage_date":",".join(vintages),"cosd":",".join([start]*len(vintages))})
 
 def fetch(url):
     req=urllib.request.Request(url,headers={"User-Agent":"Ooglex-AssetCompass-Research/1.0","Accept":"text/csv"})
