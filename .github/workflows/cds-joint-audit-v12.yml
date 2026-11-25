@@ -1,0 +1,32 @@
+name: CDS joint source and price input audit
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/cds-joint-audit-v12.yml'
+      - 'scripts/cds_joint_audit_v12.py'
+      - 'tests/test_cds_joint_audit_v12.py'
+  workflow_dispatch:
+    inputs:
+      report_end:
+        description: 'Last past report date (YYYY-MM-DD)'
+        required: true
+        default: '2026-11-24'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Run DTCC and joint audit tests
+        run: |
+          python3 -m unittest discover -s tests -p 'test_cds_dtcc_*v*.py' -v
+          python3 -m unittest discover -s tests -p 'test_cds_joint_audit_v12.py' -v
+      - name: Joint statutory source audit
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'agent/nasdaq100-cds-v12-v15')
+        env:
+          REPORT_END: ${{ inputs.report_end || '2026-11-24' }}
+        run: python3 scripts/cds_joint_audit_v12.py --end "$REPORT_END" --days 7
