@@ -20,6 +20,11 @@ function init(data) {
  byId("cds-status").textContent="研究名单可用；正式报价发布门禁关闭。数据授权及参考实体尚未核验。";
  byId("cds-universe").textContent=rows.length+" / "+rows.flatMap(r=>r.tickers).length;
  byId("cds-date").textContent="交叉检查日期："+data.universe.membership_as_of;
+ const identityCount=rows.filter(r=>r.issuer_identity?.status==="issuer_identity_evidence_only").length;
+ if(identityCount!==data.mapping_audit_v3?.issuer_identity_count||data.mapping_audit_v3?.verified_reference_entity_count!==0||data.mapping_audit_v3?.verified_upi_count!==0||rows.some(r=>r.cds_mapping_evidence!==null))throw Error("V3 registry mismatch");
+ byId("cds-identity-count").textContent=identityCount+" / "+rows.length;
+ byId("cds-ref-count").textContent="0 / "+rows.length;
+ byId("cds-upi-count").textContent="0";
  byId("cds-mapped").textContent="0 / "+rows.length;
  byId("cds-covered").textContent="0 / "+rows.length;
  const search=byId("cds-search"), body=byId("cds-table"), select=byId("cds-issuer");
@@ -27,11 +32,11 @@ function init(data) {
  function render(){
   const q=search.value.trim().toLowerCase();const found=rows.filter(r=>(r.name+" "+r.tickers.join(" ")).toLowerCase().includes(q));
   const fragment=document.createDocumentFragment();
-  for(const r of found){const tr=document.createElement("tr");const td=document.createElement("td");const btn=document.createElement("button");btn.type="button";btn.textContent=r.name;btn.addEventListener("click",()=>{select.value=r.issuer_id;detail();byId("cds-detail-title").scrollIntoView({block:"start"});});td.append(btn);tr.append(td);cell(tr,r.tickers.join(" / "));for(let i=0;i<4;i++)cell(tr,dash);cell(tr,"待核验 · 未发布");fragment.append(tr);}
+  for(const r of found){const tr=document.createElement("tr");const td=document.createElement("td");const btn=document.createElement("button");btn.type="button";btn.textContent=r.name;btn.addEventListener("click",()=>{select.value=r.issuer_id;detail();byId("cds-detail-title").scrollIntoView({block:"start"});});td.append(btn);tr.append(td);cell(tr,r.tickers.join(" / "));for(let i=0;i<4;i++)cell(tr,dash);cell(tr,r.issuer_identity?"LEI已有证据 · CDS待核验":"待核验 · 未发布");fragment.append(tr);}
   if(!found.length){const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=7;td.textContent="没有匹配企业";tr.append(td);fragment.append(tr);}
   body.replaceChildren(fragment);byId("cds-count").textContent=found.length+" / "+rows.length+" 家";
  }
- function detail(){const r=rows.find(x=>x.issuer_id===select.value);byId("cds-detail").textContent=r?r.name+"（"+r.tickers.join(" / ")+"）：参考实体待核验，尚无准入历史观测；不展示虚构曲线。":"尚无准入历史观测。不会生成模拟曲线。";}
+ function detail(){const r=rows.find(x=>x.issuer_id===select.value);const i=r?.issuer_identity;const target=byId("cds-identity-detail");target.replaceChildren();if(i){target.append(document.createTextNode(i.legal_name+" · LEI "+i.lei+"（仅发行人身份） · "));if(/^https:\/\/(lei\.bloomberg\.com\/leis\/view\/|www\.sec\.gov\/Archives\/edgar\/data\/)/.test(i.source)){const a=document.createElement("a");a.href=i.source;a.textContent="来源证据";target.append(a);}}else{target.textContent=r?"尚未核验发行人LEI。":"";}byId("cds-detail").textContent=r?r.name+"（"+r.tickers.join(" / ")+"）：参考实体待核验，尚无准入历史观测；不展示虚构曲线。":"尚无准入历史观测。不会生成模拟曲线。";}
  search.addEventListener("input",render);select.addEventListener("change",detail);render();
 }
 fetch("./nasdaq100-cds.json",{cache:"no-cache"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status);return r.json();}).then(init).catch(showError);
