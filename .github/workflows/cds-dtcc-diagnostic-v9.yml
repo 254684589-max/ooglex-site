@@ -1,0 +1,32 @@
+name: CDS SEC lifecycle and field diagnostic
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/cds-dtcc-diagnostic-v9.yml'
+      - 'scripts/cds_dtcc_diagnostic_v9.py'
+      - 'tests/test_cds_dtcc_diagnostic_v9.py'
+  workflow_dispatch:
+    inputs:
+      report_date:
+        description: 'One past SEC credit report date'
+        required: true
+        default: '2026-11-24'
+permissions:
+  contents: read
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Run V8 and V9 tests
+        run: |
+          python3 -m unittest discover -s tests -p test_cds_dtcc_probe_v8.py -v
+          python3 -m unittest discover -s tests -p test_cds_dtcc_diagnostic_v9.py -v
+      - name: Diagnose public statutory credit report
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'agent/nasdaq100-cds-v9')
+        env:
+          REPORT_DATE: ${{ inputs.report_date || '2026-11-24' }}
+        run: python3 scripts/cds_dtcc_diagnostic_v9.py --date "$REPORT_DATE"
