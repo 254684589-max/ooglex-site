@@ -141,7 +141,7 @@ def extract(source, raw: bytes, digest: str):
              rf"(?P<value>{NUMBER})\s+percent\s+in\s+{month}\b",
              "bls.core_cpi", "headline_mom_rate", "seasonally_adjusted"),
             (rf"The all items less food and energy index\s+(?P<verb>{VERBS})\s+"
-             rf"(?P<value>{NUMBER})\s+percent\s+over the last 12 months",
+             rf"(?P<value>{NUMBER})\s+percent\s+over the (?:last|past) 12 months",
              "bls.core_cpi", "headline_yoy_rate", "not_seasonally_adjusted"),
         ]
         section = section[:4200]
@@ -163,8 +163,8 @@ def extract(source, raw: bytes, digest: str):
                                    payroll.group("verb").lower() in ("fell", "declined", "decreased"),
                                    payroll, header, digest))
         rate = re.search(
-            r"(?:the\s+)?unemployment rate\s+(?:edged|changed|was|held|rose|fell|increased|decreased)"
-            r"\s+.{0,55}?\b(?:to|at|of)\s+(?P<value>[0-9]+(?:\.[0-9]+)?)\s+percent",
+            r"(?:the\s+)?unemployment rate\s+(?:edged|changed|was|held|rose|fell|increased|decreased|remained)"
+            r"\s+[^.;]{0,55}?\b(?:to|at|of)\s+(?P<value>[0-9]+(?:\.[0-9]+)?)\s+percent",
             header, re.I)
         if rate:
             records.append(_record(source, "bls.unemployment", "monthly_unemployment_rate",

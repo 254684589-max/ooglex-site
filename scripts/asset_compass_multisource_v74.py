@@ -162,6 +162,7 @@ def main():
     p.add_argument("--panel",type=Path,required=True)
     p.add_argument("--additional-fund-panel",type=Path)
     p.add_argument("--output",type=Path,required=True)
+    p.add_argument("--six-feature-output",type=Path)
     a=p.parse_args()
     if a.output.resolve().is_relative_to(ROOT):p.error("Research output outside website repository only")
     usd_raw=retrieve_fed_xml()
@@ -186,5 +187,14 @@ def main():
                           "nfci":{"url":FRED_URL,"sha256":hashlib.sha256(nfci_raw).hexdigest()}}
     a.output.write_text(json.dumps(r,indent=2,allow_nan=False)+"\n")
     print(json.dumps({"observations":r["observations"],"assets":r["assets"],"eligible_for_live_scoring":False}))
+
+    if a.six_feature_output:
+        if a.six_feature_output.resolve().is_relative_to(ROOT) or a.six_feature_output.resolve()==a.output.resolve():
+            p.error("Distinct private output required")
+        from scripts.asset_compass_six_feature_v90 import get_sources, build as build_six
+        extra_macro,receipts=get_sources()
+        six=build_six(panel,history,usd,nfci,extra_macro,receipts)
+        a.six_feature_output.write_text(json.dumps(six,indent=2,allow_nan=False)+"\n")
+        print(json.dumps({"six_feature_sources":receipts,"assets":six["assets"],"eligible_for_live_scoring":False}))
 
 if __name__=="__main__":main()

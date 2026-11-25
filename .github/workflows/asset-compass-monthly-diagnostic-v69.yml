@@ -6,6 +6,8 @@ on:
       - 'scripts/asset_compass_sec_returns_v66.py'
       - 'scripts/asset_compass_monthly_diagnostic_v69.py'
       - 'scripts/asset_compass_multisource_v74.py'
+      - 'scripts/asset_compass_six_feature_v90.py'
+      - 'tests/test_asset_compass_six_feature_v90.py'
       - 'scripts/asset_compass_sec_performance_v84.py'
       - 'tests/test_asset_compass_sec_performance_v84.py'
       - 'tests/test_asset_compass_multisource_v74.py'
@@ -38,8 +40,12 @@ jobs:
           python3 -m py_compile scripts/asset_compass_sec_performance_v84.py
           python3 -m unittest discover -s tests -p 'test_asset_compass_sec_performance_v84.py' -v
           python3 -m scripts.asset_compass_sec_performance_v84 --output /tmp/ooglex-extra-funds-private.json --metadata /tmp/ooglex-extra-funds-coverage.json
+      - name: V90 six-feature offline tests
+        run: |
+          python3 -m py_compile scripts/asset_compass_six_feature_v90.py
+          python3 -m unittest discover -s tests -p 'test_asset_compass_six_feature_v90.py' -v
       - name: Run real multi-source diagnostic on same fund panel
-        run: python3 -m scripts.asset_compass_multisource_v74 --panel /tmp/ooglex-panel-private.json --additional-fund-panel /tmp/ooglex-extra-funds-private.json --output /tmp/ooglex-multisource-v74.json
+        run: python3 -m scripts.asset_compass_multisource_v74 --panel /tmp/ooglex-panel-private.json --additional-fund-panel /tmp/ooglex-extra-funds-private.json --output /tmp/ooglex-multisource-v74.json --six-feature-output /tmp/ooglex-six-feature-v90.json
       - name: Require full coverage separately
         run: |
           python3 - <<'PY'
@@ -58,6 +64,7 @@ jobs:
             /tmp/ooglex-extended-coverage.json
             /tmp/ooglex-monthly-diagnostic.json
             /tmp/ooglex-multisource-v74.json
+            /tmp/ooglex-six-feature-v90.json
             /tmp/ooglex-extra-funds-coverage.json
           retention-days: 30
           if-no-files-found: error
