@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-11-25T01:34:22Z",
+  "updatedAt": "2026-11-25T21:55:10Z",
   "asOf": "2026-11-25",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-11-22 ~ 2026-11-28",
-  "count": 75,
+  "count": 76,
   "highCount": 5,
   "events": [
     {
@@ -475,7 +475,7 @@
       "actual": null
     },
     {
-      "ts": "2026-11-25T10:42:00Z",
+      "ts": "2026-11-25T10:32:00Z",
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
@@ -595,6 +595,18 @@
       "actual": null
     },
     {
+      "ts": "2026-11-25T14:15:00Z",
+      "ccy": "GBP",
+      "country": "英国",
+      "flag": "🇬🇧",
+      "title": "Monetary Policy Report Hearings",
+      "titleEn": "Monetary Policy Report Hearings",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
       "ts": "2026-11-25T15:00:00Z",
       "ccy": "USD",
       "country": "美国",
@@ -614,7 +626,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "2.0M",
       "previous": "3.4M",
       "actual": null
     },
