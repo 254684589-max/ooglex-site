@@ -3,13 +3,13 @@
 // Units: rate and recovery are decimals, coupon in bps, clean upfront as
 // signed fraction of notional (positive = protection buyer pays).
 // Idealized 20 equal quarters, flat continuous discount and hazard,
-// immediate default settlement, exact accrued coupon on default within
+// nonnegative flat rates, immediate default settlement, accrued coupon on default within
 // each quarter. No real calendar, day count, settlement lag or curve bootstrap.
 const MODEL="research_flat_hazard_5y_v1";
 const DT=0.25, N=20, MAX_HAZARD=20;
 function validate(p) {
  if (!p || ![100,500].includes(p.coupon_bps) ||
-     !Number.isFinite(p.flat_discount_rate) || p.flat_discount_rate< -0.05 || p.flat_discount_rate>0.3 ||
+     !Number.isFinite(p.flat_discount_rate) || p.flat_discount_rate<0 || p.flat_discount_rate>0.3 ||
      !Number.isFinite(p.recovery) || p.recovery<0 || p.recovery>0.95)
   throw Error("explicit research inputs required");
 }
