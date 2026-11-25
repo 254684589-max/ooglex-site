@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import os
 import re
 import time
 import urllib.error
@@ -139,6 +140,10 @@ def main():
     p.add_argument("--require-complete",action="store_true")
     a=p.parse_args()
     private=_private_path(a.private_dir);output=_private_path(a.metadata)
+    if output==private or output.is_relative_to(private):
+        p.error("Coverage metadata must be outside private raw archive")
+    private.mkdir(parents=True,exist_ok=True,mode=0o700)
+    os.chmod(private,0o700)
     records=[];indexes={};failures={};stop=False
     for kind in INDEX:
         if stop:break
