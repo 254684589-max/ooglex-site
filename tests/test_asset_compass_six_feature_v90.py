@@ -22,5 +22,15 @@ class SixFeatureTests(unittest.TestCase):
         self.assertAlmostEqual(r[0]["x"][5],10)
         d["UNRATE"]=[]
         self.assertEqual(extend(base,d)[1],["2024-04"])
+    def test_blank_and_dot_are_missing_not_zero(self):
+        raw="DATE,UNRATE\n"
+        for month in months("2021-01","2024-12"):
+            raw+=month+"-01,"+("" if month=="2022-01" else "." if month=="2022-02" else "0" if month=="2022-03" else "4.0")+"\n"
+        rows=parse_series(raw.encode(),"UNRATE")
+        self.assertEqual(len(rows),46)
+        self.assertNotIn("2022-01-01",{r["date"] for r in rows})
+        self.assertEqual(next(r["value"] for r in rows if r["date"]=="2022-03-01"),0)
+        with self.assertRaisesRegex(ValueError,"Truncated"):
+            parse_series((raw+"2025-01-01\n").encode(),"UNRATE")
     def test_wrong_header(self):
         with self.assertRaises(ValueError):parse_series(b"DATE,WRONG\n2020-01-01,100\n","CPIAUCNS")

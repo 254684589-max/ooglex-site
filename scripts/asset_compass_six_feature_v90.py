@@ -29,8 +29,10 @@ def parse_series(raw,sid):
         last=stamp
         if (freq=="monthly" and day.day!=1) or (freq=="weekly" and day.weekday()!=2):
             raise ValueError("Wrong observation frequency")
-        if row[sid]==".":continue
-        val=float(row[sid])
+        raw_value=row[sid]
+        if raw_value is None:raise ValueError("Truncated source record")
+        if raw_value.strip() in ("","."):continue
+        val=float(raw_value)
         if not math.isfinite(val) or not lo<=val<=hi:raise ValueError("Invalid source value")
         rows.append({"date":stamp,"value":val})
     if len(rows)<36:raise ValueError("Insufficient history")

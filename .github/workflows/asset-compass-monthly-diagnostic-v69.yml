@@ -7,6 +7,8 @@ on:
       - 'scripts/asset_compass_monthly_diagnostic_v69.py'
       - 'scripts/asset_compass_multisource_v74.py'
       - 'scripts/asset_compass_six_feature_v90.py'
+      - 'scripts/asset_compass_sec_clock_v97.py'
+      - 'tests/test_asset_compass_sec_clock_v97.py'
       - 'tests/test_asset_compass_six_feature_v90.py'
       - 'scripts/asset_compass_sec_performance_v84.py'
       - 'tests/test_asset_compass_sec_performance_v84.py'
@@ -29,6 +31,13 @@ jobs:
       - run: python3 -m unittest discover -s tests -p 'test_asset_compass_monthly_diagnostic_v69.py' -v
       - name: Download candidate historical filings and retain coverage
         run: python3 -m scripts.asset_compass_sec_returns_v66 --extended --download --output /tmp/ooglex-panel-private.json --metadata /tmp/ooglex-extended-coverage.json
+      - name: SEC acceptance-clock evidence
+        id: sec_clock
+        continue-on-error: true
+        run: |
+          python3 -m py_compile scripts/asset_compass_sec_clock_v97.py
+          python3 -m unittest discover -s tests -p 'test_asset_compass_sec_clock_v97.py' -v
+          python3 -m scripts.asset_compass_sec_clock_v97 --coverage /tmp/ooglex-extended-coverage.json --output /tmp/ooglex-sec-clock-v97.json
       - name: Run actual lagged research diagnostic
         run: python3 -m scripts.asset_compass_monthly_diagnostic_v69 --panel /tmp/ooglex-panel-private.json --output /tmp/ooglex-monthly-diagnostic.json
       - name: V74-V78 multi-source regression tests
@@ -46,7 +55,11 @@ jobs:
           python3 -m unittest discover -s tests -p 'test_asset_compass_six_feature_v90.py' -v
       - name: Run real multi-source diagnostic on same fund panel
         run: python3 -m scripts.asset_compass_multisource_v74 --panel /tmp/ooglex-panel-private.json --additional-fund-panel /tmp/ooglex-extra-funds-private.json --output /tmp/ooglex-multisource-v74.json --six-feature-output /tmp/ooglex-six-feature-v90.json
+      - name: Require SEC acceptance evidence separately
+        if: always()
+        run: test "${{ steps.sec_clock.outcome }}" = success
       - name: Require full coverage separately
+        if: always()
         run: |
           python3 - <<'PY'
           import json
@@ -65,6 +78,7 @@ jobs:
             /tmp/ooglex-monthly-diagnostic.json
             /tmp/ooglex-multisource-v74.json
             /tmp/ooglex-six-feature-v90.json
+            /tmp/ooglex-sec-clock-v97.json
             /tmp/ooglex-extra-funds-coverage.json
           retention-days: 30
           if-no-files-found: error
