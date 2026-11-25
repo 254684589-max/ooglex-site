@@ -6,6 +6,7 @@ on:
       - 'scripts/asset_compass_bls_archive_v79.py'
       - 'scripts/asset_compass_release_values_v53.py'
       - 'scripts/asset_compass_payroll_lineage_v111.py'
+      - 'scripts/asset_compass_archive_crosscheck_v131.py'
       - 'tests/test_asset_compass_bls_archive_v79.py'
       - '.github/workflows/asset-compass-bls-archive-v79.yml'
   workflow_dispatch:
@@ -23,10 +24,14 @@ jobs:
       - run: python3 -m py_compile scripts/asset_compass_bls_archive_v79.py scripts/asset_compass_release_values_v53.py scripts/asset_compass_payroll_lineage_v111.py
       - run: python3 -m unittest discover -s tests -p 'test_asset_compass_bls_archive_v79.py' -v
       - run: python3 -m scripts.asset_compass_bls_archive_v79 --private-dir /tmp/ooglex-bls-v79-private --metadata /tmp/ooglex-bls-v79-metadata.json --extended-years --require-complete
+      - name: Compare archived CPI and unemployment headlines with current official series
+        run: python3 -m scripts.asset_compass_archive_crosscheck_v131 --archive /tmp/ooglex-bls-v79-private/extracted-research.json --output /tmp/ooglex-bls-current-crosscheck.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: v79-bls-archive-coverage
-          path: /tmp/ooglex-bls-v79-metadata.json
+          path: |
+            /tmp/ooglex-bls-v79-metadata.json
+            /tmp/ooglex-bls-current-crosscheck.json
           retention-days: 30
           if-no-files-found: error

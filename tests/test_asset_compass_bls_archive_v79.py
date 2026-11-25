@@ -62,6 +62,32 @@ class ArchiveTests(unittest.TestCase):
         self.assertEqual(r["comparison_counts"],{"matches_previous_candidate":1,"prior_value_mismatch":1,"prior_not_observed":1})
         self.assertEqual(r["excluded_reissue_or_unmatched_header_periods"],["2024-04"])
         self.assertFalse(r["historical_revision_chain_certified"])
+    def test_new_employment_headline_variants(self):
+        from scripts.asset_compass_bls_archive_v79 import inspect
+        s={"release_kind":"employment","observation_period":"2025-08","artifact_id":"fixture",
+           "source_url":"https://www.bls.gov/news.release/archives/empsit_09052025.htm",
+           "scheduled_release_date_candidate_unverified":"2025-09-05"}
+        raw=(b"<html>THE EMPLOYMENT SITUATION - AUGUST 2025 "
+             b"Total nonfarm payroll employment changed little in August (+22,000). "
+             b"Both the unemployment rate, at 4.3 percent, and the number of unemployed people changed little.</html>")
+        r=inspect(s,raw)
+        self.assertEqual({m["source_series_id"]:m["value_reported"] for m in r["metrics"]},{"bls.payroll":"22000","bls.unemployment":"4.3"})
+        raw=b"<html>THE EMPLOYMENT SITUATION - AUGUST 2025 Both total nonfarm payroll employment (-50,000) and the unemployment rate (4.4 percent) changed little in August.</html>"
+        r=inspect(s,raw)
+        self.assertEqual({m["source_series_id"]:m["value_reported"] for m in r["metrics"]},{"bls.payroll":"-50000","bls.unemployment":"4.4"})
+    def test_current_comparison_not_pit(self):
+        from scripts.asset_compass_archive_crosscheck_v131 import compare
+        def item(family,sid,stat,v):
+            return {"source":{"release_kind":family,"observation_period":"2024-01","artifact_id":family},
+                "sha256":"a"*64,"reissue_notice_detected":False,
+                "header":{"header_status":"publisher_header_matches_archive_date"},
+                "metrics":[{"source_series_id":sid,"statistic":stat,"observation_period":"2024-01","value_reported":v,"source_document_sha256":"a"*64}]}
+        rows=[item("cpi","bls.cpi","headline_yoy_rate","5.0"),item("employment","bls.unemployment","monthly_unemployment_rate","4.1")]
+        data={"CPIAUCNS":[{"date":"2023-01-01","value":100},{"date":"2024-01-01","value":105.04}],"UNRATE":[{"date":"2024-01-01","value":4.3}]}
+        r=compare(rows,data)
+        self.assertEqual(r["series"]["CPIAUCNS"]["within_reported_rounding"],1)
+        self.assertEqual(r["series"]["UNRATE"]["different_current_value"],1)
+        self.assertFalse(r["eligible_for_live_scoring"])
     def test_empty_does_not_pass(self):
         r=summary([],{}, {})
         self.assertEqual(len(r["families"]["cpi"]["missing_periods"]),23)

@@ -148,7 +148,17 @@ def extract(source, raw: bytes, digest: str):
              "bls.core_cpi", "headline_yoy_rate", "not_seasonally_adjusted"),
         ]
         section = section[:4200]
+        # Alternative official summary phrasing: explicit year-on-year
+        # reference to the current month. Do not match earlier-month comparisons.
+        for metric, phrase in (
+            ("bls.cpi", r"The all items index"),
+            ("bls.core_cpi", r"(?:The all items less food and energy index|The index for all items less food and energy)"),
+        ):
+            patterns.append((rf"{phrase}\s+(?P<verb>{VERBS})\s+(?P<value>{NUMBER})\s+percent\s+for the 12 months ending\s+{month}\b",
+                             metric, "headline_yoy_rate", "not_seasonally_adjusted"))
         for pattern, metric, kind, adj in patterns:
+            if any(r["source_series_id"] == metric and r["statistic"] == kind for r in records):
+                continue
             result = _match(pattern, section, source, metric=metric, kind=kind,
                             adjustment=adj)
             if result:
@@ -158,17 +168,39 @@ def extract(source, raw: bytes, digest: str):
         # monthly headline; limit to the first sentence after the dated heading.
         header = section[:650]
         payroll = re.search(
-            rf"Total nonfarm payroll employment\s+(?P<verb>{VERBS})\s+by\s+"
+            rf"Total nonfarm payroll employment\s+(?P<verb>{VERBS}|edged up|edged down)\s+by\s+"
             rf"(?P<value>{NONFARM})\s+in\s+{month}\b", header, re.I)
         if payroll:
             records.append(_record(source, "bls.payroll", "monthly_payroll_change",
                                    "seasonally_adjusted",
-                                   payroll.group("verb").lower() in ("fell", "declined", "decreased"),
+                                   payroll.group("verb").lower() in ("fell", "declined", "decreased", "edged down"),
                                    payroll, header, digest))
+        else:
+            # Signed parenthesized headline values, not an inferred zero for
+            # "changed little". Match only current release month in first clause.
+            payroll = re.search(
+                rf"Total nonfarm payroll employment\s+changed little\s+in\s+{month}\s*\((?P<value>[+-][0-9]{{1,3}}(?:,[0-9]{{3}})*)\)",
+                header, re.I)
+            if not payroll:
+                payroll = re.search(
+                    rf"Both total nonfarm payroll employment\s*\((?P<value>[+-][0-9]{{1,3}}(?:,[0-9]{{3}})*)\)\s+and the unemployment rate\s*\([0-9]+(?:\.[0-9]+)?\s+percent\)\s+changed little in\s+{month}\b",
+                    header, re.I)
+            if payroll:
+                records.append(_record(source, "bls.payroll", "monthly_payroll_change",
+                                       "seasonally_adjusted", False, payroll, header, digest))
         rate = re.search(
             r"(?:the\s+)?unemployment rate\s+(?:edged|changed|was|held|rose|fell|increased|decreased|remained)"
             r"\s+(?:[^.;]{0,55}?\b(?:to|at|of)\s+)?(?P<value>[0-9]+(?:\.[0-9]+)?)\s+percent",
             header, re.I)
+        if not rate:
+            # Explicit comma apposition or paired parenthesized headline.
+            rate = re.search(
+                r"\bunemployment rate,\s+at\s+(?P<value>[0-9]+(?:\.[0-9]+)?)\s+percent,",
+                header, re.I)
+        if not rate:
+            rate = re.search(
+                rf"Both total nonfarm payroll employment\s*\([+-][0-9,]+\)\s+and the unemployment rate\s*\((?P<value>[0-9]+(?:\.[0-9]+)?)\s+percent\)\s+changed little in\s+{month}\b",
+                header, re.I)
         if rate:
             records.append(_record(source, "bls.unemployment", "monthly_unemployment_rate",
                                    "seasonally_adjusted", False, rate, header, digest))
