@@ -160,6 +160,7 @@ def build(panel,history,usd,nfci):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("--panel",type=Path,required=True)
+    p.add_argument("--additional-fund-panel",type=Path)
     p.add_argument("--output",type=Path,required=True)
     a=p.parse_args()
     if a.output.resolve().is_relative_to(ROOT):p.error("Research output outside website repository only")
@@ -169,7 +170,18 @@ def main():
     nfci_raw=fetch_official(FRED_URL,"fred.stlouisfed.org")
     nfci=parse_nfci(nfci_raw)
     history=json.loads((ROOT/"data/asset-compass-treasury-history.json").read_text())
-    r=build(json.loads(a.panel.read_text()),history,usd,nfci)
+    panel=json.loads(a.panel.read_text())
+    if a.additional_fund_panel:
+        extra=json.loads(a.additional_fund_panel.read_text())
+        if extra.get("report_type")!="asset_compass_v84_v89_sec_performance_research" or extra.get("eligible_for_live_scoring") is not False:
+            raise ValueError("Invalid added fund evidence")
+        for ticker,fund in extra["funds"].items():
+            if ticker not in ("UUP","USO") or ticker in panel["funds"] or fund.get("frequency")!="monthly" or fund.get("investable_total_return_certified") is not False:
+                raise ValueError("Unexpected added fund or mixed frequency")
+            # Treasury begins in January 2021. The first three return months
+            # lack the required t-3 predictor; explicitly restrict diagnostic window.
+            panel["funds"][ticker]={**fund,"monthly_observations":[r for r in fund["monthly_observations"] if r["month"]>="2021-04"]}
+    r=build(panel,history,usd,nfci)
     r["source_receipts"]={"h10":{"url":FED_XML_URL,"sha256":hashlib.sha256(usd_raw).hexdigest()},
                           "nfci":{"url":FRED_URL,"sha256":hashlib.sha256(nfci_raw).hexdigest()}}
     a.output.write_text(json.dumps(r,indent=2,allow_nan=False)+"\n")
