@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_bc_official_observations_v1",
-  "generated_at": "2026-11-24T07:07:29.768994+00:00",
+  "generated_at": "2026-11-25T05:42:01.098287+00:00",
   "series": {
     "美国实际GDP增长率": {
       "fred_series_id": "A191RL1Q225SBEA",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=A191RL1Q225SBEA&cosd=2022-01-01&coed=2026-11-24",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=A191RL1Q225SBEA&cosd=2022-01-01&coed=2026-11-25",
       "original_agency": "BEA",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "quarterly",
@@ -91,13 +91,13 @@
         }
       ],
       "source_observation_count": 19,
-      "retrieved_at": "2026-11-24T07:07:29.768994+00:00",
+      "retrieved_at": "2026-11-25T05:42:01.098287+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "美元广义贸易加权指数": {
       "fred_series_id": "DTWEXBGS",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS&cosd=2022-01-01&coed=2026-11-24",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS&cosd=2022-01-01&coed=2026-11-25",
       "original_agency": "Federal Reserve Board",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "daily",
@@ -1147,261 +1147,261 @@
         }
       ],
       "source_observation_count": 1223,
-      "retrieved_at": "2026-11-24T07:07:29.768994+00:00",
+      "retrieved_at": "2026-11-25T05:42:01.098287+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "美国工业生产指数": {
       "fred_series_id": "INDPRO",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=INDPRO&cosd=2022-01-01&coed=2026-11-24",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=INDPRO&cosd=2022-01-01&coed=2026-11-25",
       "original_agency": "Federal Reserve Board",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "monthly",
       "unit": "index",
       "observation_period": "2026-10-01",
-      "latest_value": 103.3954,
+      "latest_value": 102.2421,
       "observations": [
         {
           "date": "2022-01-01",
-          "value": 100.1856
+          "value": 99.3527
         },
         {
           "date": "2022-02-01",
-          "value": 100.8064
+          "value": 99.8332
         },
         {
           "date": "2022-03-01",
-          "value": 101.3907
+          "value": 100.446
         },
         {
           "date": "2022-04-01",
-          "value": 101.44
+          "value": 100.4987
         },
         {
           "date": "2022-05-01",
-          "value": 101.3335
+          "value": 100.3495
         },
         {
           "date": "2022-06-01",
-          "value": 101.018
+          "value": 100.0593
         },
         {
           "date": "2022-07-01",
-          "value": 101.223
+          "value": 100.288
         },
         {
           "date": "2022-08-01",
-          "value": 101.0963
+          "value": 100.1079
         },
         {
           "date": "2022-09-01",
-          "value": 101.2918
+          "value": 100.2232
         },
         {
           "date": "2022-10-01",
-          "value": 101.2529
+          "value": 100.2358
         },
         {
           "date": "2022-11-01",
-          "value": 100.9552
+          "value": 99.9636
         },
         {
           "date": "2022-12-01",
-          "value": 99.7664
+          "value": 98.6422
         },
         {
           "date": "2023-01-01",
-          "value": 100.505
+          "value": 99.6143
         },
         {
           "date": "2023-02-01",
-          "value": 100.6416
+          "value": 99.4685
         },
         {
           "date": "2023-03-01",
-          "value": 101.0205
+          "value": 99.9966
         },
         {
           "date": "2023-04-01",
-          "value": 101.253
+          "value": 100.2466
         },
         {
           "date": "2023-05-01",
-          "value": 100.9286
+          "value": 99.8582
         },
         {
           "date": "2023-06-01",
-          "value": 100.1196
+          "value": 99.1015
         },
         {
           "date": "2023-07-01",
-          "value": 100.9067
+          "value": 100.0559
         },
         {
           "date": "2023-08-01",
-          "value": 100.8393
+          "value": 100.0263
         },
         {
           "date": "2023-09-01",
-          "value": 101.0211
-        },
-        {
-          "date": "2023-10-01",
-          "value": 100.4689
-        },
-        {
-          "date": "2023-11-01",
-          "value": 100.8639
-        },
-        {
-          "date": "2023-12-01",
-          "value": 100.6031
-        },
-        {
-          "date": "2024-01-01",
-          "value": 99.2223
-        },
-        {
-          "date": "2024-02-01",
           "value": 100.285
         },
         {
+          "date": "2023-10-01",
+          "value": 99.8911
+        },
+        {
+          "date": "2023-11-01",
+          "value": 100.5026
+        },
+        {
+          "date": "2023-12-01",
+          "value": 100.2232
+        },
+        {
+          "date": "2024-01-01",
+          "value": 99.1395
+        },
+        {
+          "date": "2024-02-01",
+          "value": 99.9593
+        },
+        {
           "date": "2024-03-01",
-          "value": 100.4575
+          "value": 100.3004
         },
         {
           "date": "2024-04-01",
-          "value": 100.2434
+          "value": 100.0667
         },
         {
           "date": "2024-05-01",
-          "value": 100.863
+          "value": 100.6152
         },
         {
           "date": "2024-06-01",
-          "value": 100.894
+          "value": 100.7524
         },
         {
           "date": "2024-07-01",
-          "value": 99.9757
+          "value": 99.8015
         },
         {
           "date": "2024-08-01",
-          "value": 100.4309
+          "value": 100.2101
         },
         {
           "date": "2024-09-01",
-          "value": 99.8084
+          "value": 99.6301
         },
         {
           "date": "2024-10-01",
-          "value": 99.4695
+          "value": 99.3356
         },
         {
           "date": "2024-11-01",
-          "value": 99.2925
+          "value": 99.3425
         },
         {
           "date": "2024-12-01",
-          "value": 100.3273
+          "value": 100.1684
         },
         {
           "date": "2025-01-01",
-          "value": 100.0647
+          "value": 100.3001
         },
         {
           "date": "2025-02-01",
-          "value": 101.0993
+          "value": 100.8885
         },
         {
           "date": "2025-03-01",
-          "value": 101.0404
+          "value": 100.9221
         },
         {
           "date": "2025-04-01",
-          "value": 101.1279
+          "value": 100.8063
         },
         {
           "date": "2025-05-01",
-          "value": 100.9655
+          "value": 100.5608
         },
         {
           "date": "2025-06-01",
-          "value": 101.4785
+          "value": 101.0358
         },
         {
           "date": "2025-07-01",
-          "value": 101.894
+          "value": 101.2766
         },
         {
           "date": "2025-08-01",
-          "value": 101.6247
+          "value": 100.9114
         },
         {
           "date": "2025-09-01",
-          "value": 101.668
+          "value": 100.9893
         },
         {
           "date": "2025-10-01",
-          "value": 101.2195
+          "value": 100.5732
         },
         {
           "date": "2025-11-01",
-          "value": 101.0344
+          "value": 100.4411
         },
         {
           "date": "2025-12-01",
-          "value": 101.4941
+          "value": 100.7055
         },
         {
           "date": "2026-01-01",
-          "value": 101.0388
+          "value": 100.3329
         },
         {
           "date": "2026-02-01",
-          "value": 101.9053
+          "value": 101.0208
         },
         {
           "date": "2026-03-01",
-          "value": 101.7336
+          "value": 101.1593
         },
         {
           "date": "2026-04-01",
-          "value": 102.5768
+          "value": 101.6393
         },
         {
           "date": "2026-05-01",
-          "value": 102.6925
+          "value": 101.7781
         },
         {
           "date": "2026-06-01",
-          "value": 102.9673
+          "value": 101.9827
         },
         {
           "date": "2026-07-01",
-          "value": 103.1675
+          "value": 102.2082
         },
         {
           "date": "2026-08-01",
-          "value": 103.0954
+          "value": 102.0644
         },
         {
           "date": "2026-09-01",
-          "value": 103.8458
+          "value": 102.6785
         },
         {
           "date": "2026-10-01",
-          "value": 103.3954
+          "value": 102.2421
         }
       ],
       "source_observation_count": 58,
-      "retrieved_at": "2026-11-24T07:07:29.768994+00:00",
+      "retrieved_at": "2026-11-25T05:42:01.098287+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "美国住房开工": {
       "fred_series_id": "HOUST",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=HOUST&cosd=2022-01-01&coed=2026-11-24",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=HOUST&cosd=2022-01-01&coed=2026-11-25",
       "original_agency": "US Census Bureau",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "monthly",
@@ -1643,13 +1643,13 @@
         }
       ],
       "source_observation_count": 58,
-      "retrieved_at": "2026-11-24T07:07:29.768994+00:00",
+      "retrieved_at": "2026-11-25T05:42:01.098287+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "美国零售销售": {
       "fred_series_id": "RSAFS",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS&cosd=2022-01-01&coed=2026-11-24",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS&cosd=2022-01-01&coed=2026-11-25",
       "original_agency": "US Census Bureau",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "monthly",
@@ -1891,13 +1891,13 @@
         }
       ],
       "source_observation_count": 58,
-      "retrieved_at": "2026-11-24T07:07:29.768994+00:00",
+      "retrieved_at": "2026-11-25T05:42:01.098287+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "美国初请失业金人数": {
       "fred_series_id": "ICSA",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=ICSA&cosd=2022-01-01&coed=2026-11-24",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=ICSA&cosd=2022-01-01&coed=2026-11-25",
       "original_agency": "US Department of Labor",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "weekly",
@@ -2927,24 +2927,20 @@
         }
       ],
       "source_observation_count": 255,
-      "retrieved_at": "2026-11-24T07:07:29.768994+00:00",
+      "retrieved_at": "2026-11-25T05:42:01.098287+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "美国10Y－3M国债利差": {
       "fred_series_id": "T10Y3M",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10Y3M&cosd=2022-01-01&coed=2026-11-24",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10Y3M&cosd=2022-01-01&coed=2026-11-25",
       "original_agency": "Federal Reserve Board/Treasury",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "daily",
       "unit": "percentage_points",
-      "observation_period": "2026-11-23",
+      "observation_period": "2026-11-24",
       "latest_value": 0.55,
       "observations": [
-        {
-          "date": "2025-11-07",
-          "value": 0.19
-        },
         {
           "date": "2025-11-10",
           "value": 0.18
@@ -3980,27 +3976,27 @@
         {
           "date": "2026-11-23",
           "value": 0.55
+        },
+        {
+          "date": "2026-11-24",
+          "value": 0.55
         }
       ],
-      "source_observation_count": 1222,
-      "retrieved_at": "2026-11-24T07:07:29.768994+00:00",
+      "source_observation_count": 1223,
+      "retrieved_at": "2026-11-25T05:42:01.098287+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "5Y5Y远期通胀补偿": {
       "fred_series_id": "T5YIFR",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T5YIFR&cosd=2022-01-01&coed=2026-11-24",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T5YIFR&cosd=2022-01-01&coed=2026-11-25",
       "original_agency": "Federal Reserve Board",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "daily",
       "unit": "percent",
-      "observation_period": "2026-11-23",
-      "latest_value": 2.11,
+      "observation_period": "2026-11-24",
+      "latest_value": 2.13,
       "observations": [
-        {
-          "date": "2025-11-07",
-          "value": 2.2
-        },
         {
           "date": "2025-11-10",
           "value": 2.2
@@ -5036,16 +5032,20 @@
         {
           "date": "2026-11-23",
           "value": 2.11
+        },
+        {
+          "date": "2026-11-24",
+          "value": 2.13
         }
       ],
-      "source_observation_count": 1222,
-      "retrieved_at": "2026-11-24T07:07:29.768994+00:00",
+      "source_observation_count": 1223,
+      "retrieved_at": "2026-11-25T05:42:01.098287+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "WTI原油现货价格": {
       "fred_series_id": "DCOILWTICO",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO&cosd=2022-01-01&coed=2026-11-24",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO&cosd=2022-01-01&coed=2026-11-25",
       "original_agency": "US Energy Information Administration",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "daily",
@@ -6095,7 +6095,7 @@
         }
       ],
       "source_observation_count": 1218,
-      "retrieved_at": "2026-11-24T07:07:29.768994+00:00",
+      "retrieved_at": "2026-11-25T05:42:01.098287+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     }

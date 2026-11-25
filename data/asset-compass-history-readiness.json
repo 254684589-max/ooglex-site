@@ -2,13 +2,13 @@
   "schema_version": 1,
   "report_type": "asset_compass_history_readiness",
   "status": "research_data_collection_only",
-  "archived_observations": 37,
+  "archived_observations": 48,
   "series": {
     "bea.core_pce": {
-      "archived_versions": 3,
+      "archived_versions": 4,
       "distinct_observation_periods": 1,
       "first_recorded_at": "2026-11-22T08:19:52.789843+00:00",
-      "latest_recorded_at": "2026-11-24T07:07:35.537336+00:00"
+      "latest_recorded_at": "2026-11-25T05:42:04.876030+00:00"
     },
     "bls.core_cpi": {
       "archived_versions": 1,
@@ -35,34 +35,34 @@
       "latest_recorded_at": "2026-11-22T06:53:57.974839+00:00"
     },
     "fed_h41.total_assets": {
-      "archived_versions": 3,
+      "archived_versions": 4,
       "distinct_observation_periods": 1,
       "first_recorded_at": "2026-11-22T08:19:52.789843+00:00",
-      "latest_recorded_at": "2026-11-24T07:07:35.537336+00:00"
+      "latest_recorded_at": "2026-11-25T05:42:04.876030+00:00"
     },
     "liquidity.overnight_rrp": {
-      "archived_versions": 3,
-      "distinct_observation_periods": 2,
+      "archived_versions": 4,
+      "distinct_observation_periods": 3,
       "first_recorded_at": "2026-11-22T08:19:52.789843+00:00",
-      "latest_recorded_at": "2026-11-24T07:07:35.537336+00:00"
+      "latest_recorded_at": "2026-11-25T05:42:04.876030+00:00"
     },
     "liquidity.reserves": {
-      "archived_versions": 3,
+      "archived_versions": 4,
       "distinct_observation_periods": 1,
       "first_recorded_at": "2026-11-22T08:19:52.789843+00:00",
-      "latest_recorded_at": "2026-11-24T07:07:35.537336+00:00"
+      "latest_recorded_at": "2026-11-25T05:42:04.876030+00:00"
     },
     "liquidity.tga": {
-      "archived_versions": 3,
+      "archived_versions": 4,
       "distinct_observation_periods": 1,
       "first_recorded_at": "2026-11-22T08:19:52.789843+00:00",
-      "latest_recorded_at": "2026-11-24T07:07:35.537336+00:00"
+      "latest_recorded_at": "2026-11-25T05:42:04.876030+00:00"
     },
     "nyfed.effr": {
-      "archived_versions": 2,
-      "distinct_observation_periods": 2,
+      "archived_versions": 3,
+      "distinct_observation_periods": 3,
       "first_recorded_at": "2026-11-22T06:53:57.974839+00:00",
-      "latest_recorded_at": "2026-11-24T07:07:35.537336+00:00"
+      "latest_recorded_at": "2026-11-25T05:42:04.876030+00:00"
     },
     "nyfed_recession.probability": {
       "archived_versions": 1,
@@ -71,22 +71,22 @@
       "latest_recorded_at": "2026-11-22T08:19:52.789843+00:00"
     },
     "treasury.real10y": {
-      "archived_versions": 3,
-      "distinct_observation_periods": 2,
+      "archived_versions": 4,
+      "distinct_observation_periods": 3,
       "first_recorded_at": "2026-11-22T06:53:57.974839+00:00",
-      "latest_recorded_at": "2026-11-24T07:07:35.537336+00:00"
+      "latest_recorded_at": "2026-11-25T05:42:04.876030+00:00"
     },
     "treasury.us10y": {
-      "archived_versions": 3,
-      "distinct_observation_periods": 2,
+      "archived_versions": 4,
+      "distinct_observation_periods": 3,
       "first_recorded_at": "2026-11-22T06:53:57.974839+00:00",
-      "latest_recorded_at": "2026-11-24T07:07:35.537336+00:00"
+      "latest_recorded_at": "2026-11-25T05:42:04.876030+00:00"
     },
     "treasury.us2y": {
-      "archived_versions": 3,
-      "distinct_observation_periods": 2,
+      "archived_versions": 4,
+      "distinct_observation_periods": 3,
       "first_recorded_at": "2026-11-22T06:53:57.974839+00:00",
-      "latest_recorded_at": "2026-11-24T07:07:35.537336+00:00"
+      "latest_recorded_at": "2026-11-25T05:42:04.876030+00:00"
     }
   },
   "treasury_source_year_mismatch_rows": 5,

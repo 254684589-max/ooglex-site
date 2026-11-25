@@ -2,13 +2,13 @@
   "schema_version": 1,
   "report_type": "asset_compass_v54_scoring_readiness",
   "status": "research_only_no_authorized_scores",
-  "generated_at": "2026-11-24T07:07:35.643928Z",
-  "source_snapshot_generated_at": "2026-11-24T07:07:35.391950+00:00",
-  "source_observations_generated_at": "2026-11-24T07:07:35.488468+00:00",
+  "generated_at": "2026-11-25T05:42:04.954462Z",
+  "source_snapshot_generated_at": "2026-11-25T05:42:04.769221+00:00",
+  "source_observations_generated_at": "2026-11-25T05:42:04.836726+00:00",
   "input_sha256": {
-    "snapshot": "65938689548002c4826d88607aa241f784da40d9470faf7bb48611d2ac70232e",
-    "observations": "4820707aeca10f87e0cbd96adb770d2c9fa4b6f4e173c74c827c7a0fc6e3ae95",
-    "history": "f15c13787e206b734930bbaf159bc07545d384ad44abae3bbd28378029543408",
+    "snapshot": "ba3c91c5017794cb6d93ee9ad2b33d893902022c0b51d70a64e7beef6408b4a0",
+    "observations": "d1dfed00d41416d292e99fa417ee7936128adfe9075268225cd47d47d4b5302a",
+    "history": "8bc30f7d5ce94d14402f3ad2fe035b7faa75082dfd0dd5e579984da61156b896",
     "config": "a1d5a1a5f3dad358df8d770d639ef9d8eab78ba793360ad89355093daf4a4c4f"
   },
   "model": "ooglex-macro-v1-precalibration",
@@ -19,7 +19,7 @@
   "groups_without_source_observations": 2,
   "independently_qualified_factor_groups": 0,
   "source_pit_qualified_count": 0,
-  "website_archived_first_seen_records": 37,
+  "website_archived_first_seen_records": 48,
   "treasury_source_year_mismatch_records": 5,
   "groups": {
     "rates": {
