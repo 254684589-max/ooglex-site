@@ -1612,5 +1612,39 @@
     "verified_reference_entities": 0,
     "admitted_spreads": 0,
     "publication_enabled": false
+  },
+  "source_audit_v11": {
+    "window_start": "2026-11-18",
+    "window_end": "2026-11-24",
+    "report_dates": 7,
+    "native_tests_passed": 28,
+    "run_id": 45639121138,
+    "job_id": 139292541043,
+    "distinct_upis": 1543,
+    "conflicting_upis": 0,
+    "candidate_issuer_ids": [
+      "alphabet",
+      "amzn",
+      "meta",
+      "msft",
+      "nvda"
+    ],
+    "candidate_upi_count": 5,
+    "consistent_name_single_name_cds_label_rows": 75,
+    "no_explicit_lei_rows": 75,
+    "verified_reference_entities": 0,
+    "verified_upis": 0,
+    "admitted_spreads": 0,
+    "publication_enabled": false
+  },
+  "joint_audit_v12_v15": {
+    "status": "implementation_pending_native_acceptance",
+    "workflow": "cds-joint-audit-v12.yml",
+    "scope": "statutory public data; candidate evidence only",
+    "market_history_enabled": false,
+    "risk_ranking_enabled": false,
+    "alerts_enabled": false,
+    "composite_enabled": false,
+    "admitted_spreads": 0
   }
 }
