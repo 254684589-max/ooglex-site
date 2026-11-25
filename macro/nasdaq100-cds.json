@@ -1574,5 +1574,22 @@
       },
       "native_tests_passed": 7
     }
+  },
+  "source_audit_v9": {
+    "report_date": "2026-11-24",
+    "run_id": 45633877880,
+    "job_id": 139274009728,
+    "native_tests_passed": 14,
+    "report_rows": 1225,
+    "new_unlinked_same_day_only": 641,
+    "new_linked_duplicate_or_ambiguous": 135,
+    "non_new_lifecycle": 449,
+    "exact_name_candidate_rows": 36,
+    "exact_name_candidate_issuer_count": 6,
+    "approx_5y_calendar_rows": 426,
+    "same_leg_usd_spread_notation_pairs": 116,
+    "verified_reference_entities": 0,
+    "admitted_spreads": 0,
+    "publication_enabled": false
   }
 }
