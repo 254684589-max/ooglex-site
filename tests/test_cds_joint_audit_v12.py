@@ -3,7 +3,7 @@ sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/"scripts"))
 from cds_joint_audit_v12 import diagnose
 DAY="2026-11-24";UPI="QZ1234567890"
 ISSUERS=[{"issuer_id":"meta","name":"Meta Platforms","tickers":["META"]}]
-FIELDS=["Dissemination Identifier","Original Dissemination Identifier","Action type","Unique Product Identifier","UPI FISN","UPI Underlier Name","Effective Date","Expiration Date","Notional currency-Leg 1","Notional amount-Leg 1","Fixed rate-Leg 1","Spread-Leg 1","Spread notation-Leg 1","Other payment type","Other payment amount","Other payment currency","Package indicator","Post priced swap indicator"]
+FIELDS=["Dissemination Identifier","Original Dissemination Identifier","Action type","Unique Product Identifier","UPI FISN","UPI Underlier Name","Effective Date","Expiration Date","Notional currency-Leg 1","Notional amount-Leg 1","Fixed rate-Leg 1","Spread-Leg 1","Spread notation-Leg 1","Other payment type","Other payment amount","Other payment currency","Package indicator","Post priced swap indicator","Notional currency-Leg 2","Spread-Leg 2","Spread notation-Leg 2"]
 def row(**kw):
     d=dict(zip(FIELDS,["1","","NEWT",UPI,"NA/CDS Corp SN Sr","Meta Platforms","2026-11-24","2031-12-20","USD","1000000","0.01","92","BAPO","UFRO","20000","USD","false","false"]))
     d.update(kw);return d
@@ -34,6 +34,8 @@ class Tests(unittest.TestCase):
         d=self.run_audit(row(**{"Package indicator":"true"}));self.assertEqual(d["counts"]["strict_joint_input_candidate"],0)
     def test_notional_cap(self):
         d=self.run_audit(row(**{"Notional amount-Leg 1":"5,000,000+"}));self.assertEqual(d["counts"]["strict_joint_input_candidate"],0)
+    def test_wrong_leg_price(self):
+        d=self.run_audit(row(**{"Spread-Leg 1":"","Spread notation-Leg 1":"","Notional currency-Leg 2":"USD","Spread-Leg 2":"92","Spread notation-Leg 2":"BAPO"}));self.assertEqual(d["counts"]["strict_joint_input_candidate"],0)
     def test_no_price_publication(self):
         d=self.run_audit(row(**{"Spread-Leg 1":"987654.321"}));self.assertNotIn("987654.321",str(d));self.assertNotIn(UPI,str(d));self.assertFalse(d["readiness"]["risk_ranking"])
     def test_audit_history_counts(self):
