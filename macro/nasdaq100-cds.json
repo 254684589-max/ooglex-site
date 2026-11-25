@@ -25,7 +25,7 @@
   },
   "publication": {
     "enabled": false,
-    "reason": "Tradeweb XML reachable but reference entity and par-spread semantics unverified; DTCC redistribution unresolved.",
+    "reason": "No verified reference entity, authorized actual price inputs or official pricing engine validation.",
     "contract": {
       "product": "single_name_cds",
       "tenor": "5Y",
@@ -1437,5 +1437,27 @@
     "dsb_access": "registered_free_delayed_archive_no_free_search_api_no_archive_redistribution",
     "dsb_archive_retrieved": false,
     "gleif_api_retrieved": false
+  },
+  "valuation_audit_v4": {
+    "as_of": "2026-11-25",
+    "status": "research_converter_tested_official_model_pending",
+    "model_id": "research_flat_hazard_5y_v1",
+    "research_only": true,
+    "official_engine_installed": false,
+    "official_test_grid_validated": false,
+    "actual_trade_inputs_verified": 0,
+    "admitted_spreads": 0,
+    "checks_passed": 11,
+    "roundtrip_cases": 48,
+    "official_model_url": "https://www.cdsmodel.com/cds-disclaimer.html",
+    "settings_url": "https://cdsmodel.com/fee-computations.html",
+    "test_grid_url": "https://www.cdsmodel.com/rfr-test-grids.html",
+    "sec_faq_url": "https://www.sec.gov/rules-regulations/staff-guidance/trading-markets-frequently-asked-questions/frequently-asked-questions-regulation-sbsr",
+    "blockers": [
+      "official engine license assent and installation",
+      "official USD RFR curve and calendar/test grid tie-out",
+      "verified product and signed clean upfront with true notional, dates and terms",
+      "actual DTCC/Tradeweb download unavailable in current runtime"
+    ]
   }
 }
