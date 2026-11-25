@@ -7,6 +7,8 @@ on:
       - 'scripts/asset_compass_monthly_diagnostic_v69.py'
       - 'scripts/asset_compass_multisource_v74.py'
       - 'scripts/asset_compass_six_feature_v90.py'
+      - 'scripts/asset_compass_quarterly_v117.py'
+      - 'tests/test_asset_compass_quarterly_v117.py'
       - 'scripts/asset_compass_sec_clock_v97.py'
       - 'tests/test_asset_compass_sec_clock_v97.py'
       - 'tests/test_asset_compass_six_feature_v90.py'
@@ -49,12 +51,21 @@ jobs:
           python3 -m py_compile scripts/asset_compass_sec_performance_v84.py
           python3 -m unittest discover -s tests -p 'test_asset_compass_sec_performance_v84.py' -v
           python3 -m scripts.asset_compass_sec_performance_v84 --output /tmp/ooglex-extra-funds-private.json --metadata /tmp/ooglex-extra-funds-coverage.json
+      - name: V117 quarterly source coverage and same-quarter comparison
+        id: quarterly_research
+        continue-on-error: true
+        run: |
+          python3 -m unittest discover -s tests -p 'test_asset_compass_quarterly_v117.py' -v
+          python3 -m scripts.asset_compass_quarterly_v117 --panel /tmp/ooglex-panel-private.json --extra /tmp/ooglex-extra-funds-private.json --metadata /tmp/ooglex-quarterly-v117.json
       - name: V90 six-feature offline tests
         run: |
           python3 -m py_compile scripts/asset_compass_six_feature_v90.py
           python3 -m unittest discover -s tests -p 'test_asset_compass_six_feature_v90.py' -v
       - name: Run real multi-source diagnostic on same fund panel
         run: python3 -m scripts.asset_compass_multisource_v74 --panel /tmp/ooglex-panel-private.json --additional-fund-panel /tmp/ooglex-extra-funds-private.json --output /tmp/ooglex-multisource-v74.json --six-feature-output /tmp/ooglex-six-feature-v90.json
+      - name: Require quarterly research evidence separately
+        if: always()
+        run: test "${{ steps.quarterly_research.outcome }}" = success
       - name: Require SEC acceptance evidence separately
         if: always()
         run: test "${{ steps.sec_clock.outcome }}" = success
@@ -79,6 +90,7 @@ jobs:
             /tmp/ooglex-multisource-v74.json
             /tmp/ooglex-six-feature-v90.json
             /tmp/ooglex-sec-clock-v97.json
+            /tmp/ooglex-quarterly-v117.json
             /tmp/ooglex-extra-funds-coverage.json
           retention-days: 30
           if-no-files-found: error
