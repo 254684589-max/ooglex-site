@@ -47,7 +47,7 @@
     {
       "id": "dtcc_sec",
       "name": "DTCC SEC public dissemination",
-      "status": "public_download_reuse_unresolved_binary_not_verified",
+      "status": "statutory_public_dissemination_basis_confirmed_schema_probe_pending",
       "url": "https://pddata.dtcc.com/ppd/secdashboard",
       "terms": "https://www.dtcc.com/terms",
       "public_display": false
@@ -1525,5 +1525,31 @@
       }
     ],
     "publication_enabled": false
+  },
+  "source_audit_v8": {
+    "as_of": "2026-11-25",
+    "source_scope": "SEC Regulation SBSR mandatory public transaction data only",
+    "regulatory_basis_urls": [
+      "https://www.sec.gov/news/pressrelease/2016-139.html",
+      "https://regulations.justia.com/regulations/fedreg/2016/08/12/2016-17032.html",
+      "https://www.sec.gov/newsroom/press-releases/2021-80",
+      "https://www.law.cornell.edu/cfr/text/17/242.902",
+      "https://www.sec.gov/rules-regulations/staff-guidance/trading-markets-frequently-asked-questions/frequently-asked-questions-regulation-sbsr"
+    ],
+    "general_website_terms_scope_conflict": "not a blanket license; no non-regulatory DTCC scraping or commercial data reuse",
+    "single_report_date": "2026-11-24",
+    "direct_zip_retrieved": false,
+    "official_csv_schema_verified": false,
+    "admitted_spreads": 0,
+    "publication_enabled": false,
+    "workflow": "cds-dtcc-probe-v8.yml",
+    "price_blockers": [
+      "exact UPI-reference entity",
+      "new trade versus lifecycle",
+      "notional cap or rounding",
+      "clean upfront sign and units",
+      "dates and conventions",
+      "ISDA validation"
+    ]
   }
 }
