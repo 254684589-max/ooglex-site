@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_v58_fed_h10_usd_research",
-  "generated_at": "2026-11-24T03:04:16.993934+00:00",
+  "generated_at": "2026-11-25T01:06:34.078426+00:00",
   "source_series_id": "DTWEXBGS",
   "source_owner": "Board of Governors of the Federal Reserve System",
   "distribution_channel": "Federal Reserve Board original H10 SDMX ZIP",
@@ -21,7 +21,7 @@
   "prior_baseline_std_pct": 1.322429,
   "research_z_score": 1.353267,
   "research_normalized_candidate": 0.589327,
-  "observed_calendar_days_old": 4,
+  "observed_calendar_days_old": 5,
   "fresh_for_research": true,
   "recent_observations": [
     {
