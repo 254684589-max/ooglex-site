@@ -1,17 +1,336 @@
 {
   "admitted_par_spreads": 0,
   "last_run": {
-    "attempted_at": "2026-11-25T12:05:40.297749+00:00",
+    "attempted_at": "2026-11-25T12:14:22.026553+00:00",
     "attempts": {
-      "2026-11-18": "new_report",
-      "2026-11-19": "new_report",
-      "2026-11-20": "new_report",
-      "2026-11-23": "new_report",
-      "2026-11-24": "new_report"
+      "2026-10-26": "not_available",
+      "2026-10-27": "new_report",
+      "2026-10-28": "new_report",
+      "2026-10-29": "new_report",
+      "2026-10-30": "new_report",
+      "2026-11-02": "new_report",
+      "2026-11-03": "new_report",
+      "2026-11-04": "new_report",
+      "2026-11-05": "new_report",
+      "2026-11-06": "new_report",
+      "2026-11-09": "new_report",
+      "2026-11-10": "new_report",
+      "2026-11-11": "schema_or_validation_error",
+      "2026-11-12": "new_report",
+      "2026-11-13": "new_report",
+      "2026-11-16": "new_report",
+      "2026-11-17": "new_report",
+      "2026-11-18": "unchanged",
+      "2026-11-19": "unchanged",
+      "2026-11-20": "unchanged",
+      "2026-11-23": "unchanged",
+      "2026-11-24": "unchanged"
     }
   },
   "publication_enabled": false,
   "reports": {
+    "2026-10-27": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 0,
+        "candidate_issuer_ids": [],
+        "classification_counts": {
+          "contract_excluded": 11,
+          "missing_product_identifier": 1,
+          "unmatched_label": 13
+        },
+        "first_retrieved_at": "2026-11-25T12:14:12.521150+00:00",
+        "report_generated_at": "2026-10-27T19:00:03-04:00",
+        "report_rows": 25,
+        "sha256": "99be024ebb41fceb4db6ab6b91d157c37c5b6827a341bd2a94058669895a8187",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-10-28": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 1,
+        "candidate_issuer_ids": [
+          "crwv"
+        ],
+        "classification_counts": {
+          "contract_excluded": 6,
+          "incompatible_price_format": 1,
+          "unmatched_label": 15
+        },
+        "first_retrieved_at": "2026-11-25T12:14:13.014377+00:00",
+        "report_generated_at": "2026-10-28T19:00:03-04:00",
+        "report_rows": 22,
+        "sha256": "dd0c36711233f009aeaa975d839d2e576878cf4d97b7d063e6eb7a6f7f7871ee",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-10-29": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 2,
+        "candidate_issuer_ids": [
+          "intc",
+          "meta"
+        ],
+        "classification_counts": {
+          "contract_excluded": 6,
+          "coupon_collision": 2,
+          "missing_product_identifier": 2,
+          "unmatched_label": 13
+        },
+        "first_retrieved_at": "2026-11-25T12:14:13.503670+00:00",
+        "report_generated_at": "2026-10-29T19:00:02-04:00",
+        "report_rows": 23,
+        "sha256": "7ba29d82f0279a7b3128fdca8662c0b42f5a1d585b76781e3d1c5258e27df772",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-10-30": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 3,
+        "candidate_issuer_ids": [
+          "amd",
+          "amzn",
+          "crwv"
+        ],
+        "classification_counts": {
+          "contract_excluded": 4,
+          "coupon_collision": 2,
+          "incompatible_price_format": 1,
+          "missing_product_identifier": 1,
+          "unmatched_label": 12
+        },
+        "first_retrieved_at": "2026-11-25T12:14:13.951102+00:00",
+        "report_generated_at": "2026-10-30T19:00:02-04:00",
+        "report_rows": 20,
+        "sha256": "c4814c34dbb063c7a9325599c0908a4a776bdd61b3d854d9cc142ef50650cb2d",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-11-02": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 1,
+        "candidate_issuer_ids": [
+          "amd"
+        ],
+        "classification_counts": {
+          "contract_excluded": 3,
+          "coupon_collision": 1,
+          "missing_product_identifier": 2,
+          "unmatched_label": 8
+        },
+        "first_retrieved_at": "2026-11-25T12:14:14.396941+00:00",
+        "report_generated_at": "2026-11-02T19:00:05-05:00",
+        "report_rows": 14,
+        "sha256": "c4f902aa31756b9c07c13482c4288d865235b3cb8629df1c6438da2766499f2c",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-11-03": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 1,
+        "candidate_issuer_ids": [
+          "crwv"
+        ],
+        "classification_counts": {
+          "contract_excluded": 2,
+          "incompatible_price_format": 1,
+          "missing_product_identifier": 1,
+          "unmatched_label": 14
+        },
+        "first_retrieved_at": "2026-11-25T12:14:14.882194+00:00",
+        "report_generated_at": "2026-11-03T19:00:02-05:00",
+        "report_rows": 18,
+        "sha256": "875cee974b2a89f98a92cef8fb0d39b2b69b22627ad24b44859af98cb68e15df",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-11-04": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 0,
+        "candidate_issuer_ids": [],
+        "classification_counts": {
+          "contract_excluded": 18,
+          "missing_product_identifier": 1,
+          "unmatched_label": 16
+        },
+        "first_retrieved_at": "2026-11-25T12:14:15.406538+00:00",
+        "report_generated_at": "2026-11-04T19:00:02-05:00",
+        "report_rows": 35,
+        "sha256": "e49d83d607d45fc6b9afe0cd9104df2031adf3abcad522adb7b74d7fbb6f4e0e",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-11-05": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 0,
+        "candidate_issuer_ids": [],
+        "classification_counts": {
+          "contract_excluded": 5,
+          "missing_product_identifier": 1,
+          "unmatched_label": 14
+        },
+        "first_retrieved_at": "2026-11-25T12:14:15.864440+00:00",
+        "report_generated_at": "2026-11-05T19:00:02-05:00",
+        "report_rows": 20,
+        "sha256": "1227895129bbb618adfd61e419719473e2847bffc23c668a5c7e6c06025327db",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-11-06": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 6,
+        "candidate_issuer_ids": [
+          "alphabet",
+          "amzn",
+          "crwv",
+          "intc",
+          "meta",
+          "msft"
+        ],
+        "classification_counts": {
+          "contract_excluded": 3,
+          "coupon_collision": 5,
+          "incompatible_price_format": 1,
+          "unmatched_label": 12
+        },
+        "first_retrieved_at": "2026-11-25T12:14:16.313220+00:00",
+        "report_generated_at": "2026-11-06T19:00:02-05:00",
+        "report_rows": 21,
+        "sha256": "b5bf6fa66f4155d7b4bc5d52a5c8c28345e724cb719b6f7a9f2d61866b90b833",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-11-09": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 5,
+        "candidate_issuer_ids": [
+          "alphabet",
+          "amzn",
+          "crwv",
+          "meta",
+          "msft"
+        ],
+        "classification_counts": {
+          "contract_excluded": 4,
+          "coupon_collision": 4,
+          "incompatible_price_format": 1,
+          "missing_product_identifier": 2,
+          "unmatched_label": 12
+        },
+        "first_retrieved_at": "2026-11-25T12:14:16.783378+00:00",
+        "report_generated_at": "2026-11-09T19:00:02-05:00",
+        "report_rows": 23,
+        "sha256": "2d81caed0071d46f3fb07e4bc3621c9ca0ba3c02432a963265684b8c9741c745",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-11-10": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 2,
+        "candidate_issuer_ids": [
+          "amd",
+          "amzn"
+        ],
+        "classification_counts": {
+          "contract_excluded": 5,
+          "coupon_collision": 2,
+          "missing_product_identifier": 1,
+          "unmatched_label": 14
+        },
+        "first_retrieved_at": "2026-11-25T12:14:17.327664+00:00",
+        "report_generated_at": "2026-11-10T19:00:02-05:00",
+        "report_rows": 22,
+        "sha256": "61723313bc034632bb55188b26cb8bf03d55472cf2329bd96d46754ffb58f8fb",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-11-12": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 2,
+        "candidate_issuer_ids": [
+          "amzn",
+          "meta"
+        ],
+        "classification_counts": {
+          "contract_excluded": 16,
+          "coupon_collision": 2,
+          "missing_product_identifier": 1,
+          "unmatched_label": 13
+        },
+        "first_retrieved_at": "2026-11-25T12:14:18.293385+00:00",
+        "report_generated_at": "2026-11-12T19:00:02-05:00",
+        "report_rows": 32,
+        "sha256": "3d067cb90533722827889631b5a4c3051ced5aaf8b3c4570a5b9074573841b5b",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-11-13": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 2,
+        "candidate_issuer_ids": [
+          "amzn",
+          "meta"
+        ],
+        "classification_counts": {
+          "contract_excluded": 5,
+          "coupon_collision": 2,
+          "missing_product_identifier": 2,
+          "unmatched_label": 21
+        },
+        "first_retrieved_at": "2026-11-25T12:14:18.870184+00:00",
+        "report_generated_at": "2026-11-13T19:00:02-05:00",
+        "report_rows": 30,
+        "sha256": "e9f7fd576d3bdd70719262586d781f8106c2adbfabd14b463d91bf6740b90513",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-11-16": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 1,
+        "candidate_issuer_ids": [
+          "spcx"
+        ],
+        "classification_counts": {
+          "contract_excluded": 6,
+          "coupon_collision": 1,
+          "unmatched_label": 13
+        },
+        "first_retrieved_at": "2026-11-25T12:14:19.345172+00:00",
+        "report_generated_at": "2026-11-16T19:00:06-05:00",
+        "report_rows": 20,
+        "sha256": "0d15ac4bdad8dcd7dc34995a5a0daff58e4ae9ebe7430cc724022e1feb1e0b87",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-11-17": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 0,
+        "candidate_issuer_ids": [],
+        "classification_counts": {
+          "contract_excluded": 3,
+          "unmatched_label": 13
+        },
+        "first_retrieved_at": "2026-11-25T12:14:19.808705+00:00",
+        "report_generated_at": "2026-11-17T19:00:02-05:00",
+        "report_rows": 16,
+        "sha256": "69f580e003b942adbdc63668ab12d3646deb65199f60da4e814e7b5c84b3db73",
+        "verified_reference_entities": 0
+      }
+    ],
     "2026-11-18": [
       {
         "admitted_par_spreads": 0,
