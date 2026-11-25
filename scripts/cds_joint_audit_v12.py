@@ -109,13 +109,15 @@ def diagnose(dtcc,tradeweb,issuers):
         upfront=(get("other payment type").upper() in {"UFRO","UPFRONT","UPFRONT PAYMENT"}
                  and number(get("other payment amount")) is not None and get("other payment currency").upper()=="USD")
         if upfront:count("upfront_amount_present",issuer,day)
-        price=bool(spread_legs) or (number(get("price")) is not None and bool(get("price notation")))
+        global_price=number(get("price")) is not None and bool(get("price notation"))
+        price=bool(spread_legs) or global_price
+        same_leg_price=bool(set(usd_legs)&set(spread_legs)) or global_price
         if price:count("price_field_with_notation",issuer,day)
         # Explicit non-package and non-postpriced flags only; still a research candidate.
         package=(get("package indicator") or get("package transaction indicator")).upper()
         postpriced=get("post priced swap indicator").upper()
         flags=package in {"FALSE","N","0"} and postpriced in {"FALSE","N","0"}
-        if cross and approx and len(usd_legs)==1 and upfront and price and flags:
+        if cross and approx and len(usd_legs)==1 and upfront and same_leg_price and flags:
             count("strict_joint_input_candidate",issuer,day);strict_products.add(upi)
     # Per-date and per-issuer counts are audit coverage, not price history or risk scores.
     result={"schema_version":1,"state":"joint_source_audit","dtcc_reports":dt_dates,"tradeweb_reports":tw_dates,
