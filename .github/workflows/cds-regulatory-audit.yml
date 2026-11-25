@@ -1,0 +1,55 @@
+name: CDS regulatory report audit
+on:
+  schedule:
+    - cron: '15 14 * * 1-6'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/collect_tradeweb_cds_v5.py'
+      - 'scripts/audit_tradeweb_cds_v2.py'
+      - 'tests/test_tradeweb_cds_v*.py'
+      - '.github/workflows/cds-regulatory-audit.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/collect_tradeweb_cds_v5.py'
+      - 'scripts/audit_tradeweb_cds_v2.py'
+      - '.github/workflows/cds-regulatory-audit.yml'
+permissions:
+  contents: read
+concurrency:
+  group: cds-regulatory-audit-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Test source parser and collector
+        run: python3 -m unittest discover -s tests -p 'test_tradeweb_cds_v*.py' -v
+  collect:
+    needs: test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Collect only regulatory report audit metadata
+        run: python3 scripts/collect_tradeweb_cds_v5.py
+      - name: Commit only the public audit ledger
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- macro/nasdaq100-cds-audit.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "chore(cds): update regulatory source audit [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
