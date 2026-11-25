@@ -8,6 +8,8 @@ on:
       - 'scripts/asset_compass_multisource_v74.py'
       - 'scripts/asset_compass_six_feature_v90.py'
       - 'scripts/asset_compass_quarterly_v117.py'
+      - 'scripts/asset_compass_cost_v124.py'
+      - 'tests/test_asset_compass_cost_v124.py'
       - 'tests/test_asset_compass_quarterly_v117.py'
       - 'scripts/asset_compass_sec_clock_v97.py'
       - 'tests/test_asset_compass_sec_clock_v97.py'
@@ -56,6 +58,7 @@ jobs:
         continue-on-error: true
         run: |
           python3 -m unittest discover -s tests -p 'test_asset_compass_quarterly_v117.py' -v
+          python3 -m unittest discover -s tests -p 'test_asset_compass_cost_v124.py' -v
           python3 -m scripts.asset_compass_quarterly_v117 --panel /tmp/ooglex-panel-private.json --extra /tmp/ooglex-extra-funds-private.json --metadata /tmp/ooglex-quarterly-v117.json
       - name: V90 six-feature offline tests
         run: |

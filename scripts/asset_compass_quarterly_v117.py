@@ -127,15 +127,22 @@ def main():
     p.add_argument("--metadata",type=Path,required=True)
     a=p.parse_args()
     if a.metadata.resolve().is_relative_to(ROOT):p.error("Private research output only")
-    parsed=[];fail={}
+    from scripts.asset_compass_cost_v124 import parse_market,paired_summary,research
+    parsed=[];fail={};market_receipts=[];market_failures={}
     for doc in DOCS:
         try:
             time.sleep(1)
-            parsed.append(parse_doc(doc,download(BASE+doc[1])))
+            raw=download(BASE+doc[1])
+            parsed.append(parse_doc(doc,raw))
+            if doc[0]=="GLD":
+                try:market_receipts.append(parse_market(doc,raw))
+                except ValueError as exc:market_failures[doc[1]]=str(exc)[:180]
         except (ValueError,OSError) as exc:
             fail[doc[1]]={"type":type(exc).__name__,"reason":str(exc)[:200]}
             if isinstance(exc,urllib.error.HTTPError) and exc.code in (403,429):break
     quarterly={k:combine(parsed,k) for k in WINDOWS}
+    market=combine(market_receipts,"GLD")
+    paired=paired_summary(quarterly["GLD"],market,market_receipts)
     panel=json.loads(a.panel.read_text());extra=json.loads(a.extra.read_text())
     if (panel.get("report_type")!="asset_compass_v66_v68_monthly_fund_research_panel"
         or extra.get("report_type")!="asset_compass_v84_v89_sec_performance_research"
@@ -150,9 +157,13 @@ def main():
         "source_failures":fail,"quarterly_coverage":{k:{a:b for a,b in v.items() if a!="observations"} for k,v in quarterly.items()},
         "all_fund_quarter_counts":{k:len(v) for k,v in funds.items()},
         "common_diagnostics":common_diagnostics(funds),
+        "cost_and_correlation_research":research(funds),
+        "gld_market_nav_reconciliation":paired,
+        "gld_market_source_failures":market_failures,
         "formal_oos_validated_assets":0,"historical_pit_certified":False,"official_scores_published":0,"eligible_for_live_scoring":False}
     a.metadata.write_text(json.dumps(report,indent=2,allow_nan=False)+"\n")
     print(json.dumps({k:report[k] for k in ("quarterly_coverage","all_fund_quarter_counts","common_diagnostics","source_failures","eligible_for_live_scoring")}))
-    if fail or any(v["missing_quarters"] for v in quarterly.values()):raise SystemExit(1)
+    print(json.dumps({"gld_market_nav_reconciliation":paired,"gld_market_source_failures":market_failures,"cost_and_correlation_research":report["cost_and_correlation_research"]}))
+    if fail or market_failures or market["missing_quarters"] or any(v["missing_quarters"] for v in quarterly.values()):raise SystemExit(1)
 
 if __name__=="__main__":main()
