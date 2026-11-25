@@ -1,0 +1,1159 @@
+{
+  "schema_version": 1,
+  "universe": {
+    "index": "NDX",
+    "membership_as_of": "2026-11-23",
+    "status": "research_snapshot_cross_checked_not_licensed_index_feed",
+    "sources": [
+      {
+        "name": "Nasdaq index methodology and overview",
+        "url": "https://indexes.nasdaq.com/Index/Overview/NDX"
+      },
+      {
+        "name": "Nasdaq Moderna replacement announcement",
+        "url": "https://ir.nasdaq.com/news-releases/news-release-details/moderna-inc-join-nasdaq-100-indexr-beginning-october-9-2026"
+      },
+      {
+        "name": "Constituent reference (2026-10-22)",
+        "url": "https://en.wikipedia.org/wiki/List_of_NASDAQ-100_companies"
+      },
+      {
+        "name": "QQQ holdings cross-check (2026-11-23; proxy)",
+        "url": "https://oicharts.com/us/indices/qqq"
+      }
+    ]
+  },
+  "publication": {
+    "enabled": false,
+    "reason": "No verified redistribution permission or admitted source.",
+    "contract": {
+      "product": "single_name_cds",
+      "tenor": "5Y",
+      "currency": "USD",
+      "seniority": "senior",
+      "measure": "par_spread",
+      "unit": "bps"
+    }
+  },
+  "sources": [
+    {
+      "id": "ice",
+      "name": "ICE Clear Credit",
+      "status": "link_only_restricted",
+      "url": "https://www.ice.com/cds-settlement-prices/icc/single-name-instruments",
+      "terms": "https://www.ice.com/publicdocs/Markit_ICE_Settlement_Pricing_Terms_of_Use.pdf",
+      "public_display": false
+    },
+    {
+      "id": "dtcc_sec",
+      "name": "DTCC SEC public dissemination",
+      "status": "research_pending",
+      "url": "https://pddata.dtcc.com/ppd/secdashboard",
+      "terms": null,
+      "public_display": false
+    }
+  ],
+  "issuers": [
+    {
+      "issuer_id": "aapl",
+      "name": "Apple",
+      "tickers": [
+        "AAPL"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "abnb",
+      "name": "Airbnb",
+      "tickers": [
+        "ABNB"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "adbe",
+      "name": "Adobe",
+      "tickers": [
+        "ADBE"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "adi",
+      "name": "Analog Devices",
+      "tickers": [
+        "ADI"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "adp",
+      "name": "Automatic Data Processing",
+      "tickers": [
+        "ADP"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "adsk",
+      "name": "Autodesk",
+      "tickers": [
+        "ADSK"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "aep",
+      "name": "American Electric Power",
+      "tickers": [
+        "AEP"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "alab",
+      "name": "Astera Labs",
+      "tickers": [
+        "ALAB"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "alny",
+      "name": "Alnylam Pharmaceuticals",
+      "tickers": [
+        "ALNY"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "amat",
+      "name": "Applied Materials",
+      "tickers": [
+        "AMAT"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "amd",
+      "name": "Advanced Micro Devices",
+      "tickers": [
+        "AMD"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "amgn",
+      "name": "Amgen",
+      "tickers": [
+        "AMGN"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "amzn",
+      "name": "Amazon",
+      "tickers": [
+        "AMZN"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "app",
+      "name": "AppLovin",
+      "tickers": [
+        "APP"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "arm",
+      "name": "Arm Holdings",
+      "tickers": [
+        "ARM"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "asml",
+      "name": "ASML Holding",
+      "tickers": [
+        "ASML"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "avgo",
+      "name": "Broadcom",
+      "tickers": [
+        "AVGO"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "axon",
+      "name": "Axon Enterprise",
+      "tickers": [
+        "AXON"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "bkng",
+      "name": "Booking Holdings",
+      "tickers": [
+        "BKNG"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "bkr",
+      "name": "Baker Hughes",
+      "tickers": [
+        "BKR"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "ccep",
+      "name": "Coca-Cola Europacific Partners",
+      "tickers": [
+        "CCEP"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "cdns",
+      "name": "Cadence Design Systems",
+      "tickers": [
+        "CDNS"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "ceg",
+      "name": "Constellation Energy",
+      "tickers": [
+        "CEG"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "cmcsa",
+      "name": "Comcast",
+      "tickers": [
+        "CMCSA"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "cost",
+      "name": "Costco",
+      "tickers": [
+        "COST"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "cprt",
+      "name": "Copart",
+      "tickers": [
+        "CPRT"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "crwd",
+      "name": "CrowdStrike",
+      "tickers": [
+        "CRWD"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "crwv",
+      "name": "CoreWeave",
+      "tickers": [
+        "CRWV"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "csco",
+      "name": "Cisco",
+      "tickers": [
+        "CSCO"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "csx",
+      "name": "CSX Corporation",
+      "tickers": [
+        "CSX"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "ctas",
+      "name": "Cintas",
+      "tickers": [
+        "CTAS"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "dash",
+      "name": "DoorDash",
+      "tickers": [
+        "DASH"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "ddog",
+      "name": "Datadog",
+      "tickers": [
+        "DDOG"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "dxcm",
+      "name": "Dexcom",
+      "tickers": [
+        "DXCM"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "exc",
+      "name": "Exelon",
+      "tickers": [
+        "EXC"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "fang",
+      "name": "Diamondback Energy",
+      "tickers": [
+        "FANG"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "fast",
+      "name": "Fastenal",
+      "tickers": [
+        "FAST"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "fer",
+      "name": "Ferrovial",
+      "tickers": [
+        "FER"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "ftnt",
+      "name": "Fortinet",
+      "tickers": [
+        "FTNT"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "gehc",
+      "name": "GE HealthCare",
+      "tickers": [
+        "GEHC"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "gild",
+      "name": "Gilead Sciences",
+      "tickers": [
+        "GILD"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "alphabet",
+      "name": "Alphabet",
+      "tickers": [
+        "GOOGL",
+        "GOOG"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "hon",
+      "name": "Honeywell",
+      "tickers": [
+        "HON"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "hona",
+      "name": "Honeywell Aerospace",
+      "tickers": [
+        "HONA"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "idxx",
+      "name": "IDEXX Laboratories",
+      "tickers": [
+        "IDXX"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "intc",
+      "name": "Intel",
+      "tickers": [
+        "INTC"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "intu",
+      "name": "Intuit",
+      "tickers": [
+        "INTU"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "isrg",
+      "name": "Intuitive Surgical",
+      "tickers": [
+        "ISRG"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "kdp",
+      "name": "Keurig Dr Pepper",
+      "tickers": [
+        "KDP"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "klac",
+      "name": "KLA",
+      "tickers": [
+        "KLAC"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "lin",
+      "name": "Linde",
+      "tickers": [
+        "LIN"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "lite",
+      "name": "Lumentum",
+      "tickers": [
+        "LITE"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "lrcx",
+      "name": "Lam Research",
+      "tickers": [
+        "LRCX"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "mar",
+      "name": "Marriott International",
+      "tickers": [
+        "MAR"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "mchp",
+      "name": "Microchip Technology",
+      "tickers": [
+        "MCHP"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "mdlz",
+      "name": "Mondelez International",
+      "tickers": [
+        "MDLZ"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "meli",
+      "name": "Mercado Libre",
+      "tickers": [
+        "MELI"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "meta",
+      "name": "Meta Platforms",
+      "tickers": [
+        "META"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "mnst",
+      "name": "Monster Beverage",
+      "tickers": [
+        "MNST"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "mpwr",
+      "name": "Monolithic Power Systems",
+      "tickers": [
+        "MPWR"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "mrna",
+      "name": "Moderna",
+      "tickers": [
+        "MRNA"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "mrvl",
+      "name": "Marvell Technology",
+      "tickers": [
+        "MRVL"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "msft",
+      "name": "Microsoft",
+      "tickers": [
+        "MSFT"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "mstr",
+      "name": "Strategy",
+      "tickers": [
+        "MSTR"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "mu",
+      "name": "Micron Technology",
+      "tickers": [
+        "MU"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "nbis",
+      "name": "Nebius Group",
+      "tickers": [
+        "NBIS"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "nflx",
+      "name": "Netflix",
+      "tickers": [
+        "NFLX"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "nvda",
+      "name": "NVIDIA",
+      "tickers": [
+        "NVDA"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "nxpi",
+      "name": "NXP Semiconductors",
+      "tickers": [
+        "NXPI"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "odfl",
+      "name": "Old Dominion Freight Line",
+      "tickers": [
+        "ODFL"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "orly",
+      "name": "O'Reilly Automotive",
+      "tickers": [
+        "ORLY"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "panw",
+      "name": "Palo Alto Networks",
+      "tickers": [
+        "PANW"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "payx",
+      "name": "Paychex",
+      "tickers": [
+        "PAYX"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "pcar",
+      "name": "PACCAR",
+      "tickers": [
+        "PCAR"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "pdd",
+      "name": "PDD Holdings",
+      "tickers": [
+        "PDD"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "pep",
+      "name": "PepsiCo",
+      "tickers": [
+        "PEP"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "pltr",
+      "name": "Palantir Technologies",
+      "tickers": [
+        "PLTR"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "pypl",
+      "name": "PayPal",
+      "tickers": [
+        "PYPL"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "qcom",
+      "name": "Qualcomm",
+      "tickers": [
+        "QCOM"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "regn",
+      "name": "Regeneron Pharmaceuticals",
+      "tickers": [
+        "REGN"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "rklb",
+      "name": "Rocket Lab",
+      "tickers": [
+        "RKLB"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "rop",
+      "name": "Roper Technologies",
+      "tickers": [
+        "ROP"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "rost",
+      "name": "Ross Stores",
+      "tickers": [
+        "ROST"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "sbux",
+      "name": "Starbucks",
+      "tickers": [
+        "SBUX"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "shop",
+      "name": "Shopify",
+      "tickers": [
+        "SHOP"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "sndk",
+      "name": "Sandisk",
+      "tickers": [
+        "SNDK"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "snps",
+      "name": "Synopsys",
+      "tickers": [
+        "SNPS"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "spcx",
+      "name": "SpaceX",
+      "tickers": [
+        "SPCX"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "stx",
+      "name": "Seagate Technology",
+      "tickers": [
+        "STX"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "ter",
+      "name": "Teradyne",
+      "tickers": [
+        "TER"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "tmus",
+      "name": "T-Mobile US",
+      "tickers": [
+        "TMUS"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "tri",
+      "name": "Thomson Reuters",
+      "tickers": [
+        "TRI"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "tsla",
+      "name": "Tesla",
+      "tickers": [
+        "TSLA"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "ttwo",
+      "name": "Take-Two Interactive",
+      "tickers": [
+        "TTWO"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "txn",
+      "name": "Texas Instruments",
+      "tickers": [
+        "TXN"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "vrtx",
+      "name": "Vertex Pharmaceuticals",
+      "tickers": [
+        "VRTX"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "wday",
+      "name": "Workday",
+      "tickers": [
+        "WDAY"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "wdc",
+      "name": "Western Digital",
+      "tickers": [
+        "WDC"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "wmt",
+      "name": "Walmart",
+      "tickers": [
+        "WMT"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    },
+    {
+      "issuer_id": "xel",
+      "name": "Xcel Energy",
+      "tickers": [
+        "XEL"
+      ],
+      "reference_entity_id": null,
+      "mapping_status": "unverified",
+      "quote": null,
+      "history": []
+    }
+  ]
+}
