@@ -1,0 +1,23 @@
+name: CDS SEC cross-date lifecycle diagnostic
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/cds-dtcc-lifecycle-v10.yml'
+      - 'scripts/cds_dtcc_lifecycle_v10.py'
+      - 'tests/test_cds_dtcc_lifecycle_v10.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Run diagnostic tests
+        run: python3 -m unittest discover -s tests -p 'test_cds_dtcc_*v*.py' -v
+      - name: Audit seven calendar days of statutory credit reports
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'agent/nasdaq100-cds-v10')
+        run: python3 scripts/cds_dtcc_lifecycle_v10.py --end 2026-11-24 --days 7
