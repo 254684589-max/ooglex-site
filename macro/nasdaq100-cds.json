@@ -25,7 +25,7 @@
   },
   "publication": {
     "enabled": false,
-    "reason": "No verified redistribution permission or admitted source.",
+    "reason": "Tradeweb XML reachable but reference entity and par-spread semantics unverified; DTCC redistribution unresolved.",
     "contract": {
       "product": "single_name_cds",
       "tenor": "5Y",
@@ -47,9 +47,17 @@
     {
       "id": "dtcc_sec",
       "name": "DTCC SEC public dissemination",
-      "status": "research_pending",
+      "status": "public_download_reuse_unresolved_binary_not_verified",
       "url": "https://pddata.dtcc.com/ppd/secdashboard",
-      "terms": null,
+      "terms": "https://www.dtcc.com/terms",
+      "public_display": false
+    },
+    {
+      "id": "tradeweb_sbsef",
+      "name": "Tradeweb SBSEF Daily Market Data Report",
+      "status": "real_xml_verified_price_semantics_blocked",
+      "url": "https://reports.tradeweb.com/public/sbsefdownloads/",
+      "terms": "https://www.law.cornell.edu/cfr/text/17/242.825",
       "public_display": false
     }
   ],
@@ -1155,5 +1163,26 @@
       "quote": null,
       "history": []
     }
-  ]
+  ],
+  "source_audit_v2": {
+    "as_of": "2026-11-25",
+    "status": "partial_real_source_verified",
+    "reports": [
+      {
+        "date": "2026-11-23",
+        "url": "https://reports.tradeweb.com/DownloadSbSef.adl?file=/TWSBSEF-CDS-Report_2026-11-23.xml"
+      },
+      {
+        "date": "2026-11-24",
+        "url": "https://reports.tradeweb.com/DownloadSbSef.adl?file=/TWSBSEF-CDS-Report_2026-11-24.xml"
+      }
+    ],
+    "observed_candidate_issuers": [
+      "meta",
+      "msft"
+    ],
+    "candidate_scope": "examples verified in 2026-11-23 report; not full historical coverage or verified UPI mapping",
+    "verified_par_spreads": 0,
+    "dtcc_direct_zip_test": "not retrieved; DNS/network restriction"
+  }
 }
