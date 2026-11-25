@@ -24,7 +24,7 @@ def source_url(accession, registry=FILINGS):
         raise ValueError("Unreviewed filing accession")
     return f"https://www.sec.gov/Archives/edgar/data/1100663/{accession}/primary_doc.xml"
 
-def parse_filing(raw, accession, registry=FILINGS):
+def parse_filing(raw, accession, registry=FILINGS, *, series_id=SERIES, class_id=CLASS):
     url = source_url(accession, registry)
     if not raw or len(raw) > MAX_BYTES or re.search(br"<!\s*(DOCTYPE|ENTITY)", raw, re.I):
         raise ValueError("Unsafe or oversized XML")
@@ -44,10 +44,10 @@ def parse_filing(raw, accession, registry=FILINGS):
         if len(values) != 1 or not values[0].text:
             raise ValueError("Missing or ambiguous " + name)
         return values[0].text.strip()
-    if single("seriesId") != SERIES or single("repPdDate") != registry[accession]:
+    if single("seriesId") != series_id or single("repPdDate") != registry[accession]:
         raise ValueError("Wrong fund or reporting period")
     rows = root.findall("./formData/fundInfo/returnInfo/monthlyTotReturns/monthlyTotReturn")
-    if len(rows) != 1 or rows[0].get("classId") != CLASS:
+    if len(rows) != 1 or rows[0].get("classId") != class_id:
         raise ValueError("Wrong or ambiguous fund class")
     end = date.fromisoformat(registry[accession])
     out = []
@@ -62,7 +62,7 @@ def parse_filing(raw, accession, registry=FILINGS):
         out.append({"month": f"{month_index//12:04d}-{month_index%12+1:02d}",
                     "reported_fund_total_return_percent": str(value)})
     return {"accession": accession, "source_url": url,
-            "report_period_end": end.isoformat(), "series_id": SERIES, "class_id": CLASS,
+            "report_period_end": end.isoformat(), "series_id": series_id, "class_id": class_id,
             "local_input_sha256": hashlib.sha256(raw).hexdigest(),
             "local_xml_parsed_not_independently_authenticated": True,
             "monthly_observations": out}

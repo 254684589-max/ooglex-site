@@ -66,8 +66,8 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, *args, **kwargs):
         raise ValueError("SEC redirect not followed")
 
-def fetch(accession):
-    url = source_url(accession, REGISTRY)
+def fetch(accession, registry=REGISTRY):
+    url = source_url(accession, registry)
     req = urllib.request.Request(url, headers={"User-Agent":"Ooglex Research (https://www.ooglex.com/; research backfill)", "Accept":"application/xml,text/xml"})
     with urllib.request.build_opener(NoRedirect()).open(req, timeout=25) as res:
         if res.geturl() != url:
