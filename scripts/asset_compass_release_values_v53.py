@@ -111,7 +111,10 @@ def _heading_section(text, source):
     yyyy, mm = map(int, source["observation_period"].split("-"))
     month = MONTH[mm - 1]
     if source["release_kind"] == "cpi":
-        heading = r"CONSUMER PRICE INDEX\s*[-–—]\s*" + month + rf"\s+{yyyy}\b"
+        # Three legacy BLS HTML archives contain a non-UTF8 dash. Limit
+        # replacement-character tolerance to the known legacy first quarter.
+        sep = "[-–—\ufffd]" if yyyy == 2022 and mm <= 3 else "[-–—]"
+        heading = r"CONSUMER PRICE INDEX\s*" + sep + r"\s*" + month + rf"\s+{yyyy}\b"
     elif source["release_kind"] == "employment":
         heading = r"THE EMPLOYMENT SITUATION\s*[-–—]{1,2}\s*" + month + rf"\s+{yyyy}\b"
     else:
@@ -132,7 +135,7 @@ def extract(source, raw: bytes, digest: str):
     if source["release_kind"] == "cpi":
         patterns = [
             (rf"The Consumer Price Index for All Urban Consumers\s*\(CPI-U\)\s*"
-             rf"(?P<verb>{VERBS})\s+(?P<value>{NUMBER})\s+percent on a seasonally adjusted basis\s+in\s+{month}\b",
+             rf"(?P<verb>{VERBS})\s+(?P<value>{NUMBER})\s+percent\s+(?:on a seasonally adjusted basis\s+in\s+{month}\b|in\s+{month}\s+on a seasonally adjusted basis)",
              "bls.cpi", "headline_mom_rate", "seasonally_adjusted"),
             (rf"Over the last 12 months,?\s+the all items index\s+(?P<verb>{VERBS})\s+"
              rf"(?P<value>{NUMBER})\s+percent before seasonal adjustment",
@@ -140,7 +143,7 @@ def extract(source, raw: bytes, digest: str):
             (rf"The index for all items less food and energy\s+(?P<verb>{VERBS})\s+"
              rf"(?P<value>{NUMBER})\s+percent\s+in\s+{month}\b",
              "bls.core_cpi", "headline_mom_rate", "seasonally_adjusted"),
-            (rf"The all items less food and energy index\s+(?P<verb>{VERBS})\s+"
+            (rf"(?:The all items less food and energy index|The index for all items less food and energy)\s+(?P<verb>{VERBS})\s+"
              rf"(?P<value>{NUMBER})\s+percent\s+over the (?:last|past) 12 months",
              "bls.core_cpi", "headline_yoy_rate", "not_seasonally_adjusted"),
         ]
@@ -164,7 +167,7 @@ def extract(source, raw: bytes, digest: str):
                                    payroll, header, digest))
         rate = re.search(
             r"(?:the\s+)?unemployment rate\s+(?:edged|changed|was|held|rose|fell|increased|decreased|remained)"
-            r"\s+[^.;]{0,55}?\b(?:to|at|of)\s+(?P<value>[0-9]+(?:\.[0-9]+)?)\s+percent",
+            r"\s+(?:[^.;]{0,55}?\b(?:to|at|of)\s+)?(?P<value>[0-9]+(?:\.[0-9]+)?)\s+percent",
             header, re.I)
         if rate:
             records.append(_record(source, "bls.unemployment", "monthly_unemployment_rate",

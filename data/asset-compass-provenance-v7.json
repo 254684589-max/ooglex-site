@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_v7_treasury_provenance",
-  "generated_at": "2026-11-24T11:02:46.201973+00:00",
-  "ledger_sha256": "ac186a1e12319bdd10b74f95bf194ed8adb1cf0b4059f0ddef62f94dcafb8042",
-  "treasury_valid_source_rows": 10,
+  "generated_at": "2026-11-25T09:54:04.981319+00:00",
+  "ledger_sha256": "6a2a782371d910e4059e19c0391103fdb685701c6c90e2d8519429543928007f",
+  "treasury_valid_source_rows": 15,
   "legacy_quarantined_rows": 5,
   "unexpected_mismatch_rows": 0,
   "legacy_anomalies": [

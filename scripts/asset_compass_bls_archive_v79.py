@@ -94,7 +94,7 @@ def header(source,raw):
     m=re.search(r"Transmission of material in this (?:news )?release is embargoed until(.{0,240})",text,re.I)
     if not m:return {"header_status":"no_embargo_header","publication_time_verified":False}
     block=m[1]
-    d=re.search(r"(\d{1,2}):(\d{2})\s*a\.m\.\s*\(ET\)\s*\w+,\s*("+"|".join(MONTH)+r")\s+(\d{1,2}),\s*(20\d{2})",block,re.I)
+    d=re.search(r"(\d{1,2}):(\d{2})\s*a\.m\.\s*\(ET\)\s*(?:Monday,\s*|Tuesday,\s*|Wednesday,\s*|Thursday,\s*|Friday,\s*|Saturday,\s*|Sunday,\s*)?("+"|".join(MONTH)+r")\s+(\d{1,2}),\s*(20\d{2})",block,re.I)
     ids=re.findall(r"USDL-\d{2}-\d{4}",block)
     if not d or len(set(ids))!=1:return {"header_status":"ambiguous_embargo_header","publication_time_verified":False}
     h,minute,mo,day,yr=d.groups()
@@ -112,6 +112,9 @@ def inspect(source,raw):
     # Do not treat every ordinary revision of prior payroll as a reissue.
     notice=bool(re.search(r"(?:reissued this news release|this news release was reissued|this release was reissued|this news release was corrected|this release was corrected)",text,re.I))
     claims=_explicit_employment_revisions(text,source,digest)
+    if source["release_kind"]=="cpi" and source["observation_period"]=="2022-01":
+        # Publisher explicitly notes the PDF reissue; retain caution for this release.
+        notice=notice or bool(re.search(r"PDF version.{0,100}re[- ]?issued",text,re.I))
     return {"source":source,"sha256":digest,"byte_size":len(raw),
             "retrieved_at":datetime.now(timezone.utc).isoformat(),
             "header":header(source,raw),"reissue_notice_detected":notice,
@@ -131,7 +134,9 @@ def summary(records,indexes,failures,years=YEARS):
             "matching_embargo_headers":sum(r["header"]["header_status"]=="publisher_header_matches_archive_date" for r in rows),
             "reissue_notices":sum(r["reissue_notice_detected"] for r in rows),
             "revision_claims":sum(len(r["revision_claims"]) for r in rows)}
+    from scripts.asset_compass_payroll_lineage_v111 import audit_payroll
     return {"report_type":"asset_compass_v79_v83_bls_archive_research",
+        "payroll_lineage_research":audit_payroll(records),
         "generated_at":datetime.now(timezone.utc).isoformat(),"indexes":indexes,
         "families":by_family,"source_failures":failures,
         "known_unpublished":[{"family":k,"period":BLOCKED} for k in INDEX],
@@ -183,6 +188,7 @@ def main():
     # Numeric headline records are kept locally, not uploaded.
     (private/"extracted-research.json").write_text(json.dumps(records,indent=2,allow_nan=False)+"\n")
     print(json.dumps({k:report[k] for k in ("families","source_failures","known_unpublished","historical_pit_certified_series","eligible_for_live_scoring")}))
+    print(json.dumps({"payroll_lineage_research":{k:v for k,v in report["payroll_lineage_research"].items() if k!="comparisons"}}))
     if a.require_complete and (failures or any(v["missing_periods"] for v in report["families"].values())):
         raise SystemExit(1)
 

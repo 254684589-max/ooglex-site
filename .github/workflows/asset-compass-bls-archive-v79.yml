@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/asset_compass_bls_archive_v79.py'
+      - 'scripts/asset_compass_release_values_v53.py'
+      - 'scripts/asset_compass_payroll_lineage_v111.py'
       - 'tests/test_asset_compass_bls_archive_v79.py'
       - '.github/workflows/asset-compass-bls-archive-v79.yml'
   workflow_dispatch:
@@ -18,7 +20,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python3 -m py_compile scripts/asset_compass_bls_archive_v79.py
+      - run: python3 -m py_compile scripts/asset_compass_bls_archive_v79.py scripts/asset_compass_release_values_v53.py scripts/asset_compass_payroll_lineage_v111.py
       - run: python3 -m unittest discover -s tests -p 'test_asset_compass_bls_archive_v79.py' -v
       - run: python3 -m scripts.asset_compass_bls_archive_v79 --private-dir /tmp/ooglex-bls-v79-private --metadata /tmp/ooglex-bls-v79-metadata.json --extended-years --require-complete
       - uses: actions/upload-artifact@v4
