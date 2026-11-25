@@ -1,0 +1,32 @@
+name: Asset Compass V64 SEC Backfill
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/asset_compass_sec_returns_v6*.py'
+      - 'tests/test_asset_compass_sec_returns_v6*.py'
+      - '.github/workflows/asset-compass-sec-backfill-v64.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m py_compile scripts/asset_compass_sec_returns_v63.py scripts/asset_compass_sec_returns_v64.py
+      - run: python3 -m unittest discover -s tests -p 'test_asset_compass_sec_returns_v6*.py' -v
+  live-source:
+    needs: offline
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m scripts.asset_compass_sec_returns_v64 --download --output /tmp/ooglex-tlt-v64.json --require-complete

@@ -19,13 +19,13 @@ FILINGS = {
 }
 MAX_BYTES = 4_000_000
 
-def source_url(accession):
-    if accession not in FILINGS:
+def source_url(accession, registry=FILINGS):
+    if accession not in registry:
         raise ValueError("Unreviewed filing accession")
     return f"https://www.sec.gov/Archives/edgar/data/1100663/{accession}/primary_doc.xml"
 
-def parse_filing(raw, accession):
-    url = source_url(accession)
+def parse_filing(raw, accession, registry=FILINGS):
+    url = source_url(accession, registry)
     if not raw or len(raw) > MAX_BYTES or re.search(br"<!\s*(DOCTYPE|ENTITY)", raw, re.I):
         raise ValueError("Unsafe or oversized XML")
     try:
@@ -42,12 +42,12 @@ def parse_filing(raw, accession):
         if len(values) != 1 or not values[0].text:
             raise ValueError("Missing or ambiguous " + name)
         return values[0].text.strip()
-    if single("seriesId") != SERIES or single("repPdDate") != FILINGS[accession]:
+    if single("seriesId") != SERIES or single("repPdDate") != registry[accession]:
         raise ValueError("Wrong fund or reporting period")
     rows = root.findall(".//monthlyTotReturns/monthlyTotReturn")
     if len(rows) != 1 or rows[0].get("classId") != CLASS:
         raise ValueError("Wrong or ambiguous fund class")
-    end = date.fromisoformat(FILINGS[accession])
+    end = date.fromisoformat(registry[accession])
     out = []
     for i in range(1, 4):
         try:
