@@ -3,15 +3,12 @@ import copy
 import json
 import math
 import unittest
-from datetime import datetime,timezone
+from datetime import datetime,timezone,timedelta
 from pathlib import Path
 from scripts.audit_asset_compass_returns_v60 import (
     TRACKER,CRYPTO,V59,HISTORY,build_readiness,nav_distribution_kernel,
     _validate_observations,canonical_sha,ASSETS,
 )
-
-NOW=datetime(2026,11,24,3,0,tzinfo=timezone.utc)
-
 
 def issuer_nav_test_rows():
     # Test-only hypothetical NAV and ex-date distributions, never live datasets.
@@ -36,9 +33,13 @@ class V60ReturnEvidenceTests(unittest.TestCase):
     def setUpClass(cls):
         cls.inputs=[json.loads(x.read_text(encoding="utf-8"))
                     for x in (TRACKER,CRYPTO,V59,HISTORY)]
+        # Real repository snapshots advance daily. Freeze the actual UTC audit
+        # clock once per suite, never infer it from untrusted source dates.
+        cls.audit_now=datetime.now(timezone.utc)
 
-    def run_audit(self,items=None,now=NOW):
-        return build_readiness(*(items or self.inputs),now=now)
+    def run_audit(self,items=None,now=None):
+        return build_readiness(*(self.inputs if items is None else items),
+                               now=self.audit_now if now is None else now)
 
     def test_actual_archived_price_coverage_is_six_research_series(self):
         r=self.run_audit()
@@ -87,17 +88,34 @@ class V60ReturnEvidenceTests(unittest.TestCase):
         eq=r["assets"]["us_equities"]
         self.assertEqual(btc["calendar_type"],"crypto_utc_24x7")
         self.assertEqual(eq["calendar_type"],"market_source_calendar_nullable")
-        self.assertNotEqual(btc["first_observed_date"],eq["first_observed_date"])
+        # Independent source calendars may coincidentally share a first date.
+        # Check each actual source calendar and non-null start instead.
+        for row,days,prices in (
+            (btc,self.inputs[1]["history"]["dates"],self.inputs[1]["history"]["series"]["BTC"]),
+            (eq,self.inputs[0]["dates"],self.inputs[0]["series"]["^GSPC"]),
+        ):
+            self.assertEqual(row["calendar_rows"],len(days))
+            self.assertEqual(row["first_observed_date"],next(d for d,p in zip(days,prices) if p is not None))
+            self.assertEqual(row["actual_observed_prices"],sum(p is not None for p in prices))
 
     def test_future_and_duplicate_quote_dates_rejected(self):
         x=copy.deepcopy(self.inputs)
-        x[0]["dates"][-1]="2030-01-01"
+        x[0]["dates"][-1]=(self.audit_now.date()+timedelta(days=1)).isoformat()
         with self.assertRaisesRegex(ValueError,"future"):
             self.run_audit(x)
         x=copy.deepcopy(self.inputs)
         x[1]["history"]["dates"][-1]=x[1]["history"]["dates"][-2]
         with self.assertRaisesRegex(ValueError,"duplicate"):
             self.run_audit(x)
+
+    def test_future_source_asof_still_rejected(self):
+        future=(self.audit_now.date()+timedelta(days=1)).isoformat()
+        for index in (0,1):
+            with self.subTest(source=index):
+                x=copy.deepcopy(self.inputs)
+                x[index]["asOf"]=future
+                with self.assertRaisesRegex(ValueError,"Future source asOf"):
+                    self.run_audit(x)
 
     def test_nonfinite_zero_or_boolean_prices_rejected(self):
         for value in (float("nan"),float("inf"),0,-1,True):
