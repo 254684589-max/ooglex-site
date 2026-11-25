@@ -3,11 +3,24 @@ on:
   schedule:
     - cron: '15 14 * * 1-6'
   workflow_dispatch:
+    inputs:
+      days:
+        description: 'Calendar days to scan (1–31)'
+        type: choice
+        options: ['7', '14', '31']
+        default: '31'
+      end:
+        description: 'Optional final date YYYY-MM-DD (past only)'
+        type: string
+        required: false
+        default: ''
   pull_request:
     paths:
       - 'scripts/collect_tradeweb_cds_v5.py'
       - 'scripts/audit_tradeweb_cds_v2.py'
       - 'tests/test_tradeweb_cds_v*.py'
+      - 'macro/nasdaq100-cds-coverage-v6.js'
+      - 'tests/test-cds-coverage-v6.js'
       - '.github/workflows/cds-regulatory-audit.yml'
   push:
     branches: [main]
@@ -30,11 +43,13 @@ jobs:
           persist-credentials: false
       - name: Test source parser and collector
         run: python3 -m unittest discover -s tests -p 'test_tradeweb_cds_v*.py' -v
+      - name: Test report coverage aggregation
+        run: node tests/test-cds-coverage-v6.js
   collect:
     needs: test
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 15
     permissions:
       contents: write
     steps:
@@ -43,7 +58,19 @@ jobs:
           ref: main
           fetch-depth: 0
       - name: Collect only regulatory report audit metadata
-        run: python3 scripts/collect_tradeweb_cds_v5.py
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_DAYS: ${{ inputs.days }}
+          INPUT_END: ${{ inputs.end }}
+        run: |
+          days=7
+          if [[ "$EVENT_NAME" == push ]]; then days=31; fi
+          if [[ "$EVENT_NAME" == workflow_dispatch ]]; then days="${INPUT_DAYS:-31}"; fi
+          args=(--days "$days")
+          if [[ "$EVENT_NAME" == workflow_dispatch && -n "$INPUT_END" ]]; then
+            args+=(--end "$INPUT_END")
+          fi
+          python3 scripts/collect_tradeweb_cds_v5.py "${args[@]}"
       - name: Commit only the public audit ledger
         run: |
           git config user.name "github-actions[bot]"
