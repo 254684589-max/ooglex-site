@@ -7,6 +7,8 @@ on:
       - 'scripts/asset_compass_release_values_v53.py'
       - 'scripts/asset_compass_payroll_lineage_v111.py'
       - 'scripts/asset_compass_archive_crosscheck_v131.py'
+      - 'scripts/asset_compass_alfred_v138.py'
+      - 'tests/test_asset_compass_alfred_v138.py'
       - 'tests/test_asset_compass_bls_archive_v79.py'
       - '.github/workflows/asset-compass-bls-archive-v79.yml'
   workflow_dispatch:
@@ -26,6 +28,11 @@ jobs:
       - run: python3 -m scripts.asset_compass_bls_archive_v79 --private-dir /tmp/ooglex-bls-v79-private --metadata /tmp/ooglex-bls-v79-metadata.json --extended-years --require-complete
       - name: Compare archived CPI and unemployment headlines with current official series
         run: python3 -m scripts.asset_compass_archive_crosscheck_v131 --archive /tmp/ooglex-bls-v79-private/extracted-research.json --output /tmp/ooglex-bls-current-crosscheck.json
+      - name: V138 ALFRED vintage regression and live date-level crosscheck
+        run: |
+          python3 -m py_compile scripts/asset_compass_alfred_v138.py
+          python3 -m unittest discover -s tests -p 'test_asset_compass_alfred_v138.py' -v
+          python3 -m scripts.asset_compass_alfred_v138 --archive /tmp/ooglex-bls-v79-private/extracted-research.json --output /tmp/ooglex-alfred-v138-metadata.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -33,5 +40,6 @@ jobs:
           path: |
             /tmp/ooglex-bls-v79-metadata.json
             /tmp/ooglex-bls-current-crosscheck.json
+            /tmp/ooglex-alfred-v138-metadata.json
           retention-days: 30
           if-no-files-found: error
