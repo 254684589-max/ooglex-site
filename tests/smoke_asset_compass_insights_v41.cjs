@@ -16,6 +16,9 @@ class E {
 function fixture(){
  const d=structuredClone(snapshot),now=new Date(),day=now.toISOString().slice(0,10),month=day.slice(0,7);
  d.generated_at=now.toISOString();d.observation_date=day;d.nyfed.observation_date=day;
+ // Isolate arithmetic tests from daily live rate movements; deliberately
+ // disagree with stored derived value to prove same-day recomputation.
+ d.rates.us10y=4.95;d.rates.real10y=2.80;d.rates.breakeven10y=9.99;
  for(const id of ["cpi","core_cpi","unemployment","payroll"])d.bls.series[id].period=month;
  d.bea.core_pce.observation_period=month;
  d.fed_h41.total_assets.observation_date=day;
