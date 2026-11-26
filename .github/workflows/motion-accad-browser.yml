@@ -1,0 +1,28 @@
+name: ACCAD Browser Acceptance
+on:
+  push:
+    branches: [agent/motion-studio-accad-v457]
+    paths:
+      - 'motion-studio/**'
+      - '.github/workflows/motion-accad-browser.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'motion-studio/**'
+      - '.github/workflows/motion-accad-browser.yml'
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            motion-studio
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate ACCAD real assets in Chromium
+        run: node motion-studio/tools/smoke_accad.mjs .

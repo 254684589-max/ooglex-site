@@ -12,7 +12,15 @@ class CoverageTests(unittest.TestCase):
         cls.rows=catalog_items((ROOT/"macro/indicator-ratings.html").read_text(encoding="utf-8"))
         cls.snapshot=json.loads((ROOT/"data/asset-scores.json").read_text(encoding="utf-8"))
         cls.sofr=json.loads((ROOT/"data/asset-compass-a10-sofr.json").read_text(encoding="utf-8"))
+        # Fixed synthetic test clock and fixture dates; do not change production freshness gates.
         cls.now=datetime(2026,11,23,9,tzinfo=timezone.utc)
+        cls.snapshot=copy.deepcopy(cls.snapshot)
+        cls.sofr=copy.deepcopy(cls.sofr)
+        cls.snapshot["observation_date"]="2026-11-20"
+        cls.snapshot["nyfed"]["observation_date"]="2026-11-20"
+        cls.sofr["observation_date"]="2026-11-20"
+        for name in ("unemployment","payroll"):
+            cls.snapshot["bls"]["series"][name]["period"]="2026-10"
 
     def test_forty_rows_and_ten_per_grade(self):
         report=build(self.rows,self.snapshot,self.sofr,now=self.now)

@@ -141,6 +141,10 @@ jobs:
       - name: Build protected public site
         run: python scripts/build_public_site.py --pro-cutover
 
+      - name: Verify ACCAD animation library in actual Pages artifact
+        if: ${{ hashFiles('motion-studio/assets/accad/manifest.json') != '' }}
+        run: node motion-studio/tools/smoke_accad.mjs .site
+
       - name: Verify Asset Compass four-page public build
         run: |
           node --check .site/macro/compass-pages.js
