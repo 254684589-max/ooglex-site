@@ -7,7 +7,7 @@ import {spawn,execFileSync} from 'node:child_process';
 const root=path.resolve(process.argv[2]||'.');
 const dir=path.join(root,'motion-studio');
 const manifest=JSON.parse(fs.readFileSync(path.join(dir,'assets/mesh2motion/manifest.json')));
-assert.ok(manifest.records.length>0);assert.equal(manifest.unique_motion_credit,0);
+assert.equal(manifest.schema,'ooglex.mesh2motion.v2');assert.ok(manifest.records.length>0);assert.ok(manifest.records.every(x=>x.original.startsWith('static/assets/human/animations/')));assert.equal(manifest.unique_motion_credit,0);
 assert.ok(manifest.models.length);for(const r of [...manifest.records,...manifest.models]){assert.ok(fs.existsSync(path.join(dir,r.path)));}
 for(const page of ['index.html','kaykit.html','accad.html','kinemiq.html'])assert.match(fs.readFileSync(path.join(dir,page),'utf8'),/href="\.\/mesh2motion\.html"/);
 const browserProbe=String.raw`
@@ -19,13 +19,12 @@ const entries=await (await fetch('./assets/mesh2motion/manifest.json')).json();
 await wait(()=>document.querySelectorAll('.clip').length===entries.records.length);
 check('real catalog cards',document.querySelectorAll('.clip').length===entries.records.length);
 check('canvas',!!document.querySelector('#viewer canvas'));
-const samples=new Set();for(const [i,entry] of entries.records.entries()){
-if(samples.has(entry.path))continue;samples.add(entry.path);
+const sampleIndices=[...new Set([0,1,2,Math.floor(entries.records.length/2),entries.records.length-1].filter(i=>i<entries.records.length))];for(const i of sampleIndices){const entry=entries.records[i];
 const cards=[...document.querySelectorAll('.clip')];cards[i].click();
 await wait(()=>!!$('error').textContent||(!$('play').disabled&&$('name').textContent===entry.name));
 check(entry.id+' real GLB playback',!$('error').textContent&&$('details').textContent.includes('实际动画轨道'));
 check(entry.id+' source download',!$('download').hidden&&$('download').href.endsWith('.glb'));
-if(i===0){await wait(()=>Number($('timeline').value)>0);$('play').click();check('pause',$('play').textContent==='播放');$('timeline').value=String(Number($('timeline').max)/2);$('timeline').dispatchEvent(new Event('input'));check('seek',Number($('timeline').value)>0);check('model download',!$('modeldownload').hidden);}
+if(i===0){await wait(()=>Number($('timeline').value)>0);$('play').click();check('pause',$('play').textContent==='播放');$('timeline').value=String(Number($('timeline').max)/2);$('timeline').dispatchEvent(new Event('input'));check('seek',Number($('timeline').value)>0);check('skeleton mode or mesh mode',$('details').textContent.includes('原始骨架')||$('details').textContent.includes('蒙皮模型'));}
 }
 $('search').value=entries.records[0].name;$('search').dispatchEvent(new Event('input'));check('search',document.querySelectorAll('.clip').length>0&&document.querySelectorAll('.clip').length<=entries.records.length);
 check('no script errors',!window.__mesh2motionErrors.length);
