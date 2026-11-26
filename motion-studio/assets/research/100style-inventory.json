@@ -4886,7 +4886,7 @@
   ],
   "verified_clips": 0,
   "scope": "Official metadata and, if available, ZIP central directory only; no raw BVH clips imported.",
-  "directory_status": "range_verified",
   "excluded_macos_metadata_entries": 810,
-  "directory_bvh_candidates": 810
+  "directory_bvh_candidates": 810,
+  "directory_status": "range_verified"
 }
