@@ -34,6 +34,10 @@ def main():
     try:
         with zipfile.ZipFile(RemoteZip(raw['url'],raw['bytes'])) as z:
             result['archive_entries']=[{'path':i.filename,'bytes':i.file_size,'compressed_bytes':i.compress_size,'crc32':f'{i.CRC:08x}'} for i in z.infolist() if i.filename.lower().endswith('.bvh') and not i.is_dir()]
+        original_count=len(result['archive_entries'])
+        result['archive_entries']=[i for i in result['archive_entries'] if not i['path'].startswith('__MACOSX/') and not i['path'].split('/')[-1].startswith('._')]
+        result['excluded_macos_metadata_entries']=original_count-len(result['archive_entries'])
+        result['directory_bvh_candidates']=len(result['archive_entries'])
         result['directory_status']='range_verified'
     except Exception as e:result['directory_status']='unavailable';result['directory_error']=str(e)
     out=ROOT/'assets'/'research';out.mkdir(parents=True,exist_ok=True)
