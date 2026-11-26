@@ -1,0 +1,68 @@
+name: ACCAD martial experimental retarget batch
+on:
+  push:
+    branches: [agent/motion-studio-retarget-v466]
+    paths:
+      - 'motion-studio/tools/batch_retarget.py'
+      - '.github/workflows/motion-retarget-batch.yml'
+  pull_request:
+    branches: [agent/motion-studio-mesh2motion-v463]
+    paths:
+      - 'motion-studio/tools/batch_retarget.py'
+      - '.github/workflows/motion-retarget-batch.yml'
+permissions:
+  contents: write
+concurrency:
+  group: motion-retarget-v466
+  cancel-in-progress: true
+jobs:
+  batch:
+    if: github.ref == 'refs/heads/agent/motion-studio-retarget-v466' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'agent/motion-studio-retarget-v466')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/motion-studio-retarget-v466
+          sparse-checkout: |
+            motion-studio
+      - name: Generate actual experimental martial transfer assets
+        run: |
+          python3 -m py_compile motion-studio/tools/batch_retarget.py
+          if ! test -s motion-studio/assets/research/retarget-batch/manifest.json; then
+            python3 motion-studio/tools/batch_retarget.py --limit 55
+          fi
+      - name: Verify every output and provenance
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,math,sys
+          from pathlib import Path
+          sys.path.insert(0,'motion-studio/tools')
+          from import_kinemiq import glb
+          root=Path('motion-studio')
+          m=json.loads((root/'assets/research/retarget-batch/manifest.json').read_text())
+          assert m['attempted']==55 and len(m['records'])+len(m['rejected'])==55
+          assert m['records'] and m['unique_motion_credit']==m['official_kinemiq_exports']==m['visual_certified_count']==0
+          ids=set()
+          for x in m['records']:
+              for item in [x,x['source'],x['target']]:
+                  assert hashlib.sha256((root/item['path']).read_bytes()).hexdigest()==item['sha256']
+              d=glb((root/x['path']).read_bytes())
+              assert d['meshes'] and d['skins'] and len(d['animations'][0]['channels'])==23
+              assert x['frames']==x['source']['frames'] and x['skin_joints']==66
+              assert d['asset']['extras']['license']=='CC BY 3.0'
+              assert math.isfinite(x['max_primary_direction_error_deg']) and x['max_primary_direction_error_deg']<.05
+              assert not x['visual_certified'] and not x['ik_certified'] and not x['godot_certified']
+              assert x['source']['id'] not in ids
+              ids.add(x['source']['id'])
+          print('Verified',len(ids),'experimental GLBs;',len(m['rejected']),'rejected; no new unique motion credit')
+          PY
+      - name: Commit experimental artifacts to isolated development branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add motion-studio/assets/research/retarget-batch
+          git diff --cached --quiet && exit 0
+          git commit -m "data(motion): verified experimental ACCAD martial transfer batch"
+          git pull --rebase origin agent/motion-studio-retarget-v466
+          git push origin HEAD:agent/motion-studio-retarget-v466
