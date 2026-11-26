@@ -11,7 +11,7 @@ on:
       - 'motion-studio/tools/prototype_retarget.py'
       - '.github/workflows/motion-expansion-acceptance.yml'
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: motion-expansion-acceptance
   cancel-in-progress: true
@@ -23,7 +23,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: agent/motion-studio-mesh2motion-v463
           sparse-checkout: |
             motion-studio
       - uses: actions/setup-node@v4
@@ -31,14 +30,19 @@ jobs:
           node-version: '24'
       - name: Validate six authentic 100STYLE recordings in Chromium
         run: node motion-studio/tools/smoke_100style.mjs .
-      - name: Generate experimental skinned ACCAD sample
-        run: python3 motion-studio/tools/prototype_retarget.py
-      - name: Commit experimental research output only
+      - name: Verify committed experimental sample and provenance
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add motion-studio/assets/research/retarget
-          git diff --cached --quiet && exit 0
-          git commit -m "data(motion): experimental skinned ACCAD sample, not visual certified"
-          git pull --rebase origin agent/motion-studio-mesh2motion-v463
-          git push origin HEAD:agent/motion-studio-mesh2motion-v463
+          python3 - <<'PY'
+          import json,hashlib,sys
+          from pathlib import Path
+          sys.path.insert(0,'motion-studio/tools')
+          from import_kinemiq import glb
+          root=Path('motion-studio')
+          r=json.loads((root/'assets/research/retarget/report.json').read_text())
+          for item in [r,r['source'],r['target']]:
+              assert hashlib.sha256((root/item['path']).read_bytes()).hexdigest()==item['sha256']
+          d=glb((root/r['path']).read_bytes())
+          assert d['skins'] and d['meshes'] and len(d['animations'][0]['channels'])==r['tracks']==23
+          assert not r['visual_certified'] and not r['ik_certified'] and not r['godot_certified']
+          print('Committed sample integrity and experimental status verified')
+          PY
