@@ -1,0 +1,1549 @@
+{
+  "source": "KayKit Character Animations Free 1.1",
+  "source_url": "https://kaylousberg.itch.io/kaykit-character-animations",
+  "license": "CC0-1.0",
+  "archive_sha256": "65882f31f905ad2e953819648a59287cdeab8f623908d5ef701971d3758be20f",
+  "raw_count": 173,
+  "count": 161,
+  "rig_counts": {
+    "Medium": 132,
+    "Large": 29
+  },
+  "packs": {
+    "1": {
+      "file": "Rig_Large_CombatMelee.glb",
+      "rig": "Large",
+      "group": "CombatMelee",
+      "raw_count": 16
+    },
+    "2": {
+      "file": "Rig_Large_General.glb",
+      "rig": "Large",
+      "group": "General",
+      "raw_count": 6
+    },
+    "3": {
+      "file": "Rig_Large_MovementAdvanced.glb",
+      "rig": "Large",
+      "group": "MovementAdvanced",
+      "raw_count": 5
+    },
+    "4": {
+      "file": "Rig_Large_MovementBasic.glb",
+      "rig": "Large",
+      "group": "MovementBasic",
+      "raw_count": 3
+    },
+    "5": {
+      "file": "Rig_Large_Simulation.glb",
+      "rig": "Large",
+      "group": "Simulation",
+      "raw_count": 2
+    },
+    "6": {
+      "file": "Rig_Large_Special.glb",
+      "rig": "Large",
+      "group": "Special",
+      "raw_count": 2
+    },
+    "7": {
+      "file": "Rig_Medium_CombatMelee.glb",
+      "rig": "Medium",
+      "group": "CombatMelee",
+      "raw_count": 22
+    },
+    "8": {
+      "file": "Rig_Medium_CombatRanged.glb",
+      "rig": "Medium",
+      "group": "CombatRanged",
+      "raw_count": 20
+    },
+    "9": {
+      "file": "Rig_Medium_General.glb",
+      "rig": "Medium",
+      "group": "General",
+      "raw_count": 15
+    },
+    "10": {
+      "file": "Rig_Medium_MovementAdvanced.glb",
+      "rig": "Medium",
+      "group": "MovementAdvanced",
+      "raw_count": 13
+    },
+    "11": {
+      "file": "Rig_Medium_MovementBasic.glb",
+      "rig": "Medium",
+      "group": "MovementBasic",
+      "raw_count": 11
+    },
+    "12": {
+      "file": "Rig_Medium_Simulation.glb",
+      "rig": "Medium",
+      "group": "Simulation",
+      "raw_count": 14
+    },
+    "13": {
+      "file": "Rig_Medium_Special.glb",
+      "rig": "Medium",
+      "group": "Special",
+      "raw_count": 15
+    },
+    "14": {
+      "file": "Rig_Medium_Tools.glb",
+      "rig": "Medium",
+      "group": "Tools",
+      "raw_count": 29
+    }
+  },
+  "animations": [
+    {
+      "id": "9:12",
+      "pack": 9,
+      "index": 12,
+      "source": "T-Pose",
+      "name": "标准绑定姿势",
+      "category": "基础姿态",
+      "rig": "Medium"
+    },
+    {
+      "id": "9:6",
+      "pack": 9,
+      "index": 6,
+      "source": "Idle_A",
+      "name": "自然站立一式",
+      "category": "基础姿态",
+      "rig": "Medium"
+    },
+    {
+      "id": "9:7",
+      "pack": 9,
+      "index": 7,
+      "source": "Idle_B",
+      "name": "自然站立二式",
+      "category": "基础姿态",
+      "rig": "Medium"
+    },
+    {
+      "id": "2:5",
+      "pack": 2,
+      "index": 5,
+      "source": "T-Pose",
+      "name": "标准绑定姿势",
+      "category": "基础姿态",
+      "rig": "Large"
+    },
+    {
+      "id": "2:3",
+      "pack": 2,
+      "index": 3,
+      "source": "Idle_A",
+      "name": "自然站立一式",
+      "category": "基础姿态",
+      "rig": "Large"
+    },
+    {
+      "id": "2:4",
+      "pack": 2,
+      "index": 4,
+      "source": "Idle_B",
+      "name": "自然站立二式",
+      "category": "基础姿态",
+      "rig": "Large"
+    },
+    {
+      "id": "10:0",
+      "pack": 10,
+      "index": 0,
+      "source": "Crawling",
+      "name": "匍匐前进",
+      "category": "基础移动",
+      "rig": "Medium"
+    },
+    {
+      "id": "10:9",
+      "pack": 10,
+      "index": 9,
+      "source": "Running_Strafe_Right",
+      "name": "向右侧跑",
+      "category": "基础移动",
+      "rig": "Medium"
+    },
+    {
+      "id": "10:12",
+      "pack": 10,
+      "index": 12,
+      "source": "Walking_Backwards",
+      "name": "向后行走",
+      "category": "基础移动",
+      "rig": "Medium"
+    },
+    {
+      "id": "10:8",
+      "pack": 10,
+      "index": 8,
+      "source": "Running_Strafe_Left",
+      "name": "向左侧跑",
+      "category": "基础移动",
+      "rig": "Medium"
+    },
+    {
+      "id": "11:5",
+      "pack": 11,
+      "index": 5,
+      "source": "Running_A",
+      "name": "奔跑一式",
+      "category": "基础移动",
+      "rig": "Medium"
+    },
+    {
+      "id": "11:6",
+      "pack": 11,
+      "index": 6,
+      "source": "Running_B",
+      "name": "奔跑二式",
+      "category": "基础移动",
+      "rig": "Medium"
+    },
+    {
+      "id": "10:6",
+      "pack": 10,
+      "index": 6,
+      "source": "Running_HoldingBow",
+      "name": "持弓奔跑",
+      "category": "基础移动",
+      "rig": "Medium"
+    },
+    {
+      "id": "10:7",
+      "pack": 10,
+      "index": 7,
+      "source": "Running_HoldingRifle",
+      "name": "持步枪奔跑",
+      "category": "基础移动",
+      "rig": "Medium"
+    },
+    {
+      "id": "10:10",
+      "pack": 10,
+      "index": 10,
+      "source": "Sneaking",
+      "name": "潜行",
+      "category": "基础移动",
+      "rig": "Medium"
+    },
+    {
+      "id": "11:8",
+      "pack": 11,
+      "index": 8,
+      "source": "Walking_A",
+      "name": "行走一式",
+      "category": "基础移动",
+      "rig": "Medium"
+    },
+    {
+      "id": "11:10",
+      "pack": 11,
+      "index": 10,
+      "source": "Walking_C",
+      "name": "行走三式",
+      "category": "基础移动",
+      "rig": "Medium"
+    },
+    {
+      "id": "11:9",
+      "pack": 11,
+      "index": 9,
+      "source": "Walking_B",
+      "name": "行走二式",
+      "category": "基础移动",
+      "rig": "Medium"
+    },
+    {
+      "id": "10:1",
+      "pack": 10,
+      "index": 1,
+      "source": "Crouching",
+      "name": "蹲伏",
+      "category": "基础移动",
+      "rig": "Medium"
+    },
+    {
+      "id": "4:0",
+      "pack": 4,
+      "index": 0,
+      "source": "Running_A",
+      "name": "奔跑一式",
+      "category": "基础移动",
+      "rig": "Large"
+    },
+    {
+      "id": "4:2",
+      "pack": 4,
+      "index": 2,
+      "source": "Walking_A",
+      "name": "行走一式",
+      "category": "基础移动",
+      "rig": "Large"
+    },
+    {
+      "id": "10:3",
+      "pack": 10,
+      "index": 3,
+      "source": "Dodge_Forward",
+      "name": "向前闪避",
+      "category": "跳跃与闪避",
+      "rig": "Medium"
+    },
+    {
+      "id": "10:5",
+      "pack": 10,
+      "index": 5,
+      "source": "Dodge_Right",
+      "name": "向右闪避",
+      "category": "跳跃与闪避",
+      "rig": "Medium"
+    },
+    {
+      "id": "10:2",
+      "pack": 10,
+      "index": 2,
+      "source": "Dodge_Backward",
+      "name": "向后闪避",
+      "category": "跳跃与闪避",
+      "rig": "Medium"
+    },
+    {
+      "id": "10:4",
+      "pack": 10,
+      "index": 4,
+      "source": "Dodge_Left",
+      "name": "向左闪避",
+      "category": "跳跃与闪避",
+      "rig": "Medium"
+    },
+    {
+      "id": "11:1",
+      "pack": 11,
+      "index": 1,
+      "source": "Jump_Full_Short",
+      "name": "完整短跳",
+      "category": "跳跃与闪避",
+      "rig": "Medium"
+    },
+    {
+      "id": "11:0",
+      "pack": 11,
+      "index": 0,
+      "source": "Jump_Full_Long",
+      "name": "完整远跳",
+      "category": "跳跃与闪避",
+      "rig": "Medium"
+    },
+    {
+      "id": "11:2",
+      "pack": 11,
+      "index": 2,
+      "source": "Jump_Idle",
+      "name": "空中姿态",
+      "category": "跳跃与闪避",
+      "rig": "Medium"
+    },
+    {
+      "id": "11:4",
+      "pack": 11,
+      "index": 4,
+      "source": "Jump_Start",
+      "name": "起跳",
+      "category": "跳跃与闪避",
+      "rig": "Medium"
+    },
+    {
+      "id": "11:3",
+      "pack": 11,
+      "index": 3,
+      "source": "Jump_Land",
+      "name": "跳跃落地",
+      "category": "跳跃与闪避",
+      "rig": "Medium"
+    },
+    {
+      "id": "3:1",
+      "pack": 3,
+      "index": 1,
+      "source": "Dodge_Forward",
+      "name": "向前闪避",
+      "category": "跳跃与闪避",
+      "rig": "Large"
+    },
+    {
+      "id": "3:3",
+      "pack": 3,
+      "index": 3,
+      "source": "Dodge_Right",
+      "name": "向右闪避",
+      "category": "跳跃与闪避",
+      "rig": "Large"
+    },
+    {
+      "id": "3:0",
+      "pack": 3,
+      "index": 0,
+      "source": "Dodge_Backwards",
+      "name": "向后闪避",
+      "category": "跳跃与闪避",
+      "rig": "Large"
+    },
+    {
+      "id": "3:2",
+      "pack": 3,
+      "index": 2,
+      "source": "Dodge_Left",
+      "name": "向左闪避",
+      "category": "跳跃与闪避",
+      "rig": "Large"
+    },
+    {
+      "id": "7:4",
+      "pack": 7,
+      "index": 4,
+      "source": "Melee_1H_Attack_Stab",
+      "name": "单手刺击",
+      "category": "单手武器",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:0",
+      "pack": 7,
+      "index": 0,
+      "source": "Melee_1H_Attack_Chop",
+      "name": "单手劈砍",
+      "category": "单手武器",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:2",
+      "pack": 7,
+      "index": 2,
+      "source": "Melee_1H_Attack_Slice_Diagonal",
+      "name": "单手斜斩",
+      "category": "单手武器",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:3",
+      "pack": 7,
+      "index": 3,
+      "source": "Melee_1H_Attack_Slice_Horizontal",
+      "name": "单手横斩",
+      "category": "单手武器",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:1",
+      "pack": 7,
+      "index": 1,
+      "source": "Melee_1H_Attack_Jump_Chop",
+      "name": "跳跃单手劈砍",
+      "category": "单手武器",
+      "rig": "Medium"
+    },
+    {
+      "id": "1:1",
+      "pack": 1,
+      "index": 1,
+      "source": "Melee_1H_Stab",
+      "name": "单手刺击",
+      "category": "单手武器",
+      "rig": "Large"
+    },
+    {
+      "id": "1:0",
+      "pack": 1,
+      "index": 0,
+      "source": "Melee_1H_Slash",
+      "name": "单手挥斩",
+      "category": "单手武器",
+      "rig": "Large"
+    },
+    {
+      "id": "7:9",
+      "pack": 7,
+      "index": 9,
+      "source": "Melee_2H_Attack_Stab",
+      "name": "双手刺击",
+      "category": "双手武器",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:5",
+      "pack": 7,
+      "index": 5,
+      "source": "Melee_2H_Attack_Chop",
+      "name": "双手劈砍",
+      "category": "双手武器",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:10",
+      "pack": 7,
+      "index": 10,
+      "source": "Melee_2H_Idle",
+      "name": "双手持械待机",
+      "category": "双手武器",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:6",
+      "pack": 7,
+      "index": 6,
+      "source": "Melee_2H_Attack_Slice",
+      "name": "双手挥斩",
+      "category": "双手武器",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:7",
+      "pack": 7,
+      "index": 7,
+      "source": "Melee_2H_Attack_Spin",
+      "name": "双手旋身攻击",
+      "category": "双手武器",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:8",
+      "pack": 7,
+      "index": 8,
+      "source": "Melee_2H_Attack_Spinning",
+      "name": "双手连续旋斩",
+      "category": "双手武器",
+      "rig": "Medium"
+    },
+    {
+      "id": "1:3",
+      "pack": 1,
+      "index": 3,
+      "source": "Melee_2H_Idle",
+      "name": "双手持械待机",
+      "category": "双手武器",
+      "rig": "Large"
+    },
+    {
+      "id": "1:2",
+      "pack": 1,
+      "index": 2,
+      "source": "Melee_2H_Attack",
+      "name": "双手武器攻击",
+      "category": "双手武器",
+      "rig": "Large"
+    },
+    {
+      "id": "1:4",
+      "pack": 1,
+      "index": 4,
+      "source": "Melee_2H_Slam",
+      "name": "双手重砸",
+      "category": "双手武器",
+      "rig": "Large"
+    },
+    {
+      "id": "7:17",
+      "pack": 7,
+      "index": 17,
+      "source": "Melee_Dualwield_Attack_Stab",
+      "name": "双持刺击",
+      "category": "双持武器",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:15",
+      "pack": 7,
+      "index": 15,
+      "source": "Melee_Dualwield_Attack_Chop",
+      "name": "双持劈砍",
+      "category": "双持武器",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:16",
+      "pack": 7,
+      "index": 16,
+      "source": "Melee_Dualwield_Attack_Slice",
+      "name": "双持斩击",
+      "category": "双持武器",
+      "rig": "Medium"
+    },
+    {
+      "id": "1:9",
+      "pack": 1,
+      "index": 9,
+      "source": "Melee_Dualwield_Slash",
+      "name": "双持挥斩",
+      "category": "双持武器",
+      "rig": "Large"
+    },
+    {
+      "id": "1:10",
+      "pack": 1,
+      "index": 10,
+      "source": "Melee_Dualwield_SlashCombo",
+      "name": "双持挥斩连招",
+      "category": "双持武器",
+      "rig": "Large"
+    },
+    {
+      "id": "7:19",
+      "pack": 7,
+      "index": 19,
+      "source": "Melee_Unarmed_Attack_Punch_A",
+      "name": "徒手拳击一式",
+      "category": "徒手格斗",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:20",
+      "pack": 7,
+      "index": 20,
+      "source": "Melee_Unarmed_Idle",
+      "name": "徒手格斗待机",
+      "category": "徒手格斗",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:18",
+      "pack": 7,
+      "index": 18,
+      "source": "Melee_Unarmed_Attack_Kick",
+      "name": "徒手踢击",
+      "category": "徒手格斗",
+      "rig": "Medium"
+    },
+    {
+      "id": "1:13",
+      "pack": 1,
+      "index": 13,
+      "source": "Melee_Unarmed_Punch",
+      "name": "徒手拳击",
+      "category": "徒手格斗",
+      "rig": "Large"
+    },
+    {
+      "id": "1:11",
+      "pack": 1,
+      "index": 11,
+      "source": "Melee_Unarmed_Idle",
+      "name": "徒手格斗待机",
+      "category": "徒手格斗",
+      "rig": "Large"
+    },
+    {
+      "id": "1:12",
+      "pack": 1,
+      "index": 12,
+      "source": "Melee_Unarmed_Kick",
+      "name": "徒手踢击",
+      "category": "徒手格斗",
+      "rig": "Large"
+    },
+    {
+      "id": "1:14",
+      "pack": 1,
+      "index": 14,
+      "source": "Melee_Unarmed_Smash",
+      "name": "徒手重砸",
+      "category": "徒手格斗",
+      "rig": "Large"
+    },
+    {
+      "id": "7:14",
+      "pack": 7,
+      "index": 14,
+      "source": "Melee_Blocking",
+      "name": "持续格挡",
+      "category": "防御与格挡",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:12",
+      "pack": 7,
+      "index": 12,
+      "source": "Melee_Block_Attack",
+      "name": "格挡反击",
+      "category": "防御与格挡",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:13",
+      "pack": 7,
+      "index": 13,
+      "source": "Melee_Block_Hit",
+      "name": "格挡受击",
+      "category": "防御与格挡",
+      "rig": "Medium"
+    },
+    {
+      "id": "7:11",
+      "pack": 7,
+      "index": 11,
+      "source": "Melee_Block",
+      "name": "格挡起手",
+      "category": "防御与格挡",
+      "rig": "Medium"
+    },
+    {
+      "id": "1:8",
+      "pack": 1,
+      "index": 8,
+      "source": "Melee_Blocking",
+      "name": "持续格挡",
+      "category": "防御与格挡",
+      "rig": "Large"
+    },
+    {
+      "id": "1:6",
+      "pack": 1,
+      "index": 6,
+      "source": "Melee_Block_Attack",
+      "name": "格挡反击",
+      "category": "防御与格挡",
+      "rig": "Large"
+    },
+    {
+      "id": "1:7",
+      "pack": 1,
+      "index": 7,
+      "source": "Melee_Block_Hit",
+      "name": "格挡受击",
+      "category": "防御与格挡",
+      "rig": "Large"
+    },
+    {
+      "id": "1:5",
+      "pack": 1,
+      "index": 5,
+      "source": "Melee_Block",
+      "name": "格挡起手",
+      "category": "防御与格挡",
+      "rig": "Large"
+    },
+    {
+      "id": "8:0",
+      "pack": 8,
+      "index": 0,
+      "source": "Ranged_1H_Aiming",
+      "name": "单手持枪瞄准",
+      "category": "远程攻击",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:3",
+      "pack": 8,
+      "index": 3,
+      "source": "Ranged_1H_Shooting",
+      "name": "单手持续射击",
+      "category": "远程攻击",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:2",
+      "pack": 8,
+      "index": 2,
+      "source": "Ranged_1H_Shoot",
+      "name": "单手武器射击",
+      "category": "远程攻击",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:1",
+      "pack": 8,
+      "index": 1,
+      "source": "Ranged_1H_Reload",
+      "name": "单手武器装填",
+      "category": "远程攻击",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:4",
+      "pack": 8,
+      "index": 4,
+      "source": "Ranged_2H_Aiming",
+      "name": "双手持枪瞄准",
+      "category": "远程攻击",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:7",
+      "pack": 8,
+      "index": 7,
+      "source": "Ranged_2H_Shooting",
+      "name": "双手持续射击",
+      "category": "远程攻击",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:6",
+      "pack": 8,
+      "index": 6,
+      "source": "Ranged_2H_Shoot",
+      "name": "双手武器射击",
+      "category": "远程攻击",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:5",
+      "pack": 8,
+      "index": 5,
+      "source": "Ranged_2H_Reload",
+      "name": "双手武器装填",
+      "category": "远程攻击",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:10",
+      "pack": 8,
+      "index": 10,
+      "source": "Ranged_Bow_Draw_Up",
+      "name": "向上拉弓",
+      "category": "弓箭动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:13",
+      "pack": 8,
+      "index": 13,
+      "source": "Ranged_Bow_Release_Up",
+      "name": "向上放箭",
+      "category": "弓箭动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:8",
+      "pack": 8,
+      "index": 8,
+      "source": "Ranged_Bow_Aiming_Idle",
+      "name": "弓箭瞄准待机",
+      "category": "弓箭动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:9",
+      "pack": 8,
+      "index": 9,
+      "source": "Ranged_Bow_Draw",
+      "name": "拉弓",
+      "category": "弓箭动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:11",
+      "pack": 8,
+      "index": 11,
+      "source": "Ranged_Bow_Idle",
+      "name": "持弓待机",
+      "category": "弓箭动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:12",
+      "pack": 8,
+      "index": 12,
+      "source": "Ranged_Bow_Release",
+      "name": "放箭",
+      "category": "弓箭动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:14",
+      "pack": 8,
+      "index": 14,
+      "source": "Ranged_Magic_Raise",
+      "name": "举手施法",
+      "category": "魔法技能",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:16",
+      "pack": 8,
+      "index": 16,
+      "source": "Ranged_Magic_Spellcasting",
+      "name": "施法",
+      "category": "魔法技能",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:17",
+      "pack": 8,
+      "index": 17,
+      "source": "Ranged_Magic_Spellcasting_Long",
+      "name": "长时间施法",
+      "category": "魔法技能",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:15",
+      "pack": 8,
+      "index": 15,
+      "source": "Ranged_Magic_Shoot",
+      "name": "魔法发射",
+      "category": "魔法技能",
+      "rig": "Medium"
+    },
+    {
+      "id": "8:18",
+      "pack": 8,
+      "index": 18,
+      "source": "Ranged_Magic_Summon",
+      "name": "魔法召唤",
+      "category": "魔法技能",
+      "rig": "Medium"
+    },
+    {
+      "id": "9:1",
+      "pack": 9,
+      "index": 1,
+      "source": "Death_A_Pose",
+      "name": "倒地姿势一式",
+      "category": "受击与倒地",
+      "rig": "Medium"
+    },
+    {
+      "id": "9:3",
+      "pack": 9,
+      "index": 3,
+      "source": "Death_B_Pose",
+      "name": "倒地姿势二式",
+      "category": "受击与倒地",
+      "rig": "Medium"
+    },
+    {
+      "id": "9:4",
+      "pack": 9,
+      "index": 4,
+      "source": "Hit_A",
+      "name": "受击一式",
+      "category": "受击与倒地",
+      "rig": "Medium"
+    },
+    {
+      "id": "9:5",
+      "pack": 9,
+      "index": 5,
+      "source": "Hit_B",
+      "name": "受击二式",
+      "category": "受击与倒地",
+      "rig": "Medium"
+    },
+    {
+      "id": "9:0",
+      "pack": 9,
+      "index": 0,
+      "source": "Death_A",
+      "name": "死亡倒地一式",
+      "category": "受击与倒地",
+      "rig": "Medium"
+    },
+    {
+      "id": "9:2",
+      "pack": 9,
+      "index": 2,
+      "source": "Death_B",
+      "name": "死亡倒地二式",
+      "category": "受击与倒地",
+      "rig": "Medium"
+    },
+    {
+      "id": "2:1",
+      "pack": 2,
+      "index": 1,
+      "source": "Death_A_Pose",
+      "name": "倒地姿势一式",
+      "category": "受击与倒地",
+      "rig": "Large"
+    },
+    {
+      "id": "2:2",
+      "pack": 2,
+      "index": 2,
+      "source": "Hit_A",
+      "name": "受击一式",
+      "category": "受击与倒地",
+      "rig": "Large"
+    },
+    {
+      "id": "2:0",
+      "pack": 2,
+      "index": 0,
+      "source": "Death_A",
+      "name": "死亡倒地一式",
+      "category": "受击与倒地",
+      "rig": "Large"
+    },
+    {
+      "id": "9:8",
+      "pack": 9,
+      "index": 8,
+      "source": "Interact",
+      "name": "交互",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "12:11",
+      "pack": 12,
+      "index": 11,
+      "source": "Sit_Ups",
+      "name": "仰卧起坐",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "9:14",
+      "pack": 9,
+      "index": 14,
+      "source": "Use_Item",
+      "name": "使用物品",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "12:4",
+      "pack": 12,
+      "index": 4,
+      "source": "Push_Ups",
+      "name": "俯卧撑",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "12:9",
+      "pack": 12,
+      "index": 9,
+      "source": "Sit_Floor_Idle",
+      "name": "地面坐姿",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "12:10",
+      "pack": 12,
+      "index": 10,
+      "source": "Sit_Floor_StandUp",
+      "name": "地面起身",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "12:5",
+      "pack": 12,
+      "index": 5,
+      "source": "Sit_Chair_Down",
+      "name": "坐上椅子",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "12:8",
+      "pack": 12,
+      "index": 8,
+      "source": "Sit_Floor_Down",
+      "name": "坐到地面",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "9:13",
+      "pack": 9,
+      "index": 13,
+      "source": "Throw",
+      "name": "投掷物品",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "9:9",
+      "pack": 9,
+      "index": 9,
+      "source": "PickUp",
+      "name": "拾取物品",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "12:13",
+      "pack": 12,
+      "index": 13,
+      "source": "Waving",
+      "name": "挥手",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "12:6",
+      "pack": 12,
+      "index": 6,
+      "source": "Sit_Chair_Idle",
+      "name": "椅上待机",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "12:7",
+      "pack": 12,
+      "index": 7,
+      "source": "Sit_Chair_StandUp",
+      "name": "椅上起身",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "12:0",
+      "pack": 12,
+      "index": 0,
+      "source": "Cheering",
+      "name": "欢呼",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "12:1",
+      "pack": 12,
+      "index": 1,
+      "source": "Lie_Down",
+      "name": "躺下",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "12:2",
+      "pack": 12,
+      "index": 2,
+      "source": "Lie_Idle",
+      "name": "躺卧待机",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "12:3",
+      "pack": 12,
+      "index": 3,
+      "source": "Lie_StandUp",
+      "name": "躺卧起身",
+      "category": "日常与交互",
+      "rig": "Medium"
+    },
+    {
+      "id": "5:0",
+      "pack": 5,
+      "index": 0,
+      "source": "Flexing",
+      "name": "展示肌肉",
+      "category": "日常与交互",
+      "rig": "Large"
+    },
+    {
+      "id": "14:23",
+      "pack": 14,
+      "index": 23,
+      "source": "Work_A",
+      "name": "劳动一式",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:25",
+      "pack": 14,
+      "index": 25,
+      "source": "Work_C",
+      "name": "劳动三式",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:24",
+      "pack": 14,
+      "index": 24,
+      "source": "Work_B",
+      "name": "劳动二式",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:16",
+      "pack": 14,
+      "index": 16,
+      "source": "Lockpick",
+      "name": "开锁单次",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:13",
+      "pack": 14,
+      "index": 13,
+      "source": "Holding_A",
+      "name": "持物一式",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:15",
+      "pack": 14,
+      "index": 15,
+      "source": "Holding_C",
+      "name": "持物三式",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:14",
+      "pack": 14,
+      "index": 14,
+      "source": "Holding_B",
+      "name": "持物二式",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:26",
+      "pack": 14,
+      "index": 26,
+      "source": "Working_A",
+      "name": "持续劳动一式",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:28",
+      "pack": 14,
+      "index": 28,
+      "source": "Working_C",
+      "name": "持续劳动三式",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:27",
+      "pack": 14,
+      "index": 27,
+      "source": "Working_B",
+      "name": "持续劳动二式",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:17",
+      "pack": 14,
+      "index": 17,
+      "source": "Lockpicking",
+      "name": "持续开锁",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:3",
+      "pack": 14,
+      "index": 3,
+      "source": "Digging",
+      "name": "持续挖掘",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:1",
+      "pack": 14,
+      "index": 1,
+      "source": "Chopping",
+      "name": "持续砍伐",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:12",
+      "pack": 14,
+      "index": 12,
+      "source": "Hammering",
+      "name": "持续锤击",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:21",
+      "pack": 14,
+      "index": 21,
+      "source": "Sawing",
+      "name": "持续锯切",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:19",
+      "pack": 14,
+      "index": 19,
+      "source": "Pickaxing",
+      "name": "持续镐击",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:2",
+      "pack": 14,
+      "index": 2,
+      "source": "Dig",
+      "name": "挖掘单次",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:0",
+      "pack": 14,
+      "index": 0,
+      "source": "Chop",
+      "name": "砍伐单次",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:11",
+      "pack": 14,
+      "index": 11,
+      "source": "Hammer",
+      "name": "锤击单次",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:20",
+      "pack": 14,
+      "index": 20,
+      "source": "Saw",
+      "name": "锯切单次",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:18",
+      "pack": 14,
+      "index": 18,
+      "source": "Pickaxe",
+      "name": "镐击单次",
+      "category": "工具与劳动",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:5",
+      "pack": 14,
+      "index": 5,
+      "source": "Fishing_Cast",
+      "name": "抛竿",
+      "category": "钓鱼动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:6",
+      "pack": 14,
+      "index": 6,
+      "source": "Fishing_Catch",
+      "name": "捕获鱼",
+      "category": "钓鱼动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:10",
+      "pack": 14,
+      "index": 10,
+      "source": "Fishing_Tug",
+      "name": "提拉鱼竿",
+      "category": "钓鱼动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:8",
+      "pack": 14,
+      "index": 8,
+      "source": "Fishing_Reeling",
+      "name": "收线",
+      "category": "钓鱼动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:7",
+      "pack": 14,
+      "index": 7,
+      "source": "Fishing_Idle",
+      "name": "钓鱼待机",
+      "category": "钓鱼动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:4",
+      "pack": 14,
+      "index": 4,
+      "source": "Fishing_Bite",
+      "name": "鱼咬钩",
+      "category": "钓鱼动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "14:9",
+      "pack": 14,
+      "index": 9,
+      "source": "Fishing_Struggling",
+      "name": "鱼挣扎应对",
+      "category": "钓鱼动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "13:4",
+      "pack": 13,
+      "index": 4,
+      "source": "Skeletons_Death",
+      "name": "骷髅倒地",
+      "category": "骷髅动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "13:5",
+      "pack": 13,
+      "index": 5,
+      "source": "Skeletons_Death_Pose",
+      "name": "骷髅倒地姿势",
+      "category": "骷髅动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "13:1",
+      "pack": 13,
+      "index": 1,
+      "source": "Skeletons_Awaken_Floor",
+      "name": "骷髅地面苏醒",
+      "category": "骷髅动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "13:6",
+      "pack": 13,
+      "index": 6,
+      "source": "Skeletons_Death_Resurrect",
+      "name": "骷髅复活",
+      "category": "骷髅动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "13:7",
+      "pack": 13,
+      "index": 7,
+      "source": "Skeletons_Idle",
+      "name": "骷髅待机",
+      "category": "骷髅动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "13:11",
+      "pack": 13,
+      "index": 11,
+      "source": "Skeletons_Taunt",
+      "name": "骷髅挑衅",
+      "category": "骷髅动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "13:10",
+      "pack": 13,
+      "index": 10,
+      "source": "Skeletons_Spawn_Ground",
+      "name": "骷髅破土出现",
+      "category": "骷髅动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "13:3",
+      "pack": 13,
+      "index": 3,
+      "source": "Skeletons_Awaken_Standing",
+      "name": "骷髅站立苏醒",
+      "category": "骷髅动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "13:2",
+      "pack": 13,
+      "index": 2,
+      "source": "Skeletons_Awaken_Floor_Long",
+      "name": "骷髅缓慢苏醒",
+      "category": "骷髅动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "13:13",
+      "pack": 13,
+      "index": 13,
+      "source": "Skeletons_Walking",
+      "name": "骷髅行走",
+      "category": "骷髅动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "13:12",
+      "pack": 13,
+      "index": 12,
+      "source": "Skeletons_Taunt_Longer",
+      "name": "骷髅长时间挑衅",
+      "category": "骷髅动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "13:8",
+      "pack": 13,
+      "index": 8,
+      "source": "Skeletons_Inactive_Floor_Pose",
+      "name": "骷髅静止地面姿势",
+      "category": "骷髅动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "13:9",
+      "pack": 13,
+      "index": 9,
+      "source": "Skeletons_Inactive_Standing_Pose",
+      "name": "骷髅静止站姿",
+      "category": "骷髅动作",
+      "rig": "Medium"
+    },
+    {
+      "id": "13:0",
+      "pack": 13,
+      "index": 0,
+      "source": "EXPERIMENTAL_Medium_Transform",
+      "name": "中型角色实验性变身",
+      "category": "特殊变身",
+      "rig": "Medium"
+    },
+    {
+      "id": "9:11",
+      "pack": 9,
+      "index": 11,
+      "source": "Spawn_Ground",
+      "name": "地面登场",
+      "category": "特殊变身",
+      "rig": "Medium"
+    },
+    {
+      "id": "9:10",
+      "pack": 9,
+      "index": 10,
+      "source": "Spawn_Air",
+      "name": "空中登场",
+      "category": "特殊变身",
+      "rig": "Medium"
+    },
+    {
+      "id": "6:0",
+      "pack": 6,
+      "index": 0,
+      "source": "EXPERIMENTAL_Large_Transform",
+      "name": "大型角色实验性变身",
+      "category": "特殊变身",
+      "rig": "Large"
+    }
+  ]
+}
