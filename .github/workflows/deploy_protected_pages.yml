@@ -157,6 +157,10 @@ jobs:
         if: ${{ hashFiles('motion-studio/assets/100style/manifest.json') != '' }}
         run: node motion-studio/tools/smoke_100style.mjs .site
 
+      - name: Verify experimental martial transfer playback in public artifact
+        if: ${{ hashFiles('motion-studio/assets/research/retarget-batch/manifest.json') != '' }}
+        run: node motion-studio/tools/smoke_retarget.mjs .site
+
       - name: Verify Asset Compass four-page public build
         run: |
           node --check .site/macro/compass-pages.js
