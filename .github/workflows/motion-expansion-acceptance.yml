@@ -1,0 +1,44 @@
+name: Expanded motion library acceptance
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'motion-studio/**'
+      - '.github/workflows/motion-expansion-acceptance.yml'
+  push:
+    branches: [agent/motion-studio-mesh2motion-v463]
+    paths:
+      - 'motion-studio/tools/prototype_retarget.py'
+      - '.github/workflows/motion-expansion-acceptance.yml'
+permissions:
+  contents: write
+concurrency:
+  group: motion-expansion-acceptance
+  cancel-in-progress: true
+jobs:
+  acceptance:
+    if: github.ref == 'refs/heads/agent/motion-studio-mesh2motion-v463' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'agent/motion-studio-mesh2motion-v463')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/motion-studio-mesh2motion-v463
+          sparse-checkout: |
+            motion-studio
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate six authentic 100STYLE recordings in Chromium
+        run: node motion-studio/tools/smoke_100style.mjs .
+      - name: Generate experimental skinned ACCAD sample
+        run: python3 motion-studio/tools/prototype_retarget.py
+      - name: Commit experimental research output only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add motion-studio/assets/research/retarget
+          git diff --cached --quiet && exit 0
+          git commit -m "data(motion): experimental skinned ACCAD sample, not visual certified"
+          git pull --rebase origin agent/motion-studio-mesh2motion-v463
+          git push origin HEAD:agent/motion-studio-mesh2motion-v463
