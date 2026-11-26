@@ -1,0 +1,48 @@
+name: Expanded motion library acceptance
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'motion-studio/**'
+      - '.github/workflows/motion-expansion-acceptance.yml'
+  push:
+    branches: [agent/motion-studio-mesh2motion-v463]
+    paths:
+      - 'motion-studio/tools/prototype_retarget.py'
+      - '.github/workflows/motion-expansion-acceptance.yml'
+permissions:
+  contents: read
+concurrency:
+  group: motion-expansion-acceptance
+  cancel-in-progress: true
+jobs:
+  acceptance:
+    if: github.ref == 'refs/heads/agent/motion-studio-mesh2motion-v463' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'agent/motion-studio-mesh2motion-v463')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            motion-studio
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate six authentic 100STYLE recordings in Chromium
+        run: node motion-studio/tools/smoke_100style.mjs .
+      - name: Verify committed experimental sample and provenance
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,sys
+          from pathlib import Path
+          sys.path.insert(0,'motion-studio/tools')
+          from import_kinemiq import glb
+          root=Path('motion-studio')
+          r=json.loads((root/'assets/research/retarget/report.json').read_text())
+          for item in [r,r['source'],r['target']]:
+              assert hashlib.sha256((root/item['path']).read_bytes()).hexdigest()==item['sha256']
+          d=glb((root/r['path']).read_bytes())
+          assert d['skins'] and d['meshes'] and len(d['animations'][0]['channels'])==r['tracks']==23
+          assert not r['visual_certified'] and not r['ik_certified'] and not r['godot_certified']
+          print('Committed sample integrity and experimental status verified')
+          PY

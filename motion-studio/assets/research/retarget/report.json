@@ -1,0 +1,34 @@
+{
+  "schema": "ooglex.retarget.prototype.v1",
+  "source": {
+    "id": "0a13974756cdbde656520113",
+    "name": "Male2_G4_SpinningBackKick",
+    "category": "武术腿法",
+    "pack": "Male2_bvh.zip",
+    "path": "assets/accad/0a13974756cdbde656520113.bvh",
+    "frames": 83,
+    "frameTime": 0.0333333,
+    "duration": 2.7333306000000004,
+    "sha256": "0a13974756cdbde65652011357d8097a052b9512c5430caf49066ec59d02f5cb",
+    "original": "Male2_G4_SpinningBackKick.bvh",
+    "license": "CC BY 3.0",
+    "author": "ACCAD/The Ohio State University",
+    "source": "https://accad.osu.edu/research/motion-lab/mocap-system-and-data"
+  },
+  "target": {
+    "path": "assets/kinemiq/3d1306e089f6374dc48fa6eb.glb",
+    "sha256": "3d1306e089f6374dc48fa6eb1354e94bd2ef4a8b1a90886ae23821cbfda93d3d",
+    "original": "KinemIQ_Mannequin.glb"
+  },
+  "path": "assets/research/retarget/spinning-back-kick-experimental.glb",
+  "sha256": "44a57749a97e2538b72aa17c97d8d72d7bc26eece5300261ace6bdcc5bc3d409",
+  "frames": 83,
+  "tracks": 23,
+  "skin_joints": 66,
+  "max_primary_direction_error_deg": 1.4787793334710982e-06,
+  "root_motion_scale": 0.010354291254211423,
+  "visual_certified": false,
+  "ik_certified": false,
+  "godot_certified": false,
+  "scope": "Experimental joint-direction transfer, not a production-ready animation. Finger and end-joint twists held at rest."
+}
