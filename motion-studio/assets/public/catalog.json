@@ -1,0 +1,183 @@
+{
+  "source": "Quaternius Universal Animation Library Standard",
+  "source_url": "https://quaternius.com/packs/universalanimationlibrary.html",
+  "license": "CC0-1.0",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "archive_sha256": "cc73fc4e495b82958207316596317a3f40b9fa38065bde1027937452da537724",
+  "original_file": "Universal Animation Library[Standard]/Unreal-Godot/UAL1_Standard.glb",
+  "count": 43,
+  "animations": [
+    {
+      "index": 0,
+      "name": "A_TPose"
+    },
+    {
+      "index": 1,
+      "name": "Crouch_Fwd_Loop"
+    },
+    {
+      "index": 2,
+      "name": "Crouch_Idle_Loop"
+    },
+    {
+      "index": 3,
+      "name": "Dance_Loop"
+    },
+    {
+      "index": 4,
+      "name": "Death01"
+    },
+    {
+      "index": 5,
+      "name": "Driving_Loop"
+    },
+    {
+      "index": 6,
+      "name": "Fixing_Kneeling"
+    },
+    {
+      "index": 7,
+      "name": "Hit_Chest"
+    },
+    {
+      "index": 8,
+      "name": "Hit_Head"
+    },
+    {
+      "index": 9,
+      "name": "Idle_Loop"
+    },
+    {
+      "index": 10,
+      "name": "Idle_Talking_Loop"
+    },
+    {
+      "index": 11,
+      "name": "Idle_Torch_Loop"
+    },
+    {
+      "index": 12,
+      "name": "Interact"
+    },
+    {
+      "index": 13,
+      "name": "Jog_Fwd_Loop"
+    },
+    {
+      "index": 14,
+      "name": "Jump_Land"
+    },
+    {
+      "index": 15,
+      "name": "Jump_Loop"
+    },
+    {
+      "index": 16,
+      "name": "Jump_Start"
+    },
+    {
+      "index": 17,
+      "name": "PickUp_Table"
+    },
+    {
+      "index": 18,
+      "name": "Pistol_Aim_Down"
+    },
+    {
+      "index": 19,
+      "name": "Pistol_Aim_Neutral"
+    },
+    {
+      "index": 20,
+      "name": "Pistol_Aim_Up"
+    },
+    {
+      "index": 21,
+      "name": "Pistol_Idle_Loop"
+    },
+    {
+      "index": 22,
+      "name": "Pistol_Reload"
+    },
+    {
+      "index": 23,
+      "name": "Pistol_Shoot"
+    },
+    {
+      "index": 24,
+      "name": "Punch_Cross"
+    },
+    {
+      "index": 25,
+      "name": "Punch_Jab"
+    },
+    {
+      "index": 26,
+      "name": "Push_Loop"
+    },
+    {
+      "index": 27,
+      "name": "Roll"
+    },
+    {
+      "index": 28,
+      "name": "Sitting_Enter"
+    },
+    {
+      "index": 29,
+      "name": "Sitting_Exit"
+    },
+    {
+      "index": 30,
+      "name": "Sitting_Idle_Loop"
+    },
+    {
+      "index": 31,
+      "name": "Sitting_Talking_Loop"
+    },
+    {
+      "index": 32,
+      "name": "Spell_Simple_Enter"
+    },
+    {
+      "index": 33,
+      "name": "Spell_Simple_Exit"
+    },
+    {
+      "index": 34,
+      "name": "Spell_Simple_Idle_Loop"
+    },
+    {
+      "index": 35,
+      "name": "Spell_Simple_Shoot"
+    },
+    {
+      "index": 36,
+      "name": "Sprint_Loop"
+    },
+    {
+      "index": 37,
+      "name": "Swim_Fwd_Loop"
+    },
+    {
+      "index": 38,
+      "name": "Swim_Idle_Loop"
+    },
+    {
+      "index": 39,
+      "name": "Sword_Attack"
+    },
+    {
+      "index": 40,
+      "name": "Sword_Idle"
+    },
+    {
+      "index": 41,
+      "name": "Walk_Formal_Loop"
+    },
+    {
+      "index": 42,
+      "name": "Walk_Loop"
+    }
+  ]
+}

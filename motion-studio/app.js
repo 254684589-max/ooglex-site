@@ -160,4 +160,75 @@ renderer.setAnimationLoop(()=>{
  renderer.render(scene,camera);
 });
 
-load('./assets/robot.glb','Ooglex Motion Master');
+
+async function openPublicLibrary(){
+
+ await load(
+   './assets/public/library.glb',
+   'Quaternius · CC0'
+ );
+
+ if(!model || !animations.length){
+   $('publicCount').textContent='公开动作库加载失败';
+   return;
+ }
+
+ const initial = animations.findIndex(
+   a => /idle/i.test(a.name)
+ );
+
+ const first = initial >= 0 ? initial : 0;
+
+ chooseClip(first);
+ $('clips').value = first;
+
+ function renderActions(){
+
+   const q = $('actionSearch').value.toLowerCase();
+   const list = $('publicActions');
+
+   list.replaceChildren();
+
+   animations.forEach((clip,i)=>{
+
+     if(!clip.name.toLowerCase().includes(q))return;
+
+     const btn = document.createElement('button');
+
+     btn.textContent =
+       clip.name + ' · ' + clip.duration.toFixed(2) + 's';
+
+     btn.classList.toggle(
+       'active', Number($('clips').value)===i
+     );
+
+     btn.onclick=()=>{
+       chooseClip(i);
+       $('clips').value=i;
+       $('status').textContent=
+         clip.name+' · CC0 · '+clip.duration.toFixed(2)+'秒';
+       renderActions();
+     };
+
+     list.append(btn);
+   });
+
+   $('publicCount').textContent=
+     '公开动作：'+animations.length+
+     ' · 当前显示：'+list.children.length;
+ }
+
+ $('actionSearch').oninput=renderActions;
+
+ $('clips').onchange=()=>{
+   chooseClip(Number($('clips').value));
+   renderActions();
+ };
+
+ renderActions();
+}
+
+openPublicLibrary().catch(e=>{
+ $('status').textContent='加载失败：'+e.message;
+});
+

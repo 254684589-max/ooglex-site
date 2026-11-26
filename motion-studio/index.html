@@ -27,7 +27,20 @@ main{display:flex;flex-direction:column-reverse}
 aside{border-right:0}
 #viewer{height:55vh}
 }
+
+#publicActions button{
+display:block;width:100%;text-align:left;
+padding:12px;margin:5px 0;overflow-wrap:anywhere
+}
+#publicActions button:hover{
+border-color:#61c2b5;background:#30453f
+}
+#publicActions button.active{
+border-color:#61c2b5;background:#25433f
+}
+aside>label,#count,#files{display:none}
 </style>
+
 <script type="importmap">
 {
   "imports":{
@@ -44,8 +57,23 @@ aside{border-right:0}
 </header>
 <main>
 <aside>
-<h3>动作资产</h3>
-<p>导入自己的GLB动画文件，仅在浏览器本地读取，不上传服务器。</p>
+
+<h3>公开动作资产库</h3>
+<p>CC0 动画资源 · 无需上传文件</p>
+
+<input id="actionSearch"
+placeholder="搜索动作..."
+style="width:100%;padding:12px;background:#202c39;color:white;border:1px solid #405364;border-radius:6px">
+
+<p id="publicCount">正在加载公开动作库...</p>
+
+<div id="publicActions"
+style="max-height:60vh;overflow:auto"></div>
+
+<p><a href="https://quaternius.com/packs/universalanimationlibrary.html"
+style="color:#91b9c9">资源来源：Quaternius · CC0</a></p>
+
+<p>点击任意动作，即可直接在线播放。</p>
 <label>选择动作文件
 <input type="file" id="upload" accept=".glb" multiple>
 </label>
@@ -72,6 +100,6 @@ aside{border-right:0}
 <p id="status">正在加载标准机器人……</p>
 </section>
 </main>
-<script type="module" src="./app.js"></script>
+<script type="module" src="./app.js?v=450"></script>
 </body>
 </html>
