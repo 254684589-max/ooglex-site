@@ -1,0 +1,30 @@
+name: Import ACCAD motion data
+on:
+  push:
+    branches: [agent/motion-studio-accad-v457]
+    paths:
+      - '.github/workflows/motion-accad-import.yml'
+      - 'motion-studio/tools/import_accad.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    if: github.ref == 'refs/heads/agent/motion-studio-accad-v457'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            motion-studio
+      - name: Fetch and validate official BVH archives
+        run: python3 motion-studio/tools/import_accad.py
+      - name: Commit validated data to integration branch only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add motion-studio/assets/accad
+          git diff --cached --quiet && exit 0
+          git commit -m "data(motion): import validated ACCAD BVH assets"
+          git push origin HEAD:agent/motion-studio-accad-v457
