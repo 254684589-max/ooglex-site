@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_v58_six_asset_model_evidence",
-  "generated_at": "2026-11-25T01:06:34.136849+00:00",
+  "generated_at": "2026-11-26T00:42:00.106210+00:00",
   "status": "research_only_no_authorized_scores",
   "input_sha256": {
-    "snapshot": "65938689548002c4826d88607aa241f784da40d9470faf7bb48611d2ac70232e",
-    "v54": "d015fc25a00f027c783d2eda1a6c9320dfd0b9d9c1a255abfeb41395732b5c76",
-    "v55": "638dd48c67820ad1383633c16b38132e36e3b869b53c56dca0407472f11b195f",
+    "snapshot": "ba3c91c5017794cb6d93ee9ad2b33d893902022c0b51d70a64e7beef6408b4a0",
+    "v54": "0b10563f86583089d35efe3d422d7e14348e7280fd01a0d6c0b4c1abcc8d437c",
+    "v55": "ef209994b46d5f9ce2237a167e28b4fd6d3d0d3dd1f15c9eeecc03984823b386",
     "v56": "7c230f173a47d5355eb96e30efb2c8c646d152a033beeaf2a2bcffa44fe6ffc8",
     "v57": "d04e33837d2cd37250c2964c1d4f444c9ad4efd8f43a9e55deabb64af97b065a",
     "v57_overlap": "48e4bc702cf1e6bf9c7434711de1bc5b8155305258ee295d43691f15c0bc75c8",
-    "v58_usd": "adff175a115a08eeb30e763e991cceefd4d27e4c8d29e74190fee8d395089e51",
-    "history": "f15c13787e206b734930bbaf159bc07545d384ad44abae3bbd28378029543408",
+    "v58_usd": "3319233a366954eecf27906388bca7abf319e04f5e82f766ba60756e35afe480",
+    "history": "8bc30f7d5ce94d14402f3ad2fe035b7faa75082dfd0dd5e579984da61156b896",
     "model": "a1d5a1a5f3dad358df8d770d639ef9d8eab78ba793360ad89355093daf4a4c4f"
   },
   "macro_observation_group_count": 6,
