@@ -1,0 +1,1890 @@
+{
+  "schema": "ooglex.mesh2motion.v1",
+  "repository": "https://github.com/Mesh2Motion/mesh2motion-app",
+  "source_commit": "2609e0345371763c4c390f751d79021285da04b1",
+  "license": "CC0-1.0",
+  "records": [
+    {
+      "id": "1e2ca50deb49e76d578bc323-0",
+      "name": "Custom",
+      "index": 0,
+      "duration": 0.7916666666666666,
+      "category": "其他",
+      "rig": "m2m-custom-animation-wrong-bone-count",
+      "path": "assets/mesh2motion/1e2ca50deb49e76d578bc323.glb",
+      "sha256": "1e2ca50deb49e76d578bc323f48b2ad0e438f11be6019995cf0c756ac202b518",
+      "original": "static/test-files/import custom animations/m2m-custom-animation-wrong-bone-count.glb",
+      "hasSkinnedMesh": true,
+      "license": "CC0-1.0",
+      "source": "https://raw.githubusercontent.com/Mesh2Motion/mesh2motion-app/2609e0345371763c4c390f751d79021285da04b1/static/test-files/import%20custom%20animations/m2m-custom-animation-wrong-bone-count.glb",
+      "unique_motion_credit": 0
+    },
+    {
+      "id": "25e46317a504ff079bf53e6b-0",
+      "name": "New Custom",
+      "index": 0,
+      "duration": 1.2083333333333333,
+      "category": "其他",
+      "rig": "m2m-custom-animtion-success",
+      "path": "assets/mesh2motion/25e46317a504ff079bf53e6b.glb",
+      "sha256": "25e46317a504ff079bf53e6b2064e1bc8021088a1690535bd82da5722400c0ab",
+      "original": "static/test-files/import custom animations/m2m-custom-animtion-success.glb",
+      "hasSkinnedMesh": true,
+      "license": "CC0-1.0",
+      "source": "https://raw.githubusercontent.com/Mesh2Motion/mesh2motion-app/2609e0345371763c4c390f751d79021285da04b1/static/test-files/import%20custom%20animations/m2m-custom-animtion-success.glb",
+      "unique_motion_credit": 0
+    },
+    {
+      "id": "08644cda62ac1f184e5439ff-0",
+      "name": "CustomAnimation",
+      "index": 0,
+      "duration": 1.2083333333333333,
+      "category": "其他",
+      "rig": "m2m-wrong-bone-names",
+      "path": "assets/mesh2motion/08644cda62ac1f184e5439ff.glb",
+      "sha256": "08644cda62ac1f184e5439ffb9ef3fbaa6229fbea1649772965ab828cddda67d",
+      "original": "static/test-files/import custom animations/m2m-wrong-bone-names.glb",
+      "hasSkinnedMesh": true,
+      "license": "CC0-1.0",
+      "source": "https://raw.githubusercontent.com/Mesh2Motion/mesh2motion-app/2609e0345371763c4c390f751d79021285da04b1/static/test-files/import%20custom%20animations/m2m-wrong-bone-names.glb",
+      "unique_motion_credit": 0
+    }
+  ],
+  "models": [
+    {
+      "path": "assets/mesh2motion/1e2ca50deb49e76d578bc323.glb",
+      "sha256": "1e2ca50deb49e76d578bc323f48b2ad0e438f11be6019995cf0c756ac202b518",
+      "original": "static/test-files/import custom animations/m2m-custom-animation-wrong-bone-count.glb",
+      "clips": 1,
+      "bytes": 667884
+    },
+    {
+      "path": "assets/mesh2motion/25e46317a504ff079bf53e6b.glb",
+      "sha256": "25e46317a504ff079bf53e6b2064e1bc8021088a1690535bd82da5722400c0ab",
+      "original": "static/test-files/import custom animations/m2m-custom-animtion-success.glb",
+      "clips": 1,
+      "bytes": 697804
+    },
+    {
+      "path": "assets/mesh2motion/08644cda62ac1f184e5439ff.glb",
+      "sha256": "08644cda62ac1f184e5439ffb9ef3fbaa6229fbea1649772965ab828cddda67d",
+      "original": "static/test-files/import custom animations/m2m-wrong-bone-names.glb",
+      "clips": 1,
+      "bytes": 663152
+    }
+  ],
+  "excluded": [
+    {
+      "path": "static/assets/bird/animations/death.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/bird/animations/flap.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/bird/animations/glide.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/bird/animations/hop.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/bird/animations/idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/bird/animations/land.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/bird/animations/rest-pose.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/bird/animations/take-off.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/bird/animations/walk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/dragon/animations/attack.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/dragon/animations/death.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/dragon/animations/fire-breath.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/dragon/animations/fly-flap.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/dragon/animations/fly-glide.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/dragon/animations/hurt.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/dragon/animations/idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/dragon/animations/land.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/dragon/animations/rest-pose.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/dragon/animations/roar.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/dragon/animations/take-off.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/dragon/animations/walk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/bark.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/bite.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/death.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/fall.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/fetch.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/flip.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/howl.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/idle-alert.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/jump.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/play-bow.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/rest-pose.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/run.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/scratch-ear.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/shake-off.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/sit.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/sleep.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/sneak.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/swim.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/trot.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/animations/walk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/animations/death.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/animations/eating.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/animations/headbut.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/animations/idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/animations/kick.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/animations/lay-to-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/animations/rear.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/animations/rest-pose.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/animations/run.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/animations/sleep.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/animations/trot.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/animations/turn-left.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/animations/turn-right.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/animations/walk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/angry.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/attack-ground-pound.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/backflip.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/bow-pull-hold.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/bow-pull.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/bow-release.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/bow.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/burpee.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/cheer-one-arms.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/cheer-two-arms.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/chest-open.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/chop-tree.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/chop-wood.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/clapping.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/climb-ladder.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/climb-pipe.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/climb-wall.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/climbup-1m-rm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/confused.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/consume-powerup.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/consume.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/crawl-rm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/crawl.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/crouch-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/crouch-walk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dab.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dagger-stab.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dance-arm-pump.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dance-body-roll.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dance-charleston.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dance-reach-hip.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dance-simple.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/death-a.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/death-b.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/death-c.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/death-d.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/death-spin-rm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/defend.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dizzy.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dodge-back-rm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dodge-back.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dodge-left-rm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dodge-left.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dodge-right-rm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dodge-right.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/driving.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/drumming.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/drunk-walk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dual-wield-combo.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/dual-wield-cross-slash.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/farm-harvest.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/farm-plantseed.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/farm-watering.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/fighting-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/fighting-left-jab.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/fighting-right-jab.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/fishing-cast.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/fishing-catch.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/fishing-reel.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/fixing-kneeling.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/flying-forward-super.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/flying-forward.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/freefall.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/glide.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/golf-drive.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/golf-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/greeting.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/grenade-throw.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/guitar-playing.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/hammering.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/head-nod.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/help-one-arm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/help-two-arms.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/hit-chest.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/hit-head.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/hit-knockback-rm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/hit-knockback.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-a.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-foldarms.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-hurt.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-lantern.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-listening.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-rail-call.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-rail.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-shakeoff.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-shield-break.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-shield.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-subtle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-sword.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-talking.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-talkingphone.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/idle-torch.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/insult.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/interact.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/jog.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/jump-2-rm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/jump-2.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/jump-air.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/jump-attack.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/jump-land.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/jump-running.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/jump-start.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/jumping-jacks.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/kick-breach.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/kick-front.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/kick-roundhouse.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/kick-side.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/kick-spin.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/kneel.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/knife-throw.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/knock.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/ladder-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/land-three-point.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/laytoidle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/ledge-climb-up.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/ledge-hang.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/levitate-entrance.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/levitate-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/meditate.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/melee-hook-rec.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/melee-hook.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/mining.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/moonwalk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/mount-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/ninjajump-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/ninjajump-land.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/ninjajump-start.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/one-hand-slash-combo.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/one-hand-weapon-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/open-door.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/overhandthrow.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pick-up.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pickup-table.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pistol-aim-down.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pistol-aim-neutral.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pistol-aim-up.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pistol-fire.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pistol-idle-aim.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pistol-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pistol-prone.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pistol-reload-2.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pistol-reload.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pistol-shoot.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pistol-walk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/polearm-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/polearm-run.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/power-burst.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/power-up.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pray.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/punch-cross.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/punch-jab.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/push.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/pushup.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/reject.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/rest-pose.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/rifle-fire.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/rifle-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/rifle-reload.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/rifle-run.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/rifle-walk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/roll-rm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/roll.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/rope-hang.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/rope-pull.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/rope-swing.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/run-anime.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/run-female.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/run-stealth.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/salute.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/shield-dash-rm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/shield-oneshot.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/shiver.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/shovel-dig.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/singing.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sit-ground-crying.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sit-ground-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sitting-enter.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sitting-exit.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sitting-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sitting-talking.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sitting-writing.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sleeping.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/slide-exit.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/slide-start.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/slide.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/spear-throw.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/spear-thrust.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/spell-simple-enter.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/spell-simple-exit.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/spell-simple-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/spell-simple-shoot.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sprint.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/staff-combo.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/staff-spin.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/strafe-left.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/strafe-right.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/swim-2.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/swim-fwd.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/swim-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sword-attack-air-vertical.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sword-attack-rm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sword-attack.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sword-block.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sword-dash-rm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sword-regular-a-rec.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sword-regular-a.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sword-regular-b-rec.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sword-regular-b.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sword-regular-c-rm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sword-regular-c.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/sword-regular-combo.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/texting-walk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/throw-ball.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/tightrope-walk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/tired-hunched.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/tired-kneeling.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/tumbling.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/turn-left-180.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/turn-left-90.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/turn-right-180.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/turn-right-90.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/two-hand-blast.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/two-handed-horizontal-swing.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/two-handed-overhead-slam.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/victory-fist-pump.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/victory.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/walk-backwards.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/walk-carry.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/walk-cautious.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/walk-female.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/walk-formal.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/walk-happy.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/walk-injured.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/walk-large.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/walk-relaxed.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/walk-stealth.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/walk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/wall-run.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/weapon-block.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/weapon-draw.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/yes.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/zombie-idle-2.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/zombie-idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/zombie-rise.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/zombie-run.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/zombie-scratch.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/zombie-walk-2.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/zombie-walk-3.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/zombie-walk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/animations/zombie-yell.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/kaiju/animations/attack.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/kaiju/animations/death.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/kaiju/animations/hit.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/kaiju/animations/idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/kaiju/animations/rest-pose.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/kaiju/animations/roar.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/kaiju/animations/swim.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/kaiju/animations/tail-attack.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/kaiju/animations/walk-rm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/kaiju/animations/walk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/shark/animations/bite.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/shark/animations/dead-floating.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/shark/animations/hit.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/shark/animations/idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/shark/animations/rest-pose.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/shark/animations/swim-horizontal.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/shark/animations/swim-vertical.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/snake/animations/bite.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/snake/animations/coiled.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/snake/animations/dance.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/snake/animations/death.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/snake/animations/hit.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/snake/animations/idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/snake/animations/rest-pose.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/snake/animations/sidewinding.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/spider/animations/attack.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/spider/animations/bite.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/spider/animations/death-2.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/spider/animations/death.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/spider/animations/eating.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/spider/animations/hit.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/spider/animations/idle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/spider/animations/jump.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/spider/animations/rest-pose.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/spider/animations/threat-display.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/spider/animations/walk.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/test-files/import custom animations/m2m-valid-but-no-animation-data.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/bird/model.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/bird/skeleton.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/bird/variations/eagle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/bird/variations/seagull.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/dragon/model.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/dragon/skeleton.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/model.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/skeleton.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/variations/base.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/variations/cat.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/variations/dog.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/variations/horse.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/fox/variations/panda.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/model.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/horse/skeleton.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/model.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/skeleton.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/base.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/bunny.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/jay.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/mannequin-female.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-05.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-06.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-10.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-15.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-17-female-police.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-18-police.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-21-police.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-26-doctor.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-28-female-hm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-28-hm.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-31-female.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-32.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-female-08.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-female-09.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-killer-04.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-killer-05.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-killer-06.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-killer-07.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-monster-03.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-monster-04.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-monster-05.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/psx-monster.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/sintel.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/sophia.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/human/variations/zombie.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/kaiju/model.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/kaiju/skeleton.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/kaiju/variations/base.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/kaiju/variations/trex.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/AK.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/GrenadeLauncher.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/Knife_1.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/Knife_2.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/Pistol.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/Revolver.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/Revolver_Small.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/RocketLauncher.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/SMG.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/ShortCannon.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/Shotgun.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/Shovel.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/Sickle.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/Sniper.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/Sniper_2.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/arrow_A.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/arrow_B.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/axe_A.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/axe_B.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/axe_C.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/bow_A.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/bow_A_withString.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/bow_B.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/bow_B_withString.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/dagger_A.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/dagger_B.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/fistweapon_A.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/fistweapon_A_stacked.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/fistweapon_B.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/fistweapon_B_stacked.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/halberd.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/hammer_A.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/hammer_B.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/hammer_C.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/odache.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/shield_A.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/shield_B.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/shield_C.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/spear_A.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/staff_A.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/staff_B.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/sword_A.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/sword_B.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/sword_C.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/sword_D.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/sword_E.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/sword_F.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/props/wand_A.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/shark/model.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/shark/skeleton.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/shark/variations/whale.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/snake/model.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/snake/skeleton.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/spider/model.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/assets/spider/skeleton.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/test-files/bone-correction-tests/human-a-pose.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/test-files/human-interleaved-buffer-mesh.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/test-files/human-small.glb",
+      "reason": "not a self-contained animated skinned model"
+    },
+    {
+      "path": "static/test-files/retarget testing/mixamo-sample-rig.glb",
+      "reason": "third-party provenance requires separate license audit"
+    }
+  ],
+  "candidate_count": 457,
+  "total_bytes": 2028840,
+  "unique_motion_credit": 0,
+  "scope": "source asset entries; cross-library semantic duplication not yet resolved"
+}
