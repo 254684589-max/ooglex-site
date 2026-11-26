@@ -5,23 +5,31 @@ on:
     paths:
       - 'motion-studio/tools/import_kinemiq.py'
       - '.github/workflows/motion-kinemiq-import.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'motion-studio/tools/import_kinemiq.py'
+      - '.github/workflows/motion-kinemiq-import.yml'
   workflow_dispatch:
 permissions:
   contents: write
 jobs:
   import:
-    if: github.ref == 'refs/heads/agent/motion-studio-kinemiq-v462'
+    if: github.ref == 'refs/heads/agent/motion-studio-kinemiq-v462' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'agent/motion-studio-kinemiq-v462')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: agent/motion-studio-kinemiq-v462
           sparse-checkout: |
             motion-studio
       - name: Import actual public GLB archive
         run: |
           python3 -m py_compile motion-studio/tools/import_kinemiq.py
-          python3 motion-studio/tools/import_kinemiq.py
+          if ! test -s motion-studio/assets/kinemiq/manifest.json; then
+            python3 motion-studio/tools/import_kinemiq.py
+          fi
       - name: Verify derivative accounting and file hashes
         run: |
           python3 - <<'PY'
