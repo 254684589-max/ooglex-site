@@ -15,7 +15,7 @@ on:
       - 'motion-studio/tools/smoke_kinemiq.mjs'
       - '.github/workflows/motion-kinemiq-thumbs.yml'
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: motion-kinemiq-ui-v4610
   cancel-in-progress: true
@@ -27,13 +27,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: agent/motion-studio-kinemiq-ui-v4610
           sparse-checkout: motion-studio
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Render actual pose thumbnails and verify all original clips
-        run: node motion-studio/tools/smoke_kinemiq.mjs . --bake
+      - name: Verify committed pose thumbnails and all original clips
+        run: node motion-studio/tools/smoke_kinemiq.mjs .
       - name: Verify exact thumbnail manifest and PNG files
         run: |
           python3 - <<'PY'
@@ -49,12 +48,3 @@ jobs:
           assert not expected
           print('Verified 35 original-pose PNG files')
           PY
-      - name: Commit baked thumbnails to development branch
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add motion-studio/assets/kinemiq/thumbs motion-studio/assets/kinemiq/thumbs.json
-          git diff --cached --quiet && exit 0
-          git commit -m "data(motion): bake 35 authentic KinemIQ pose thumbnails"
-          git pull --rebase origin agent/motion-studio-kinemiq-ui-v4610
-          git push origin HEAD:agent/motion-studio-kinemiq-ui-v4610
