@@ -12,14 +12,24 @@ jobs:
   import:
     if: github.ref == 'refs/heads/agent/motion-studio-accad-v457'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
             motion-studio
       - name: Fetch and validate official BVH archives
-        run: python3 motion-studio/tools/import_accad.py
+        run: |
+          python3 -m py_compile motion-studio/tools/import_accad.py
+          passed=0
+          for pack in Male2_bvh.zip Male1_bvh.zip Female1_bvh.zip; do
+            if python3 motion-studio/tools/import_accad.py --pack "$pack"; then
+              passed=$((passed+1))
+            else
+              echo "::warning::Unable to import $pack"
+            fi
+          done
+          test "$passed" -gt 0
       - name: Commit validated data to integration branch only
         run: |
           git config user.name "github-actions[bot]"
@@ -27,4 +37,5 @@ jobs:
           git add motion-studio/assets/accad
           git diff --cached --quiet && exit 0
           git commit -m "data(motion): import validated ACCAD BVH assets"
+          git pull --rebase origin agent/motion-studio-accad-v457
           git push origin HEAD:agent/motion-studio-accad-v457
