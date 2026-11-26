@@ -45,6 +45,11 @@ jobs:
           assert all(x['license']=='CC0-1.0' and x['unique_motion_credit']==0 for x in m['records'])
           print('35 real derivative clips verified; no unique motion inflation')
           PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify all 35 GLB clips in Chromium
+        run: node motion-studio/tools/smoke_kinemiq.mjs .
       - name: Commit verified public assets to development branch
         run: |
           git config user.name "github-actions[bot]"
