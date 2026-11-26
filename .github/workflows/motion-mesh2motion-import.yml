@@ -1,0 +1,88 @@
+name: Mesh2Motion import and motion research
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'motion-studio/**'
+      - '.github/workflows/motion-mesh2motion-import.yml'
+  push:
+    branches: [agent/motion-studio-mesh2motion-v463]
+    paths:
+      - 'motion-studio/tools/**'
+      - '.github/workflows/motion-mesh2motion-import.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: motion-mesh2motion-v463
+  cancel-in-progress: false
+jobs:
+  research:
+    if: github.ref == 'refs/heads/agent/motion-studio-mesh2motion-v463' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'agent/motion-studio-mesh2motion-v463')
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/motion-studio-mesh2motion-v463
+          sparse-checkout: |
+            motion-studio
+      - name: Audit actual BVH and mannequin joint names
+        run: python3 motion-studio/tools/audit_retarget.py
+      - name: Inspect 100STYLE official metadata and bounded ZIP directory
+        continue-on-error: true
+        run: python3 motion-studio/tools/audit_100style.py
+      - name: Commit research outputs (never count as playable clips)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add motion-studio/assets/research
+          git diff --cached --quiet && exit 0
+          git commit -m "data(motion): audit real source and target skeletons and 100STYLE inventory"
+          git pull --rebase origin agent/motion-studio-mesh2motion-v463
+          git push origin HEAD:agent/motion-studio-mesh2motion-v463
+  mesh:
+    needs: research
+    if: always() && (github.ref == 'refs/heads/agent/motion-studio-mesh2motion-v463' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'agent/motion-studio-mesh2motion-v463'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/motion-studio-mesh2motion-v463
+          sparse-checkout: |
+            motion-studio
+      - name: Import genuine CC0 GLBs
+        run: |
+          python3 -m py_compile motion-studio/tools/import_mesh2motion.py
+          if ! test -s motion-studio/assets/mesh2motion/manifest.json; then
+            python3 motion-studio/tools/import_mesh2motion.py
+          fi
+      - name: Validate all manifest references, source and SHA256
+        run: |
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('motion-studio')
+          m=json.loads((root/'assets/mesh2motion/manifest.json').read_text())
+          assert m['records'] and m['models'] and m['unique_motion_credit']==0
+          assert len({x['id'] for x in m['records']})==len(m['records'])
+          assert all(x['license']=='CC0-1.0' and x['unique_motion_credit']==0 for x in m['records'])
+          for x in m['models']:
+              assert hashlib.sha256((root/x['path']).read_bytes()).hexdigest()==x['sha256']
+          print('Validated',len(m['records']),'animation entries; unique motions not yet certified.')
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Browser acceptance for each distinct source rig
+        run: node motion-studio/tools/smoke_mesh2motion.mjs .
+      - name: Commit verified assets only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add motion-studio/assets/mesh2motion
+          git diff --cached --quiet && exit 0
+          git commit -m "data(motion): verified Mesh2Motion source assets"
+          git pull --rebase origin agent/motion-studio-mesh2motion-v463
+          git push origin HEAD:agent/motion-studio-mesh2motion-v463
