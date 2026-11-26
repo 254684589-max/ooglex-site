@@ -3,15 +3,15 @@ on:
   push:
     branches: [agent/motion-studio-retarget-v466]
     paths:
-      - 'motion-studio/tools/batch_retarget.py'
+      - 'motion-studio/**'
       - '.github/workflows/motion-retarget-batch.yml'
   pull_request:
-    branches: [agent/motion-studio-mesh2motion-v463]
+    branches: [main]
     paths:
-      - 'motion-studio/tools/batch_retarget.py'
+      - 'motion-studio/**'
       - '.github/workflows/motion-retarget-batch.yml'
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: motion-retarget-v466
   cancel-in-progress: true
@@ -23,15 +23,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: agent/motion-studio-retarget-v466
           sparse-checkout: |
             motion-studio
-      - name: Generate actual experimental martial transfer assets
-        run: |
-          python3 -m py_compile motion-studio/tools/batch_retarget.py
-          if ! test -s motion-studio/assets/research/retarget-batch/manifest.json; then
-            python3 motion-studio/tools/batch_retarget.py --limit 55
-          fi
+      - name: Require committed experimental batch
+        run: test -s motion-studio/assets/research/retarget-batch/manifest.json
       - name: Verify every output and provenance
         run: |
           python3 - <<'PY'
@@ -57,12 +52,8 @@ jobs:
               ids.add(x['source']['id'])
           print('Verified',len(ids),'experimental GLBs;',len(m['rejected']),'rejected; no new unique motion credit')
           PY
-      - name: Commit experimental artifacts to isolated development branch
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add motion-studio/assets/research/retarget-batch
-          git diff --cached --quiet && exit 0
-          git commit -m "data(motion): verified experimental ACCAD martial transfer batch"
-          git pull --rebase origin agent/motion-studio-retarget-v466
-          git push origin HEAD:agent/motion-studio-retarget-v466
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify actual experimental GLB browser playback
+        run: node motion-studio/tools/smoke_retarget.mjs .
