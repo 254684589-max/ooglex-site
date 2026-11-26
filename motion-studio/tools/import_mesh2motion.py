@@ -19,10 +19,11 @@ def main():
     rawbase='https://raw.githubusercontent.com/'+REPO+'/'+sha+'/'
     license_text=read(rawbase+'LICENSE-CC0.MD',50_000).decode()
     if 'CC0' not in license_text:raise ValueError('missing CC0 declaration')
-    entries=[x for x in tree['tree'] if x['type']=='blob' and x['path'].startswith('static/animations/') and x['path'].lower().endswith('.glb')]
-    if not entries:raise ValueError('no official GLB candidates')
+    entries=[x for x in tree['tree'] if x['type']=='blob' and x['path'].lower().endswith('.glb')]
+    print('Official GLB paths:',json.dumps([{'path':x['path'],'bytes':x.get('size',0)} for x in entries],ensure_ascii=False))
+    if not entries:raise ValueError('no official GLB candidates in pinned repository tree')
     records=[];files=[];excluded=[];payloads={};seen=set();total=0
-    for x in sorted(entries,key=lambda v:v['path']):
+    for x in sorted(entries,key=lambda v:(not bool(re.search(r'anim|motion',v['path'],re.I)),v['path'])):
         name=x['path'];size=x.get('size',0)
         if re.search(r'carnegie|cmu|mixamo|100style|accad',name,re.I):
             excluded.append({'path':name,'reason':'third-party provenance requires separate license audit'});continue
