@@ -38,9 +38,25 @@ def category(name):
     for label,p in [('剑术与格斗',r'sword|punch|jab|cross|hook|slash|attack|block'),('移动',r'walk|run|sprint|crouch'),('跳跃与闪避',r'jump|roll|climb'),('受击与倒地',r'hit|death|fall|get.?up'),('基础姿态',r'idle|stand|sit')]:
         if re.search(p,name,re.I):return label
     return '其他'
+def fetch_archive():
+    errors=[]
+    try:
+        req=urllib.request.Request(URL,headers={'User-Agent':'OoglexMotionStudio/4.6.2'})
+        with urllib.request.urlopen(req,timeout=45) as f:raw=f.read(30_000_001)
+        if zipfile.is_zipfile(io.BytesIO(raw)):return raw,URL
+    except Exception as e:errors.append(str(e))
+    try:
+        api='https://api.github.com/repos/Kinemiq/free-game-animations/releases'
+        with urllib.request.urlopen(urllib.request.Request(api,headers={'User-Agent':'OoglexMotionStudio/4.6.2'}),timeout=30) as f:releases=json.load(f)
+        assets=[a for r in releases for a in r.get('assets',[]) if a['name']=='KinemIQ_Free_Animations_CC0_GLB.zip']
+        for a in assets:
+            url=a['browser_download_url']
+            with urllib.request.urlopen(url,timeout=60) as f:raw=f.read(30_000_001)
+            if zipfile.is_zipfile(io.BytesIO(raw)):return raw,url
+    except Exception as e:errors.append(str(e))
+    raise RuntimeError('official download unavailable: '+'; '.join(errors))
 def main():
-    req=urllib.request.Request(URL,headers={'User-Agent':'OoglexMotionStudio/4.6.2'})
-    with urllib.request.urlopen(req,timeout=120) as f:raw=f.read(30_000_001)
+    raw,download_url=fetch_archive()
     if len(raw)>30_000_000:raise ValueError('archive too large')
     archive=hashlib.sha256(raw).hexdigest();records=[];models=[];payloads={};seen=set()
     with zipfile.ZipFile(io.BytesIO(raw)) as z:
@@ -60,6 +76,6 @@ def main():
     if not records or not models:raise ValueError('missing clips or mannequin')
     ROOT.mkdir(parents=True,exist_ok=True)
     for name,data in payloads.items():(ROOT/name).write_bytes(data)
-    (ROOT/'manifest.json').write_text(json.dumps(dict(schema='ooglex.kinemiq.v1',source=SOURCE,archive_url=URL,archive_sha256=archive,license_url='https://creativecommons.org/publicdomain/zero/1.0/',records=records,models=models,unique_motion_credit=0,scope='retargeted Quaternius derivatives, overlap not individually adjudicated'),ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+    (ROOT/'manifest.json').write_text(json.dumps(dict(schema='ooglex.kinemiq.v1',source=SOURCE,archive_url=download_url,archive_sha256=archive,license_url='https://creativecommons.org/publicdomain/zero/1.0/',records=records,models=models,unique_motion_credit=0,scope='retargeted Quaternius derivatives, overlap not individually adjudicated'),ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print('validated clips',len(records),'models',len(models),'unique motion credit 0')
 if __name__=='__main__':main()
