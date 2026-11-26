@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-11-25T21:55:10Z",
-  "asOf": "2026-11-25",
+  "updatedAt": "2026-11-26T02:47:45Z",
+  "asOf": "2026-11-26",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-11-22 ~ 2026-11-28",
-  "count": 76,
+  "count": 77,
   "highCount": 5,
   "events": [
     {
@@ -712,6 +712,18 @@
       "impact": "low",
       "forecast": "3.2%",
       "previous": "3.1%",
+      "actual": null
+    },
+    {
+      "ts": "2026-11-26T09:15:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "Euro Summit",
+      "titleEn": "Euro Summit",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
