@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-11-25T15:47:53Z",
+  "updatedAt": "2026-11-26T15:28:54Z",
   "frequency": "daily",
-  "status": "partial",
+  "status": "ok",
   "demo": false,
   "sources": {
     "celestrak": {
@@ -19,28 +19,28 @@
   },
   "items": {
     "celestrak/stations": {
-      "ok": false,
-      "detail": "抓取失败: HTTP Error 503: Service Unavailable；保留上一份"
+      "ok": true,
+      "detail": "13 颗"
     },
     "celestrak/visual": {
-      "ok": false,
-      "detail": "抓取失败: HTTP Error 503: Service Unavailable；保留上一份"
+      "ok": true,
+      "detail": "155 颗"
     },
     "celestrak/gps-ops": {
-      "ok": false,
-      "detail": "抓取失败: HTTP Error 503: Service Unavailable；保留上一份"
+      "ok": true,
+      "detail": "32 颗"
     },
     "celestrak/glo-ops": {
-      "ok": false,
-      "detail": "抓取失败: HTTP Error 503: Service Unavailable；保留上一份"
+      "ok": true,
+      "detail": "25 颗"
     },
     "celestrak/galileo": {
-      "ok": false,
-      "detail": "抓取失败: HTTP Error 503: Service Unavailable；保留上一份"
+      "ok": true,
+      "detail": "32 颗"
     },
     "celestrak/geo": {
-      "ok": false,
-      "detail": "抓取失败: HTTP Error 503: Service Unavailable；保留上一份"
+      "ok": true,
+      "detail": "554 颗"
     },
     "launches": {
       "ok": true,
