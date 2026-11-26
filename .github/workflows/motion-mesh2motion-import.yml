@@ -55,7 +55,7 @@ jobs:
       - name: Import genuine CC0 GLBs
         run: |
           python3 -m py_compile motion-studio/tools/import_mesh2motion.py
-          if ! test -s motion-studio/assets/mesh2motion/manifest.json; then
+          if ! python3 -c "import json; assert json.load(open('motion-studio/assets/mesh2motion/manifest.json'))['schema']=='ooglex.mesh2motion.v2'"; then
             python3 motion-studio/tools/import_mesh2motion.py
           fi
       - name: Validate all manifest references, source and SHA256
@@ -65,7 +65,8 @@ jobs:
           from pathlib import Path
           root=Path('motion-studio')
           m=json.loads((root/'assets/mesh2motion/manifest.json').read_text())
-          assert m['records'] and m['models'] and m['unique_motion_credit']==0
+          assert m['schema']=='ooglex.mesh2motion.v2' and m['records'] and m['models'] and m['unique_motion_credit']==0
+          assert all(x['original'].startswith('static/assets/human/animations/') for x in m['records'])
           assert len({x['id'] for x in m['records']})==len(m['records'])
           assert all(x['license']=='CC0-1.0' and x['unique_motion_credit']==0 for x in m['records'])
           for x in m['models']:
@@ -75,7 +76,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Browser acceptance for each distinct source rig
+      - name: Browser acceptance on selected genuine human files
         run: node motion-studio/tools/smoke_mesh2motion.mjs .
       - name: Commit verified assets only
         run: |
