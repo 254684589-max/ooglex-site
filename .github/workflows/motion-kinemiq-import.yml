@@ -1,0 +1,48 @@
+name: KinemIQ CC0 asset import
+on:
+  push:
+    branches: [agent/motion-studio-kinemiq-v462]
+    paths:
+      - 'motion-studio/tools/import_kinemiq.py'
+      - '.github/workflows/motion-kinemiq-import.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    if: github.ref == 'refs/heads/agent/motion-studio-kinemiq-v462'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            motion-studio
+      - name: Import actual public GLB archive
+        run: |
+          python3 -m py_compile motion-studio/tools/import_kinemiq.py
+          python3 motion-studio/tools/import_kinemiq.py
+      - name: Verify derivative accounting and file hashes
+        run: |
+          python3 - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          root=Path('motion-studio')
+          m=json.loads((root/'assets/kinemiq/manifest.json').read_text())
+          assert len(m['records'])==35, len(m['records'])
+          assert len({x['id'] for x in m['records']})==35
+          assert m['models'] and m['unique_motion_credit']==0
+          for x in m['records']+m['models']:
+              assert hashlib.sha256((root/x['path']).read_bytes()).hexdigest()==x['sha256']
+          assert all(x['license']=='CC0-1.0' and x['unique_motion_credit']==0 for x in m['records'])
+          print('35 real derivative clips verified; no unique motion inflation')
+          PY
+      - name: Commit verified public assets to development branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add motion-studio/assets/kinemiq
+          git diff --cached --quiet && exit 0
+          git commit -m "data(motion): add verified KinemIQ CC0 retargeted assets"
+          git pull --rebase origin agent/motion-studio-kinemiq-v462
+          git push origin HEAD:agent/motion-studio-kinemiq-v462
