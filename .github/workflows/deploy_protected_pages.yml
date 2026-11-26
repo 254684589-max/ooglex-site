@@ -149,6 +149,14 @@ jobs:
         if: ${{ hashFiles('motion-studio/assets/kinemiq/manifest.json') != '' }}
         run: node motion-studio/tools/smoke_kinemiq.mjs .site
 
+      - name: Verify Mesh2Motion production animation catalog
+        if: ${{ hashFiles('motion-studio/assets/mesh2motion/manifest.json') != '' }}
+        run: node motion-studio/tools/smoke_mesh2motion.mjs .site
+
+      - name: Verify 100STYLE original recordings in public artifact
+        if: ${{ hashFiles('motion-studio/assets/100style/manifest.json') != '' }}
+        run: node motion-studio/tools/smoke_100style.mjs .site
+
       - name: Verify Asset Compass four-page public build
         run: |
           node --check .site/macro/compass-pages.js
