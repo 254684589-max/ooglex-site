@@ -58,7 +58,7 @@ def fetch_archive():
 def main():
     raw,download_url=fetch_archive()
     if len(raw)>30_000_000:raise ValueError('archive too large')
-    archive=hashlib.sha256(raw).hexdigest();records=[];models=[];payloads={};seen=set()
+    archive=hashlib.sha256(raw).hexdigest();records=[];models=[];payloads={};seen=set();excluded=[]
     with zipfile.ZipFile(io.BytesIO(raw)) as z:
         files=[x for x in z.infolist() if x.filename.lower().endswith('.glb') and not x.filename.startswith('__MACOSX/')]
         if not files or sum(x.file_size for x in files)>100_000_000:raise ValueError('invalid archive')
@@ -69,6 +69,10 @@ def main():
             seen.add(digest);doc=glb(data);file=digest[:24]+'.glb';payloads[file]=data
             mesh=bool(doc.get('meshes') and doc.get('skins'))
             if mesh:models.append(dict(path='assets/kinemiq/'+file,sha256=digest,original=entry.filename))
+            print('source file',entry.filename,'skinned',mesh,'animations',[a.get('name') for a in doc.get('animations',[])])
+            if mesh and re.search(r'mannequin',Path(entry.filename).stem,re.I):
+                excluded.extend(dict(original=entry.filename,index=i,name=a.get('name'),reason='animation embedded in companion mannequin, not separately distributed clip') for i,a in enumerate(doc.get('animations',[])))
+                continue
             for i,a in enumerate(doc.get('animations',[])):
                 name=a.get('name') or Path(entry.filename).stem
                 if len(doc['animations'])==1 and name.lower() in ('animation','take 001','action'):name=Path(entry.filename).stem
@@ -76,6 +80,6 @@ def main():
     if not records or not models:raise ValueError('missing clips or mannequin')
     ROOT.mkdir(parents=True,exist_ok=True)
     for name,data in payloads.items():(ROOT/name).write_bytes(data)
-    (ROOT/'manifest.json').write_text(json.dumps(dict(schema='ooglex.kinemiq.v1',source=SOURCE,archive_url=download_url,archive_sha256=archive,license_url='https://creativecommons.org/publicdomain/zero/1.0/',records=records,models=models,unique_motion_credit=0,scope='retargeted Quaternius derivatives, overlap not individually adjudicated'),ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+    (ROOT/'manifest.json').write_text(json.dumps(dict(schema='ooglex.kinemiq.v1',source=SOURCE,archive_url=download_url,archive_sha256=archive,license_url='https://creativecommons.org/publicdomain/zero/1.0/',records=records,models=models,excluded_companion_animations=excluded,unique_motion_credit=0,scope='retargeted Quaternius derivatives, overlap not individually adjudicated'),ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print('validated clips',len(records),'models',len(models),'unique motion credit 0')
 if __name__=='__main__':main()
