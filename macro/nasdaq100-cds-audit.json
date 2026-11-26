@@ -1,13 +1,13 @@
 {
   "admitted_par_spreads": 0,
   "last_run": {
-    "attempted_at": "2026-11-25T23:04:42.178742+00:00",
+    "attempted_at": "2026-11-26T22:58:00.128477+00:00",
     "attempts": {
-      "2026-11-18": "unchanged",
       "2026-11-19": "unchanged",
       "2026-11-20": "unchanged",
       "2026-11-23": "unchanged",
-      "2026-11-24": "unchanged"
+      "2026-11-24": "unchanged",
+      "2026-11-25": "new_report"
     }
   },
   "publication_enabled": false,
@@ -403,6 +403,22 @@
         "report_generated_at": "2026-11-24T19:00:04-05:00",
         "report_rows": 20,
         "sha256": "4790eae7d330769e8a6a7899b9ffbbf1cda0e34055695151f57a50adcecb5e36",
+        "verified_reference_entities": 0
+      }
+    ],
+    "2026-11-25": [
+      {
+        "admitted_par_spreads": 0,
+        "candidate_issuer_count": 0,
+        "candidate_issuer_ids": [],
+        "classification_counts": {
+          "contract_excluded": 6,
+          "unmatched_label": 18
+        },
+        "first_retrieved_at": "2026-11-26T22:58:00.128456+00:00",
+        "report_generated_at": "2026-11-25T19:00:04-05:00",
+        "report_rows": 24,
+        "sha256": "c72440124e67bf6a5ffcc94521af76f465a4b3408f228a107c3766d260241b5e",
         "verified_reference_entities": 0
       }
     ]
