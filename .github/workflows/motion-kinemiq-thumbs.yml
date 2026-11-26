@@ -1,0 +1,50 @@
+name: KinemIQ unified UI and pose thumbnails
+on:
+  push:
+    branches: [agent/motion-studio-kinemiq-ui-v4610]
+    paths:
+      - 'motion-studio/kinemiq.html'
+      - 'motion-studio/kinemiq-viewer.js'
+      - 'motion-studio/tools/smoke_kinemiq.mjs'
+      - '.github/workflows/motion-kinemiq-thumbs.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'motion-studio/kinemiq.html'
+      - 'motion-studio/kinemiq-viewer.js'
+      - 'motion-studio/tools/smoke_kinemiq.mjs'
+      - '.github/workflows/motion-kinemiq-thumbs.yml'
+permissions:
+  contents: read
+concurrency:
+  group: motion-kinemiq-ui-v4610
+  cancel-in-progress: true
+jobs:
+  bake:
+    if: github.ref == 'refs/heads/agent/motion-studio-kinemiq-ui-v4610' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'agent/motion-studio-kinemiq-ui-v4610')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: motion-studio
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify committed pose thumbnails and all original clips
+        run: node motion-studio/tools/smoke_kinemiq.mjs .
+      - name: Verify exact thumbnail manifest and PNG files
+        run: |
+          python3 - <<'PY'
+          import json,struct
+          from pathlib import Path
+          p=Path('motion-studio');m=json.loads((p/'assets/kinemiq/manifest.json').read_text());t=json.loads((p/'assets/kinemiq/thumbs.json').read_text())
+          assert len(t['records'])==len(m['records'])==35
+          expected={x['id']:x['sha256'] for x in m['records']}
+          for x in t['records']:
+              assert expected.pop(x['id'])==x['source_sha256']
+              b=(p/x['path']).read_bytes()
+              assert b[:8]==b'\x89PNG\r\n\x1a\n' and struct.unpack('>II',b[16:24])==(256,256)
+          assert not expected
+          print('Verified 35 original-pose PNG files')
+          PY
