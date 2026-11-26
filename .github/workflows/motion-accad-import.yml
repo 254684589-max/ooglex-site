@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/motion-accad-import.yml'
       - 'motion-studio/tools/import_accad.py'
+      - 'motion-studio/tools/audit_accad.py'
   workflow_dispatch:
 permissions:
   contents: write
@@ -21,6 +22,10 @@ jobs:
       - name: Fetch and validate official BVH archives
         run: |
           python3 -m py_compile motion-studio/tools/import_accad.py
+          if test -s motion-studio/assets/accad/manifest.json; then
+            echo "Using committed ACCAD source data"
+            exit 0
+          fi
           passed=0
           for pack in Male2_bvh.zip Male1_bvh.zip Female1_bvh.zip; do
             if python3 motion-studio/tools/import_accad.py --pack "$pack"; then
@@ -30,6 +35,8 @@ jobs:
             fi
           done
           test "$passed" -gt 0
+      - name: Audit all committed motion frames and generate pose thumbnails
+        run: python3 motion-studio/tools/audit_accad.py
       - name: Commit validated data to integration branch only
         run: |
           git config user.name "github-actions[bot]"
