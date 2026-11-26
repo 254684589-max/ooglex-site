@@ -33,8 +33,8 @@ def main():
         doc=glb(data);digest=hashlib.sha256(data).hexdigest()
         if digest in seen:continue
         seen.add(digest)
-        if not doc.get('animations') or doc.get('extensionsRequired'):
-            excluded.append({'path':name,'reason':'no animations or required decoder extension'});continue
+        if not doc.get('animations') or set(doc.get('extensionsRequired',[]))-{'EXT_meshopt_compression'}:
+            excluded.append({'path':name,'reason':'no animations or unsupported decoder extension','extensions':doc.get('extensionsRequired',[])});continue
         f=digest[:24]+'.glb';path='assets/mesh2motion/'+f
         try:
             items=[]
@@ -44,7 +44,7 @@ def main():
         except (ValueError,KeyError,IndexError) as e:
             excluded.append({'path':name,'reason':str(e)});continue
         records.extend(items);payloads[f]=data;total+=len(data);files.append({'path':path,'sha256':digest,'original':name,'clips':len(items),'bytes':len(data)})
-    if not records:raise ValueError('no genuine human animations')
+    if not records:raise ValueError('no genuine human animations; exclusions '+json.dumps(excluded[:12],ensure_ascii=False))
     BASE.mkdir(parents=True,exist_ok=True)
     for name in BASE.glob('*.glb'):
         if name.name not in payloads:name.unlink()
