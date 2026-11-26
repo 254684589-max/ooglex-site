@@ -1,21 +1,21 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_v59_two_missing_asset_research_provenance",
-  "generated_at": "2026-11-25T23:40:01.708755+00:00",
+  "generated_at": "2026-11-26T23:53:36.543219+00:00",
   "parent_report": "data/asset-compass-model-gaps-v58.json",
-  "parent_report_sha256": "2c9fee85e5423766c46299c81ee133f6066148f8dd41617bffa733a5a7001d6d",
+  "parent_report_sha256": "9ac81dddab1d53015ce79ac365f31491071546895dd354727450f3621e09ba4f",
   "source_verification": {
     "us_equities": {
       "observed": true,
       "reason": null,
       "source_id": "fed_z1_corporate_equities_all_sectors",
-      "source_report_sha256": "51e99ed60ed6a80141051aa39532cd018525e787e0c1f4544d599191d565d145"
+      "source_report_sha256": "cfcba0bd64f71fe8985f54b501676164544981402d1728feaac6ef94e439a2ee"
     },
     "bitcoin": {
       "observed": true,
       "reason": null,
       "source_id": "bitcoin_mainnet_block_subsidy",
-      "source_report_sha256": "fbb1d5d47f3b571791476a54f66fc1af65deec4e4fdf46ce1fe53e35b992f326"
+      "source_report_sha256": "bffd335e6c3609190c96116a5ea6f006ebd42a8821448f38559eb65754ddf029"
     }
   },
   "asset_specific_observed_assets": [

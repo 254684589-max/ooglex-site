@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_v59_bitcoin_mainnet_issuance_research",
-  "generated_at": "2026-11-25T23:40:00.380108+00:00",
+  "generated_at": "2026-11-26T23:53:35.448325+00:00",
   "asset_id": "bitcoin",
   "source_id": "bitcoin_mainnet_block_subsidy",
   "network": "bitcoin_mainnet",
@@ -10,28 +10,28 @@
   "citation_url": "https://blockstream.info/",
   "api_documentation": "https://github.com/Blockstream/esplora/blob/master/API.md",
   "observed_tip": {
-    "height": 977589,
-    "block_hash": "00000000000000000001bf59128646a2930c5140880516df63dcf02535cb7409",
-    "block_timestamp": "2026-11-25T23:36:03+00:00"
+    "height": 977730,
+    "block_hash": "00000000000000000000b4854437cd408428b8d9618978807b9966fe7af33fa7",
+    "block_timestamp": "2026-11-26T23:52:48+00:00"
   },
   "historical_checkpoint": {
-    "height": 976581,
-    "block_hash": "000000000000000000013e0f335c32350054fe56dbdd23f9a401d450d6380424",
-    "block_timestamp": "2026-11-19T11:59:32+00:00"
+    "height": 976722,
+    "block_hash": "00000000000000000001ffdec4af62dc10ea89cbe0260415f4f2a96371a87a15",
+    "block_timestamp": "2026-11-20T10:37:56+00:00"
   },
   "checkpoint_distance_blocks": 1008,
-  "nominal_subsidy_to_tip_sats": 2011746875000000,
-  "nominal_subsidy_to_tip_btc": 20117468.75,
+  "nominal_subsidy_to_tip_sats": 2011790937500000,
+  "nominal_subsidy_to_tip_btc": 20117909.375,
   "nominal_subsidy_new_over_1008_blocks_btc": 3150.0,
   "source_response_sha256": {
-    "tip_height": "80951466e71734723a85925ff0396081879f376c653f92b1ac494c92d6107b8f",
+    "tip_height": "f61639178a1b1f32dd090f023fcd2351a6c112ad75dea34af4e4839cb62d0542",
     "tip": {
-      "block_hash_lookup_sha256": "a8ed3d62424af5968a666c2e0864a25cfaad8abab4a04e912073615d558688eb",
-      "block_header_sha256": "9cfb7651d1f34a0ad20c5ea3de276ab95d1e136f7d35789dd0196e5af060a401"
+      "block_hash_lookup_sha256": "849edda09f687ca58b130abf713b1233259491b03d90dfba423c0375b576ada5",
+      "block_header_sha256": "fa5464c3b331de42e7042d1d6166b26f68c51dbcf3b535803dd16a5e9ff0987b"
     },
     "checkpoint": {
-      "block_hash_lookup_sha256": "875e3a52a091ddd723c673e31d21aacc60b1c0567c997c265b352e77d44b42b3",
-      "block_header_sha256": "89598bcf5581c98cf6b7b93a59315bb1dc00ab86ae6cc423d4dc2472e73de1a5"
+      "block_hash_lookup_sha256": "fa150a8f3c795ae14d5ac65f90ca7ea31556f7ce15e98029ae0cfcc34a263ee6",
+      "block_header_sha256": "591d5ac5f94b1d4e290b69d48d42b9378aa14967bfbe90b926f1135e060a8e93"
     }
   },
   "fresh_for_research": true,

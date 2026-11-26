@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_v59_us_equities_z1_research",
-  "generated_at": "2026-11-25T23:40:00.298521+00:00",
+  "generated_at": "2026-11-26T23:53:35.386699+00:00",
   "asset_id": "us_equities",
   "source_id": "fed_z1_corporate_equities_all_sectors",
   "series_id": "BOGZ1LM893064105Q",
@@ -11,7 +11,7 @@
   "original_source_format": "fed_original_html_table",
   "historical_depth_for_backtest_verified": false,
   "official_table_url": "https://www.federalreserve.gov/releases/z1/current/html/F51_1_s.htm",
-  "raw_source_sha256": "c7830d9c2dce3d66083463d59978df185e1bde786d4349c17e22f25bb13c466e",
+  "raw_source_sha256": "77823dd2c2ae36d4cc4deca87e2e6d8782da93a01f858a50e2e3f6728fd3d72c",
   "units": "millions_usd",
   "frequency": "quarterly_end_of_period",
   "observation_count": 6,
@@ -53,7 +53,7 @@
     }
   ],
   "fresh_for_research": true,
-  "observation_calendar_days_old": 148,
+  "observation_calendar_days_old": 149,
   "source_observation_status": "observed_research_only",
   "source_rights": "Federal Reserve public-domain data; attribution requested",
   "redistribution_rights_instrument_by_instrument_certified": false,
