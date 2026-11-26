@@ -1,105 +1,57 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ooglex Motion Studio</title>
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Ooglex 公开三维骨骼动作资产中心，支持中文分类、动作预览及实时播放。">
+<title>三维动作资产库 · Ooglex</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#10151d;color:#e2e8f0;font:14px system-ui,sans-serif}
-header{padding:20px 24px;border-bottom:1px solid #303a46}
-header a{color:#91b9c9;text-decoration:none}
-h1{font-size:22px;margin:12px 0}
-small,p{color:#93a5b7;line-height:1.7}
-main{display:grid;grid-template-columns:280px 1fr;min-height:75vh}
-aside{padding:20px;border-right:1px solid #303a46}
-button,select{background:#202c39;color:#e2e8f0;border:1px solid #405364;padding:10px;border-radius:6px;cursor:pointer}
-button{margin:4px 0}
-label{display:block;margin:12px 0}
-#files button{display:block;width:100%;text-align:left;overflow-wrap:anywhere}
-#viewer{height:65vh;min-height:350px}
-#viewer canvas{display:block;width:100%;height:100%}
-.controls{padding:15px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-#timeline{flex:1;min-width:100px;accent-color:#61c2b5}
-#status{padding:0 15px;color:#93c7bf}
-@media(max-width:700px){
-main{display:flex;flex-direction:column-reverse}
-aside{border-right:0}
-#viewer{height:55vh}
-}
-
-#publicActions button{
-display:block;width:100%;text-align:left;
-padding:12px;margin:5px 0;overflow-wrap:anywhere
-}
-#publicActions button:hover{
-border-color:#61c2b5;background:#30453f
-}
-#publicActions button.active{
-border-color:#61c2b5;background:#25433f
-}
-aside>label,#count,#files{display:none}
+:root{color-scheme:dark;--bg:#10151b;--panel:#131a23;--card:#242e39;--line:#252e39;--muted:#98a9b9;--text:#e7edf4;--accent:#7ee0cf}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}button,input,select{font:inherit}button,select,input[type=search]{color:var(--text);background:#202a35;border:1px solid #344251;border-radius:6px}button,select{cursor:pointer}button:disabled,select:disabled,input:disabled{opacity:.45;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}a{color:var(--accent);text-decoration:none}button:hover:not(:disabled){border-color:var(--accent)}header{height:70px;display:flex;align-items:center;gap:15px;padding:0 22px;border-bottom:1px solid var(--line);background:#0e1319}.brand{display:flex;gap:9px;align-items:center;color:var(--text);flex:none}.mark{display:grid;place-items:center;width:30px;height:30px;border:2px solid var(--accent);border-radius:9px;font-weight:800;color:var(--accent)}.wordmark{font-size:20px;font-weight:800;letter-spacing:.17em;line-height:1}.wordmark span{color:var(--accent)}.version{font-size:10px;letter-spacing:.08em;color:var(--muted);margin-top:4px}.headtitle{color:var(--muted);font-size:12px}.home{margin-left:auto;font-size:12px;white-space:nowrap}
+main{display:grid;grid-template-columns:156px minmax(0,1.2fr) minmax(340px,1fr);grid-template-areas:"side library preview";height:calc(100dvh - 70px);min-height:0}.side{grid-area:side;overflow:auto;border-right:1px solid var(--line);padding:20px 12px}.library{grid-area:library;min-width:0;overflow:auto;padding:25px 20px 30px}.preview{grid-area:preview;min-width:0;overflow:auto;border-left:1px solid var(--line);background:var(--panel)}.eyebrow{font-size:10px;letter-spacing:.13em;color:var(--muted);margin-bottom:8px}h1,h2,h3,p{margin:0}h1{font-size:24px;letter-spacing:.02em}h2{font-size:17px}h3{font-size:15px}.muted{color:var(--muted);font-size:12px}.side .muted{margin:12px 0 18px}.category{display:flex;align-items:center;justify-content:space-between;gap:6px;width:100%;text-align:left;border:1px solid transparent;background:transparent;padding:9px 8px;margin:3px 0;font-size:12px}.category.active{background:#203b3a;border-color:#2c4947;color:var(--accent)}.category span:last-child{font-variant-numeric:tabular-nums}.source{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);overflow-wrap:anywhere}.source a{display:block;margin-top:8px}
+.titlebar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}.count{border:1px solid #304b4c;border-radius:16px;padding:3px 9px;color:var(--accent);font-size:12px;white-space:nowrap}.searchrow{display:flex;gap:8px;margin:24px 0 10px}.searchrow input{padding:10px 12px;width:100%;min-width:0}.searchrow select{padding:8px;max-width:132px}.notice{font-size:12px;color:#c3b78f;border-left:2px solid #b7a06b;padding-left:9px;margin:12px 0 20px}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.motion-card{padding:0;overflow:hidden;text-align:left;min-width:0;border:1px solid var(--line);background:#151c25;border-radius:8px;display:flex;flex-direction:column}.motion-card[hidden]{display:none}.motion-card.active{border-color:var(--accent);box-shadow:0 0 0 1px #7ee0cf44}.thumb{aspect-ratio:1/1;position:relative;display:grid;place-items:center;background:#25303c;overflow:hidden}.thumb img{width:100%;height:100%;object-fit:contain;display:block}.thumb .placeholder{font-size:11px;color:var(--muted)}.tag{position:absolute;left:7px;top:7px;background:#142e2b;color:var(--accent);font-size:10px;border-radius:4px;padding:2px 5px;z-index:1}.cardbody{padding:9px 9px 11px}.cardname{font-weight:650;font-size:13px;overflow-wrap:anywhere}.cardmeta{font-size:11px;color:var(--muted);margin-top:4px}.empty{padding:32px 8px;color:var(--muted);text-align:center}
+.previewhead{padding:18px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}.viewwrap{position:relative;background:#151e29}.viewer{height:clamp(280px,42vh,550px);width:100%;touch-action:none}.viewer canvas{display:block;width:100%;height:100%}.viewlabel{position:absolute;left:12px;top:12px;pointer-events:none;color:var(--muted);font-size:10px;letter-spacing:.09em}.reset{position:absolute;right:12px;top:12px;padding:6px 8px;font-size:11px;background:#17212b}.hint{position:absolute;bottom:10px;left:0;right:0;text-align:center;pointer-events:none;color:var(--muted);font-size:11px}.details{padding:15px 16px 25px}.timeline{display:flex;gap:10px;align-items:center;margin:14px 0}.timeline input{flex:1;min-width:0}.time{font-size:11px;white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums}.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:20px}.controls button,.controls select{padding:7px 12px}.primary{background:var(--accent);color:#102b29;border-color:var(--accent);font-weight:650}.controls label{font-size:12px;color:var(--muted);white-space:nowrap}.controls input,.timeline input{accent-color:var(--accent)}.facts{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:9px;font-size:12px}.facts dt{color:var(--muted)}.facts dd{margin:0;text-align:right;overflow-wrap:anywhere}.status{padding-top:14px;margin-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.error{color:#ffb3a5}
+@media(max-width:1320px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1000px){main{grid-template-columns:126px minmax(0,1fr) minmax(300px,.95fr)}.library{padding:20px 12px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){header{height:auto;min-height:64px;padding:10px 12px}.headtitle{display:none}main{height:auto;display:grid;grid-template-columns:1fr;grid-template-areas:"side" "preview" "library"}.side{border-right:0;border-bottom:1px solid var(--line);padding:12px}.side .eyebrow,.side h2,.side .muted,.side .source{display:none}#categories{display:flex;overflow-x:auto;gap:4px}.category{width:auto;flex:none;gap:9px}.preview{border-left:0}.viewer{height:42vh;min-height:250px}.library{padding:18px 12px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.previewhead{padding:10px 14px}.details{padding-bottom:16px}.searchrow{margin-top:15px}}
 </style>
-
-<script type="importmap">
-{
-  "imports":{
-    "three":"./vendor/build/three.module.js"
-  }
-}
-</script>
-</head>
-<body>
-<header>
-<a href="/">← OOGLEX 首页</a>
-<h1>OOGLEX MOTION STUDIO</h1>
-<small>AI 3D动作资产中心 · 在线展示版</small>
-</header>
+<script type="importmap">{"imports":{"three":"./vendor/build/three.module.js"}}</script>
+</head><body>
+<header><a class="brand" href="/" aria-label="Ooglex 首页"><span class="mark">O</span><div><div class="wordmark">OOGLE<span>X</span></div><div class="version">动作工作室 · V4.5.3</div></div></a><span class="headtitle">公开三维动作资产中心</span><a class="home" href="/">← 返回首页</a></header>
 <main>
-<aside>
-
-<h3>公开动作资产库</h3>
-<p>CC0 动画资源 · 无需上传文件</p>
-
-<input id="actionSearch"
-placeholder="搜索动作..."
-style="width:100%;padding:12px;background:#202c39;color:white;border:1px solid #405364;border-radius:6px">
-
-<p id="publicCount">正在加载公开动作库...</p>
-
-<div id="publicActions"
-style="max-height:60vh;overflow:auto"></div>
-
-<p><a href="https://quaternius.com/packs/universalanimationlibrary.html"
-style="color:#91b9c9">资源来源：Quaternius · CC0</a></p>
-
-<p>点击任意动作，即可直接在线播放。</p>
-<label>选择动作文件
-<input type="file" id="upload" accept=".glb" multiple>
-</label>
-<label>选择整个动作目录
-<input type="file" id="directory" webkitdirectory multiple>
-</label>
-<p id="count">本地动作：0</p>
-<div id="files"></div>
-</aside>
-<section>
-<div id="viewer"></div>
-<div class="controls">
-<button id="play">播放 / 暂停</button>
-<button id="reset">重置视角</button>
-<select id="clips"></select>
-<select id="speed">
-<option value="0.25">0.25倍速</option>
-<option value="0.5">0.5倍速</option>
-<option value="1" selected>1倍速</option>
-<option value="2">2倍速</option>
-</select>
-<input id="timeline" type="range" min="0" max="1000" value="0">
-</div>
-<p id="status">正在加载标准机器人……</p>
-</section>
+<aside class="side"><div class="eyebrow">动作库</div><h2>探索动作</h2><p class="muted" id="summary">正在加载公开资产…</p><nav id="categories" aria-label="动作分类"></nav><div class="source">资源来源：Quaternius<br>许可：CC0 1.0<a href="https://quaternius.com/packs/universalanimationlibrary.html" target="_blank" rel="noopener">查看原始资源 ↗</a><a href="https://creativecommons.org/publicdomain/zero/1.0/deed.zh-hans" target="_blank" rel="noopener">查看授权说明 ↗</a></div></aside>
+<section class="library"><div class="eyebrow">公开动作集合</div><div class="titlebar"><h1>动作资产库</h1><span class="count" id="count">加载中</span></div><p class="muted">浏览真实骨骼动画，点击卡片即可在线播放。</p><div class="searchrow"><input type="search" id="search" placeholder="搜索中文动作名称、分类…" aria-label="搜索动作"><select id="sort" aria-label="排列方式"><option value="category">按分类排列</option><option value="short">时长从短到长</option><option value="long">时长从长到短</option></select></div><p class="notice">公开许可 CC0 · 无须上传文件或登录 · 预览使用资源原配人形模型</p><div id="cards" class="cards"></div><p class="empty" id="empty">正在读取动画数据…</p></section>
+<section class="preview" id="preview"><div class="previewhead"><div><div class="eyebrow">实时三维预览</div><h3>标准人形展示</h3></div><span class="muted" id="loadstate">正在加载</span></div><div class="viewwrap"><div id="viewer" class="viewer"></div><span class="viewlabel">三维动作工作室</span><button id="reset" class="reset" disabled>重置视角</button><span class="hint">拖动旋转 · 滚轮缩放 · 右键平移</span></div>
+<div class="details"><div class="titlebar"><h2 id="selected">选择一个动作</h2><span class="count">公开许可</span></div><div class="timeline"><input type="range" id="timeline" min="0" max="1000" value="0" aria-label="播放进度" disabled><span class="time" id="time">0.00 / 0.00 秒</span></div><div class="controls"><button id="play" class="primary" disabled>播放</button><label><input id="loop" type="checkbox" checked disabled> 循环</label><select id="speed" aria-label="播放速度" disabled><option value=".25">0.25 倍速</option><option value=".5">0.5 倍速</option><option value="1" selected>1 倍速</option><option value="2">2 倍速</option></select><label><input type="checkbox" id="bones" disabled> 骨骼</label></div><dl class="facts"><dt>动作分类</dt><dd id="factcategory">—</dd><dt>动画时长</dt><dd id="factduration">—</dd><dt>动画类型</dt><dd id="facttype">—</dd><dt>骨骼数量</dt><dd id="factbones">—</dd><dt>文件格式</dt><dd>GLB 骨骼动画</dd><dt>授权</dt><dd>CC0 1.0</dd><dt>资源来源</dt><dd>Quaternius</dd></dl><p id="status" class="status" role="status">正在加载公开动作库，请稍候。</p><p class="muted" style="margin-top:8px"><a href="https://quaternius.com/packs/universalanimationlibrary.html" target="_blank" rel="noopener">原始资源与许可 ↗</a></p></div></section>
 </main>
-<script type="module" src="./app.js?v=450"></script>
-</body>
-</html>
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from './vendor/examples/jsm/loaders/GLTFLoader.js';
+import {OrbitControls} from './vendor/examples/jsm/controls/OrbitControls.js';
+const mapping=[{"source":"Idle_Loop","name":"自然站立","category":"基础姿态"},{"source":"A_TPose","name":"标准绑定姿势","category":"基础姿态"},{"source":"Walk_Loop","name":"普通行走","category":"基础移动"},{"source":"Walk_Formal_Loop","name":"正式步行","category":"基础移动"},{"source":"Jog_Fwd_Loop","name":"向前慢跑","category":"基础移动"},{"source":"Sprint_Loop","name":"快速冲刺","category":"基础移动"},{"source":"Crouch_Fwd_Loop","name":"蹲伏前进","category":"基础移动"},{"source":"Crouch_Idle_Loop","name":"蹲伏待机","category":"基础移动"},{"source":"Jump_Start","name":"起跳","category":"跳跃与闪避"},{"source":"Jump_Loop","name":"空中跳跃","category":"跳跃与闪避"},{"source":"Jump_Land","name":"落地缓冲","category":"跳跃与闪避"},{"source":"Roll","name":"翻滚闪避","category":"跳跃与闪避"},{"source":"Punch_Jab","name":"刺拳","category":"拳法与剑术"},{"source":"Punch_Cross","name":"交叉直拳","category":"拳法与剑术"},{"source":"Sword_Idle","name":"持剑待机","category":"拳法与剑术"},{"source":"Sword_Attack","name":"挥剑攻击","category":"拳法与剑术"},{"source":"Pistol_Idle_Loop","name":"持手枪待机","category":"持枪动作"},{"source":"Pistol_Aim_Neutral","name":"水平瞄准","category":"持枪动作"},{"source":"Pistol_Aim_Up","name":"向上瞄准","category":"持枪动作"},{"source":"Pistol_Aim_Down","name":"向下瞄准","category":"持枪动作"},{"source":"Pistol_Reload","name":"手枪换弹","category":"持枪动作"},{"source":"Pistol_Shoot","name":"手枪射击","category":"持枪动作"},{"source":"Hit_Chest","name":"胸部受击","category":"受击与倒地"},{"source":"Hit_Head","name":"头部受击","category":"受击与倒地"},{"source":"Death01","name":"死亡倒地","category":"受击与倒地"},{"source":"Idle_Talking_Loop","name":"站立交谈","category":"日常与交互"},{"source":"Idle_Torch_Loop","name":"持火把待机","category":"日常与交互"},{"source":"Interact","name":"物体交互","category":"日常与交互"},{"source":"PickUp_Table","name":"从桌面拾取","category":"日常与交互"},{"source":"Push_Loop","name":"推物动作","category":"日常与交互"},{"source":"Fixing_Kneeling","name":"跪姿修理","category":"日常与交互"},{"source":"Driving_Loop","name":"驾驶动作","category":"日常与交互"},{"source":"Dance_Loop","name":"循环舞蹈","category":"日常与交互"},{"source":"Sitting_Enter","name":"坐下","category":"日常与交互"},{"source":"Sitting_Idle_Loop","name":"坐姿待机","category":"日常与交互"},{"source":"Sitting_Talking_Loop","name":"坐姿交谈","category":"日常与交互"},{"source":"Sitting_Exit","name":"起身离座","category":"日常与交互"},{"source":"Swim_Fwd_Loop","name":"向前游泳","category":"游泳动作"},{"source":"Swim_Idle_Loop","name":"水中待机","category":"游泳动作"},{"source":"Spell_Simple_Enter","name":"施法起手","category":"施法动作"},{"source":"Spell_Simple_Idle_Loop","name":"施法蓄力待机","category":"施法动作"},{"source":"Spell_Simple_Shoot","name":"释放法术","category":"施法动作"},{"source":"Spell_Simple_Exit","name":"施法收势","category":"施法动作"}];
+const categories=['全部动作',...new Set(mapping.map(x=>x.category))];
+const $=id=>document.getElementById(id);
+const view=$('viewer'), scene=new THREE.Scene(), camera=new THREE.PerspectiveCamera(38,1,.01,500);
+scene.background=new THREE.Color(0x151e29);
+let renderer,controls,model,mixer,action,skeleton,grid,baseBounds,selected=null,playing=false;
+let records=[],category='全部动作',lastTime=0;
+const loader=new GLTFLoader();
+const cards=new Map();
+function light(s){s.add(new THREE.HemisphereLight(0xffffff,0x526070,2.5));const a=new THREE.DirectionalLight(0xffffff,3);a.position.set(4,6,5);s.add(a);const b=new THREE.DirectionalLight(0xb7d9ff,1.5);b.position.set(-4,3,-3);s.add(b);}
+light(scene);
+function failure(message){$('status').textContent=message;$('status').classList.add('error');$('loadstate').textContent='加载异常';$('empty').hidden=false;$('empty').textContent=message;$('count').textContent='加载失败';}
+function makeRenderer(options){const r=new THREE.WebGLRenderer(options);r.outputColorSpace=THREE.SRGBColorSpace;return r;}
+function poseBounds(m){m.updateMatrixWorld(true);return new THREE.Box3().setFromObject(m,true);}
+function placeCamera(cam,box,angle,margin=1.18){const c=box.getCenter(new THREE.Vector3()),s=box.getSize(new THREE.Vector3());const half=Math.max(s.y/2,s.x/(2*Math.max(cam.aspect,.1)),s.z/2,.05);const d=half/Math.tan(THREE.MathUtils.degToRad(cam.fov/2))*margin+s.z*.5;cam.position.copy(c).add(angle.clone().normalize().multiplyScalar(d));cam.near=Math.max(.001,d/1000);cam.far=Math.max(100,d*100);cam.updateProjectionMatrix();cam.lookAt(c);return c;}
+function fit(){if(!baseBounds||!controls)return;controls.target.copy(placeCamera(camera,baseBounds,new THREE.Vector3(1,.37,2.4),1.38));controls.update();}
+function resize(){if(!renderer)return;const w=Math.max(1,view.clientWidth),h=Math.max(1,view.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+function categoryButtons(){const nav=$('categories');nav.replaceChildren();for(const c of categories){const n=records.filter(r=>c==='全部动作'||r.category===c).length;const b=document.createElement('button');b.className='category'+(c===category?' active':'');b.setAttribute('aria-pressed',String(c===category));const x=document.createElement('span'),y=document.createElement('span');x.textContent=c;y.textContent=n;b.append(x,y);b.onclick=()=>{category=c;categoryButtons();filter();};nav.append(b);}}
+function filter(){const q=$('search').value.trim().toLowerCase();const sort=$('sort').value;const items=[...records];if(sort==='short')items.sort((a,b)=>a.clip.duration-b.clip.duration);if(sort==='long')items.sort((a,b)=>b.clip.duration-a.clip.duration);let count=0;for(const r of items){const card=cards.get(r.source);const show=(category==='全部动作'||r.category===category)&&(!q||[r.name,r.category,r.source].some(s=>s.toLowerCase().includes(q)));card.hidden=!show;if(show)count++;$('cards').append(card);} $('count').textContent=count+' 项';$('empty').hidden=count!==0;$('empty').textContent='没有符合条件的动作';}
+function updatePlay(){ $('play').textContent=playing?'暂停':'播放';}
+function updateTime(){if(!action||!selected)return;const d=selected.clip.duration,t=Math.min(d,Math.max(0,action.time));$('timeline').value=d?Math.round(t/d*1000):0;$('time').textContent=t.toFixed(2)+' / '+d.toFixed(2)+' 秒';}
+function configureLoop(){if(!action)return;action.setLoop($('loop').checked?THREE.LoopRepeat:THREE.LoopOnce,$('loop').checked?Infinity:1);action.clampWhenFinished=true;}
+function select(r,scroll=false){if(!mixer)return;mixer.stopAllAction();selected=r;action=mixer.clipAction(r.clip);action.reset();configureLoop();action.timeScale=Number($('speed').value);action.play();mixer.update(0);playing=true;updatePlay();updateTime();$('selected').textContent=r.name;$('factcategory').textContent=r.category;$('factduration').textContent=r.clip.duration.toFixed(2)+' 秒';$('facttype').textContent=r.source.endsWith('_Loop')?'循环动作':'独立片段';$('status').textContent='正在预览：'+r.name+' · 公开许可 CC0';for(const [key,card] of cards){card.classList.toggle('active',key===r.source);card.setAttribute('aria-pressed',String(key===r.source));}if(scroll&&matchMedia('(max-width:760px)').matches)$('preview').scrollIntoView({behavior:'smooth',block:'start'});}
+function makeCards(){for(const r of records){const card=document.createElement('button');card.className='motion-card';card.type='button';card.setAttribute('aria-pressed','false');const thumb=document.createElement('div');thumb.className='thumb';const tag=document.createElement('span');tag.className='tag';tag.textContent='CC0';const place=document.createElement('span');place.className='placeholder';place.textContent='生成动作预览…';thumb.append(tag,place);const body=document.createElement('div');body.className='cardbody';const name=document.createElement('div');name.className='cardname';name.textContent=r.name;const meta=document.createElement('div');meta.className='cardmeta';meta.textContent=r.category+' · '+r.clip.duration.toFixed(2)+' 秒';body.append(name,meta);card.append(thumb,body);card.onclick=()=>select(r,true);cards.set(r.source,card);}filter();}
+async function thumbnails(buffer){let tr,ts;try{const g=await loader.parseAsync(buffer,'./assets/public/');ts=new THREE.Scene();ts.background=new THREE.Color(0x25303c);light(ts);ts.add(g.scene);tr=makeRenderer({antialias:true,preserveDrawingBuffer:true});tr.setPixelRatio(1);tr.setSize(240,240,false);const tc=new THREE.PerspectiveCamera(35,1,.01,100),tm=new THREE.AnimationMixer(g.scene);const byName=new Map(g.animations.map(c=>[c.name,c]));let made=0;for(const r of records){await new Promise(resolve=>requestAnimationFrame(resolve));const clip=byName.get(r.source);const thumb=cards.get(r.source).querySelector('.thumb');if(!clip)continue;tm.stopAllAction();const a=tm.clipAction(clip);a.reset().play();a.time=Math.min(clip.duration*.42,Math.max(0,clip.duration-.001));tm.update(0);ts.updateMatrixWorld(true);const b=poseBounds(g.scene);if(b.isEmpty())continue;placeCamera(tc,b,new THREE.Vector3(.85,.23,2.7),1.22);tr.render(ts,tc);const img=document.createElement('img');img.alt=r.name+' 动作取帧预览';img.src=tr.domElement.toDataURL('image/jpeg',.86);thumb.querySelector('.placeholder')?.remove();thumb.append(img);made++;}if(made!==records.length)throw Error('部分缩略图未生成');}catch(e){console.warn('动作缩略图生成未全部完成',e);for(const card of cards.values()){const p=card.querySelector('.placeholder');if(p)p.textContent='点击查看三维动作';}}finally{if(ts)ts.traverse(o=>{if(o.geometry)o.geometry.dispose();for(const m of [].concat(o.material||[])){for(const v of Object.values(m))if(v?.isTexture)v.dispose();m.dispose();}});if(tr)tr.dispose();}}
+async function boot(){renderer=makeRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));view.append(renderer.domElement);controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;new ResizeObserver(resize).observe(view);resize();const response=await fetch('./assets/public/library.glb');if(!response.ok)throw Error('资源读取失败');const buffer=await response.arrayBuffer();const g=await loader.parseAsync(buffer,'./assets/public/');model=g.scene;scene.add(model);const byName=new Map(g.animations.map(c=>[c.name,c]));records=mapping.map(r=>({...r,clip:byName.get(r.source)})).filter(r=>r.clip);if(records.length!==mapping.length||g.animations.length!==mapping.length)throw Error('动作索引与实际资源不一致');baseBounds=poseBounds(model);if(baseBounds.isEmpty())throw Error('模型网格为空');const size=baseBounds.getSize(new THREE.Vector3());grid=new THREE.GridHelper(Math.max(size.y*6,1),24,0x536779,0x303b49);grid.position.y=baseBounds.min.y;scene.add(grid);mixer=new THREE.AnimationMixer(model);mixer.addEventListener('finished',e=>{if(e.action===action){playing=false;updatePlay();updateTime();}});const set=new Set();model.traverse(o=>{if(o.isSkinnedMesh)for(const b of o.skeleton.bones)set.add(b);});$('factbones').textContent=set.size?String(set.size):'未识别';skeleton=new THREE.SkeletonHelper(model);skeleton.visible=false;scene.add(skeleton);for(const id of ['reset','play','timeline','loop','speed','bones'])$(id).disabled=false;$('summary').textContent=records.length+' 个公开动画 · '+(categories.length-1)+' 类动作';$('loadstate').textContent='资源已就绪';categoryButtons();makeCards();select(records.find(r=>r.source==='Idle_Loop')||records[0]);fit();renderer.setAnimationLoop(now=>{const dt=lastTime?Math.min((now-lastTime)/1000,.08):0;lastTime=now;if(playing&&mixer)mixer.update(dt);updateTime();controls.update();renderer.render(scene,camera);});thumbnails(buffer);}
+$('search').oninput=filter;$('sort').onchange=filter;$('reset').onclick=fit;$('bones').onchange=()=>{if(skeleton)skeleton.visible=$('bones').checked;};$('speed').onchange=()=>{if(action)action.timeScale=Number($('speed').value);};$('loop').onchange=()=>{if(action){const t=action.time;action.reset();configureLoop();action.time=Math.min(t,Math.max(0,selected.clip.duration-.00001));action.timeScale=Number($('speed').value);action.play();mixer.update(0);updateTime();}};$('play').onclick=()=>{if(!action)return;if(!playing&&action.time>=selected.clip.duration-.0001){action.reset().play();configureLoop();action.timeScale=Number($('speed').value);}playing=!playing;updatePlay();};$('timeline').oninput=()=>{if(!action)return;playing=false;const t=Number($('timeline').value)/1000*selected.clip.duration;action.reset();configureLoop();action.timeScale=Number($('speed').value);action.play();action.time=Math.min(t,Math.max(0,selected.clip.duration-.00001));mixer.update(0);updatePlay();updateTime();};
+boot().catch(e=>{console.error(e);failure('公开动作库加载失败，请刷新页面重试。');});
+</script></body></html>
