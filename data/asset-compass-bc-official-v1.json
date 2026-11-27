@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "report_type": "asset_compass_bc_official_observations_v1",
-  "generated_at": "2026-11-26T05:28:59.902014+00:00",
+  "generated_at": "2026-11-27T05:22:20.073456+00:00",
   "series": {
     "美国实际GDP增长率": {
       "fred_series_id": "A191RL1Q225SBEA",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=A191RL1Q225SBEA&cosd=2022-01-01&coed=2026-11-26",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=A191RL1Q225SBEA&cosd=2022-01-01&coed=2026-11-27",
       "original_agency": "BEA",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "quarterly",
@@ -91,13 +91,13 @@
         }
       ],
       "source_observation_count": 19,
-      "retrieved_at": "2026-11-26T05:28:59.902014+00:00",
+      "retrieved_at": "2026-11-27T05:22:20.073456+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "美元广义贸易加权指数": {
       "fred_series_id": "DTWEXBGS",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS&cosd=2022-01-01&coed=2026-11-26",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS&cosd=2022-01-01&coed=2026-11-27",
       "original_agency": "Federal Reserve Board",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "daily",
@@ -1147,13 +1147,13 @@
         }
       ],
       "source_observation_count": 1223,
-      "retrieved_at": "2026-11-26T05:28:59.902014+00:00",
+      "retrieved_at": "2026-11-27T05:22:20.073456+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "美国工业生产指数": {
       "fred_series_id": "INDPRO",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=INDPRO&cosd=2022-01-01&coed=2026-11-26",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=INDPRO&cosd=2022-01-01&coed=2026-11-27",
       "original_agency": "Federal Reserve Board",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "monthly",
@@ -1395,13 +1395,13 @@
         }
       ],
       "source_observation_count": 58,
-      "retrieved_at": "2026-11-26T05:28:59.902014+00:00",
+      "retrieved_at": "2026-11-27T05:22:20.073456+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "美国住房开工": {
       "fred_series_id": "HOUST",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=HOUST&cosd=2022-01-01&coed=2026-11-26",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=HOUST&cosd=2022-01-01&coed=2026-11-27",
       "original_agency": "US Census Bureau",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "monthly",
@@ -1643,13 +1643,13 @@
         }
       ],
       "source_observation_count": 58,
-      "retrieved_at": "2026-11-26T05:28:59.902014+00:00",
+      "retrieved_at": "2026-11-27T05:22:20.073456+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "美国零售销售": {
       "fred_series_id": "RSAFS",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS&cosd=2022-01-01&coed=2026-11-26",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS&cosd=2022-01-01&coed=2026-11-27",
       "original_agency": "US Census Bureau",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "monthly",
@@ -1891,13 +1891,13 @@
         }
       ],
       "source_observation_count": 58,
-      "retrieved_at": "2026-11-26T05:28:59.902014+00:00",
+      "retrieved_at": "2026-11-27T05:22:20.073456+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "美国初请失业金人数": {
       "fred_series_id": "ICSA",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=ICSA&cosd=2022-01-01&coed=2026-11-26",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=ICSA&cosd=2022-01-01&coed=2026-11-27",
       "original_agency": "US Department of Labor",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "weekly",
@@ -2931,13 +2931,13 @@
         }
       ],
       "source_observation_count": 256,
-      "retrieved_at": "2026-11-26T05:28:59.902014+00:00",
+      "retrieved_at": "2026-11-27T05:22:20.073456+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "美国10Y－3M国债利差": {
       "fred_series_id": "T10Y3M",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10Y3M&cosd=2022-01-01&coed=2026-11-26",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10Y3M&cosd=2022-01-01&coed=2026-11-27",
       "original_agency": "Federal Reserve Board/Treasury",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "daily",
@@ -3987,13 +3987,13 @@
         }
       ],
       "source_observation_count": 1224,
-      "retrieved_at": "2026-11-26T05:28:59.902014+00:00",
+      "retrieved_at": "2026-11-27T05:22:20.073456+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "5Y5Y远期通胀补偿": {
       "fred_series_id": "T5YIFR",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T5YIFR&cosd=2022-01-01&coed=2026-11-26",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T5YIFR&cosd=2022-01-01&coed=2026-11-27",
       "original_agency": "Federal Reserve Board",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "daily",
@@ -5043,13 +5043,13 @@
         }
       ],
       "source_observation_count": 1224,
-      "retrieved_at": "2026-11-26T05:28:59.902014+00:00",
+      "retrieved_at": "2026-11-27T05:22:20.073456+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     },
     "WTI原油现货价格": {
       "fred_series_id": "DCOILWTICO",
-      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO&cosd=2022-01-01&coed=2026-11-26",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO&cosd=2022-01-01&coed=2026-11-27",
       "original_agency": "US Energy Information Administration",
       "retrieval_provider": "Federal Reserve Bank of St. Louis FRED",
       "frequency": "daily",
@@ -6099,7 +6099,7 @@
         }
       ],
       "source_observation_count": 1223,
-      "retrieved_at": "2026-11-26T05:28:59.902014+00:00",
+      "retrieved_at": "2026-11-27T05:22:20.073456+00:00",
       "historical_release_vintages_verified": false,
       "validated_for_live_scoring": false
     }
