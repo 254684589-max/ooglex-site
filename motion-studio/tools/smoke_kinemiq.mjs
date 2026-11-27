@@ -19,6 +19,15 @@ await wait(()=>document.querySelectorAll('.clip').length===35);
 check('35 real catalog cards',document.querySelectorAll('.clip').length===35);
 check('canvas',!!document.querySelector('#viewer canvas'));
 const entries=await (await fetch('./assets/kinemiq/manifest.json')).json();
+const firstCard=document.querySelector('.clip');firstCard.scrollIntoView({block:'center',behavior:'instant'});
+await wait(()=>firstCard.querySelector('.posebox[data-preview="animated"] canvas'));
+const thumb=firstCard.querySelector('.posebox canvas');
+const pixels=()=>thumb.getContext('2d').getImageData(0,0,thumb.width,thumb.height).data;
+const isGrayBody=()=>{const a=pixels();let n=0;for(let i=0;i<a.length;i+=4){const r=a[i],g=a[i+1],b=a[i+2];if(Math.min(r,g,b)>62&&Math.max(r,g,b)-Math.min(r,g,b)<18)n++;}return n>80;};
+check('actual gray mannequin thumbnail',isGrayBody());
+const firstFrame=thumb.toDataURL();await wait(()=>thumb.toDataURL()!==firstFrame);
+check('animated mannequin thumbnail changes frames',true);
+
 for(const [i,entry] of entries.records.entries()){
 const cards=[...document.querySelectorAll('.clip')];cards[i].click();
 await wait(()=>!!$('error').textContent||(!$('play').disabled&&$('name').textContent===entry.name));
