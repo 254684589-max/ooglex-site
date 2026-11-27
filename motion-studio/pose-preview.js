@@ -1,7 +1,7 @@
 import * as T from 'three';
 /* Draw only decoded source poses. No stock images or fabricated animation. */
-export function bvhSegments(m){
- const group=new T.Group(),nodes=[],frame=Math.min(m.frames-1,Math.floor(m.frames*.42));
+export function bvhSegments(m,sampleFrame){
+ const group=new T.Group(),nodes=[],frame=Math.min(m.frames-1,Math.max(0,sampleFrame??Math.floor(m.frames*.42)));
  for(const n of m.nodes){const o=new T.Object3D();o.position.fromArray(n.offset);
  for(let i=0;i<n.channels.length;i++){const c=n.channels[i],v=m.values[frame*m.channels+n.start+i],axis=c[0].toLowerCase();
  if(c.endsWith('position'))o.position[axis]+=v;else o.quaternion.multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(axis==='x'?1:0,axis==='y'?1:0,axis==='z'?1:0),v*Math.PI/180));}
@@ -34,12 +34,67 @@ export function poseImage(segments){
  for(const q of pts){ctx.beginPath();ctx.arc(...p(q),2.9,0,Math.PI*2);ctx.fill();}
  return c.toDataURL('image/png');
 }
+
+/* Sample real motion at 12 fps. Long recordings use a 4-second excerpt. */
+export function sampleTimes(duration){
+ if(!Number.isFinite(duration)||duration<=0)throw Error('动作时长无效');
+ const span=Math.min(duration,4),start=duration>4?(duration-span)*.42:0,count=Math.max(2,Math.ceil(span*12));
+ return {times:Array.from({length:count},(_,i)=>start+i*span/count),span};
+}
+export function bvhMotion(m){
+ const {times,span}=sampleTimes(m.duration);return packMotion(times.map(t=>bvhSegments(m,Math.round(t/m.dt))),span);
+}
+export function glbMotion(root,clip){
+ const {times,span}=sampleTimes(clip.duration),links=hierarchyLinks(root,clip),mixer=new T.AnimationMixer(root),action=mixer.clipAction(clip);action.play();
+ try{return packMotion(times.map(t=>{mixer.setTime(t);root.updateMatrixWorld(true);return links.map(([a,b])=>[a.getWorldPosition(new T.Vector3()),b.getWorldPosition(new T.Vector3())]);}),span);}
+ finally{mixer.stopAllAction();mixer.uncacheRoot(root);}
+}
+/* A consistent camera scale across frames, root translation centered per frame. */
+export function packMotion(poses,span){
+ const project=v=>[v.x*.88-v.z*.47,-v.y*.97+(v.x*.47+v.z*.88)*.19];
+ let extent=0;
+ const centered=poses.map(segments=>{
+  const raw=segments.map(pair=>pair.map(project)).filter(pair=>pair.flat().every(Number.isFinite));
+  if(!raw.length)throw Error('姿态无有效骨骼');
+  const pts=raw.flat(),xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]),minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+  extent=Math.max(extent,maxX-minX,maxY-minY);const cx=(minX+maxX)/2,cy=(minY+maxY)/2;
+  return raw.flat(2).map((v,i)=>v-(i%2?cy:cx));
+ });
+ if(!(extent>1e-8))throw Error('姿态尺寸无效');
+ return {span,frames:centered.map(values=>Float32Array.from(values,(v,i)=>v*178/extent+110))};
+}
+export function drawFrame(canvas,frame){
+ const ctx=canvas.getContext('2d');ctx.fillStyle='#25303c';ctx.fillRect(0,0,220,220);
+ ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#af7b26';ctx.lineWidth=7;
+ const path=()=>{ctx.beginPath();for(let i=0;i<frame.length;i+=4){ctx.moveTo(frame[i],frame[i+1]);ctx.lineTo(frame[i+2],frame[i+3]);}ctx.stroke();};
+ path();ctx.strokeStyle='#ffd16c';ctx.lineWidth=4.5;path();ctx.fillStyle='#ffe5a4';
+ for(let i=0;i<frame.length;i+=2){ctx.beginPath();ctx.arc(frame[i],frame[i+1],2.9,0,Math.PI*2);ctx.fill();}
+}
 export function createThumbnails(load){
- const results=new Map(),pending=new Map(),queue=[];let busy=false;
- const observer=new IntersectionObserver(entries=>{for(const e of entries){if(!e.isIntersecting)continue;observer.unobserve(e.target);const item=pending.get(e.target);pending.delete(e.target);if(item)queue.push(item);}pump();},{rootMargin:'150px'});
- async function pump(){if(busy)return;busy=true;try{while(queue.length){const {record,box}=queue.shift();if(!box.isConnected)continue;try{let src=results.get(record.id);if(!src){src=await load(record);results.set(record.id,src);}if(box.isConnected)show(box,src,record.name);}catch(e){if(box.isConnected){box.textContent='取帧失败 · 点击播放';box.title=e.message;}}await new Promise(r=>requestAnimationFrame(r));}}finally{busy=false;}}
- function show(box,src,name){const img=document.createElement('img');img.alt=name+' 真实动作取帧';img.src=src;box.replaceChildren(img);}
- return {reset(){observer.disconnect();pending.clear();queue.length=0;},add(record,box,staticSrc){if(results.has(record.id)){show(box,results.get(record.id),record.name);return;}if(staticSrc){const img=document.createElement('img');img.loading='lazy';img.alt=record.name+' 真实骨架取帧';img.src=staticSrc;img.onerror=()=>{box.textContent='读取真实姿态…';pending.set(box,{record,box});observer.observe(box);};box.replaceChildren(img);return;}pending.set(box,{record,box});observer.observe(box);}};
+ const cache=new Map(),entries=new Map(),queue=[];let busy=false,last=0,raf=0;
+ const observer=new IntersectionObserver(changes=>{
+  for(const e of changes){const item=entries.get(e.target);if(!item)continue;item.visible=e.isIntersecting;
+   if(item.visible&&!item.queued&&!item.motion){item.queued=true;queue.push(item);}
+  }pump();schedule();
+ },{rootMargin:'80px'});
+ function schedule(){if(!raf&&[...entries.values()].some(x=>x.visible&&x.motion&&x.box.isConnected))raf=requestAnimationFrame(tick);}
+ function tick(now){raf=0;if(now-last>=80){last=now;for(const item of entries.values()){
+  if(!item.visible||!item.motion||!item.box.isConnected)continue;
+  const {frames,span}=item.motion,index=Math.floor(((now-item.started)/1000%span)/span*frames.length)%frames.length;
+  if(index!==item.index){drawFrame(item.canvas,frames[index]);item.index=index;}
+ }}schedule();}
+ function show(item,motion){if(!item.box.isConnected||entries.get(item.box)!==item)return;item.motion=motion;item.started=performance.now();item.index=0;const canvas=document.createElement('canvas');canvas.width=canvas.height=220;canvas.setAttribute('role','img');canvas.setAttribute('aria-label',item.record.name+' 真实动作循环预览');item.canvas=canvas;drawFrame(canvas,motion.frames[0]);item.box.replaceChildren(canvas);item.box.dataset.preview='animated';schedule();}
+ async function pump(){if(busy)return;busy=true;try{while(queue.length){const item=queue.shift();if(!item.box.isConnected||entries.get(item.box)!==item||!item.visible){item.queued=false;continue;}
+  try{let motion=cache.get(item.record.id);if(!motion){motion=await load(item.record);cache.set(item.record.id,motion);if(cache.size>100)cache.delete(cache.keys().next().value);}show(item,motion);}
+  catch(e){if(item.box.isConnected&&entries.get(item.box)===item){item.box.dataset.preview='error';item.box.title=e.message;if(!item.box.querySelector('img'))item.box.textContent='缩略动画加载失败 · 点击查看';}}
+  finally{item.queued=false;}await new Promise(r=>requestAnimationFrame(r));
+ }}finally{busy=false;}}
+ return {reset(){observer.disconnect();entries.clear();queue.length=0;if(raf)cancelAnimationFrame(raf);raf=0;},add(record,box,staticSrc){
+  const item={record,box,visible:false,queued:false,motion:null};entries.set(box,item);
+  if(staticSrc){const img=document.createElement('img');img.loading='lazy';img.alt=record.name+' 真实姿态';img.src=staticSrc;img.onerror=()=>{if(!item.motion)box.textContent='读取真实动作…';};box.replaceChildren(img);}
+  const cached=cache.get(record.id);if(cached){const canvas=document.createElement('canvas');canvas.width=canvas.height=220;canvas.setAttribute('aria-label',record.name+' 真实动作循环预览');canvas.setAttribute('role','img');item.canvas=canvas;item.motion=cached;item.started=performance.now();item.index=0;drawFrame(canvas,cached.frames[0]);box.replaceChildren(canvas);box.dataset.preview='animated';}
+  observer.observe(box);
+ }};
 }
 export function fitCamera(camera,controls,box){
  if(box.isEmpty())throw Error('无法计算可见骨架边界');const center=box.getCenter(new T.Vector3()),size=box.getSize(new T.Vector3()),extent=Math.max(size.x,size.y,size.z);
