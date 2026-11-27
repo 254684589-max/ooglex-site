@@ -18,7 +18,8 @@ const wait=async(fn)=>{for(let i=0;i<160;i++){if(fn())return;await new Promise(r
 const $=id=>document.getElementById(id);
 try{
 await wait(()=>document.querySelectorAll('.clip').length===299);
-check('299 catalog cards',document.querySelectorAll('.clip img').length===299);
+check('299 catalog cards',document.querySelectorAll('.clip .posebox').length===299);
+check('299 source thumbnail slots', [...document.querySelectorAll('.clip .posebox')].every(el=>el.querySelector('img,canvas')));
 check('canvas',!!document.querySelector('#viewer canvas'));
 $('search').value='SpinningBackKick';$('search').dispatchEvent(new Event('input'));
 check('search filter',document.querySelectorAll('.clip').length===1);
@@ -36,7 +37,7 @@ const blob=await (await fetch($('credit').href)).text();check('credit',blob.incl
 let exportHref='',exportName='';const oldClick=HTMLAnchorElement.prototype.click;try{HTMLAnchorElement.prototype.click=function(){exportHref=this.href;exportName=this.download;};$('glb').click();}finally{HTMLAnchorElement.prototype.click=oldClick;}
 check('GLB export link',exportName.endsWith('.glb')&&exportHref.startsWith('blob:'));
 const glb=await (await fetch(exportHref)).arrayBuffer();const view=new DataView(glb);check('GLB magic and size',view.getUint32(0,true)===0x46546c67&&view.getUint32(8,true)===glb.byteLength);const gltf=JSON.parse(new TextDecoder().decode(new Uint8Array(glb,20,view.getUint32(12,true))));check('GLB animation and license',gltf.animations[0].channels.length===23&&gltf.asset.extras.license==='CC BY 3.0');
-for(const [name,frames] of [['Female1_A01_Stand',91],['Male1_A10_LieToCrouch',196]]){$('search').value=name;$('search').dispatchEvent(new Event('input'));const button=[...document.querySelectorAll('.clip')].find(el=>el.textContent.startsWith(name));check(name+' found',!!button);button.click();await wait(()=>$('name').textContent===name);check(name+' parsed',$('details').textContent.includes(frames+' 帧')&&!$('error').textContent);}
+for(const [name,frames] of [['Female1_A01_Stand',91],['Male1_A10_LieToCrouch',196]]){$('search').value=name;$('search').dispatchEvent(new Event('input'));const button=[...document.querySelectorAll('.clip')].find(el=>el.querySelector('.cardname')?.textContent===name);check(name+' found',!!button);button.click();await wait(()=>$('name').textContent===name);check(name+' parsed',$('details').textContent.includes(frames+' 帧')&&!$('error').textContent);}
 check('no script errors',!window.__accadErrors.length);
 check('responsive document',document.documentElement.scrollWidth<=innerWidth+2);
 window.__accadResult={ok:true,results,viewport:innerWidth};
