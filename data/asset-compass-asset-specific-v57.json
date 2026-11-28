@@ -2,7 +2,7 @@
   "schema_version": 1,
   "report_type": "asset_compass_v57_authentic_asset_specific_source_research",
   "status": "research_only_no_model_promotion",
-  "generated_at": "2026-11-23T16:24:46.817724+00:00",
+  "generated_at": "2026-11-28T10:43:20.946172+00:00",
   "sources": {
     "cftc_gold": {
       "reference_count": 104,
@@ -20,7 +20,7 @@
       "latest_managed_money_net_contracts": 102942,
       "latest_managed_money_net_percent_oi": 25.241152,
       "latest_open_interest_contracts": 407834,
-      "age_calendar_days": 6,
+      "age_calendar_days": 11,
       "fresh_for_research": true,
       "recent_observations": [
         {
@@ -713,7 +713,7 @@
       "latest_auction_date": "2026-11-12",
       "latest_auction_cusip": "912810UY2",
       "latest_bid_to_cover_ratio": 2.36,
-      "age_calendar_days": 11,
+      "age_calendar_days": 16,
       "fresh_for_research": true,
       "recent_auctions": [
         {
@@ -1011,8 +1011,8 @@
       "not_a_total_return_or_whole_curve_demand": true
     }
   },
-  "v56_observed_at": "2026-11-23T08:11:42.773397+00:00",
-  "v56_oil_source_date": "2026-11-13",
+  "v56_observed_at": "2026-11-27T00:36:16.861057+00:00",
+  "v56_oil_source_date": "2026-11-20",
   "assets": {
     "gold": {
       "asset_specific_research_source_available": true,
